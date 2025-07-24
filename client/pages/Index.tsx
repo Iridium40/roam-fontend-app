@@ -24,7 +24,7 @@ export default function Index() {
   const services = [
     { icon: Scissors, name: "Beauty & Wellness", count: "150+ providers" },
     { icon: Dumbbell, name: "Personal Training", count: "80+ trainers" },
-    { icon: Massage, name: "Massage Therapy", count: "120+ therapists" },
+    { icon: Hand, name: "Massage Therapy", count: "120+ therapists" },
     { icon: Home, name: "Home Services", count: "200+ professionals" },
     { icon: Stethoscope, name: "Healthcare", count: "90+ specialists" },
     { icon: Heart, name: "Wellness Coaching", count: "60+ coaches" },
@@ -303,7 +303,7 @@ export default function Index() {
               </p>
               <div className="flex space-x-4">
                 <Badge variant="outline" className="border-roam-blue text-roam-blue">
-                  🛡️ Verified Providers
+                  ����️ Verified Providers
                 </Badge>
                 <Badge variant="outline" className="border-roam-blue text-roam-blue">
                   ⭐ 5-Star Quality
