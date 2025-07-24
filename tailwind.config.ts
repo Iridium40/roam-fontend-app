@@ -57,6 +57,15 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // ROAM Brand Colors
+        roam: {
+          blue: "hsl(var(--roam-blue))",
+          "light-blue": "hsl(var(--roam-light-blue))",
+          yellow: "hsl(var(--roam-yellow))",
+          success: "hsl(var(--roam-success))",
+          warning: "hsl(var(--roam-warning))",
+          info: "hsl(var(--roam-info))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,10 +89,30 @@ export default {
             height: "0",
           },
         },
+        "fade-in": {
+          from: {
+            opacity: "0",
+            transform: "translateY(10px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
+        "slide-in": {
+          from: {
+            transform: "translateX(-100%)",
+          },
+          to: {
+            transform: "translateX(0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.6s ease-out",
+        "slide-in": "slide-in 0.5s ease-out",
       },
     },
   },
