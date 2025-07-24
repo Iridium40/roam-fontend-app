@@ -1,19 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Sparkles, 
-  MapPin, 
-  Clock, 
-  Shield, 
-  Star, 
+import {
+  Sparkles,
+  MapPin,
+  Clock,
+  Shield,
+  Star,
   ArrowRight,
   Heart,
   Scissors,
   Dumbbell,
   Home,
   Stethoscope,
-  Massage,
+  Hand,
   ChevronRight,
   Users,
   TrendingUp,
