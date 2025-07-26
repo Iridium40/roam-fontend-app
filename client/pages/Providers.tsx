@@ -21,7 +21,7 @@ export default function Providers() {
     {
       icon: DollarSign,
       title: "Competitive Earnings",
-      description: "Keep 80-85% of your service fees. No hidden charges or monthly subscriptions.",
+      description: "Keep everything you charge customers. Only payout transaction fees apply.",
       highlight: "$50-200/hour average"
     },
     {
