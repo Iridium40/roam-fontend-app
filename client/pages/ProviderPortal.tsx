@@ -74,7 +74,7 @@ export default function ProviderPortal() {
     {
       icon: DollarSign,
       title: "Competitive Earnings",
-      description: "Keep 80-85% of your service fees"
+      description: "Keep everything you charge (minus payout transaction fee only)"
     },
     {
       icon: Calendar,
