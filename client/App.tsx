@@ -15,6 +15,7 @@ import MyBookings from "./pages/MyBookings";
 import ProviderPortal from "./pages/ProviderPortal";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderOnboarding from "./pages/ProviderOnboarding";
+import ProviderProfile from "./pages/ProviderProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
