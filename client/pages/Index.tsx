@@ -124,6 +124,136 @@ export default function Index() {
     }
   ];
 
+  const featuredServices = [
+    {
+      id: 1,
+      title: "Signature Deep Tissue Massage",
+      category: "Massage Therapy",
+      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop",
+      description: "90-minute therapeutic massage for ultimate relaxation",
+      price: "$120",
+      originalPrice: "$150",
+      rating: 4.9,
+      duration: "90 min"
+    },
+    {
+      id: 2,
+      title: "Personal Training Session",
+      category: "Fitness",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=300&fit=crop",
+      description: "One-on-one fitness training at your location",
+      price: "$80",
+      originalPrice: "$100",
+      rating: 5.0,
+      duration: "60 min"
+    },
+    {
+      id: 3,
+      title: "Hair Cut & Style",
+      category: "Beauty",
+      image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=300&fit=crop",
+      description: "Professional haircut and styling service",
+      price: "$75",
+      originalPrice: "$95",
+      rating: 4.8,
+      duration: "75 min"
+    },
+    {
+      id: 4,
+      title: "Telehealth Consultation",
+      category: "Healthcare",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=500&h=300&fit=crop",
+      description: "Virtual consultation with licensed physician",
+      price: "$125",
+      originalPrice: "$150",
+      rating: 4.9,
+      duration: "30 min"
+    }
+  ];
+
+  const promotionalDeals = [
+    {
+      id: 1,
+      title: "New Year Wellness Package",
+      description: "3 massage sessions + nutrition consultation",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop",
+      originalPrice: "$450",
+      discountPrice: "$299",
+      discount: "33% OFF",
+      validUntil: "Jan 31, 2024",
+      badge: "Limited Time"
+    },
+    {
+      id: 2,
+      title: "Couples Spa Experience",
+      description: "Side-by-side massage for two people at your home",
+      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=250&fit=crop",
+      originalPrice: "$300",
+      discountPrice: "$220",
+      discount: "25% OFF",
+      validUntil: "Feb 14, 2024",
+      badge: "Valentine's Special"
+    },
+    {
+      id: 3,
+      title: "Fitness Starter Pack",
+      description: "4 personal training sessions + meal plan",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop",
+      originalPrice: "$400",
+      discountPrice: "$280",
+      discount: "30% OFF",
+      validUntil: "End of Month",
+      badge: "Best Value"
+    }
+  ];
+
+  const popularServices = [
+    {
+      id: 1,
+      title: "Swedish Massage",
+      category: "Massage Therapy",
+      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=250&fit=crop",
+      price: "$90",
+      duration: "60 min",
+      bookings: "127 bookings this month",
+      rating: 4.8,
+      availability: "Available Today"
+    },
+    {
+      id: 2,
+      title: "Mobile Hair Styling",
+      category: "Beauty & Wellness",
+      image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop",
+      price: "$85",
+      duration: "90 min",
+      bookings: "98 bookings this month",
+      rating: 4.9,
+      availability: "Available Today"
+    },
+    {
+      id: 3,
+      title: "HIIT Training",
+      category: "Personal Training",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop",
+      price: "$75",
+      duration: "45 min",
+      bookings: "156 bookings this month",
+      rating: 5.0,
+      availability: "Available Today"
+    },
+    {
+      id: 4,
+      title: "Virtual Therapy Session",
+      category: "Healthcare",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=250&fit=crop",
+      price: "$120",
+      duration: "50 min",
+      bookings: "89 bookings this month",
+      rating: 4.7,
+      availability: "Available Today"
+    }
+  ];
+
   const deliveryIcons = {
     mobile: Smartphone,
     business: Building,
