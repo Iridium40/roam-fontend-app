@@ -36,6 +36,7 @@ export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedDelivery, setSelectedDelivery] = useState("all");
+  const [currentServiceSlide, setCurrentServiceSlide] = useState(0);
 
   const serviceCategories = [
     { 
