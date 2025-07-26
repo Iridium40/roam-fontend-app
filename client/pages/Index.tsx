@@ -407,6 +407,222 @@ export default function Index() {
         </div>
       </section>
 
+      {/* Featured Services Carousel */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold">
+              Featured <span className="text-roam-blue">Services</span>
+            </h2>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={prevServiceSlide}
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={nextServiceSlide}
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden">
+            <div
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{ transform: `translateX(-${currentServiceSlide * 100}%)` }}
+            >
+              {featuredServices.map((service) => (
+                <div key={service.id} className="w-full flex-shrink-0">
+                  <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 mx-2">
+                    <div className="relative">
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="w-full h-64 object-cover rounded-t-lg"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-roam-blue text-white">
+                          {service.category}
+                        </Badge>
+                      </div>
+                      <div className="absolute top-4 right-4">
+                        <Badge variant="secondary" className="bg-white/90 text-gray-800">
+                          <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
+                          {service.rating}
+                        </Badge>
+                      </div>
+                    </div>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
+                      <p className="text-foreground/70 mb-4">{service.description}</p>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold text-roam-blue">{service.price}</span>
+                          <span className="text-sm text-foreground/60 line-through">{service.originalPrice}</span>
+                        </div>
+                        <Badge variant="outline" className="border-roam-blue text-roam-blue">
+                          {service.duration}
+                        </Badge>
+                      </div>
+                      <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Book This Service
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Carousel indicators */}
+          <div className="flex justify-center mt-6 gap-2">
+            {featuredServices.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentServiceSlide(index)}
+                className={`w-3 h-3 rounded-full transition-colors ${
+                  index === currentServiceSlide ? 'bg-roam-blue' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Promotional Deals */}
+      <section className="py-12 bg-background/50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">
+              <span className="text-roam-blue">Special Deals</span> & Promotions
+            </h2>
+            <p className="text-lg text-foreground/70">
+              Limited-time offers on your favorite services
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {promotionalDeals.map((deal) => (
+              <Card key={deal.id} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-border/50 hover:border-roam-light-blue/50">
+                <div className="relative">
+                  <img
+                    src={deal.image}
+                    alt={deal.title}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <Badge className="bg-roam-yellow text-gray-900">
+                      <Percent className="w-3 h-3 mr-1" />
+                      {deal.badge}
+                    </Badge>
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <Badge variant="destructive">
+                      {deal.discount}
+                    </Badge>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-2">{deal.title}</h3>
+                  <p className="text-sm text-foreground/70 mb-4">{deal.description}</p>
+
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl font-bold text-roam-blue">{deal.discountPrice}</span>
+                        <span className="text-sm text-foreground/60 line-through">{deal.originalPrice}</span>
+                      </div>
+                      <p className="text-xs text-foreground/60">Valid until {deal.validUntil}</p>
+                    </div>
+                  </div>
+
+                  <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                    <Tag className="w-4 h-4 mr-2" />
+                    Book Deal Now
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Services */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">
+              Most <span className="text-roam-blue">Popular Services</span>
+            </h2>
+            <p className="text-lg text-foreground/70">
+              Trending services in your area this month
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {popularServices.map((service) => (
+              <Card key={service.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50 hover:border-roam-light-blue/50">
+                <div className="relative">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="w-full h-40 object-cover rounded-t-lg"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <Badge variant="secondary" className="bg-white/90 text-gray-800">
+                      <TrendingUp className="w-3 h-3 mr-1 text-roam-blue" />
+                      Popular
+                    </Badge>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="secondary" className="bg-white/90 text-gray-800">
+                      <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
+                      {service.rating}
+                    </Badge>
+                  </div>
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold mb-2">{service.title}</h3>
+                  <p className="text-xs text-foreground/60 mb-3">{service.category}</p>
+
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-lg font-bold text-roam-blue">{service.price}</span>
+                    <Badge variant="outline" className="text-xs border-roam-blue text-roam-blue">
+                      {service.duration}
+                    </Badge>
+                  </div>
+
+                  <div className="space-y-2 mb-4">
+                    <p className="text-xs text-foreground/70 flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3 text-roam-blue" />
+                      {service.bookings}
+                    </p>
+                    <p className="text-xs text-green-600 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {service.availability}
+                    </p>
+                  </div>
+
+                  <Button size="sm" className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                    <Calendar className="w-3 h-3 mr-2" />
+                    Book Now
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Featured Providers */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
