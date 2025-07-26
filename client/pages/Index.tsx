@@ -683,9 +683,11 @@ export default function Index() {
                           <Calendar className="w-4 h-4 mr-2" />
                           Book Now
                         </Button>
-                        <Button size="sm" variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
-                          <BookOpen className="w-4 h-4 mr-2" />
-                          View Profile
+                        <Button asChild size="sm" variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                          <Link to={`/provider/${provider.id}`}>
+                            <BookOpen className="w-4 h-4 mr-2" />
+                            View Profile
+                          </Link>
                         </Button>
                       </div>
                     </div>
