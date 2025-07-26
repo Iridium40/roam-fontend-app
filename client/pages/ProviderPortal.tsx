@@ -106,13 +106,12 @@ export default function ProviderPortal() {
                   Back to Services
                 </Link>
               </Button>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-roam-blue to-roam-light-blue bg-clip-text text-transparent">
-                  ROAM
-                </span>
+              <div className="flex items-center">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                  alt="ROAM - Your Best Life. Everywhere."
+                  className="h-8 w-auto"
+                />
               </div>
             </div>
             <div className="text-sm text-foreground/60">
