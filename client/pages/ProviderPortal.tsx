@@ -89,7 +89,7 @@ export default function ProviderPortal() {
     {
       icon: Shield,
       title: "Full Support",
-      description: "Insurance coverage and 24/7 support"
+      description: "Rescheduling and Cancellation 24/7 support"
     }
   ];
 
