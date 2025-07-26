@@ -1,0 +1,588 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { 
+  Sparkles, 
+  LogOut,
+  Calendar,
+  DollarSign,
+  Star,
+  Users,
+  TrendingUp,
+  Clock,
+  MapPin,
+  Phone,
+  Mail,
+  Edit,
+  Plus,
+  Settings,
+  Bell,
+  ChevronRight,
+  CheckCircle,
+  AlertCircle,
+  BarChart3,
+  MessageCircle,
+  Camera,
+  Smartphone,
+  Building,
+  Video
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+
+export default function ProviderDashboard() {
+  const [isAvailable, setIsAvailable] = useState(true);
+  
+  const stats = {
+    monthlyEarnings: 3250,
+    completedBookings: 47,
+    avgRating: 4.9,
+    responseRate: 98
+  };
+
+  const recentBookings = [
+    {
+      id: "B001",
+      service: "Deep Tissue Massage",
+      customer: "Sarah M.",
+      date: "2024-01-15",
+      time: "2:00 PM",
+      status: "confirmed",
+      price: 120,
+      deliveryType: "mobile",
+      location: "Miami, FL"
+    },
+    {
+      id: "B002", 
+      service: "Couples Massage",
+      customer: "John & Lisa D.",
+      date: "2024-01-16",
+      time: "6:00 PM",
+      status: "pending",
+      price: 240,
+      deliveryType: "mobile",
+      location: "Coral Gables, FL"
+    },
+    {
+      id: "B003",
+      service: "Sports Massage",
+      customer: "Mike R.",
+      date: "2024-01-17",
+      time: "10:00 AM", 
+      status: "completed",
+      price: 100,
+      deliveryType: "business",
+      location: "Your Studio"
+    }
+  ];
+
+  const services = [
+    {
+      id: 1,
+      name: "Deep Tissue Massage",
+      duration: "90 minutes",
+      price: 120,
+      category: "Massage Therapy",
+      active: true,
+      bookings: 23
+    },
+    {
+      id: 2,
+      name: "Swedish Massage",
+      duration: "60 minutes", 
+      price: 90,
+      category: "Massage Therapy",
+      active: true,
+      bookings: 18
+    },
+    {
+      id: 3,
+      name: "Sports Recovery Massage",
+      duration: "75 minutes",
+      price: 110,
+      category: "Massage Therapy", 
+      active: false,
+      bookings: 6
+    }
+  ];
+
+  const getStatusBadge = (status: string) => {
+    const configs = {
+      confirmed: { label: "Confirmed", color: "bg-green-100 text-green-800" },
+      pending: { label: "Pending", color: "bg-yellow-100 text-yellow-800" },
+      completed: { label: "Completed", color: "bg-gray-100 text-gray-800" },
+      cancelled: { label: "Cancelled", color: "bg-red-100 text-red-800" }
+    };
+    return configs[status as keyof typeof configs] || configs.pending;
+  };
+
+  const getDeliveryIcon = (type: string) => {
+    const icons = {
+      mobile: Smartphone,
+      business: Building,
+      virtual: Video
+    };
+    return icons[type as keyof typeof icons] || Smartphone;
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
+      {/* Navigation */}
+      <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-roam-blue to-roam-light-blue bg-clip-text text-transparent">
+                  ROAM
+                </span>
+              </div>
+              <Badge variant="secondary" className="bg-roam-light-blue/20 text-roam-blue">
+                Provider Dashboard
+              </Badge>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="availability" className="text-sm">Available</Label>
+                <Switch 
+                  id="availability"
+                  checked={isAvailable}
+                  onCheckedChange={setIsAvailable}
+                  className="data-[state=checked]:bg-roam-blue"
+                />
+              </div>
+              <Button variant="ghost" size="sm">
+                <Bell className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm">
+                <Settings className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">
+                Welcome back, <span className="text-roam-blue">Sarah</span>
+              </h1>
+              <p className="text-foreground/70">Here's what's happening with your business today.</p>
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-foreground/60">Status</div>
+              <Badge className={isAvailable ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                {isAvailable ? "Available for Bookings" : "Unavailable"}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-foreground/60">Monthly Earnings</p>
+                    <p className="text-2xl font-bold text-roam-blue">${stats.monthlyEarnings.toLocaleString()}</p>
+                    <p className="text-xs text-green-600">+12% from last month</p>
+                  </div>
+                  <DollarSign className="w-8 h-8 text-roam-blue" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-foreground/60">Completed Bookings</p>
+                    <p className="text-2xl font-bold text-roam-blue">{stats.completedBookings}</p>
+                    <p className="text-xs text-green-600">+8 this month</p>
+                  </div>
+                  <Calendar className="w-8 h-8 text-roam-blue" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-foreground/60">Average Rating</p>
+                    <p className="text-2xl font-bold text-roam-blue">{stats.avgRating}</p>
+                    <p className="text-xs text-gray-600">From 127 reviews</p>
+                  </div>
+                  <Star className="w-8 h-8 text-roam-yellow fill-current" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-foreground/60">Response Rate</p>
+                    <p className="text-2xl font-bold text-roam-blue">{stats.responseRate}%</p>
+                    <p className="text-xs text-green-600">Excellent performance</p>
+                  </div>
+                  <MessageCircle className="w-8 h-8 text-roam-blue" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Tabs */}
+          <Tabs defaultValue="bookings" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+              <TabsTrigger value="bookings" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                Bookings
+              </TabsTrigger>
+              <TabsTrigger value="services" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                Services
+              </TabsTrigger>
+              <TabsTrigger value="profile" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                Profile
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                Settings
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Bookings Tab */}
+            <TabsContent value="bookings" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Recent Bookings</h2>
+                <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  View Calendar
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                {recentBookings.map((booking) => {
+                  const statusConfig = getStatusBadge(booking.status);
+                  const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
+                  
+                  return (
+                    <Card key={booking.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                              <Calendar className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold">{booking.service}</h3>
+                              <p className="text-sm text-foreground/60 mb-2">with {booking.customer}</p>
+                              <div className="flex items-center gap-4 text-sm text-foreground/60">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-4 h-4" />
+                                  {new Date(booking.date).toLocaleDateString()}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-4 h-4" />
+                                  {booking.time}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <DeliveryIcon className="w-4 h-4" />
+                                  {booking.location}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge className={statusConfig.color}>
+                              {statusConfig.label}
+                            </Badge>
+                            <p className="text-lg font-semibold text-roam-blue mt-2">
+                              ${booking.price}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {booking.status === "pending" && (
+                          <div className="mt-4 flex gap-2">
+                            <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              Accept
+                            </Button>
+                            <Button size="sm" variant="outline" className="border-red-300 text-red-600 hover:bg-red-50">
+                              Decline
+                            </Button>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </TabsContent>
+
+            {/* Services Tab */}
+            <TabsContent value="services" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Your Services</h2>
+                <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Service
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {services.map((service) => (
+                  <Card key={service.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="font-semibold">{service.name}</h3>
+                          <p className="text-sm text-foreground/60">{service.category}</p>
+                        </div>
+                        <Switch checked={service.active} className="data-[state=checked]:bg-roam-blue" />
+                      </div>
+                      
+                      <div className="space-y-2 mb-4">
+                        <div className="flex justify-between text-sm">
+                          <span>Duration:</span>
+                          <span className="font-medium">{service.duration}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Price:</span>
+                          <span className="font-medium text-roam-blue">${service.price}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Bookings:</span>
+                          <span className="font-medium">{service.bookings} this month</span>
+                        </div>
+                      </div>
+                      
+                      <Button variant="outline" size="sm" className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit Service
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* Profile Tab */}
+            <TabsContent value="profile" className="space-y-6">
+              <h2 className="text-2xl font-bold">Provider Profile</h2>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Profile Photo & Basic Info */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Profile Photo</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center space-y-4">
+                    <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto">
+                      <Users className="w-16 h-16 text-white" />
+                    </div>
+                    <Button variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                      <Camera className="w-4 h-4 mr-2" />
+                      Change Photo
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Contact Information */}
+                <Card className="lg:col-span-2">
+                  <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName">First Name</Label>
+                        <Input id="firstName" defaultValue="Sarah" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName">Last Name</Label>
+                        <Input id="lastName" defaultValue="Johnson" />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address</Label>
+                      <Input id="email" type="email" defaultValue="sarah.johnson@example.com" />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input id="phone" type="tel" defaultValue="(305) 555-0123" />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bio">Professional Bio</Label>
+                      <Textarea 
+                        id="bio" 
+                        defaultValue="Licensed massage therapist with 8+ years of experience specializing in deep tissue and therapeutic massage."
+                        rows={4}
+                      />
+                    </div>
+                    
+                    <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                      Save Changes
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Analytics Tab */}
+            <TabsContent value="analytics" className="space-y-6">
+              <h2 className="text-2xl font-bold">Business Analytics</h2>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-roam-blue" />
+                      Revenue Trend
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-48 bg-gradient-to-r from-roam-light-blue/20 to-roam-blue/20 rounded-lg flex items-center justify-center">
+                      <p className="text-foreground/60">Chart visualization would go here</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5 text-roam-blue" />
+                      Service Performance
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Deep Tissue Massage</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-2 bg-gray-200 rounded-full">
+                            <div className="w-3/4 h-2 bg-roam-blue rounded-full"></div>
+                          </div>
+                          <span className="text-sm text-roam-blue">75%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Swedish Massage</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-2 bg-gray-200 rounded-full">
+                            <div className="w-1/2 h-2 bg-roam-light-blue rounded-full"></div>
+                          </div>
+                          <span className="text-sm text-roam-blue">50%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Sports Recovery</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-2 bg-gray-200 rounded-full">
+                            <div className="w-1/4 h-2 bg-roam-yellow rounded-full"></div>
+                          </div>
+                          <span className="text-sm text-roam-blue">25%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Settings Tab */}
+            <TabsContent value="settings" className="space-y-6">
+              <h2 className="text-2xl font-bold">Account Settings</h2>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Notification Preferences</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>New Booking Alerts</Label>
+                        <p className="text-sm text-foreground/60">Get notified when customers book your services</p>
+                      </div>
+                      <Switch defaultChecked className="data-[state=checked]:bg-roam-blue" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Payment Notifications</Label>
+                        <p className="text-sm text-foreground/60">Receive alerts for payments and payouts</p>
+                      </div>
+                      <Switch defaultChecked className="data-[state=checked]:bg-roam-blue" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Marketing Updates</Label>
+                        <p className="text-sm text-foreground/60">Tips and updates to grow your business</p>
+                      </div>
+                      <Switch className="data-[state=checked]:bg-roam-blue" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Account Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <Button variant="outline" className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                        <Edit className="w-4 h-4 mr-2" />
+                        Change Password
+                      </Button>
+                      
+                      <Button variant="outline" className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                        <Mail className="w-4 h-4 mr-2" />
+                        Update Email
+                      </Button>
+                      
+                      <Button variant="outline" className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                        <DollarSign className="w-4 h-4 mr-2" />
+                        Payment Settings
+                      </Button>
+                      
+                      <div className="pt-4 border-t">
+                        <Button variant="outline" className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50">
+                          <AlertCircle className="w-4 h-4 mr-2" />
+                          Deactivate Account
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </div>
+  );
+}
