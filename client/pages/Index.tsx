@@ -269,6 +269,14 @@ export default function Index() {
     return config[type as keyof typeof config] || { label: type, color: "bg-gray-100 text-gray-800" };
   };
 
+  const nextServiceSlide = () => {
+    setCurrentServiceSlide((prev) => (prev + 1) % featuredServices.length);
+  };
+
+  const prevServiceSlide = () => {
+    setCurrentServiceSlide((prev) => (prev - 1 + featuredServices.length) % featuredServices.length);
+  };
+
   const filteredProviders = featuredProviders.filter(provider => {
     const matchesSearch = searchQuery === "" || 
       provider.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
