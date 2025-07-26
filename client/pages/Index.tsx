@@ -679,9 +679,11 @@ export default function Index() {
                       </div>
                       
                       <div className="flex gap-2">
-                        <Button size="sm" className="flex-1 bg-roam-blue hover:bg-roam-blue/90">
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Book Now
+                        <Button asChild size="sm" className="flex-1 bg-roam-blue hover:bg-roam-blue/90">
+                          <Link to={`/provider/${provider.id}?booking=true`}>
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Book Now
+                          </Link>
                         </Button>
                         <Button asChild size="sm" variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
                           <Link to={`/provider/${provider.id}`}>
