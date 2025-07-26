@@ -73,7 +73,7 @@ export default function ProviderPortal() {
   const benefits = [
     {
       icon: DollarSign,
-      title: "Competitive Earnings",
+      title: "You Control Your Earnings",
       description: "Keep everything you charge (minus payout transaction fee only)"
     },
     {
