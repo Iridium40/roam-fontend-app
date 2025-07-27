@@ -311,7 +311,7 @@ export default function ProviderProfile() {
               {/* Services */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Services & Pricing</CardTitle>
+                  <CardTitle><p>Services</p></CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
