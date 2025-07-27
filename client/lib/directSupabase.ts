@@ -136,20 +136,24 @@ class DirectSupabaseAPI {
   }
 
   // Storage operations using direct API
-  async uploadFile(bucket: string, path: string, file: File): Promise<{ path: string; publicUrl: string }> {
+  async uploadFile(
+    bucket: string,
+    path: string,
+    file: File,
+  ): Promise<{ path: string; publicUrl: string }> {
     const formData = new FormData();
-    formData.append('', file);
+    formData.append("", file);
 
     const response = await fetch(
       `${this.baseURL}/storage/v1/object/${bucket}/${path}`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'apikey': this.apiKey,
-          'Authorization': `Bearer ${this.accessToken || this.apiKey}`,
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
         },
         body: formData,
-      }
+      },
     );
 
     if (!response.ok) {
@@ -164,7 +168,7 @@ class DirectSupabaseAPI {
 
     return {
       path: result.Key || path,
-      publicUrl
+      publicUrl,
     };
   }
 
@@ -172,12 +176,12 @@ class DirectSupabaseAPI {
     const response = await fetch(
       `${this.baseURL}/storage/v1/object/${bucket}/${path}`,
       {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'apikey': this.apiKey,
-          'Authorization': `Bearer ${this.accessToken || this.apiKey}`,
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
         },
-      }
+      },
     );
 
     if (!response.ok) {
@@ -187,19 +191,22 @@ class DirectSupabaseAPI {
     }
   }
 
-  async updateProviderImage(providerId: string, imageUrl: string | null): Promise<void> {
+  async updateProviderImage(
+    providerId: string,
+    imageUrl: string | null,
+  ): Promise<void> {
     const response = await fetch(
       `${this.baseURL}/rest/v1/providers?id=eq.${providerId}`,
       {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'apikey': this.apiKey,
-          'Authorization': `Bearer ${this.accessToken || this.apiKey}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal',
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
         },
         body: JSON.stringify({ image_url: imageUrl }),
-      }
+      },
     );
 
     if (!response.ok) {

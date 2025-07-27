@@ -66,27 +66,31 @@ export default function ProviderDashboard() {
     phone: "",
     bio: "",
     dateOfBirth: "",
-    experienceYears: ""
+    experienceYears: "",
   });
   const navigate = useNavigate();
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60),
+    );
 
     if (diffInMinutes < 60) {
       return `${diffInMinutes} minutes ago`;
     } else if (diffInMinutes < 1440) {
       const hours = Math.floor(diffInMinutes / 60);
-      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
     } else {
       const days = Math.floor(diffInMinutes / 1440);
-      return `${days} day${days > 1 ? 's' : ''} ago`;
+      return `${days} day${days > 1 ? "s" : ""} ago`;
     }
   };
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file || !provider) return;
 
@@ -95,17 +99,17 @@ export default function ProviderDashboard() {
 
     try {
       // Validate file type
-      if (!file.type.startsWith('image/')) {
-        throw new Error('Please select an image file');
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Please select an image file");
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        throw new Error('File size must be less than 5MB');
+        throw new Error("File size must be less than 5MB");
       }
 
       // Generate unique filename
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const fileName = `${provider.id}-${Date.now()}.${fileExt}`;
       const filePath = `avatar-provider-user/${fileName}`;
 
@@ -115,38 +119,41 @@ export default function ProviderDashboard() {
       // Remove old avatar if exists
       if (provider.image_url) {
         try {
-          const urlParts = provider.image_url.split('/');
+          const urlParts = provider.image_url.split("/");
           const oldFileName = urlParts[urlParts.length - 1];
           const oldFilePath = `avatar-provider-user/${oldFileName}`;
-          await directSupabaseAPI.deleteFile('roam-file-storage', oldFilePath);
+          await directSupabaseAPI.deleteFile("roam-file-storage", oldFilePath);
         } catch (deleteError) {
-          console.warn('Failed to delete old avatar:', deleteError);
+          console.warn("Failed to delete old avatar:", deleteError);
           // Continue with upload even if delete fails
         }
       }
 
       // Upload new avatar using direct API
-      const { publicUrl } = await directSupabaseAPI.uploadFile('roam-file-storage', filePath, file);
+      const { publicUrl } = await directSupabaseAPI.uploadFile(
+        "roam-file-storage",
+        filePath,
+        file,
+      );
 
       // Update provider record using direct API
       await directSupabaseAPI.updateProviderImage(provider.id, publicUrl);
 
       // Update local state
       setProvider({ ...provider, image_url: publicUrl });
-
     } catch (error: any) {
-      console.error('Avatar upload error:', error);
-      console.error('Error type:', typeof error);
-      console.error('Error keys:', Object.keys(error || {}));
+      console.error("Avatar upload error:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
 
-      let errorMessage = 'Failed to upload avatar';
+      let errorMessage = "Failed to upload avatar";
 
       // Handle Supabase storage error structure
-      if (error?.error && typeof error.error === 'string') {
+      if (error?.error && typeof error.error === "string") {
         errorMessage = error.error;
       } else if (error?.message) {
         errorMessage = error.message;
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
       } else if (error?.statusCode && error?.error) {
         errorMessage = `Error ${error.statusCode}: ${error.error}`;
@@ -160,7 +167,7 @@ export default function ProviderDashboard() {
     } finally {
       setAvatarUploading(false);
       // Reset file input
-      event.target.value = '';
+      event.target.value = "";
     }
   };
 
@@ -175,29 +182,28 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       // Extract filename from URL
-      const urlParts = provider.image_url.split('/');
+      const urlParts = provider.image_url.split("/");
       const fileName = urlParts[urlParts.length - 1];
       const filePath = `avatar-provider-user/${fileName}`;
 
       // Remove from storage using direct API
-      await directSupabaseAPI.deleteFile('roam-file-storage', filePath);
+      await directSupabaseAPI.deleteFile("roam-file-storage", filePath);
 
       // Update provider record using direct API
       await directSupabaseAPI.updateProviderImage(provider.id, null);
 
       // Update local state
       setProvider({ ...provider, image_url: null });
-
     } catch (error: any) {
-      console.error('Avatar remove error:', error);
-      let errorMessage = 'Failed to remove avatar';
+      console.error("Avatar remove error:", error);
+      let errorMessage = "Failed to remove avatar";
 
       // Handle Supabase storage error structure
-      if (error?.error && typeof error.error === 'string') {
+      if (error?.error && typeof error.error === "string") {
         errorMessage = error.error;
       } else if (error?.message) {
         errorMessage = error.message;
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
       } else if (error?.statusCode && error?.error) {
         errorMessage = `Error ${error.statusCode}: ${error.error}`;
@@ -214,7 +220,7 @@ export default function ProviderDashboard() {
   };
 
   const handleFormChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear success/error messages when user starts typing
     if (profileSuccess) setProfileSuccess("");
     if (profileError) setProfileError("");
@@ -238,11 +244,17 @@ export default function ProviderDashboard() {
         phone: formData.phone.trim(),
         bio: formData.bio.trim(),
         date_of_birth: formData.dateOfBirth || null,
-        experience_years: formData.experienceYears ? parseInt(formData.experienceYears) : null
+        experience_years: formData.experienceYears
+          ? parseInt(formData.experienceYears)
+          : null,
       };
 
       // Validate required fields
-      if (!updateData.first_name || !updateData.last_name || !updateData.email) {
+      if (
+        !updateData.first_name ||
+        !updateData.last_name ||
+        !updateData.email
+      ) {
         throw new Error("First name, last name, and email are required");
       }
 
@@ -256,15 +268,15 @@ export default function ProviderDashboard() {
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${provider.id}`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           headers: {
-            'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal',
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
           },
           body: JSON.stringify(updateData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -275,18 +287,17 @@ export default function ProviderDashboard() {
       // Update local provider state
       setProvider({
         ...provider,
-        ...updateData
+        ...updateData,
       });
 
       setProfileSuccess("Profile updated successfully!");
-
     } catch (error: any) {
-      console.error('Profile save error:', error);
-      let errorMessage = 'Failed to update profile';
+      console.error("Profile save error:", error);
+      let errorMessage = "Failed to update profile";
 
       if (error?.message) {
         errorMessage = error.message;
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
       }
 
@@ -328,7 +339,7 @@ export default function ProviderDashboard() {
         phone: providerData.phone || "",
         bio: providerData.bio || "",
         dateOfBirth: providerData.date_of_birth || "",
-        experienceYears: providerData.experience_years?.toString() || ""
+        experienceYears: providerData.experience_years?.toString() || "",
       });
 
       // Fetch business details using providers.business_id -> businesses.id
@@ -363,33 +374,34 @@ export default function ProviderDashboard() {
               .select("first_name, last_name, created_at")
               .eq("business_id", providerData.business_id)
               .order("created_at", { ascending: false })
-              .limit(2)
+              .limit(2),
           ];
 
-          const [locationsActivity, teamActivity] = await Promise.all(activityPromises);
+          const [locationsActivity, teamActivity] =
+            await Promise.all(activityPromises);
 
           const activities = [];
 
           // Add location activities
           if (locationsActivity.data) {
-            locationsActivity.data.forEach(location => {
+            locationsActivity.data.forEach((location) => {
               activities.push({
                 action: "New location added",
                 details: location.location_name || "Business location",
                 time: formatTimeAgo(location.created_at),
-                icon: MapPin
+                icon: MapPin,
               });
             });
           }
 
           // Add team member activities
           if (teamActivity.data) {
-            teamActivity.data.forEach(member => {
+            teamActivity.data.forEach((member) => {
               activities.push({
                 action: "Team member added",
                 details: `${member.first_name} ${member.last_name} joined as Provider`,
                 time: formatTimeAgo(member.created_at),
-                icon: Users
+                icon: Users,
               });
             });
           }
@@ -401,33 +413,39 @@ export default function ProviderDashboard() {
         }
 
         // Fetch business metrics using correct business_id from provider
-        const [locationsResult, teamResult, servicesResult] = await Promise.all([
-          // Count active business locations
-          supabase
-            .from("business_locations")
-            .select("id", { count: "exact" })
-            .eq("business_id", providerData.business_id)
-            .eq("is_active", true),
-
-          // Count team members (providers) for this business
-          supabase
-            .from("providers")
-            .select("id", { count: "exact" })
-            .eq("business_id", providerData.business_id)
-            .eq("is_active", true),
-
-          // Count services offered by providers in this business
-          supabase
-            .from("provider_services")
-            .select("service_id", { count: "exact" })
-            .in("provider_id", (await supabase
-              .from("providers")
-              .select("id")
+        const [locationsResult, teamResult, servicesResult] = await Promise.all(
+          [
+            // Count active business locations
+            supabase
+              .from("business_locations")
+              .select("id", { count: "exact" })
               .eq("business_id", providerData.business_id)
-              .eq("is_active", true)
-            ).data?.map(p => p.id) || [])
-            .eq("is_active", true)
-        ]);
+              .eq("is_active", true),
+
+            // Count team members (providers) for this business
+            supabase
+              .from("providers")
+              .select("id", { count: "exact" })
+              .eq("business_id", providerData.business_id)
+              .eq("is_active", true),
+
+            // Count services offered by providers in this business
+            supabase
+              .from("provider_services")
+              .select("service_id", { count: "exact" })
+              .in(
+                "provider_id",
+                (
+                  await supabase
+                    .from("providers")
+                    .select("id")
+                    .eq("business_id", providerData.business_id)
+                    .eq("is_active", true)
+                ).data?.map((p) => p.id) || [],
+              )
+              .eq("is_active", true),
+          ],
+        );
 
         setBusinessMetrics({
           activeLocations: locationsResult.count || 0,
@@ -857,7 +875,9 @@ export default function ProviderDashboard() {
                 {bookings.length > 0 ? (
                   bookings.map((booking) => {
                     const statusConfig = getStatusBadge(booking.status);
-                    const DeliveryIcon = getDeliveryIcon(booking.delivery_type || "mobile");
+                    const DeliveryIcon = getDeliveryIcon(
+                      booking.delivery_type || "mobile",
+                    );
 
                     return (
                       <Card
@@ -880,7 +900,9 @@ export default function ProviderDashboard() {
                                 <div className="flex items-center gap-4 text-sm text-foreground/60">
                                   <div className="flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
-                                    {new Date(booking.service_date).toLocaleDateString()}
+                                    {new Date(
+                                      booking.service_date,
+                                    ).toLocaleDateString()}
                                   </div>
                                   <div className="flex items-center gap-1">
                                     <Clock className="w-4 h-4" />
@@ -1110,13 +1132,15 @@ export default function ProviderDashboard() {
                           <span className="text-sm text-foreground/60">
                             Verification Status
                           </span>
-                          <Badge className={
-                            business?.verification_status === "verified"
-                              ? "bg-green-100 text-green-800"
-                              : business?.verification_status === "pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                          }>
+                          <Badge
+                            className={
+                              business?.verification_status === "verified"
+                                ? "bg-green-100 text-green-800"
+                                : business?.verification_status === "pending"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                            }
+                          >
                             {business?.verification_status || "Unknown"}
                           </Badge>
                         </div>
@@ -1154,48 +1178,47 @@ export default function ProviderDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {businessHours ? (
-                          Object.entries(businessHours).map(([day, hours]) => (
-                            <div
-                              key={day}
-                              className="flex justify-between items-center"
-                            >
-                              <span className="text-sm font-medium capitalize">
-                                {day}
-                              </span>
-                              <span className="text-sm text-foreground/60">
-                                {typeof hours === 'object' && hours !== null
-                                  ? hours.is_closed
-                                    ? 'Closed'
-                                    : `${hours.open_time || 'N/A'} - ${hours.close_time || 'N/A'}`
-                                  : hours || 'N/A'
-                                }
-                              </span>
-                            </div>
-                          ))
-                        ) : (
-                          [
-                            { day: "Monday", hours: "Loading..." },
-                            { day: "Tuesday", hours: "Loading..." },
-                            { day: "Wednesday", hours: "Loading..." },
-                            { day: "Thursday", hours: "Loading..." },
-                            { day: "Friday", hours: "Loading..." },
-                            { day: "Saturday", hours: "Loading..." },
-                            { day: "Sunday", hours: "Loading..." },
-                          ].map((schedule) => (
-                            <div
-                              key={schedule.day}
-                              className="flex justify-between items-center"
-                            >
-                              <span className="text-sm font-medium">
-                                {schedule.day}
-                              </span>
-                              <span className="text-sm text-foreground/60">
-                                {schedule.hours}
-                              </span>
-                            </div>
-                          ))
-                        )}
+                        {businessHours
+                          ? Object.entries(businessHours).map(
+                              ([day, hours]) => (
+                                <div
+                                  key={day}
+                                  className="flex justify-between items-center"
+                                >
+                                  <span className="text-sm font-medium capitalize">
+                                    {day}
+                                  </span>
+                                  <span className="text-sm text-foreground/60">
+                                    {typeof hours === "object" && hours !== null
+                                      ? hours.is_closed
+                                        ? "Closed"
+                                        : `${hours.open_time || "N/A"} - ${hours.close_time || "N/A"}`
+                                      : hours || "N/A"}
+                                  </span>
+                                </div>
+                              ),
+                            )
+                          : [
+                              { day: "Monday", hours: "Loading..." },
+                              { day: "Tuesday", hours: "Loading..." },
+                              { day: "Wednesday", hours: "Loading..." },
+                              { day: "Thursday", hours: "Loading..." },
+                              { day: "Friday", hours: "Loading..." },
+                              { day: "Saturday", hours: "Loading..." },
+                              { day: "Sunday", hours: "Loading..." },
+                            ].map((schedule) => (
+                              <div
+                                key={schedule.day}
+                                className="flex justify-between items-center"
+                              >
+                                <span className="text-sm font-medium">
+                                  {schedule.day}
+                                </span>
+                                <span className="text-sm text-foreground/60">
+                                  {schedule.hours}
+                                </span>
+                              </div>
+                            ))}
                       </div>
                       <Button
                         variant="outline"
@@ -1240,7 +1263,9 @@ export default function ProviderDashboard() {
                       ) : (
                         <div className="text-center py-8 text-foreground/60">
                           <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                          <p className="text-sm">No recent activity to display</p>
+                          <p className="text-sm">
+                            No recent activity to display
+                          </p>
                         </div>
                       )}
                     </div>
@@ -1297,11 +1322,13 @@ export default function ProviderDashboard() {
                       <Button
                         variant="outline"
                         className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        onClick={() => document.getElementById('avatar-upload')?.click()}
+                        onClick={() =>
+                          document.getElementById("avatar-upload")?.click()
+                        }
                         disabled={avatarUploading}
                       >
                         <Camera className="w-4 h-4 mr-2" />
-                        {provider?.image_url ? 'Change Photo' : 'Upload Photo'}
+                        {provider?.image_url ? "Change Photo" : "Upload Photo"}
                       </Button>
 
                       {provider?.image_url && (
@@ -1346,7 +1373,9 @@ export default function ProviderDashboard() {
                         <Input
                           id="firstName"
                           value={formData.firstName}
-                          onChange={(e) => handleFormChange("firstName", e.target.value)}
+                          onChange={(e) =>
+                            handleFormChange("firstName", e.target.value)
+                          }
                           disabled={profileSaving}
                         />
                       </div>
@@ -1355,7 +1384,9 @@ export default function ProviderDashboard() {
                         <Input
                           id="lastName"
                           value={formData.lastName}
-                          onChange={(e) => handleFormChange("lastName", e.target.value)}
+                          onChange={(e) =>
+                            handleFormChange("lastName", e.target.value)
+                          }
                           disabled={profileSaving}
                         />
                       </div>
@@ -1367,7 +1398,9 @@ export default function ProviderDashboard() {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => handleFormChange("email", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("email", e.target.value)
+                        }
                         disabled={profileSaving}
                       />
                     </div>
@@ -1378,7 +1411,9 @@ export default function ProviderDashboard() {
                         id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => handleFormChange("phone", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("phone", e.target.value)
+                        }
                         disabled={profileSaving}
                       />
                     </div>
@@ -1388,7 +1423,9 @@ export default function ProviderDashboard() {
                       <Textarea
                         id="bio"
                         value={formData.bio}
-                        onChange={(e) => handleFormChange("bio", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("bio", e.target.value)
+                        }
                         rows={4}
                         placeholder="Tell customers about your professional background and expertise..."
                         disabled={profileSaving}
@@ -1427,19 +1464,25 @@ export default function ProviderDashboard() {
                           id="dateOfBirth"
                           type="date"
                           value={formData.dateOfBirth}
-                          onChange={(e) => handleFormChange("dateOfBirth", e.target.value)}
+                          onChange={(e) =>
+                            handleFormChange("dateOfBirth", e.target.value)
+                          }
                           disabled={profileSaving}
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="experienceYears">Years of Experience</Label>
+                        <Label htmlFor="experienceYears">
+                          Years of Experience
+                        </Label>
                         <Input
                           id="experienceYears"
                           type="number"
                           min="0"
                           max="50"
                           value={formData.experienceYears}
-                          onChange={(e) => handleFormChange("experienceYears", e.target.value)}
+                          onChange={(e) =>
+                            handleFormChange("experienceYears", e.target.value)
+                          }
                           disabled={profileSaving}
                         />
                       </div>
@@ -1450,13 +1493,15 @@ export default function ProviderDashboard() {
                         <span className="text-sm text-foreground/60">
                           Verification Status
                         </span>
-                        <Badge className={
-                          provider?.verification_status === "verified"
-                            ? "bg-green-100 text-green-800"
-                            : provider?.verification_status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }>
+                        <Badge
+                          className={
+                            provider?.verification_status === "verified"
+                              ? "bg-green-100 text-green-800"
+                              : provider?.verification_status === "pending"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                          }
+                        >
                           {provider?.verification_status || "Unknown"}
                         </Badge>
                       </div>
@@ -1465,13 +1510,16 @@ export default function ProviderDashboard() {
                         <span className="text-sm text-foreground/60">
                           Background Check
                         </span>
-                        <Badge className={
-                          provider?.background_check_status === "approved"
-                            ? "bg-green-100 text-green-800"
-                            : provider?.background_check_status === "under_review"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }>
+                        <Badge
+                          className={
+                            provider?.background_check_status === "approved"
+                              ? "bg-green-100 text-green-800"
+                              : provider?.background_check_status ===
+                                  "under_review"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                          }
+                        >
                           {provider?.background_check_status || "Unknown"}
                         </Badge>
                       </div>
