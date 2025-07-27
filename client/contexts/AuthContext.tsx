@@ -68,6 +68,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log("fetchUserProfile: Looking up provider for user:", userId);
+
       const { data: provider, error } = await supabase
         .from("providers")
         .select(
@@ -86,11 +88,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .eq("is_active", true)
         .single();
 
-      if (error || !provider) {
-        console.error("Provider not found or inactive:", error);
+      if (error) {
+        console.error("fetchUserProfile: Database error:", error);
         await supabase.auth.signOut();
-        return;
+        throw new Error(`Provider lookup failed: ${error.message}`);
       }
+
+      if (!provider) {
+        console.error("fetchUserProfile: No provider found for user");
+        await supabase.auth.signOut();
+        throw new Error("Provider account not found or inactive");
+      }
+
+      console.log("fetchUserProfile: Provider found:", provider);
 
       setUser({
         id: userId,
@@ -102,9 +112,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         first_name: provider.first_name,
         last_name: provider.last_name,
       });
+
+      console.log("fetchUserProfile: User state updated successfully");
+
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error("fetchUserProfile: Error:", error);
       setUser(null);
+      throw error;
     }
   };
 
