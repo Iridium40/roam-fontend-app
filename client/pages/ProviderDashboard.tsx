@@ -198,12 +198,19 @@ export default function ProviderDashboard() {
       console.error('Avatar remove error:', error);
       let errorMessage = 'Failed to remove avatar';
 
-      if (error?.message) {
+      // Handle Supabase storage error structure
+      if (error?.error && typeof error.error === 'string') {
+        errorMessage = error.error;
+      } else if (error?.message) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
-      } else if (error?.error?.message) {
-        errorMessage = error.error.message;
+      } else if (error?.statusCode && error?.error) {
+        errorMessage = `Error ${error.statusCode}: ${error.error}`;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
       }
 
       setAvatarError(errorMessage);
