@@ -121,6 +121,11 @@ export default function ProviderDashboard() {
   const [payoutInfoError, setPayoutInfoError] = useState("");
   const [payoutInfoSuccess, setPayoutInfoSuccess] = useState("");
 
+  // Providers state
+  const [teamProviders, setTeamProviders] = useState([]);
+  const [providersLoading, setProvidersLoading] = useState(false);
+  const [providersError, setProvidersError] = useState("");
+
   // Form state for contact information
   const [formData, setFormData] = useState({
     firstName: "",
