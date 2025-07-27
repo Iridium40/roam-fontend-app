@@ -169,11 +169,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw error;
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      await directSupabaseAPI.signOut();
+    } catch (error) {
+      console.warn("SignOut error:", error);
+    } finally {
+      setUser(null);
     }
-    setUser(null);
   };
 
   const refreshUser = async () => {
