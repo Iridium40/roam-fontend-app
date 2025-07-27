@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     hmr: {
       overlay: false, // Disable error overlay that can cause HMR issues
+      port: 8081, // Use a different port for HMR WebSocket
+      clientPort: 8081, // Client should connect to HMR on this port
     },
     fs: {
       allow: ["./client", "./shared"],
