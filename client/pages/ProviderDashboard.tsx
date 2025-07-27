@@ -1438,7 +1438,7 @@ export default function ProviderDashboard() {
                         className="w-full bg-roam-blue hover:bg-roam-blue/90"
                       >
                         <MapPin className="w-4 h-4 mr-2" />
-                        Manage Locations
+                        Manage
                       </Button>
                     </CardContent>
                   </Card>
