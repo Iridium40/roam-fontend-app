@@ -735,6 +735,51 @@ export default function ProviderDashboard() {
     }
   };
 
+  const fetchTeamProviders = async () => {
+    if (!provider) {
+      console.log("fetchTeamProviders: No provider available");
+      return;
+    }
+
+    console.log("fetchTeamProviders: Starting fetch for business_id:", provider.business_id);
+    setProvidersLoading(true);
+    setProvidersError("");
+
+    try {
+      const { data, error } = await supabase
+        .from("providers")
+        .select(`
+          *,
+          business_locations (
+            id,
+            location_name,
+            address_line1,
+            city,
+            state,
+            is_primary
+          )
+        `)
+        .eq("business_id", provider.business_id)
+        .order("created_at", { ascending: false });
+
+      console.log("fetchTeamProviders: Query result:", { data, error });
+
+      if (error) throw error;
+      setTeamProviders(data || []);
+      console.log("fetchTeamProviders: Set team providers to:", data || []);
+    } catch (error: any) {
+      console.error("Error fetching team providers:", error);
+      setProvidersError("Failed to load team providers");
+      toast({
+        title: "Error",
+        description: "Failed to load team providers",
+        variant: "destructive",
+      });
+    } finally {
+      setProvidersLoading(false);
+    }
+  };
+
   const handleLocationFormChange = (field: string, value: any) => {
     // Special handling for primary location changes
     if (field === "is_primary" && value === true) {
