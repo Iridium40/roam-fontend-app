@@ -78,8 +78,8 @@ export default function ProviderPortal() {
     },
     {
       icon: Calendar,
-      title: "Flexible Schedule", 
-      description: "Work when and where you want"
+      title: "Flexible Schedule",
+      description: "Control when and where you work"
     },
     {
       icon: Users,
