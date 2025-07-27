@@ -171,26 +171,57 @@ export default function ProviderPortal() {
         throw new Error("Failed to create user account");
       }
 
-      // Determine roles based on business type
-      let initialRoles: string[];
-      if (signupData.businessType === "independent") {
-        // Independent providers start as "provider" and get additional roles after verification
-        initialRoles = ["provider"];
-      } else {
-        // Small business, franchise, and other start as "owner"
-        initialRoles = ["owner"];
+      // First create a business profile for this provider
+      const { data: businessData, error: businessError } = await supabase
+        .from("business_profiles")
+        .insert({
+          business_name: signupData.businessName,
+          business_type: signupData.businessType as any,
+          owner_id: authData.user.id,
+          verification_status: "pending",
+          is_active: false,
+        })
+        .select()
+        .single();
+
+      if (businessError || !businessData) {
+        // Clean up auth user if business creation fails
+        await supabase.auth.signOut();
+        throw new Error(
+          "Failed to create business profile: " + (businessError?.message || "Unknown error"),
+        );
       }
 
-      // Create provider record
+      // Create a default location for the business
+      const { data: locationData, error: locationError } = await supabase
+        .from("business_locations")
+        .insert({
+          business_id: businessData.id,
+          location_name: "Main Location",
+          is_primary: true,
+          is_active: true,
+        })
+        .select()
+        .single();
+
+      if (locationError || !locationData) {
+        // Clean up auth user and business if location creation fails
+        await supabase.auth.signOut();
+        throw new Error(
+          "Failed to create business location: " + (locationError?.message || "Unknown error"),
+        );
+      }
+
+      // Create provider record with owner role
       const { error: providerError } = await supabase.from("providers").insert({
         user_id: authData.user.id,
+        business_id: businessData.id,
+        location_id: locationData.id,
         first_name: signupData.firstName,
         last_name: signupData.lastName,
         email: signupData.email,
         phone: signupData.phone,
-        business_name: signupData.businessName,
-        business_type: signupData.businessType as any,
-        roles: initialRoles,
+        provider_role: "owner",
         verification_status: "pending",
         is_active: false, // Inactive until verified by admin
       });
@@ -209,6 +240,7 @@ export default function ProviderPortal() {
           message:
             "Account created successfully! Please upload your documents for verification.",
           businessType: signupData.businessType,
+          businessId: businessData.id,
         },
       });
     } catch (error) {
