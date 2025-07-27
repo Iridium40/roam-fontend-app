@@ -40,6 +40,7 @@ export default function ProviderPortal() {
   const [activeTab, setActiveTab] = useState("login");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { signIn } = useAuth();
 
   useEffect(() => {
     checkIfAlreadyAuthenticated();
