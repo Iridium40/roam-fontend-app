@@ -815,6 +815,183 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Add Provider workflow handlers
+  const resetAddProviderModal = () => {
+    setAddProviderModal(false);
+    setAddProviderStep(1);
+    setAddProviderError("");
+    setAddProviderSuccess("");
+    setOtpSent(false);
+    setOtpCode("");
+    setNewUserId("");
+    setNewUserForm({ email: "", confirmEmail: "" });
+    setProviderForm({
+      first_name: "",
+      last_name: "",
+      phone: "",
+      bio: "",
+      date_of_birth: "",
+      experience_years: "",
+      location_id: "",
+      provider_role: "provider",
+    });
+    setManagementSettings({
+      managed_by_business: true,
+      inherit_business_services: true,
+      inherit_business_addons: true,
+    });
+  };
+
+  const handleStartAddProvider = () => {
+    resetAddProviderModal();
+    setAddProviderModal(true);
+  };
+
+  // Step 1: Create user and send OTP
+  const handleCreateUserAndSendOTP = async () => {
+    if (!newUserForm.email || newUserForm.email !== newUserForm.confirmEmail) {
+      setAddProviderError("Please enter a valid email and confirm it matches");
+      return;
+    }
+
+    setAddProviderLoading(true);
+    setAddProviderError("");
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: newUserForm.email,
+        password: Math.random().toString(36).slice(-12), // Temporary password
+        options: {
+          emailRedirectTo: `${window.location.origin}/provider-portal`,
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        setNewUserId(data.user.id);
+        setOtpSent(true);
+        setAddProviderSuccess("Verification email sent! Please ask the provider to check their email and enter the OTP code.");
+      }
+    } catch (error: any) {
+      console.error("Error creating user:", error);
+      setAddProviderError(error.message || "Failed to create user account");
+    } finally {
+      setAddProviderLoading(false);
+    }
+  };
+
+  // Step 1: Verify OTP and proceed to step 2
+  const handleVerifyOTPAndProceed = async () => {
+    if (!otpCode) {
+      setAddProviderError("Please enter the OTP code");
+      return;
+    }
+
+    setAddProviderLoading(true);
+    setAddProviderError("");
+
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: newUserForm.email,
+        token: otpCode,
+        type: 'signup'
+      });
+
+      if (error) throw error;
+
+      setAddProviderStep(2);
+      setAddProviderSuccess("Email verified! Now complete the provider profile.");
+    } catch (error: any) {
+      console.error("Error verifying OTP:", error);
+      setAddProviderError(error.message || "Invalid OTP code");
+    } finally {
+      setAddProviderLoading(false);
+    }
+  };
+
+  // Step 2: Save provider profile and proceed to step 3
+  const handleSaveProviderProfile = async () => {
+    if (!providerForm.first_name || !providerForm.last_name || !providerForm.email) {
+      setAddProviderError("Please fill in all required fields");
+      return;
+    }
+
+    setAddProviderStep(3);
+    setAddProviderSuccess("Profile information saved! Now configure management settings.");
+  };
+
+  // Step 3: Complete provider creation
+  const handleCompleteProviderCreation = async () => {
+    if (!provider || !newUserId) {
+      setAddProviderError("Missing required information");
+      return;
+    }
+
+    setAddProviderLoading(true);
+    setAddProviderError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Create provider record
+      const providerData = {
+        user_id: newUserId,
+        business_id: provider.business_id,
+        first_name: providerForm.first_name.trim(),
+        last_name: providerForm.last_name.trim(),
+        email: newUserForm.email,
+        phone: providerForm.phone.trim() || null,
+        bio: providerForm.bio.trim() || null,
+        date_of_birth: providerForm.date_of_birth || null,
+        experience_years: providerForm.experience_years ? parseInt(providerForm.experience_years) : null,
+        location_id: providerForm.location_id || null,
+        provider_role: providerForm.provider_role,
+        is_active: true,
+        verification_status: "pending",
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers`,
+        {
+          method: "POST",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(providerData),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to create provider: ${errorText}`);
+      }
+
+      // If managed by business, inherit services and addons
+      if (managementSettings.managed_by_business && managementSettings.inherit_business_services) {
+        // This would be implemented to copy business services to provider services
+        console.log("Would inherit business services for provider");
+      }
+
+      toast({
+        title: "Provider Added Successfully",
+        description: `${providerForm.first_name} ${providerForm.last_name} has been added to your team!`,
+        variant: "default",
+      });
+
+      resetAddProviderModal();
+      await fetchTeamProviders(); // Refresh the provider list
+    } catch (error: any) {
+      console.error("Error creating provider:", error);
+      setAddProviderError(error.message || "Failed to create provider");
+    } finally {
+      setAddProviderLoading(false);
+    }
+  };
+
   const handleLocationFormChange = (field: string, value: any) => {
     // Special handling for primary location changes
     if (field === "is_primary" && value === true) {
