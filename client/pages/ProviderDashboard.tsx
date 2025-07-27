@@ -1329,16 +1329,22 @@ export default function ProviderDashboard() {
         is_active: businessDetailsForm.is_active,
       };
 
+      console.log("Business details form data:", businessDetailsForm);
+      console.log("Update data being sent:", updateData);
+      console.log("Contact email value:", `"${updateData.contact_email}"`);
+
       // Validate required fields
       if (!updateData.business_name) {
         throw new Error("Business name is required");
       }
 
-      // Email validation
-      if (updateData.contact_email) {
+      // Email validation - only validate if email is provided and not empty
+      if (updateData.contact_email && updateData.contact_email.length > 0) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        console.log("Email validation - testing:", updateData.contact_email);
+        console.log("Email regex test result:", emailRegex.test(updateData.contact_email));
         if (!emailRegex.test(updateData.contact_email)) {
-          throw new Error("Please enter a valid contact email address");
+          throw new Error(`Please enter a valid contact email address. Current value: "${updateData.contact_email}"`);
         }
       }
 
