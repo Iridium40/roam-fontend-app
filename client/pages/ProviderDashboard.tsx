@@ -971,52 +971,34 @@ export default function ProviderDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {[
-                        {
-                          action: "New location added",
-                          details: "Downtown Miami location",
-                          time: "2 hours ago",
-                          icon: MapPin,
-                        },
-                        {
-                          action: "Service pricing updated",
-                          details: "Deep Tissue Massage - $120",
-                          time: "1 day ago",
-                          icon: DollarSign,
-                        },
-                        {
-                          action: "Team member added",
-                          details: "Jessica Park joined as Provider",
-                          time: "3 days ago",
-                          icon: Users,
-                        },
-                        {
-                          action: "Business hours updated",
-                          details: "Saturday hours extended",
-                          time: "1 week ago",
-                          icon: Clock,
-                        },
-                      ].map((activity, index) => (
-                        <div
-                          key={index}
-                          className="flex items-start gap-3 p-3 rounded-lg bg-accent/20"
-                        >
-                          <div className="w-8 h-8 bg-roam-blue rounded-full flex items-center justify-center">
-                            <activity.icon className="w-4 h-4 text-white" />
+                      {recentActivity.length > 0 ? (
+                        recentActivity.map((activity, index) => (
+                          <div
+                            key={index}
+                            className="flex items-start gap-3 p-3 rounded-lg bg-accent/20"
+                          >
+                            <div className="w-8 h-8 bg-roam-blue rounded-full flex items-center justify-center">
+                              <activity.icon className="w-4 h-4 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">
+                                {activity.action}
+                              </p>
+                              <p className="text-xs text-foreground/60">
+                                {activity.details}
+                              </p>
+                            </div>
+                            <span className="text-xs text-foreground/50">
+                              {activity.time}
+                            </span>
                           </div>
-                          <div className="flex-1">
-                            <p className="font-medium text-sm">
-                              {activity.action}
-                            </p>
-                            <p className="text-xs text-foreground/60">
-                              {activity.details}
-                            </p>
-                          </div>
-                          <span className="text-xs text-foreground/50">
-                            {activity.time}
-                          </span>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-foreground/60">
+                          <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No recent activity to display</p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </CardContent>
                 </Card>
