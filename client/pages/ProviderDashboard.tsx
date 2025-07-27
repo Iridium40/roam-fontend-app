@@ -1216,13 +1216,11 @@ export default function ProviderDashboard() {
                         Add and manage business locations
                       </p>
                       <Button
-                        asChild
+                        onClick={() => setManagingLocations(true)}
                         className="w-full bg-roam-blue hover:bg-roam-blue/90"
                       >
-                        <Link to="/business-management">
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add Location
-                        </Link>
+                        <MapPin className="w-4 h-4 mr-2" />
+                        Manage Locations
                       </Button>
                     </CardContent>
                   </Card>
