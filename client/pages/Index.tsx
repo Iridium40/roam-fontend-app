@@ -445,7 +445,9 @@ export default function Index() {
                     <category.icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold mb-2 group-hover:text-roam-blue transition-colors">
-                    {category.id === "therapy" ? <p>Therapy</p> : category.name}
+                    {category.id === "therapy" ? <p>Therapy</p> :
+                     category.id === "fitness" ? <p>Fitness</p> :
+                     category.name}
                   </h3>
                   <p className="text-sm text-foreground/60 mb-3">
                     {category.description}
