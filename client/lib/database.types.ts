@@ -101,6 +101,9 @@ export interface Database {
     };
     Enums: {
       user_role: UserRole;
+      business_type: BusinessType;
+      provider_role: ProviderRole;
+      verification_status: VerificationStatus;
     };
   };
 }
