@@ -719,8 +719,12 @@ export default function ProviderDashboard() {
   };
 
   const fetchBusinessServices = async () => {
-    if (!provider) return;
+    if (!provider) {
+      console.log("fetchBusinessServices: No provider available");
+      return;
+    }
 
+    console.log("fetchBusinessServices: Starting fetch for business_id:", provider.business_id);
     setServicesLoading(true);
     setServicesError("");
 
@@ -741,6 +745,8 @@ export default function ProviderDashboard() {
         `)
         .eq("business_id", provider.business_id)
         .order("created_at", { ascending: false });
+
+      console.log("fetchBusinessServices: business_services query result:", { servicesData, servicesError });
 
       if (servicesError) throw servicesError;
 
