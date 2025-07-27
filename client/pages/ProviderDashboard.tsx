@@ -107,6 +107,19 @@ export default function ProviderDashboard() {
     is_active: true,
   });
 
+  // Tax Info state
+  const [taxInfo, setTaxInfo] = useState(null);
+  const [taxInfoLoading, setTaxInfoLoading] = useState(false);
+  const [taxInfoError, setTaxInfoError] = useState("");
+  const [taxInfoSuccess, setTaxInfoSuccess] = useState("");
+  const [taxInfoSaving, setTaxInfoSaving] = useState(false);
+
+  // Payout Info state
+  const [payoutInfo, setPayoutInfo] = useState(null);
+  const [payoutInfoLoading, setPayoutInfoLoading] = useState(false);
+  const [payoutInfoError, setPayoutInfoError] = useState("");
+  const [payoutInfoSuccess, setPayoutInfoSuccess] = useState("");
+
   // Form state for contact information
   const [formData, setFormData] = useState({
     firstName: "",
