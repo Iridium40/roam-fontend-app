@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Sparkles,
   ArrowLeft,
   Users,
   Lock,

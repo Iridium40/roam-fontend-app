@@ -6,8 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Sparkles, 
+import {
   ArrowLeft,
   ArrowRight,
   Shield,
@@ -159,8 +158,12 @@ export default function ProviderOnboarding() {
                 </Link>
               </Button>
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                    alt="ROAM Logo"
+                    className="w-8 h-8 object-contain"
+                  />
                 </div>
                 <span className="text-2xl font-bold bg-gradient-to-r from-roam-blue to-roam-light-blue bg-clip-text text-transparent">
                   ROAM
@@ -615,7 +618,7 @@ export default function ProviderOnboarding() {
                         <ul className="text-sm text-yellow-800 mt-1 space-y-1">
                           <li>• Background check and document verification (2-3 business days)</li>
                           <li>• Admin review of your application (1-2 business days)</li>
-                          <li>• Email notification with next steps for account setup</li>
+                          <li>��� Email notification with next steps for account setup</li>
                           <li>• Stripe/Plaid integration for payments and payouts</li>
                         </ul>
                       </div>
