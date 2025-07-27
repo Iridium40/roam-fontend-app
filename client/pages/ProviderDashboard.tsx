@@ -2353,7 +2353,7 @@ export default function ProviderDashboard() {
                             <Label htmlFor="verification_status">Verification Status</Label>
                             <Input
                               id="verification_status"
-                              value={businessDetailsForm.verification_status}
+                              value={formatVerificationStatus(businessDetailsForm.verification_status)}
                               readOnly
                               className="bg-muted cursor-not-allowed"
                               title="Verification status is managed by system"
