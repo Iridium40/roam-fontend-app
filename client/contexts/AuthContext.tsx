@@ -97,6 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    setLoading(true);
     try {
       console.log("AuthContext signIn: Starting authentication...");
 
@@ -139,6 +140,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error("AuthContext signIn: Error:", error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
