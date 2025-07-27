@@ -21,8 +21,9 @@ import {
   Building,
   Star
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
