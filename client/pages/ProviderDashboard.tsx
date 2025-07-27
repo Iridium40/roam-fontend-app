@@ -5602,6 +5602,410 @@ export default function ProviderDashboard() {
           </div>
         </div>
       )}
+
+      {/* Add Provider Modal */}
+      <Dialog open={addProviderModal} onOpenChange={setAddProviderModal}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-roam-blue" />
+              Add New Provider - Step {addProviderStep} of 3
+            </DialogTitle>
+          </DialogHeader>
+
+          {addProviderError && (
+            <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+              {addProviderError}
+            </div>
+          )}
+
+          {addProviderSuccess && (
+            <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+              {addProviderSuccess}
+            </div>
+          )}
+
+          {/* Step 1: User Creation and Email Verification */}
+          {addProviderStep === 1 && (
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Step 1: Create User Account</h3>
+                <p className="text-sm text-foreground/60">
+                  Create a new user account for the provider. They will receive a verification email.
+                </p>
+
+                {!otpSent ? (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="provider_email">Provider Email Address *</Label>
+                      <Input
+                        id="provider_email"
+                        type="email"
+                        value={newUserForm.email}
+                        onChange={(e) => setNewUserForm(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="provider@example.com"
+                        disabled={addProviderLoading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm_email">Confirm Email Address *</Label>
+                      <Input
+                        id="confirm_email"
+                        type="email"
+                        value={newUserForm.confirmEmail}
+                        onChange={(e) => setNewUserForm(prev => ({ ...prev, confirmEmail: e.target.value }))}
+                        placeholder="provider@example.com"
+                        disabled={addProviderLoading}
+                      />
+                    </div>
+                    <Button
+                      onClick={handleCreateUserAndSendOTP}
+                      disabled={addProviderLoading || !newUserForm.email || newUserForm.email !== newUserForm.confirmEmail}
+                      className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                    >
+                      {addProviderLoading && (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      )}
+                      Send Verification Email
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Mail className="w-5 h-5 text-blue-600" />
+                        <span className="font-medium text-blue-900">Verification Email Sent</span>
+                      </div>
+                      <p className="text-sm text-blue-700">
+                        A verification email has been sent to <strong>{newUserForm.email}</strong>.
+                        Please ask the provider to check their email and enter the OTP code below.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="otp_code">OTP Verification Code</Label>
+                      <Input
+                        id="otp_code"
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value)}
+                        placeholder="Enter 6-digit code"
+                        maxLength={6}
+                        disabled={addProviderLoading}
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setOtpSent(false)}
+                        disabled={addProviderLoading}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        onClick={handleVerifyOTPAndProceed}
+                        disabled={addProviderLoading || !otpCode}
+                        className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                      >
+                        {addProviderLoading && (
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                        )}
+                        Verify & Continue
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Provider Profile Information */}
+          {addProviderStep === 2 && (
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Step 2: Provider Profile</h3>
+                <p className="text-sm text-foreground/60">
+                  Complete the provider's profile information.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="first_name">First Name *</Label>
+                    <Input
+                      id="first_name"
+                      value={providerForm.first_name}
+                      onChange={(e) => setProviderForm(prev => ({ ...prev, first_name: e.target.value }))}
+                      disabled={addProviderLoading}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="last_name">Last Name *</Label>
+                    <Input
+                      id="last_name"
+                      value={providerForm.last_name}
+                      onChange={(e) => setProviderForm(prev => ({ ...prev, last_name: e.target.value }))}
+                      disabled={addProviderLoading}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="provider_phone">Phone Number</Label>
+                    <Input
+                      id="provider_phone"
+                      type="tel"
+                      value={providerForm.phone}
+                      onChange={(e) => setProviderForm(prev => ({ ...prev, phone: e.target.value }))}
+                      placeholder="(XXX) XXX-XXXX"
+                      disabled={addProviderLoading}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="provider_role">Provider Role</Label>
+                    <Select
+                      value={providerForm.provider_role}
+                      onValueChange={(value) => setProviderForm(prev => ({ ...prev, provider_role: value }))}
+                      disabled={addProviderLoading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="provider">Provider</SelectItem>
+                        <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                        <SelectItem value="owner">Owner</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date_of_birth">Date of Birth</Label>
+                    <Input
+                      id="date_of_birth"
+                      type="date"
+                      value={providerForm.date_of_birth}
+                      onChange={(e) => setProviderForm(prev => ({ ...prev, date_of_birth: e.target.value }))}
+                      disabled={addProviderLoading}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="experience_years">Years of Experience</Label>
+                    <Input
+                      id="experience_years"
+                      type="number"
+                      min="0"
+                      max="50"
+                      value={providerForm.experience_years}
+                      onChange={(e) => setProviderForm(prev => ({ ...prev, experience_years: e.target.value }))}
+                      disabled={addProviderLoading}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="provider_location">Assigned Location</Label>
+                  <Select
+                    value={providerForm.location_id}
+                    onValueChange={(value) => setProviderForm(prev => ({ ...prev, location_id: value }))}
+                    disabled={addProviderLoading}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a business location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">No location assigned</SelectItem>
+                      {locations.map((location) => (
+                        <SelectItem key={location.id} value={location.id}>
+                          {location.location_name} {location.is_primary && "(Primary)"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Bio / Description</Label>
+                  <Textarea
+                    id="bio"
+                    value={providerForm.bio}
+                    onChange={(e) => setProviderForm(prev => ({ ...prev, bio: e.target.value }))}
+                    rows={3}
+                    placeholder="Brief description of the provider's background and expertise..."
+                    disabled={addProviderLoading}
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setAddProviderStep(1)}
+                    disabled={addProviderLoading}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    onClick={handleSaveProviderProfile}
+                    disabled={addProviderLoading || !providerForm.first_name || !providerForm.last_name}
+                    className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Management Settings */}
+          {addProviderStep === 3 && (
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Step 3: Management Settings</h3>
+                <p className="text-sm text-foreground/60">
+                  Configure how this provider will be managed and what services they inherit.
+                </p>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Provider Management</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Managed by Business</Label>
+                        <p className="text-sm text-foreground/60">
+                          Business controls this provider's services and settings
+                        </p>
+                      </div>
+                      <Switch
+                        checked={managementSettings.managed_by_business}
+                        onCheckedChange={(checked) =>
+                          setManagementSettings(prev => ({
+                            ...prev,
+                            managed_by_business: checked,
+                            inherit_business_services: checked,
+                            inherit_business_addons: checked
+                          }))
+                        }
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+
+                    {managementSettings.managed_by_business && (
+                      <div className="space-y-4 pl-4 border-l-2 border-roam-blue/20">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Label>Inherit Business Services</Label>
+                            <p className="text-sm text-foreground/60">
+                              Automatically inherit all business services
+                            </p>
+                          </div>
+                          <Switch
+                            checked={managementSettings.inherit_business_services}
+                            onCheckedChange={(checked) =>
+                              setManagementSettings(prev => ({ ...prev, inherit_business_services: checked }))
+                            }
+                            className="data-[state=checked]:bg-roam-blue"
+                          />
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Label>Inherit Business Add-ons</Label>
+                            <p className="text-sm text-foreground/60">
+                              Automatically inherit all business add-ons
+                            </p>
+                          </div>
+                          <Switch
+                            checked={managementSettings.inherit_business_addons}
+                            onCheckedChange={(checked) =>
+                              setManagementSettings(prev => ({ ...prev, inherit_business_addons: checked }))
+                            }
+                            className="data-[state=checked]:bg-roam-blue"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {!managementSettings.managed_by_business && (
+                      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded">
+                        <p className="text-sm text-yellow-800">
+                          <strong>Self-Managed Provider:</strong> This provider will have full control over their services and settings.
+                          They can still choose to inherit business services and later modify them.
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Summary</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-foreground/60">Email:</span>
+                        <span>{newUserForm.email}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-foreground/60">Name:</span>
+                        <span>{providerForm.first_name} {providerForm.last_name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-foreground/60">Role:</span>
+                        <span className="capitalize">{providerForm.provider_role}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-foreground/60">Location:</span>
+                        <span>
+                          {providerForm.location_id
+                            ? locations.find(l => l.id === providerForm.location_id)?.location_name || "Unknown"
+                            : "No location assigned"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-foreground/60">Management:</span>
+                        <span>{managementSettings.managed_by_business ? "Business Managed" : "Self Managed"}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setAddProviderStep(2)}
+                    disabled={addProviderLoading}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    onClick={handleCompleteProviderCreation}
+                    disabled={addProviderLoading}
+                    className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                  >
+                    {addProviderLoading && (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    )}
+                    Create Provider
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end pt-4 border-t">
+            <Button
+              variant="outline"
+              onClick={resetAddProviderModal}
+              disabled={addProviderLoading}
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
