@@ -546,8 +546,12 @@ export default function ProviderDashboard() {
   };
 
   const fetchLocations = async () => {
-    if (!provider) return;
+    if (!provider) {
+      console.log("fetchLocations: No provider available");
+      return;
+    }
 
+    console.log("fetchLocations: Starting fetch for business_id:", provider.business_id);
     setLocationsLoading(true);
     try {
       const { data, error } = await supabase
@@ -556,10 +560,18 @@ export default function ProviderDashboard() {
         .eq("business_id", provider.business_id)
         .order("created_at", { ascending: false });
 
+      console.log("fetchLocations: Query result:", { data, error });
+
       if (error) throw error;
       setLocations(data || []);
+      console.log("fetchLocations: Set locations to:", data || []);
     } catch (error: any) {
       console.error("Error fetching locations:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load locations",
+        variant: "destructive",
+      });
       setLocationsError("Failed to load locations");
     } finally {
       setLocationsLoading(false);
