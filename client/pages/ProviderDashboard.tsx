@@ -57,6 +57,10 @@ export default function ProviderDashboard() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
+  const [businessHoursSaving, setBusinessHoursSaving] = useState(false);
+  const [businessHoursError, setBusinessHoursError] = useState("");
+  const [businessHoursSuccess, setBusinessHoursSuccess] = useState("");
+  const [editingBusinessHours, setEditingBusinessHours] = useState(false);
 
   // Form state for contact information
   const [formData, setFormData] = useState({
