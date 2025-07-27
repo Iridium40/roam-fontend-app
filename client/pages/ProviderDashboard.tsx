@@ -2785,10 +2785,10 @@ export default function ProviderDashboard() {
                     <Label htmlFor="business_type">Business Type</Label>
                     <Input
                       id="business_type"
-                      value={businessDetailsForm.business_type}
-                      onChange={(e) => handleBusinessDetailsFormChange("business_type", e.target.value)}
-                      placeholder="e.g., Massage Therapy, Wellness"
-                      disabled={businessDetailsSaving}
+                      value={formatBusinessType(businessDetailsForm.business_type)}
+                      readOnly
+                      className="bg-muted cursor-not-allowed"
+                      title="Business type cannot be changed"
                     />
                   </div>
 
