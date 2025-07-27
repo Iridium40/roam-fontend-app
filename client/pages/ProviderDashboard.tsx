@@ -3638,18 +3638,21 @@ export default function ProviderDashboard() {
               {/* Delivery Type */}
               <div className="space-y-2">
                 <Label htmlFor="delivery_type">Delivery Type</Label>
-                <select
-                  id="delivery_type"
+                <Select
                   value={serviceForm.delivery_type}
-                  onChange={(e) => handleServiceFormChange("delivery_type", e.target.value)}
+                  onValueChange={(value) => handleServiceFormChange("delivery_type", value)}
                   disabled={serviceSaving}
-                  className="w-full p-2 border border-input rounded-md bg-background"
                 >
-                  <option value="business_location">In-Studio/Business</option>
-                  <option value="customer_location">Mobile</option>
-                  <option value="virtual">Virtual</option>
-                  <option value="both_locations">In-Studio or Mobile</option>
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select delivery type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="business_location">In-Studio/Business</SelectItem>
+                    <SelectItem value="customer_location">Mobile</SelectItem>
+                    <SelectItem value="virtual">Virtual</SelectItem>
+                    <SelectItem value="both_locations">In-Studio or Mobile</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Custom Price */}
