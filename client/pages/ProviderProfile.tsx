@@ -570,13 +570,7 @@ export default function ProviderProfile() {
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Send Message
                   </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                  >
-                    <Phone className="w-4 h-4 mr-2" />
-                    Call Provider
-                  </Button>
+
                 </CardContent>
               </Card>
             </div>

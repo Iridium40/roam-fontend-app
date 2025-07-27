@@ -509,14 +509,7 @@ function BookingCard({ booking }: { booking: any }) {
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Message
               </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-              >
-                <Phone className="w-4 h-4 mr-2" />
-                Call
-              </Button>
+
             </>
           )}
           {booking.status === "completed" && (
