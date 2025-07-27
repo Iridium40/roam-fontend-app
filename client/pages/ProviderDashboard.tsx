@@ -3233,14 +3233,7 @@ export default function ProviderDashboard() {
                           Manage Roles & Permissions
                         </Link>
                       </Button>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        onClick={() => setActiveTab("business")}
-                      >
-                        <MapPin className="w-4 h-4 mr-2" />
-                        Assign Locations
-                      </Button>
+
                     </CardContent>
                   </Card>
                 </div>
