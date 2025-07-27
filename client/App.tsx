@@ -21,7 +21,6 @@ import ProviderProfile from "./pages/ProviderProfile";
 import ProviderDocumentVerification from "./pages/ProviderDocumentVerification";
 import BusinessManagement from "./pages/BusinessManagement";
 import NotFound from "./pages/NotFound";
-import DebugAuth from "./pages/DebugAuth";
 
 const queryClient = new QueryClient();
 
