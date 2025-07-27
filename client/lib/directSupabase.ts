@@ -156,12 +156,21 @@ class DirectSupabaseAPI {
       },
     );
 
+    // Read response text once and handle both success and error cases
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Upload failed: ${errorText}`);
+      throw new Error(`Upload failed: ${responseText}`);
     }
 
-    const result = await response.json();
+    // Parse the response text as JSON for success case
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (parseError) {
+      // If parsing fails, create a minimal result object
+      result = { Key: null };
+    }
 
     // Get public URL
     const publicUrl = `${this.baseURL}/storage/v1/object/public/${bucket}/${path}`;
