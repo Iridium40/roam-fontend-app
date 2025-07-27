@@ -63,7 +63,7 @@ export default function Index() {
     {
       id: "therapy",
       icon: Hand,
-      name: "Massage Therapy",
+      name: "<p>Therapy</p>",
       count: "120+ therapists",
       color: "from-green-500 to-emerald-500",
       description: "Therapeutic massage and bodywork",
