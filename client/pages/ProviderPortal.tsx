@@ -34,7 +34,6 @@ import { supabase } from "@/lib/supabase";
 import type { BusinessRegistration, BusinessType } from "@/lib/database.types";
 import { useAuth } from "@/contexts/AuthContext";
 
-
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

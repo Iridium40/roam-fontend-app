@@ -88,24 +88,29 @@ export default function ProviderDashboard() {
 
       if (isProvider && !isOwner && !isDispatcher) {
         // Provider can only see their own bookings
-        const result = await supabase.from("bookings").select(`
+        const result = await supabase
+          .from("bookings")
+          .select(
+            `
           *,
           providers!inner(first_name, last_name),
           services(name, description)
-        `)
-        .eq("provider_id", user.provider_id)
-        .order("created_at", { ascending: false })
-        .limit(10);
+        `,
+          )
+          .eq("provider_id", user.provider_id)
+          .order("created_at", { ascending: false })
+          .limit(10);
 
         bookingsData = result.data;
         bookingsError = result.error;
       } else {
         // Owner/Dispatcher can see all business bookings
         // First fetch all provider IDs for this business
-        const { data: businessProviders, error: providersError } = await supabase
-          .from("providers")
-          .select("id")
-          .eq("business_id", user.business_id);
+        const { data: businessProviders, error: providersError } =
+          await supabase
+            .from("providers")
+            .select("id")
+            .eq("business_id", user.business_id);
 
         if (providersError) {
           setError("Failed to fetch business providers.");
@@ -113,16 +118,20 @@ export default function ProviderDashboard() {
         }
 
         if (businessProviders && businessProviders.length > 0) {
-          const providerIds = businessProviders.map(p => p.id);
+          const providerIds = businessProviders.map((p) => p.id);
 
-          const result = await supabase.from("bookings").select(`
+          const result = await supabase
+            .from("bookings")
+            .select(
+              `
             *,
             providers!inner(first_name, last_name),
             services(name, description)
-          `)
-          .in("provider_id", providerIds)
-          .order("created_at", { ascending: false })
-          .limit(10);
+          `,
+            )
+            .in("provider_id", providerIds)
+            .order("created_at", { ascending: false })
+            .limit(10);
 
           bookingsData = result.data;
           bookingsError = result.error;

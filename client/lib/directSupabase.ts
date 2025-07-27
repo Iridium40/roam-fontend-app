@@ -23,7 +23,7 @@ interface ProviderRecord {
   first_name: string;
   last_name: string;
   email: string;
-  provider_role: 'provider' | 'owner' | 'dispatcher';
+  provider_role: "provider" | "owner" | "dispatcher";
   is_active: boolean;
   [key: string]: any;
 }
@@ -40,28 +40,34 @@ class DirectSupabaseAPI {
 
   private getHeaders(useAuthToken = false): Record<string, string> {
     const headers: Record<string, string> = {
-      'apikey': this.apiKey,
-      'Content-Type': 'application/json'
+      apikey: this.apiKey,
+      "Content-Type": "application/json",
     };
 
     if (useAuthToken && this.accessToken) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`;
+      headers["Authorization"] = `Bearer ${this.accessToken}`;
     } else {
-      headers['Authorization'] = `Bearer ${this.apiKey}`;
+      headers["Authorization"] = `Bearer ${this.apiKey}`;
     }
 
     return headers;
   }
 
-  async signInWithPassword(email: string, password: string): Promise<AuthResponse> {
-    const response = await fetch(`${this.baseURL}/auth/v1/token?grant_type=password`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify({
-        email,
-        password
-      })
-    });
+  async signInWithPassword(
+    email: string,
+    password: string,
+  ): Promise<AuthResponse> {
+    const response = await fetch(
+      `${this.baseURL}/auth/v1/token?grant_type=password`,
+      {
+        method: "POST",
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      },
+    );
 
     if (!response.ok) {
       const error = await response.text();
@@ -77,8 +83,8 @@ class DirectSupabaseAPI {
     const response = await fetch(
       `${this.baseURL}/rest/v1/providers?user_id=eq.${userId}&is_active=eq.true&select=id,user_id,business_id,location_id,first_name,last_name,email,provider_role,is_active`,
       {
-        headers: this.getHeaders(true)
-      }
+        headers: this.getHeaders(true),
+      },
     );
 
     if (!response.ok) {
@@ -95,11 +101,11 @@ class DirectSupabaseAPI {
 
     try {
       await fetch(`${this.baseURL}/auth/v1/logout`, {
-        method: 'POST',
-        headers: this.getHeaders(true)
+        method: "POST",
+        headers: this.getHeaders(true),
       });
     } catch (error) {
-      console.warn('Logout request failed:', error);
+      console.warn("Logout request failed:", error);
     } finally {
       this.accessToken = null;
     }

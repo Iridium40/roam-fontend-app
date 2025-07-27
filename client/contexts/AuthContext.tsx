@@ -39,8 +39,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
-
-
   const signIn = async (email: string, password: string) => {
     setLoading(true);
     try {
@@ -49,7 +47,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Use direct API to bypass hanging Supabase client
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      const authData = await directSupabaseAPI.signInWithPassword(email, password);
+      const authData = await directSupabaseAPI.signInWithPassword(
+        email,
+        password,
+      );
 
       if (!authData.user) {
         console.error("AuthContext signIn: No user returned");
@@ -59,7 +60,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log("AuthContext signIn: Auth successful, fetching profile...");
 
       // Use direct API for provider lookup too
-      const provider = await directSupabaseAPI.getProviderByUserId(authData.user.id);
+      const provider = await directSupabaseAPI.getProviderByUserId(
+        authData.user.id,
+      );
 
       if (!provider) {
         console.error("AuthContext signIn: No provider found");
@@ -81,7 +84,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       console.log("AuthContext signIn: User state updated successfully");
-
     } catch (error) {
       console.error("AuthContext signIn: Error:", error);
       throw error;
