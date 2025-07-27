@@ -1320,13 +1320,13 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       const updateData = {
-        business_name: businessDetailsForm.business_name.trim(),
-        business_description: businessDetailsForm.business_description.trim(),
-        contact_email: businessDetailsForm.contact_email.trim(),
-        phone: businessDetailsForm.phone.trim(),
-        website_url: businessDetailsForm.website_url.trim(),
+        business_name: businessDetailsForm.business_name?.trim() || "",
+        business_description: businessDetailsForm.business_description?.trim() || "",
+        contact_email: businessDetailsForm.contact_email?.trim() || "",
+        phone: businessDetailsForm.phone?.trim() || "",
+        website_url: businessDetailsForm.website_url?.trim() || "",
         years_in_business: businessDetailsForm.years_in_business ? parseInt(businessDetailsForm.years_in_business) : null,
-        logo_url: businessDetailsForm.logo_url.trim() || null,
+        logo_url: businessDetailsForm.logo_url?.trim() || null,
         is_active: businessDetailsForm.is_active,
       };
 
