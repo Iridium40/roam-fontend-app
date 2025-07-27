@@ -1655,6 +1655,18 @@ export default function ProviderDashboard() {
                             {businessMetrics.servicesOffered}
                           </span>
                         </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Stripe Payouts
+                          </span>
+                          <span className={`font-medium ${
+                            business?.stripe_connected_account_id
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}>
+                            {business?.stripe_connected_account_id ? "Enabled" : "Disabled"}
+                          </span>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
