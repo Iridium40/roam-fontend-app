@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  Sparkles, 
+import {
+  Sparkles,
   ArrowLeft,
   Users,
   Lock,
@@ -19,11 +19,11 @@ import {
   Phone,
   User,
   Building,
-  Star
+  Star,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { supabase } from '@/lib/supabase';
+import { supabase } from "@/lib/supabase";
 
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,10 +31,10 @@ export default function ProviderPortal() {
   const [activeTab, setActiveTab] = useState("login");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  
+
   const [loginData, setLoginData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [signupData, setSignupData] = useState({
@@ -46,7 +46,7 @@ export default function ProviderPortal() {
     confirmPassword: "",
     businessName: "",
     agreedToTerms: false,
-    agreedToBackground: false
+    agreedToBackground: false,
   });
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -56,10 +56,11 @@ export default function ProviderPortal() {
 
     try {
       // Authenticate with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: loginData.email,
-        password: loginData.password,
-      });
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email: loginData.email,
+          password: loginData.password,
+        });
 
       if (authError) {
         throw new Error(authError.message);
@@ -71,28 +72,35 @@ export default function ProviderPortal() {
 
       // Check if user exists in providers table
       const { data: providerData, error: providerError } = await supabase
-        .from('providers')
-        .select('*')
-        .eq('user_id', authData.user.id)
+        .from("providers")
+        .select("*")
+        .eq("user_id", authData.user.id)
         .single();
 
       if (providerError) {
         // If provider not found, sign out and show error
         await supabase.auth.signOut();
-        throw new Error("Provider account not found. Please contact support or complete the onboarding process.");
+        throw new Error(
+          "Provider account not found. Please contact support or complete the onboarding process.",
+        );
       }
 
       if (!providerData.is_active) {
         // If provider account is not active
         await supabase.auth.signOut();
-        throw new Error("Your provider account is currently inactive. Please contact support.");
+        throw new Error(
+          "Your provider account is currently inactive. Please contact support.",
+        );
       }
 
       // Success - redirect to provider dashboard
       navigate("/provider-dashboard");
-
     } catch (error) {
-      setError(error instanceof Error ? error.message : "An error occurred during login");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "An error occurred during login",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +109,7 @@ export default function ProviderPortal() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
@@ -114,23 +122,24 @@ export default function ProviderPortal() {
     {
       icon: DollarSign,
       title: "You Control Your Earnings",
-      description: "Keep everything you charge (minus payout transaction fee only)"
+      description:
+        "Keep everything you charge (minus payout transaction fee only)",
     },
     {
       icon: Calendar,
       title: "Flexible Schedule",
-      description: "Control when and where you work"
+      description: "Control when and where you work",
     },
     {
       icon: Users,
       title: "Quality Clients",
-      description: "Connect with verified customers"
+      description: "Connect with verified customers",
     },
     {
       icon: Shield,
       title: "Full Support",
-      description: "Rescheduling and Cancellation 24/7 support"
-    }
+      description: "Rescheduling and Cancellation 24/7 support",
+    },
   ];
 
   return (
@@ -154,9 +163,7 @@ export default function ProviderPortal() {
                 />
               </div>
             </div>
-            <div className="text-sm text-foreground/60">
-              Provider Portal
-            </div>
+            <div className="text-sm text-foreground/60">Provider Portal</div>
           </div>
         </div>
       </nav>
@@ -164,15 +171,16 @@ export default function ProviderPortal() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            
             {/* Left Side - Benefits */}
             <div className="space-y-8">
               <div>
                 <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-                  Welcome to the <span className="text-roam-blue">Provider Portal</span>
+                  Welcome to the{" "}
+                  <span className="text-roam-blue">Provider Portal</span>
                 </h1>
                 <p className="text-lg text-foreground/70 mb-8">
-                  Join Florida's premier network of service professionals and start growing your business today.
+                  Join Florida's premier network of service professionals and
+                  start growing your business today.
                 </p>
               </div>
 
@@ -185,7 +193,9 @@ export default function ProviderPortal() {
                         <benefit.icon className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                      <p className="text-sm text-foreground/70">{benefit.description}</p>
+                      <p className="text-sm text-foreground/70">
+                        {benefit.description}
+                      </p>
                     </CardContent>
                   </Card>
                 ))}
@@ -202,15 +212,21 @@ export default function ProviderPortal() {
                 <CardContent className="space-y-4">
                   <div>
                     <p className="text-sm text-foreground/80 italic mb-2">
-                      "ROAM has transformed my massage therapy business. I've tripled my income and love the flexibility!"
+                      "ROAM has transformed my massage therapy business. I've
+                      tripled my income and love the flexibility!"
                     </p>
-                    <p className="text-xs text-foreground/60">- Sarah J., Licensed Massage Therapist</p>
+                    <p className="text-xs text-foreground/60">
+                      - Sarah J., Licensed Massage Therapist
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-foreground/80 italic mb-2">
-                      "The platform is easy to use and the customers are always respectful and verified."
+                      "The platform is easy to use and the customers are always
+                      respectful and verified."
                     </p>
-                    <p className="text-xs text-foreground/60">- Michael C., Personal Trainer</p>
+                    <p className="text-xs text-foreground/60">
+                      - Michael C., Personal Trainer
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -226,12 +242,22 @@ export default function ProviderPortal() {
                   <CardTitle className="text-2xl">Provider Access</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <Tabs
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    className="w-full"
+                  >
                     <TabsList className="grid w-full grid-cols-2 mb-6">
-                      <TabsTrigger value="login" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                      <TabsTrigger
+                        value="login"
+                        className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                      >
                         Sign In
                       </TabsTrigger>
-                      <TabsTrigger value="signup" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                      <TabsTrigger
+                        value="signup"
+                        className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                      >
                         Get Started
                       </TabsTrigger>
                     </TabsList>
@@ -242,7 +268,9 @@ export default function ProviderPortal() {
                         {error && (
                           <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
                             <div className="flex items-start gap-2">
-                              <div className="w-4 h-4 text-red-600 mt-0.5">⚠️</div>
+                              <div className="w-4 h-4 text-red-600 mt-0.5">
+                                ⚠️
+                              </div>
                               <p className="text-sm text-red-800">{error}</p>
                             </div>
                           </div>
@@ -257,7 +285,12 @@ export default function ProviderPortal() {
                               placeholder="provider@example.com"
                               className="pl-10"
                               value={loginData.email}
-                              onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                              onChange={(e) =>
+                                setLoginData({
+                                  ...loginData,
+                                  email: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -273,7 +306,12 @@ export default function ProviderPortal() {
                               placeholder="Enter your password"
                               className="pl-10 pr-10"
                               value={loginData.password}
-                              onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                              onChange={(e) =>
+                                setLoginData({
+                                  ...loginData,
+                                  password: e.target.value,
+                                })
+                              }
                               required
                             />
                             <Button
@@ -283,7 +321,11 @@ export default function ProviderPortal() {
                               className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
                               onClick={() => setShowPassword(!showPassword)}
                             >
-                              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              {showPassword ? (
+                                <EyeOff className="h-4 w-4" />
+                              ) : (
+                                <Eye className="h-4 w-4" />
+                              )}
                             </Button>
                           </div>
                         </div>
@@ -291,18 +333,24 @@ export default function ProviderPortal() {
                         <div className="flex items-center justify-between text-sm">
                           <div className="flex items-center space-x-2">
                             <Checkbox id="remember" />
-                            <Label htmlFor="remember" className="text-sm font-normal">
+                            <Label
+                              htmlFor="remember"
+                              className="text-sm font-normal"
+                            >
                               Remember me
                             </Label>
                           </div>
-                          <Button variant="link" className="p-0 h-auto text-roam-blue">
+                          <Button
+                            variant="link"
+                            className="p-0 h-auto text-roam-blue"
+                          >
                             Forgot password?
                           </Button>
                         </div>
 
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-roam-blue hover:bg-roam-blue/90" 
+                        <Button
+                          type="submit"
+                          className="w-full bg-roam-blue hover:bg-roam-blue/90"
                           disabled={isLoading}
                         >
                           {isLoading ? "Signing in..." : "Sign In"}
@@ -323,7 +371,12 @@ export default function ProviderPortal() {
                                 placeholder="John"
                                 className="pl-10"
                                 value={signupData.firstName}
-                                onChange={(e) => setSignupData({...signupData, firstName: e.target.value})}
+                                onChange={(e) =>
+                                  setSignupData({
+                                    ...signupData,
+                                    firstName: e.target.value,
+                                  })
+                                }
                                 required
                               />
                             </div>
@@ -334,7 +387,12 @@ export default function ProviderPortal() {
                               id="lastName"
                               placeholder="Doe"
                               value={signupData.lastName}
-                              onChange={(e) => setSignupData({...signupData, lastName: e.target.value})}
+                              onChange={(e) =>
+                                setSignupData({
+                                  ...signupData,
+                                  lastName: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -350,7 +408,12 @@ export default function ProviderPortal() {
                               placeholder="provider@example.com"
                               className="pl-10"
                               value={signupData.email}
-                              onChange={(e) => setSignupData({...signupData, email: e.target.value})}
+                              onChange={(e) =>
+                                setSignupData({
+                                  ...signupData,
+                                  email: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -366,7 +429,12 @@ export default function ProviderPortal() {
                               placeholder="(555) 123-4567"
                               className="pl-10"
                               value={signupData.phone}
-                              onChange={(e) => setSignupData({...signupData, phone: e.target.value})}
+                              onChange={(e) =>
+                                setSignupData({
+                                  ...signupData,
+                                  phone: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -381,7 +449,12 @@ export default function ProviderPortal() {
                               placeholder="Your Business Name"
                               className="pl-10"
                               value={signupData.businessName}
-                              onChange={(e) => setSignupData({...signupData, businessName: e.target.value})}
+                              onChange={(e) =>
+                                setSignupData({
+                                  ...signupData,
+                                  businessName: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -397,14 +470,21 @@ export default function ProviderPortal() {
                               placeholder="Create a strong password"
                               className="pl-10"
                               value={signupData.password}
-                              onChange={(e) => setSignupData({...signupData, password: e.target.value})}
+                              onChange={(e) =>
+                                setSignupData({
+                                  ...signupData,
+                                  password: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="confirmPassword">Confirm Password</Label>
+                          <Label htmlFor="confirmPassword">
+                            Confirm Password
+                          </Label>
                           <div className="relative">
                             <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                             <Input
@@ -413,7 +493,12 @@ export default function ProviderPortal() {
                               placeholder="Confirm your password"
                               className="pl-10"
                               value={signupData.confirmPassword}
-                              onChange={(e) => setSignupData({...signupData, confirmPassword: e.target.value})}
+                              onChange={(e) =>
+                                setSignupData({
+                                  ...signupData,
+                                  confirmPassword: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -421,32 +506,66 @@ export default function ProviderPortal() {
 
                         <div className="space-y-3">
                           <div className="flex items-start space-x-2">
-                            <Checkbox 
-                              id="terms" 
+                            <Checkbox
+                              id="terms"
                               checked={signupData.agreedToTerms}
-                              onCheckedChange={(checked) => setSignupData({...signupData, agreedToTerms: checked as boolean})}
+                              onCheckedChange={(checked) =>
+                                setSignupData({
+                                  ...signupData,
+                                  agreedToTerms: checked as boolean,
+                                })
+                              }
                             />
-                            <Label htmlFor="terms" className="text-sm font-normal leading-none">
-                              I agree to the <Button variant="link" className="p-0 h-auto text-roam-blue">Terms of Service</Button> and <Button variant="link" className="p-0 h-auto text-roam-blue">Privacy Policy</Button>
+                            <Label
+                              htmlFor="terms"
+                              className="text-sm font-normal leading-none"
+                            >
+                              I agree to the{" "}
+                              <Button
+                                variant="link"
+                                className="p-0 h-auto text-roam-blue"
+                              >
+                                Terms of Service
+                              </Button>{" "}
+                              and{" "}
+                              <Button
+                                variant="link"
+                                className="p-0 h-auto text-roam-blue"
+                              >
+                                Privacy Policy
+                              </Button>
                             </Label>
                           </div>
 
                           <div className="flex items-start space-x-2">
-                            <Checkbox 
-                              id="background" 
+                            <Checkbox
+                              id="background"
                               checked={signupData.agreedToBackground}
-                              onCheckedChange={(checked) => setSignupData({...signupData, agreedToBackground: checked as boolean})}
+                              onCheckedChange={(checked) =>
+                                setSignupData({
+                                  ...signupData,
+                                  agreedToBackground: checked as boolean,
+                                })
+                              }
                             />
-                            <Label htmlFor="background" className="text-sm font-normal leading-none">
-                              I consent to background check and identity verification as required by ROAM
+                            <Label
+                              htmlFor="background"
+                              className="text-sm font-normal leading-none"
+                            >
+                              I consent to background check and identity
+                              verification as required by ROAM
                             </Label>
                           </div>
                         </div>
 
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-roam-blue hover:bg-roam-blue/90" 
-                          disabled={isLoading || !signupData.agreedToTerms || !signupData.agreedToBackground}
+                        <Button
+                          type="submit"
+                          className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                          disabled={
+                            isLoading ||
+                            !signupData.agreedToTerms ||
+                            !signupData.agreedToBackground
+                          }
                         >
                           {isLoading ? "Creating Account..." : "Get Started"}
                         </Button>
@@ -456,7 +575,15 @@ export default function ProviderPortal() {
 
                   {/* Footer */}
                   <div className="mt-6 text-center text-sm text-foreground/60">
-                    <p>Need help? <Button variant="link" className="p-0 h-auto text-roam-blue">Contact Support</Button></p>
+                    <p>
+                      Need help?{" "}
+                      <Button
+                        variant="link"
+                        className="p-0 h-auto text-roam-blue"
+                      >
+                        Contact Support
+                      </Button>
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -467,10 +594,13 @@ export default function ProviderPortal() {
                   <div className="flex items-start gap-3">
                     <Shield className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="font-medium text-green-900 mb-1">Secure & Verified</h4>
+                      <h4 className="font-medium text-green-900 mb-1">
+                        Secure & Verified
+                      </h4>
                       <p className="text-sm text-green-800">
-                        All provider applications undergo comprehensive background checks and identity verification 
-                        for the safety of our customers and platform integrity.
+                        All provider applications undergo comprehensive
+                        background checks and identity verification for the
+                        safety of our customers and platform integrity.
                       </p>
                     </div>
                   </div>
