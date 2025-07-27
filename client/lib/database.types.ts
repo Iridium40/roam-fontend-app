@@ -286,6 +286,9 @@ export interface Database {
       business_type: BusinessType;
       provider_role: ProviderRole;
       verification_status: VerificationStatus;
+      provider_verification_status: ProviderVerificationStatus;
+      background_check_status: BackgroundCheckStatus;
+      delivery_type: DeliveryType;
     };
   };
 }
