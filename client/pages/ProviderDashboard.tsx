@@ -32,8 +32,10 @@ import {
   Building,
   Video
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from '@/lib/supabase';
+import type { Provider } from '@/lib/database.types';
 
 export default function ProviderDashboard() {
   const [isAvailable, setIsAvailable] = useState(true);
