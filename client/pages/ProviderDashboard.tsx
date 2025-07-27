@@ -146,12 +146,13 @@ export default function ProviderDashboard() {
     phone: "",
     website_url: "",
     years_in_business: "",
-    image_url: "",
     logo_url: "",
     verification_status: "",
     is_active: true,
     setup_completed: false,
   });
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState("");
   const navigate = useNavigate();
 
   const formatTimeAgo = (dateString: string) => {
@@ -1288,7 +1289,6 @@ export default function ProviderDashboard() {
           phone: businessData.phone || "",
           website_url: businessData.website_url || "",
           years_in_business: businessData.years_in_business?.toString() || "",
-          image_url: businessData.image_url || "",
           logo_url: businessData.logo_url || "",
           verification_status: businessData.verification_status || "",
           is_active: businessData.is_active !== false,
