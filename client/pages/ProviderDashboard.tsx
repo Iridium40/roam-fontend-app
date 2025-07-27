@@ -1179,43 +1179,53 @@ export default function ProviderDashboard() {
                     <CardContent>
                       <div className="space-y-3">
                         {businessHours
-                          ? Object.entries(businessHours).map(
-                              ([day, hours]) => (
+                          ? [
+                              "Monday",
+                              "Tuesday",
+                              "Wednesday",
+                              "Thursday",
+                              "Friday",
+                              "Saturday",
+                              "Sunday"
+                            ].map((day) => {
+                              const dayHours = businessHours[day];
+                              const isOpen = dayHours && typeof dayHours === "object" && dayHours.open && dayHours.close;
+
+                              return (
                                 <div
                                   key={day}
                                   className="flex justify-between items-center"
                                 >
-                                  <span className="text-sm font-medium capitalize">
+                                  <span className="text-sm font-medium">
                                     {day}
                                   </span>
                                   <span className="text-sm text-foreground/60">
-                                    {typeof hours === "object" && hours !== null
-                                      ? hours.is_closed
-                                        ? "Closed"
-                                        : `${hours.open_time || "N/A"} - ${hours.close_time || "N/A"}`
-                                      : hours || "N/A"}
+                                    {isOpen
+                                      ? `${dayHours.open} - ${dayHours.close}`
+                                      : "Closed"
+                                    }
                                   </span>
                                 </div>
-                              ),
-                            )
+                              );
+                            })
                           : [
-                              { day: "Monday", hours: "Loading..." },
-                              { day: "Tuesday", hours: "Loading..." },
-                              { day: "Wednesday", hours: "Loading..." },
-                              { day: "Thursday", hours: "Loading..." },
-                              { day: "Friday", hours: "Loading..." },
-                              { day: "Saturday", hours: "Loading..." },
-                              { day: "Sunday", hours: "Loading..." },
-                            ].map((schedule) => (
+                              "Monday",
+                              "Tuesday",
+                              "Wednesday",
+                              "Thursday",
+                              "Friday",
+                              "Saturday",
+                              "Sunday"
+                            ].map((day) => (
                               <div
-                                key={schedule.day}
+                                key={day}
                                 className="flex justify-between items-center"
                               >
                                 <span className="text-sm font-medium">
-                                  {schedule.day}
+                                  {day}
                                 </span>
                                 <span className="text-sm text-foreground/60">
-                                  {schedule.hours}
+                                  Loading...
                                 </span>
                               </div>
                             ))}
