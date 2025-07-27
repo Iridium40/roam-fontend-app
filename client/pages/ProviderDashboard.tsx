@@ -213,6 +213,89 @@ export default function ProviderDashboard() {
     }
   };
 
+  const handleFormChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear success/error messages when user starts typing
+    if (profileSuccess) setProfileSuccess("");
+    if (profileError) setProfileError("");
+  };
+
+  const handleSaveProfile = async () => {
+    if (!provider) return;
+
+    setProfileSaving(true);
+    setProfileError("");
+    setProfileSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Prepare update data
+      const updateData = {
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        bio: formData.bio.trim(),
+        date_of_birth: formData.dateOfBirth || null,
+        experience_years: formData.experienceYears ? parseInt(formData.experienceYears) : null
+      };
+
+      // Validate required fields
+      if (!updateData.first_name || !updateData.last_name || !updateData.email) {
+        throw new Error("First name, last name, and email are required");
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(updateData.email)) {
+        throw new Error("Please enter a valid email address");
+      }
+
+      // Update provider using direct API
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${provider.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${directSupabaseAPI.accessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update profile: ${errorText}`);
+      }
+
+      // Update local provider state
+      setProvider({
+        ...provider,
+        ...updateData
+      });
+
+      setProfileSuccess("Profile updated successfully!");
+
+    } catch (error: any) {
+      console.error('Profile save error:', error);
+      let errorMessage = 'Failed to update profile';
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
+      setProfileError(errorMessage);
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchDashboardData();
