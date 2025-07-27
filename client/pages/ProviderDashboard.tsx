@@ -2729,6 +2729,180 @@ export default function ProviderDashboard() {
           </div>
         </div>
       )}
+
+      {/* Business Details Management Modal */}
+      {managingBusinessDetails && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Manage Business Details</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setManagingBusinessDetails(false)}
+              >
+                ×
+              </Button>
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+              {businessDetailsError && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                  {businessDetailsError}
+                </div>
+              )}
+
+              {businessDetailsSuccess && (
+                <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
+                  {businessDetailsSuccess}
+                </div>
+              )}
+
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="business_name">Business Name *</Label>
+                    <Input
+                      id="business_name"
+                      value={businessDetailsForm.business_name}
+                      onChange={(e) => handleBusinessDetailsFormChange("business_name", e.target.value)}
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="business_type">Business Type</Label>
+                    <Input
+                      id="business_type"
+                      value={businessDetailsForm.business_type}
+                      onChange={(e) => handleBusinessDetailsFormChange("business_type", e.target.value)}
+                      placeholder="e.g., Massage Therapy, Wellness"
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="business_phone">Business Phone</Label>
+                    <Input
+                      id="business_phone"
+                      type="tel"
+                      value={businessDetailsForm.business_phone}
+                      onChange={(e) => handleBusinessDetailsFormChange("business_phone", e.target.value)}
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="business_email">Business Email</Label>
+                    <Input
+                      id="business_email"
+                      type="email"
+                      value={businessDetailsForm.business_email}
+                      onChange={(e) => handleBusinessDetailsFormChange("business_email", e.target.value)}
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="website_url">Website URL</Label>
+                    <Input
+                      id="website_url"
+                      type="url"
+                      value={businessDetailsForm.website_url}
+                      onChange={(e) => handleBusinessDetailsFormChange("website_url", e.target.value)}
+                      placeholder="https://"
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="years_in_business">Years in Business</Label>
+                    <Input
+                      id="years_in_business"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={businessDetailsForm.years_in_business}
+                      onChange={(e) => handleBusinessDetailsFormChange("years_in_business", e.target.value)}
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="tax_id">Tax ID / EIN</Label>
+                    <Input
+                      id="tax_id"
+                      value={businessDetailsForm.tax_id}
+                      onChange={(e) => handleBusinessDetailsFormChange("tax_id", e.target.value)}
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="license_number">License Number</Label>
+                    <Input
+                      id="license_number"
+                      value={businessDetailsForm.license_number}
+                      onChange={(e) => handleBusinessDetailsFormChange("license_number", e.target.value)}
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="insurance_policy_number">Insurance Policy Number</Label>
+                  <Input
+                    id="insurance_policy_number"
+                    value={businessDetailsForm.insurance_policy_number}
+                    onChange={(e) => handleBusinessDetailsFormChange("insurance_policy_number", e.target.value)}
+                    disabled={businessDetailsSaving}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="business_description">Business Description</Label>
+                  <Textarea
+                    id="business_description"
+                    value={businessDetailsForm.business_description}
+                    onChange={(e) => handleBusinessDetailsFormChange("business_description", e.target.value)}
+                    rows={4}
+                    placeholder="Describe your business, services, and what makes you unique..."
+                    disabled={businessDetailsSaving}
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t">
+                  <Button
+                    onClick={handleSaveBusinessDetails}
+                    disabled={businessDetailsSaving}
+                    className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                  >
+                    {businessDetailsSaving ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Building className="w-4 h-4 mr-2" />
+                        Save Changes
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setManagingBusinessDetails(false)}
+                    disabled={businessDetailsSaving}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
