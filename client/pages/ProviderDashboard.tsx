@@ -93,6 +93,60 @@ export default function ProviderDashboard() {
           setBusinessHours(businessData.business_hours);
         }
 
+        // Fetch recent business activity
+        try {
+          const activityPromises = [
+            // Recent locations
+            supabase
+              .from("business_locations")
+              .select("location_name, created_at")
+              .eq("business_id", providerData.business_id)
+              .order("created_at", { ascending: false })
+              .limit(2),
+
+            // Recent team members
+            supabase
+              .from("providers")
+              .select("first_name, last_name, created_at")
+              .eq("business_id", providerData.business_id)
+              .order("created_at", { ascending: false })
+              .limit(2)
+          ];
+
+          const [locationsActivity, teamActivity] = await Promise.all(activityPromises);
+
+          const activities = [];
+
+          // Add location activities
+          if (locationsActivity.data) {
+            locationsActivity.data.forEach(location => {
+              activities.push({
+                action: "New location added",
+                details: location.location_name || "Business location",
+                time: formatTimeAgo(location.created_at),
+                icon: MapPin
+              });
+            });
+          }
+
+          // Add team member activities
+          if (teamActivity.data) {
+            teamActivity.data.forEach(member => {
+              activities.push({
+                action: "Team member added",
+                details: `${member.first_name} ${member.last_name} joined as Provider`,
+                time: formatTimeAgo(member.created_at),
+                icon: Users
+              });
+            });
+          }
+
+          // Sort by most recent and limit to 4
+          setRecentActivity(activities.slice(0, 4));
+        } catch (activityError) {
+          console.error("Error fetching recent activity:", activityError);
+        }
+
         // Fetch business metrics using correct business_id from provider
         const [locationsResult, teamResult, servicesResult] = await Promise.all([
           // Count active business locations
