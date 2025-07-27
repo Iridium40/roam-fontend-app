@@ -30,6 +30,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import type { BusinessRegistration, BusinessType } from "@/lib/database.types";
 
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
@@ -72,15 +73,41 @@ export default function ProviderPortal() {
     password: "",
   });
 
-  const [signupData, setSignupData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
+  const [signupData, setSignupData] = useState<Partial<BusinessRegistration> & {
+    password: string;
+    confirmPassword: string;
+    agreedToTerms: boolean;
+    agreedToBackground: boolean;
+  }>({
+    // Business Information
+    business_name: "",
+    business_type: "" as BusinessType,
+    contact_email: "",
     phone: "",
+    website_url: "",
+    business_description: "",
+    years_in_business: 0,
+
+    // Owner/Primary Contact
+    owner_first_name: "",
+    owner_last_name: "",
+    owner_email: "",
+    owner_phone: "",
+    owner_date_of_birth: new Date(),
+
+    // Business Address
+    business_address: {
+      address_line1: "",
+      address_line2: "",
+      city: "",
+      state: "",
+      postal_code: "",
+      country: "United States",
+    },
+
+    // Form fields
     password: "",
     confirmPassword: "",
-    businessName: "",
-    businessType: "",
     agreedToTerms: false,
     agreedToBackground: false,
   });
