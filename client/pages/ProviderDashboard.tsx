@@ -725,7 +725,7 @@ export default function ProviderDashboard() {
     setServicesError("");
 
     try {
-      // Fetch business services with service details
+      // Fetch business services with service details and booking counts
       const { data: servicesData, error: servicesError } = await supabase
         .from("business_services")
         .select(`
@@ -744,7 +744,10 @@ export default function ProviderDashboard() {
 
       if (servicesError) throw servicesError;
 
-      // Fetch business addons with addon details
+      // Get service IDs for addon eligibility check
+      const serviceIds = servicesData?.map(bs => bs.service_id) || [];
+
+      // Fetch business addons with addon details, filtered by service eligibility
       const { data: addonsData, error: addonsError } = await supabase
         .from("business_addons")
         .select(`
@@ -758,11 +761,38 @@ export default function ProviderDashboard() {
           )
         `)
         .eq("business_id", provider.business_id)
-        .eq("is_available", true);
+        .eq("is_available", true)
+        .in("addon_id",
+          supabase
+            .from("service_addon_eligibility")
+            .select("addon_id")
+            .in("service_id", serviceIds)
+        );
 
       if (addonsError) throw addonsError;
 
-      setBusinessServices(servicesData || []);
+      // For each service, get booking count from the current month
+      const currentMonth = new Date();
+      currentMonth.setDate(1);
+
+      const servicesWithBookings = await Promise.all(
+        (servicesData || []).map(async (businessService) => {
+          const { data: bookingData } = await supabase
+            .from("bookings")
+            .select("id")
+            .eq("service_id", businessService.service_id)
+            .in("provider_id", [provider.id]) // Only count bookings for this provider
+            .gte("created_at", currentMonth.toISOString())
+            .eq("status", "completed");
+
+          return {
+            ...businessService,
+            booking_count: bookingData?.length || 0
+          };
+        })
+      );
+
+      setBusinessServices(servicesWithBookings);
       setBusinessAddons(addonsData || []);
 
     } catch (error: any) {
