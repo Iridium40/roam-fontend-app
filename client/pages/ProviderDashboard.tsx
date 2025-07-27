@@ -387,7 +387,7 @@ export default function ProviderDashboard() {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="bookings" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+            <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
               <TabsTrigger
                 value="bookings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -400,6 +400,14 @@ export default function ProviderDashboard() {
               >
                 Services
               </TabsTrigger>
+              {provider.provider_role === 'owner' && (
+                <TabsTrigger
+                  value="business"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
+                  Business
+                </TabsTrigger>
+              )}
               <TabsTrigger
                 value="profile"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
