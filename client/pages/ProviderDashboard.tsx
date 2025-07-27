@@ -1351,9 +1351,6 @@ export default function ProviderDashboard() {
       }
 
       // Update business using direct API
-      console.log("About to update business profile with ID:", business?.id);
-      console.log("Update data:", updateData);
-
       if (!business?.id) {
         throw new Error("Business ID is missing");
       }
