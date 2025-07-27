@@ -530,6 +530,32 @@ export default function ProviderPortal() {
                         </div>
 
                         <div className="space-y-2">
+                          <Label htmlFor="businessType">Business Type *</Label>
+                          <Select
+                            value={signupData.businessType}
+                            onValueChange={(value) => setSignupData({...signupData, businessType: value})}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select your business type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="independent">Independent Provider</SelectItem>
+                              <SelectItem value="small_business">Small Business</SelectItem>
+                              <SelectItem value="franchise">Franchise</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-gray-500">
+                            {signupData.businessType === "independent"
+                              ? "Independent providers start as service providers and gain full business permissions after verification."
+                              : signupData.businessType
+                                ? "Business owners have full account permissions after verification."
+                                : "Choose the option that best describes your business structure."
+                            }
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
                           <Label htmlFor="signup-password">Password</Label>
                           <div className="relative">
                             <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
