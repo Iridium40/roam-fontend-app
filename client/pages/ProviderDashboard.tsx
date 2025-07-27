@@ -3566,6 +3566,7 @@ export default function ProviderDashboard() {
                           <Button
                             variant="outline"
                             className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                            onClick={handleStartAddProvider}
                           >
                             <Plus className="w-4 h-4 mr-2" />
                             Invite New Provider
