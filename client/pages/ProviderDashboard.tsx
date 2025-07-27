@@ -2208,15 +2208,13 @@ export default function ProviderDashboard() {
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor="service_area_radius">Service Area Radius (miles)</Label>
+                            <Label htmlFor="verification_status">Verification Status</Label>
                             <Input
-                              id="service_area_radius"
-                              type="number"
-                              min="0"
-                              max="100"
-                              value={businessDetailsForm.service_area_radius}
-                              onChange={(e) => handleBusinessDetailsFormChange("service_area_radius", e.target.value)}
-                              disabled={businessDetailsSaving}
+                              id="verification_status"
+                              value={businessDetailsForm.verification_status}
+                              readOnly
+                              className="bg-muted cursor-not-allowed"
+                              title="Verification status is managed by system"
                             />
                           </div>
                         </div>
@@ -2239,23 +2237,23 @@ export default function ProviderDashboard() {
                         <h3 className="text-lg font-semibold border-b pb-2">Contact Information</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="business_phone">Business Phone</Label>
+                            <Label htmlFor="contact_email">Contact Email *</Label>
                             <Input
-                              id="business_phone"
-                              type="tel"
-                              value={businessDetailsForm.business_phone}
-                              onChange={(e) => handleBusinessDetailsFormChange("business_phone", e.target.value)}
+                              id="contact_email"
+                              type="email"
+                              value={businessDetailsForm.contact_email}
+                              onChange={(e) => handleBusinessDetailsFormChange("contact_email", e.target.value)}
                               disabled={businessDetailsSaving}
                             />
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor="business_email">Business Email</Label>
+                            <Label htmlFor="phone">Business Phone</Label>
                             <Input
-                              id="business_email"
-                              type="email"
-                              value={businessDetailsForm.business_email}
-                              onChange={(e) => handleBusinessDetailsFormChange("business_email", e.target.value)}
+                              id="phone"
+                              type="tel"
+                              value={businessDetailsForm.phone}
+                              onChange={(e) => handleBusinessDetailsFormChange("phone", e.target.value)}
                               disabled={businessDetailsSaving}
                             />
                           </div>
@@ -2271,68 +2269,51 @@ export default function ProviderDashboard() {
                               disabled={businessDetailsSaving}
                             />
                           </div>
+                        </div>
+                      </div>
 
+                      {/* Business Images */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold border-b pb-2">Business Images</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="emergency_contact_name">Emergency Contact Name</Label>
+                            <Label htmlFor="image_url">Profile Image URL</Label>
                             <Input
-                              id="emergency_contact_name"
-                              value={businessDetailsForm.emergency_contact_name}
-                              onChange={(e) => handleBusinessDetailsFormChange("emergency_contact_name", e.target.value)}
+                              id="image_url"
+                              type="url"
+                              value={businessDetailsForm.image_url}
+                              onChange={(e) => handleBusinessDetailsFormChange("image_url", e.target.value)}
+                              placeholder="https://..."
                               disabled={businessDetailsSaving}
                             />
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor="emergency_contact_phone">Emergency Contact Phone</Label>
+                            <Label htmlFor="logo_url">Logo URL</Label>
                             <Input
-                              id="emergency_contact_phone"
-                              type="tel"
-                              value={businessDetailsForm.emergency_contact_phone}
-                              onChange={(e) => handleBusinessDetailsFormChange("emergency_contact_phone", e.target.value)}
+                              id="logo_url"
+                              type="url"
+                              value={businessDetailsForm.logo_url}
+                              onChange={(e) => handleBusinessDetailsFormChange("logo_url", e.target.value)}
+                              placeholder="https://..."
                               disabled={businessDetailsSaving}
                             />
                           </div>
                         </div>
                       </div>
 
-                      {/* Payment Methods */}
+                      {/* Business Status */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">Payment Methods</h3>
+                        <h3 className="text-lg font-semibold border-b pb-2">Business Status</h3>
                         <div className="space-y-4">
                           <div className="flex items-center justify-between">
                             <div>
-                              <Label>Accepts Cash</Label>
-                              <p className="text-sm text-foreground/60">Accept cash payments from customers</p>
+                              <Label>Business Active</Label>
+                              <p className="text-sm text-foreground/60">Enable or disable your business listing</p>
                             </div>
                             <Switch
-                              checked={businessDetailsForm.accepts_cash}
-                              onCheckedChange={(checked) => handleBusinessDetailsFormChange("accepts_cash", checked)}
-                              disabled={businessDetailsSaving}
-                              className="data-[state=checked]:bg-roam-blue"
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <Label>Accepts Credit Cards</Label>
-                              <p className="text-sm text-foreground/60">Accept credit and debit card payments</p>
-                            </div>
-                            <Switch
-                              checked={businessDetailsForm.accepts_credit_cards}
-                              onCheckedChange={(checked) => handleBusinessDetailsFormChange("accepts_credit_cards", checked)}
-                              disabled={businessDetailsSaving}
-                              className="data-[state=checked]:bg-roam-blue"
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <Label>Accepts Mobile Payments</Label>
-                              <p className="text-sm text-foreground/60">Accept mobile payments (Apple Pay, Google Pay, etc.)</p>
-                            </div>
-                            <Switch
-                              checked={businessDetailsForm.accepts_mobile_payments}
-                              onCheckedChange={(checked) => handleBusinessDetailsFormChange("accepts_mobile_payments", checked)}
+                              checked={businessDetailsForm.is_active}
+                              onCheckedChange={(checked) => handleBusinessDetailsFormChange("is_active", checked)}
                               disabled={businessDetailsSaving}
                               className="data-[state=checked]:bg-roam-blue"
                             />
@@ -2343,15 +2324,15 @@ export default function ProviderDashboard() {
                             <div className="flex items-center justify-between">
                               <Label>Stripe Payouts</Label>
                               <span className={`font-medium ${
-                                business?.stripe_connected_account_id
+                                business?.stripe_connect_account_id
                                   ? "text-green-600"
                                   : "text-red-600"
                               }`}>
-                                {business?.stripe_connected_account_id ? "Enabled" : "Disabled"}
+                                {business?.stripe_connect_account_id ? "Enabled" : "Disabled"}
                               </span>
                             </div>
                             <p className="text-sm text-foreground/60 mt-1">
-                              {business?.stripe_connected_account_id
+                              {business?.stripe_connect_account_id
                                 ? "Your Stripe account is connected and ready to receive payments"
                                 : "Connect your Stripe account to enable automatic payouts"
                               }
