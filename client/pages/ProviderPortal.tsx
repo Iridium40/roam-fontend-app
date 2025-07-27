@@ -660,7 +660,8 @@ export default function ProviderPortal() {
                           disabled={
                             isLoading ||
                             !signupData.agreedToTerms ||
-                            !signupData.agreedToBackground
+                            !signupData.agreedToBackground ||
+                            !signupData.businessType
                           }
                         >
                           {isLoading ? "Creating Account..." : "Get Started"}
