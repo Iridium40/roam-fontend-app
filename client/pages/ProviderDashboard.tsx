@@ -1426,7 +1426,9 @@ export default function ProviderDashboard() {
                         <Input
                           id="dateOfBirth"
                           type="date"
-                          defaultValue={provider?.date_of_birth || ""}
+                          value={formData.dateOfBirth}
+                          onChange={(e) => handleFormChange("dateOfBirth", e.target.value)}
+                          disabled={profileSaving}
                         />
                       </div>
                       <div className="space-y-2">
@@ -1434,7 +1436,11 @@ export default function ProviderDashboard() {
                         <Input
                           id="experienceYears"
                           type="number"
-                          defaultValue={provider?.experience_years || ""}
+                          min="0"
+                          max="50"
+                          value={formData.experienceYears}
+                          onChange={(e) => handleFormChange("experienceYears", e.target.value)}
+                          disabled={profileSaving}
                         />
                       </div>
                     </div>
