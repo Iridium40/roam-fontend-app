@@ -3891,12 +3891,12 @@ export default function ProviderDashboard() {
                   </CardContent>
                 </Card>
 
-                {/* Payment Methods */}
+                {/* Payout Info */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-roam-blue" />
-                      Payment Methods
+                      <Building className="w-5 h-5 text-roam-blue" />
+                      Payout Info
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -3904,41 +3904,39 @@ export default function ProviderDashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-blue-600">
-                              ••••
-                            </span>
+                            <span className="text-xs font-bold text-blue-600">S</span>
                           </div>
                           <div>
-                            <p className="text-sm font-medium">Bank Account</p>
-                            <p className="text-xs text-foreground/60">
-                              ****4532
-                            </p>
+                            <p className="text-sm font-medium">Stripe Connect</p>
+                            <p className="text-xs text-foreground/60">acct_****4532</p>
                           </div>
                         </div>
-                        <Badge variant="secondary">Primary</Badge>
+                        <Badge variant="secondary">Connected</Badge>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-green-600">
-                              P
-                            </span>
+                            <span className="text-xs font-bold text-green-600">P</span>
                           </div>
                           <div>
-                            <p className="text-sm font-medium">PayPal</p>
-                            <p className="text-xs text-foreground/60">
-                              john@email.com
-                            </p>
+                            <p className="text-sm font-medium">Plaid Link</p>
+                            <p className="text-xs text-foreground/60">Bank verification</p>
                           </div>
                         </div>
-                        <Badge variant="outline">Active</Badge>
+                        <Badge variant="outline">Verified</Badge>
+                      </div>
+                      <div className="pt-2 border-t">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-foreground/60">Transfer Speed</span>
+                          <span className="font-medium">Instant</span>
+                        </div>
                       </div>
                       <Button
                         variant="outline"
                         className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                       >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Method
+                        <Settings className="w-4 h-4 mr-2" />
+                        Manage Payout
                       </Button>
                     </div>
                   </CardContent>
