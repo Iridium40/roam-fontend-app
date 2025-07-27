@@ -91,6 +91,21 @@ export default function ProviderDashboard() {
     Saturday: { isOpen: false, open: "09:00", close: "17:00" },
     Sunday: { isOpen: false, open: "09:00", close: "17:00" },
   });
+
+  // Location form state
+  const [locationForm, setLocationForm] = useState({
+    location_name: "",
+    address_line1: "",
+    address_line2: "",
+    city: "",
+    state: "",
+    postal_code: "",
+    country: "United States",
+    is_primary: false,
+    offers_mobile_services: false,
+    mobile_service_radius: 10,
+    is_active: true
+  });
   const navigate = useNavigate();
 
   const formatTimeAgo = (dateString: string) => {
