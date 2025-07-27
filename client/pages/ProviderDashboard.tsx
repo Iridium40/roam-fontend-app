@@ -166,8 +166,8 @@ export default function ProviderDashboard() {
     );
   }
 
-  // Return null if no provider data
-  if (!provider) {
+  // Return null if no user or provider data
+  if (!user || !provider) {
     return null;
   }
 
