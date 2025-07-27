@@ -5,7 +5,12 @@ import { Button } from "@/components/ui/button";
 export default function DebugAuth() {
   const [dbStatus, setDbStatus] = useState<string>("Testing...");
   const [providers, setProviders] = useState<any[]>([]);
-  const [authUsers, setAuthUsers] = useState<any[]>([]);
+  const [logs, setLogs] = useState<string[]>([]);
+
+  const addLog = (message: string) => {
+    setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+    console.log(message);
+  };
 
   useEffect(() => {
     testDatabase();
@@ -13,6 +18,8 @@ export default function DebugAuth() {
 
   const testDatabase = async () => {
     try {
+      addLog("Testing database connection...");
+      
       // Test basic connection
       const { data: testData, error: testError } = await supabase
         .from("providers")
@@ -21,10 +28,12 @@ export default function DebugAuth() {
 
       if (testError) {
         setDbStatus(`Database Error: ${testError.message}`);
+        addLog(`Database Error: ${testError.message}`);
         return;
       }
 
       setDbStatus("Database connection successful");
+      addLog("Database connection successful");
 
       // Get all providers
       const { data: providerData, error: providerError } = await supabase
@@ -32,56 +41,72 @@ export default function DebugAuth() {
         .select("*");
 
       if (providerError) {
-        console.error("Provider fetch error:", providerError);
+        addLog(`Provider fetch error: ${providerError.message}`);
       } else {
         setProviders(providerData || []);
+        addLog(`Found ${providerData?.length || 0} providers`);
       }
 
       // Get current auth user
       const { data: { user } } = await supabase.auth.getUser();
-      console.log("Current auth user:", user);
+      addLog(`Current auth user: ${user ? user.email : 'None'}`);
 
     } catch (error) {
-      console.error("Test error:", error);
-      setDbStatus(`Error: ${error}`);
+      const errorMsg = `Test error: ${error}`;
+      addLog(errorMsg);
+      setDbStatus(errorMsg);
     }
   };
 
   const testLogin = async () => {
     try {
+      addLog("Starting test login...");
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: "provider@roamyourbestlife.com",
         password: "Hayes@2013",
       });
 
       if (error) {
-        console.error("Auth error:", error);
-        alert(`Auth Error: ${error.message}`);
+        addLog(`Auth error: ${error.message}`);
         return;
       }
 
-      console.log("Auth success:", data);
-      alert("Auth successful!");
-
+      addLog("Auth successful!");
+      
       if (data.user) {
+        addLog(`User ID: ${data.user.id}`);
+        
         // Try to fetch provider profile
         const { data: providerData, error: providerError } = await supabase
           .from("providers")
           .select("*")
           .eq("user_id", data.user.id)
+          .eq("is_active", true)
           .single();
 
         if (providerError) {
-          console.error("Provider lookup error:", providerError);
-          alert(`Provider lookup error: ${providerError.message}`);
+          addLog(`Provider lookup error: ${providerError.message}`);
         } else {
-          console.log("Provider found:", providerData);
-          alert("Provider found!");
+          addLog(`Provider found: ${providerData.email} (Role: ${providerData.provider_role})`);
         }
       }
     } catch (error) {
-      console.error("Test login error:", error);
-      alert(`Test login error: ${error}`);
+      addLog(`Test login error: ${error}`);
+    }
+  };
+
+  const testLogout = async () => {
+    try {
+      addLog("Signing out...");
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        addLog(`Logout error: ${error.message}`);
+      } else {
+        addLog("Logout successful");
+      }
+    } catch (error) {
+      addLog(`Logout error: ${error}`);
     }
   };
 
@@ -97,18 +122,33 @@ export default function DebugAuth() {
 
         <div>
           <h2 className="text-lg font-semibold">Providers in Database:</h2>
-          <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+          <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-40">
             {JSON.stringify(providers, null, 2)}
           </pre>
         </div>
 
-        <Button onClick={testLogin}>
-          Test Login with provider@roamyourbestlife.com
-        </Button>
+        <div className="space-x-2">
+          <Button onClick={testLogin}>
+            Test Login with provider@roamyourbestlife.com
+          </Button>
+          
+          <Button onClick={testLogout} variant="outline">
+            Test Logout
+          </Button>
 
-        <Button onClick={testDatabase}>
-          Refresh Database Test
-        </Button>
+          <Button onClick={testDatabase} variant="outline">
+            Refresh Database Test
+          </Button>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold">Debug Logs:</h2>
+          <div className="bg-black text-green-400 p-4 rounded text-sm font-mono max-h-60 overflow-auto">
+            {logs.map((log, index) => (
+              <div key={index}>{log}</div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
