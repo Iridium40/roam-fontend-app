@@ -87,6 +87,15 @@ export default function ProviderDashboard() {
   const [serviceSaving, setServiceSaving] = useState(false);
   const [serviceError, setServiceError] = useState("");
   const [serviceSuccess, setServiceSuccess] = useState("");
+  const [addingService, setAddingService] = useState(false);
+  const [availableServices, setAvailableServices] = useState<any[]>([]);
+  const [availableServicesLoading, setAvailableServicesLoading] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState("");
+  const [addServiceForm, setAddServiceForm] = useState({
+    delivery_type: "business_location",
+    custom_price: "",
+    is_active: true,
+  });
 
   // Form state for contact information
   const [formData, setFormData] = useState({
@@ -831,6 +840,145 @@ export default function ProviderDashboard() {
       both_locations: "In-Studio or Mobile",
     };
     return labels[type] || type;
+  };
+
+  const fetchAvailableServices = async () => {
+    if (!provider) return;
+
+    setAvailableServicesLoading(true);
+    try {
+      // Get all services
+      const { data: allServices, error: servicesError } = await supabase
+        .from("services")
+        .select(`
+          *,
+          service_subcategories (
+            id,
+            name,
+            service_categories (
+              id,
+              name
+            )
+          )
+        `)
+        .order("name");
+
+      if (servicesError) throw servicesError;
+
+      // Get currently added business services
+      const { data: businessServices, error: businessError } = await supabase
+        .from("business_services")
+        .select("service_id")
+        .eq("business_id", provider.business_id);
+
+      if (businessError) throw businessError;
+
+      // Filter out already added services
+      const addedServiceIds = new Set(businessServices?.map(bs => bs.service_id) || []);
+      const available = allServices?.filter(service => !addedServiceIds.has(service.id)) || [];
+
+      setAvailableServices(available);
+    } catch (error: any) {
+      console.error("Error fetching available services:", error);
+      setServiceError(`Failed to load available services: ${error.message}`);
+    } finally {
+      setAvailableServicesLoading(false);
+    }
+  };
+
+  const handleAddServiceFormChange = (field: string, value: any) => {
+    setAddServiceForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleStartAddService = () => {
+    setAddingService(true);
+    setSelectedServiceId("");
+    setAddServiceForm({
+      delivery_type: "business_location",
+      custom_price: "",
+      is_active: true,
+    });
+    setServiceError("");
+    setServiceSuccess("");
+    fetchAvailableServices();
+  };
+
+  const handleAddService = async () => {
+    if (!selectedServiceId || !provider) {
+      setServiceError("Please select a service to add");
+      return;
+    }
+
+    setServiceSaving(true);
+    setServiceError("");
+    setServiceSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const addData = {
+        business_id: provider.business_id,
+        service_id: selectedServiceId,
+        delivery_type: addServiceForm.delivery_type,
+        custom_price: addServiceForm.custom_price ? parseFloat(addServiceForm.custom_price) : null,
+        is_active: addServiceForm.is_active,
+      };
+
+      // Validate price if provided
+      if (addServiceForm.custom_price && (isNaN(parseFloat(addServiceForm.custom_price)) || parseFloat(addServiceForm.custom_price) < 0)) {
+        throw new Error("Please enter a valid price (0 or greater)");
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services`,
+        {
+          method: "POST",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(addData),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to add service: ${errorText}`);
+      }
+
+      setServiceSuccess("Service added successfully!");
+      setAddingService(false);
+
+      // Refresh business services
+      await fetchBusinessServices();
+    } catch (error: any) {
+      console.error("Service add error:", error);
+      let errorMessage = "Failed to add service";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      setServiceError(errorMessage);
+    } finally {
+      setServiceSaving(false);
+    }
+  };
+
+  const handleCancelAddService = () => {
+    setAddingService(false);
+    setSelectedServiceId("");
+    setAddServiceForm({
+      delivery_type: "business_location",
+      custom_price: "",
+      is_active: true,
+    });
+    setServiceError("");
+    setServiceSuccess("");
   };
 
   const fetchBusinessServices = async () => {
@@ -1790,7 +1938,10 @@ export default function ProviderDashboard() {
                   >
                     🔄 Refresh
                   </Button>
-                  <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                  <Button
+                    className="bg-roam-blue hover:bg-roam-blue/90"
+                    onClick={handleStartAddService}
+                  >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Service
                   </Button>
@@ -3711,6 +3862,181 @@ export default function ProviderDashboard() {
                 <Button
                   variant="outline"
                   onClick={handleCancelServiceEdit}
+                  disabled={serviceSaving}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Service Modal */}
+      {addingService && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b flex items-center justify-between">
+              <h2 className="text-xl font-bold">Add New Service</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCancelAddService}
+              >
+                ×
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+              {serviceError && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                  {serviceError}
+                </div>
+              )}
+
+              {serviceSuccess && (
+                <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                  {serviceSuccess}
+                </div>
+              )}
+
+              {/* Service Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="service_selection">Select Service</Label>
+                {availableServicesLoading ? (
+                  <div className="flex items-center justify-center p-4">
+                    <div className="w-6 h-6 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Loading services...
+                  </div>
+                ) : availableServices.length > 0 ? (
+                  <Select
+                    value={selectedServiceId}
+                    onValueChange={setSelectedServiceId}
+                    disabled={serviceSaving}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose a service to add" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableServices.map((service) => (
+                        <SelectItem key={service.id} value={service.id}>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{service.name}</span>
+                            <span className="text-xs text-foreground/60">
+                              {service.service_subcategories?.service_categories?.name} → {service.service_subcategories?.name}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="text-center py-4 text-foreground/60">
+                    <p className="text-sm">All available services have been added to your business</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Service Details */}
+              {selectedServiceId && (() => {
+                const selectedService = availableServices.find(s => s.id === selectedServiceId);
+                return selectedService ? (
+                  <div className="p-4 bg-accent/20 rounded-lg">
+                    <h4 className="font-medium mb-2">{selectedService.name}</h4>
+                    {selectedService.description && (
+                      <p className="text-sm text-foreground/60 mb-2">{selectedService.description}</p>
+                    )}
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-foreground/60">Default Price:</span>
+                        <span className="font-medium ml-2">${selectedService.min_price || '0'}</span>
+                      </div>
+                      <div>
+                        <span className="text-foreground/60">Duration:</span>
+                        <span className="font-medium ml-2">{selectedService.duration_minutes || 'N/A'} mins</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* Delivery Type */}
+              <div className="space-y-2">
+                <Label htmlFor="add_delivery_type">Delivery Type</Label>
+                <Select
+                  value={addServiceForm.delivery_type}
+                  onValueChange={(value) => handleAddServiceFormChange("delivery_type", value)}
+                  disabled={serviceSaving}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select delivery type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="business_location">In-Studio/Business</SelectItem>
+                    <SelectItem value="customer_location">Mobile</SelectItem>
+                    <SelectItem value="virtual">Virtual</SelectItem>
+                    <SelectItem value="both_locations">In-Studio or Mobile</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Custom Price */}
+              <div className="space-y-2">
+                <Label htmlFor="add_custom_price">Business Price ($)</Label>
+                <Input
+                  id="add_custom_price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={addServiceForm.custom_price}
+                  onChange={(e) => handleAddServiceFormChange("custom_price", e.target.value)}
+                  placeholder={selectedServiceId ? `Default: $${availableServices.find(s => s.id === selectedServiceId)?.min_price || '0'}` : "Enter custom price"}
+                  disabled={serviceSaving}
+                />
+                <p className="text-xs text-foreground/60">
+                  Leave empty to use default service price
+                </p>
+              </div>
+
+              {/* Is Active */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Service Active</Label>
+                  <p className="text-sm text-foreground/60">
+                    Allow bookings for this service immediately
+                  </p>
+                </div>
+                <Switch
+                  checked={addServiceForm.is_active}
+                  onCheckedChange={(checked) => handleAddServiceFormChange("is_active", checked)}
+                  disabled={serviceSaving}
+                  className="data-[state=checked]:bg-roam-blue"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4 border-t">
+                <Button
+                  onClick={handleAddService}
+                  disabled={serviceSaving || !selectedServiceId || availableServices.length === 0}
+                  className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                >
+                  {serviceSaving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Adding...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Service
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleCancelAddService}
                   disabled={serviceSaving}
                   className="flex-1"
                 >
