@@ -186,7 +186,17 @@ export default function ProviderDashboard() {
 
     } catch (error: any) {
       console.error('Avatar remove error:', error);
-      setAvatarError(error.message || 'Failed to remove avatar');
+      let errorMessage = 'Failed to remove avatar';
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      }
+
+      setAvatarError(errorMessage);
     } finally {
       setAvatarUploading(false);
     }
