@@ -234,11 +234,11 @@ class DirectSupabaseAPI {
       },
     );
 
-    const responseText = await response.text();
-
     if (!response.ok) {
+      const responseText = await response.text();
       throw new Error(`Failed to update business profile: ${responseText}`);
     }
+    // No need to read response body for successful minimal response
   }
 }
 
