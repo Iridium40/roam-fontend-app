@@ -1980,7 +1980,7 @@ export default function ProviderDashboard() {
                       >
                         <Link to="/business-management">
                           <DollarSign className="w-4 h-4 mr-2" />
-                          Set Prices
+                          Manage
                         </Link>
                       </Button>
                     </CardContent>
