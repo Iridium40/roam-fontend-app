@@ -1192,10 +1192,10 @@ export default function ProviderDashboard() {
       }
 
       // Email validation
-      if (updateData.business_email) {
+      if (updateData.contact_email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(updateData.business_email)) {
-          throw new Error("Please enter a valid business email address");
+        if (!emailRegex.test(updateData.contact_email)) {
+          throw new Error("Please enter a valid contact email address");
         }
       }
 
