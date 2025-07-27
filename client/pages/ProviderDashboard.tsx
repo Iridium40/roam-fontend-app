@@ -133,6 +133,9 @@ export default function ProviderDashboard() {
 
     } catch (error: any) {
       console.error('Avatar upload error:', error);
+      console.error('Error type:', typeof error);
+      console.error('Error keys:', Object.keys(error || {}));
+
       let errorMessage = 'Failed to upload avatar';
 
       if (error?.message) {
@@ -141,6 +144,10 @@ export default function ProviderDashboard() {
         errorMessage = error;
       } else if (error?.error?.message) {
         errorMessage = error.error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
       }
 
       setAvatarError(errorMessage);
