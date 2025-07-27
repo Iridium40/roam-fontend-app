@@ -34,37 +34,34 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import type { Provider } from "@/lib/database.types";
+import { useAuth } from "@/contexts/AuthContext";
+import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
 export default function ProviderDashboard() {
+  const { user, signOut, isOwner, isDispatcher, isProvider } = useAuth();
   const [isAvailable, setIsAvailable] = useState(true);
   const [provider, setProvider] = useState<Provider | null>(null);
+  const [business, setBusiness] = useState<BusinessProfile | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuthentication();
-  }, []);
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
 
-  const checkAuthentication = async () => {
+  const fetchDashboardData = async () => {
+    if (!user) return;
+
     try {
-      // Check if user is authenticated
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser();
-
-      if (authError || !user) {
-        navigate("/provider-portal");
-        return;
-      }
-
-      // Get provider data
+      // Fetch provider details
       const { data: providerData, error: providerError } = await supabase
         .from("providers")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("id", user.provider_id)
         .single();
 
       if (providerError || !providerData) {
@@ -72,17 +69,52 @@ export default function ProviderDashboard() {
         return;
       }
 
-      if (!providerData.is_active) {
-        setError(
-          "Your account is pending verification. Please wait for admin approval.",
-        );
-        return;
+      setProvider(providerData);
+
+      // Fetch business details
+      const { data: businessData, error: businessError } = await supabase
+        .from("business_profiles")
+        .select("*")
+        .eq("id", user.business_id)
+        .single();
+
+      if (businessData) {
+        setBusiness(businessData);
       }
 
-      setProvider(providerData);
+      // Fetch bookings based on role
+      let bookingsQuery = supabase
+        .from("bookings")
+        .select(`
+          *,
+          providers!inner(first_name, last_name),
+          services(name, description)
+        `);
+
+      if (isProvider && !isOwner && !isDispatcher) {
+        // Provider can only see their own bookings
+        bookingsQuery = bookingsQuery.eq("provider_id", user.provider_id);
+      } else {
+        // Owner/Dispatcher can see all business bookings
+        bookingsQuery = bookingsQuery.in(
+          "provider_id",
+          supabase
+            .from("providers")
+            .select("id")
+            .eq("business_id", user.business_id)
+        );
+      }
+
+      const { data: bookingsData, error: bookingsError } = await bookingsQuery
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (bookingsData) {
+        setBookings(bookingsData);
+      }
     } catch (error) {
-      console.error("Authentication error:", error);
-      setError("An error occurred while checking authentication.");
+      console.error("Error fetching dashboard data:", error);
+      setError("An error occurred while loading dashboard data.");
     } finally {
       setLoading(false);
     }
@@ -90,10 +122,7 @@ export default function ProviderDashboard() {
 
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error signing out:", error);
-      }
+      await signOut();
       navigate("/provider-portal");
     } catch (error) {
       console.error("Error signing out:", error);
@@ -296,7 +325,7 @@ export default function ProviderDashboard() {
               <h1 className="text-3xl font-bold">
                 Welcome back,{" "}
                 <span className="text-roam-blue">
-                  {provider.first_name || "Provider"}
+                  {user.first_name || "Provider"}
                 </span>
               </h1>
               <p className="text-foreground/70">
@@ -403,7 +432,7 @@ export default function ProviderDashboard() {
               >
                 Services
               </TabsTrigger>
-              {provider.provider_role === "owner" && (
+              {isOwner && (
                 <TabsTrigger
                   value="business"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -581,7 +610,7 @@ export default function ProviderDashboard() {
             </TabsContent>
 
             {/* Business Tab */}
-            {provider.provider_role === "owner" && (
+            {isOwner && (
               <TabsContent value="business" className="space-y-6">
                 <h2 className="text-2xl font-bold">Business Management</h2>
 
