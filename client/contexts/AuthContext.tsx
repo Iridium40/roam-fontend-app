@@ -103,12 +103,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const refreshUser = async () => {
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
-    if (authUser) {
-      await fetchUserProfile(authUser.id);
-    }
+    // Since we're managing auth state directly, refreshUser is not needed
+    // User state is updated directly in signIn method
+    console.log("refreshUser: Not implemented - using direct auth management");
   };
 
   const hasRole = (roles: ProviderRole[]): boolean => {
