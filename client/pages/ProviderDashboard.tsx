@@ -610,6 +610,23 @@ export default function ProviderDashboard() {
         throw new Error("Location name, address, and city are required");
       }
 
+      // If this location is being set as primary, unset any other primary locations
+      if (locationData.is_primary) {
+        await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations?business_id=eq.${provider.business_id}&is_primary=eq.true`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify({ is_primary: false }),
+          },
+        );
+      }
+
       let response;
       if (editingLocation) {
         // Update existing location
@@ -1994,7 +2011,7 @@ export default function ProviderDashboard() {
                           <div>
                             <h3 className="font-semibold">{businessService.services?.name}</h3>
                             <p className="text-sm text-foreground/60">
-                              {businessService.services?.service_subcategories?.service_categories?.name} → {businessService.services?.service_subcategories?.name}
+                              {businessService.services?.service_subcategories?.service_categories?.name} ��� {businessService.services?.service_subcategories?.name}
                             </p>
                             {businessService.services?.description && (
                               <p className="text-xs text-foreground/50 mt-1">
