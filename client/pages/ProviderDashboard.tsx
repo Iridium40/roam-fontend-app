@@ -1398,10 +1398,9 @@ export default function ProviderDashboard() {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) =>
-                          handleFormChange("email", e.target.value)
-                        }
-                        disabled={profileSaving}
+                        readOnly
+                        className="bg-muted cursor-not-allowed"
+                        title="Email address cannot be changed"
                       />
                     </div>
 
