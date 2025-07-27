@@ -73,6 +73,10 @@ export default function ProviderDashboard() {
   const [businessDetailsSaving, setBusinessDetailsSaving] = useState(false);
   const [businessDetailsError, setBusinessDetailsError] = useState("");
   const [businessDetailsSuccess, setBusinessDetailsSuccess] = useState("");
+  const [businessServices, setBusinessServices] = useState<any[]>([]);
+  const [businessAddons, setBusinessAddons] = useState<any[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(false);
+  const [servicesError, setServicesError] = useState("");
 
   // Form state for contact information
   const [formData, setFormData] = useState({
