@@ -723,6 +723,20 @@ export default function ProviderDashboard() {
       if (businessData) {
         setBusiness(businessData);
 
+        // Initialize business details form
+        setBusinessDetailsForm({
+          business_name: businessData.business_name || "",
+          business_type: businessData.business_type || "",
+          business_description: businessData.business_description || "",
+          business_phone: businessData.business_phone || "",
+          business_email: businessData.business_email || "",
+          website_url: businessData.website_url || "",
+          tax_id: businessData.tax_id || "",
+          license_number: businessData.license_number || "",
+          insurance_policy_number: businessData.insurance_policy_number || "",
+          years_in_business: businessData.years_in_business?.toString() || "",
+        });
+
         // Parse and set business hours if available
         if (businessData.business_hours) {
           setBusinessHours(businessData.business_hours);
