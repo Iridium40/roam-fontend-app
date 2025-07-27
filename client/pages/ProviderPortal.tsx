@@ -163,19 +163,25 @@ export default function ProviderPortal() {
       if (providerError) {
         // Clean up auth user if provider creation fails
         await supabase.auth.signOut();
-        throw new Error("Failed to create provider profile: " + providerError.message);
+        throw new Error(
+          "Failed to create provider profile: " + providerError.message,
+        );
       }
 
       // Success - redirect to onboarding
       navigate("/provider-onboarding", {
         state: {
-          message: "Account created successfully! Please complete the verification process.",
-          businessType: signupData.businessType
-        }
+          message:
+            "Account created successfully! Please complete the verification process.",
+          businessType: signupData.businessType,
+        },
       });
-
     } catch (error) {
-      setError(error instanceof Error ? error.message : "An error occurred during signup");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "An error occurred during signup",
+      );
     } finally {
       setIsLoading(false);
     }
