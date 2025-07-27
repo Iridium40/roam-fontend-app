@@ -2578,6 +2578,231 @@ export default function ProviderDashboard() {
               </TabsContent>
             )}
 
+            {/* Locations Tab */}
+            {(isOwner || isDispatcher) && (
+              <TabsContent value="locations" className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Business Locations</h2>
+                  <Button
+                    onClick={() => {
+                      setAddingLocation(true);
+                      setManagingLocations(true);
+                      if (!locations.length && !locationsLoading) {
+                        fetchLocations();
+                      }
+                    }}
+                    className="bg-roam-blue hover:bg-roam-blue/90"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Location
+                  </Button>
+                </div>
+
+                {locationsError && (
+                  <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                    {locationsError}
+                  </div>
+                )}
+
+                {locationsSuccess && (
+                  <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                    {locationsSuccess}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Locations Overview Card */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <MapPin className="w-5 h-5 text-roam-blue" />
+                        Locations Overview
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Total Locations
+                          </span>
+                          <span className="font-medium">
+                            {locations.length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Active Locations
+                          </span>
+                          <span className="font-medium">
+                            {locations.filter(loc => loc.is_active).length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Mobile Service Areas
+                          </span>
+                          <span className="font-medium">
+                            {locations.filter(loc => loc.offers_mobile_services).length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Primary Location
+                          </span>
+                          <span className="font-medium">
+                            {locations.find(loc => loc.is_primary)?.location_name || "None set"}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Quick Actions Card */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Quick Actions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        onClick={() => {
+                          setAddingLocation(true);
+                          setManagingLocations(true);
+                          resetLocationForm();
+                        }}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add New Location
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        onClick={() => {
+                          fetchLocations();
+                        }}
+                      >
+                        <MapPin className="w-4 h-4 mr-2" />
+                        Refresh Locations
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        onClick={() => setActiveTab("providers")}
+                      >
+                        <Users className="w-4 h-4 mr-2" />
+                        Assign to Providers
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Locations List */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>All Locations</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {locationsLoading ? (
+                      <div className="text-center py-8">
+                        <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p>Loading locations...</p>
+                      </div>
+                    ) : locations.length > 0 ? (
+                      <div className="space-y-4">
+                        {locations.map((location) => (
+                          <Card key={location.id} className="border">
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <h4 className="font-semibold">
+                                      {location.location_name}
+                                    </h4>
+                                    {location.is_primary && (
+                                      <Badge className="bg-roam-blue/20 text-roam-blue">
+                                        Primary
+                                      </Badge>
+                                    )}
+                                    {!location.is_active && (
+                                      <Badge
+                                        variant="outline"
+                                        className="text-red-600 border-red-300"
+                                      >
+                                        Inactive
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <div className="text-sm text-foreground/70 space-y-1">
+                                    <p>{location.address_line1}</p>
+                                    {location.address_line2 && (
+                                      <p>{location.address_line2}</p>
+                                    )}
+                                    <p>
+                                      {location.city}, {location.state}{" "}
+                                      {location.postal_code}
+                                    </p>
+                                    <p>{location.country}</p>
+                                    {location.offers_mobile_services && (
+                                      <p className="text-roam-blue">
+                                        <Smartphone className="w-4 h-4 inline mr-1" />
+                                        Mobile services within{" "}
+                                        {location.mobile_service_radius} miles
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex gap-2 ml-4">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleEditLocation(location)}
+                                    disabled={locationsSaving}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleDeleteLocation(location.id)
+                                    }
+                                    disabled={locationsSaving}
+                                    className="border-red-300 text-red-600 hover:bg-red-50"
+                                  >
+                                    <AlertCircle className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-foreground/60">
+                        <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg mb-2">No locations added yet</p>
+                        <p className="text-sm mb-4">
+                          Add your first business location to get started
+                        </p>
+                        <Button
+                          onClick={() => {
+                            setAddingLocation(true);
+                            setManagingLocations(true);
+                            resetLocationForm();
+                          }}
+                          className="bg-roam-blue hover:bg-roam-blue/90"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Your First Location
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            )}
+
             {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
               <h2 className="text-2xl font-bold">Provider Profile</h2>
