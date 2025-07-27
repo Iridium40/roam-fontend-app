@@ -43,6 +43,11 @@ export default function ProviderDashboard() {
   const [provider, setProvider] = useState<Provider | null>(null);
   const [business, setBusiness] = useState<BusinessProfile | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [businessMetrics, setBusinessMetrics] = useState({
+    activeLocations: 0,
+    teamMembers: 0,
+    servicesOffered: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
