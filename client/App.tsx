@@ -16,6 +16,7 @@ import ProviderPortal from "./pages/ProviderPortal";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderOnboarding from "./pages/ProviderOnboarding";
 import ProviderProfile from "./pages/ProviderProfile";
+import ProviderDocumentVerification from "./pages/ProviderDocumentVerification";
 import BusinessManagement from "./pages/BusinessManagement";
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/provider-portal" element={<ProviderPortal />} />
           <Route path="/provider-dashboard" element={<ProviderDashboard />} />
           <Route path="/provider-onboarding" element={<ProviderOnboarding />} />
+          <Route path="/provider-document-verification" element={<ProviderDocumentVerification />} />
           <Route path="/provider/:providerId" element={<ProviderProfile />} />
           <Route path="/business-management" element={<BusinessManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
