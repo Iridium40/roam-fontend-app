@@ -95,41 +95,30 @@ export default function ProviderDashboard() {
       const fileName = `${provider.id}-${Date.now()}.${fileExt}`;
       const filePath = `avatar-provider-user/${fileName}`;
 
+      // Use direct API for authenticated operations
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
       // Remove old avatar if exists
       if (provider.image_url) {
-        const oldPath = provider.image_url.split('/').pop();
-        if (oldPath) {
-          await supabase.storage
-            .from('roam-file-storage')
-            .remove([`avatar-provider-user/${oldPath}`]);
+        try {
+          const urlParts = provider.image_url.split('/');
+          const oldFileName = urlParts[urlParts.length - 1];
+          const oldFilePath = `avatar-provider-user/${oldFileName}`;
+          await directSupabaseAPI.deleteFile('roam-file-storage', oldFilePath);
+        } catch (deleteError) {
+          console.warn('Failed to delete old avatar:', deleteError);
+          // Continue with upload even if delete fails
         }
       }
 
-      // Upload new avatar
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('roam-file-storage')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: true
-        });
+      // Upload new avatar using direct API
+      const { publicUrl } = await directSupabaseAPI.uploadFile('roam-file-storage', filePath, file);
 
-      if (uploadError) throw uploadError;
-
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('roam-file-storage')
-        .getPublicUrl(filePath);
-
-      // Update provider record
-      const { error: updateError } = await supabase
-        .from('providers')
-        .update({ image_url: urlData.publicUrl })
-        .eq('id', provider.id);
-
-      if (updateError) throw updateError;
+      // Update provider record using direct API
+      await directSupabaseAPI.updateProviderImage(provider.id, publicUrl);
 
       // Update local state
-      setProvider({ ...provider, image_url: urlData.publicUrl });
+      setProvider({ ...provider, image_url: publicUrl });
 
     } catch (error: any) {
       console.error('Avatar upload error:', error);
