@@ -724,7 +724,16 @@ export default function ProviderDashboard() {
       return;
     }
 
+    console.log("fetchBusinessServices: Provider data:", provider);
+    console.log("fetchBusinessServices: User data:", user);
     console.log("fetchBusinessServices: Starting fetch for business_id:", provider.business_id);
+
+    if (!provider.business_id) {
+      console.error("fetchBusinessServices: No business_id found in provider data");
+      setServicesError("No business ID found for this provider");
+      return;
+    }
+
     setServicesLoading(true);
     setServicesError("");
 
