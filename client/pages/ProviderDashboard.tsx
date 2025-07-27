@@ -103,6 +103,17 @@ export default function ProviderDashboard() {
     }
   };
 
+  const formatTimeTo12Hour = (time24: string) => {
+    if (!time24) return "";
+
+    const [hours, minutes] = time24.split(":");
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 || 12; // Convert 0 to 12 for midnight
+
+    return `${hour12}:${minutes} ${ampm}`;
+  };
+
   const handleAvatarUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
