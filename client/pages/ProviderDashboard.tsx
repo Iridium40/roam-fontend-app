@@ -133,7 +133,17 @@ export default function ProviderDashboard() {
 
     } catch (error: any) {
       console.error('Avatar upload error:', error);
-      setAvatarError(error.message || 'Failed to upload avatar');
+      let errorMessage = 'Failed to upload avatar';
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      }
+
+      setAvatarError(errorMessage);
     } finally {
       setAvatarUploading(false);
       // Reset file input
