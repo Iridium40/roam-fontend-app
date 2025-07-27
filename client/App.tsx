@@ -39,6 +39,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/support" element={<Support />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/debug-auth" element={<DebugAuth />} />
             <Route path="/provider-portal" element={<ProviderPortal />} />
             <Route
               path="/provider-document-verification"
