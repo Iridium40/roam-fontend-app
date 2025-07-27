@@ -234,11 +234,13 @@ class DirectSupabaseAPI {
       },
     );
 
+    // Read response text once and use it for both success and error cases
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const responseText = await response.text();
       throw new Error(`Failed to update business profile: ${responseText}`);
     }
-    // No need to read response body for successful minimal response
+    // Success case - responseText is empty due to Prefer: return=minimal
   }
 }
 
