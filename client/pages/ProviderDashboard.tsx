@@ -2494,10 +2494,9 @@ export default function ProviderDashboard() {
                       <Input
                         id="country"
                         value={locationForm.country}
-                        onChange={(e) =>
-                          handleLocationFormChange("country", e.target.value)
-                        }
-                        disabled={locationsSaving}
+                        readOnly
+                        className="bg-muted cursor-not-allowed"
+                        title="Country cannot be changed"
                       />
                     </div>
 
