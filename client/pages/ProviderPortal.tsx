@@ -180,13 +180,21 @@ export default function ProviderPortal() {
         throw new Error("Passwords do not match");
       }
 
-      if (!signupData.businessType) {
+      if (!signupData.business_type) {
         throw new Error("Please select a business type");
+      }
+
+      if (!signupData.business_name) {
+        throw new Error("Please enter a business name");
+      }
+
+      if (!signupData.owner_first_name || !signupData.owner_last_name) {
+        throw new Error("Please enter owner name");
       }
 
       // Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: signupData.email,
+        email: signupData.owner_email!,
         password: signupData.password,
       });
 
@@ -202,11 +210,17 @@ export default function ProviderPortal() {
       const { data: businessData, error: businessError } = await supabase
         .from("business_profiles")
         .insert({
-          business_name: signupData.businessName,
-          contact_email: signupData.email,
-          phone: signupData.phone,
+          business_name: signupData.business_name!,
+          business_type: signupData.business_type!,
+          contact_email: signupData.contact_email || signupData.owner_email,
+          phone: signupData.phone || signupData.owner_phone,
+          website_url: signupData.website_url,
+          business_description: signupData.business_description,
+          years_in_business: signupData.years_in_business,
           verification_status: "pending",
           is_active: false,
+          setup_step: 1,
+          setup_completed: false,
         })
         .select()
         .single();
@@ -220,12 +234,18 @@ export default function ProviderPortal() {
         );
       }
 
-      // Create a default location for the business
+      // Create a default location for the business with address
       const { data: locationData, error: locationError } = await supabase
         .from("business_locations")
         .insert({
           business_id: businessData.id,
           location_name: "Main Location",
+          address_line1: signupData.business_address?.address_line1,
+          address_line2: signupData.business_address?.address_line2,
+          city: signupData.business_address?.city,
+          state: signupData.business_address?.state,
+          postal_code: signupData.business_address?.postal_code,
+          country: signupData.business_address?.country,
           is_primary: true,
           is_active: true,
         })
@@ -246,13 +266,30 @@ export default function ProviderPortal() {
         user_id: authData.user.id,
         business_id: businessData.id,
         location_id: locationData.id,
-        first_name: signupData.firstName,
-        last_name: signupData.lastName,
-        email: signupData.email,
-        phone: signupData.phone,
+        first_name: signupData.owner_first_name!,
+        last_name: signupData.owner_last_name!,
+        email: signupData.owner_email!,
+        phone: signupData.owner_phone!,
+        date_of_birth: signupData.owner_date_of_birth?.toISOString().split('T')[0],
         provider_role: "owner",
         verification_status: "pending",
+        background_check_status: "under_review",
         is_active: false, // Inactive until verified by admin
+      });
+
+      // Create setup progress tracking
+      await supabase.from("business_setup_progress").insert({
+        business_id: businessData.id,
+        current_step: 1,
+        total_steps: 8,
+        business_profile_completed: false,
+        locations_completed: false,
+        services_pricing_completed: false,
+        staff_setup_completed: false,
+        integrations_completed: false,
+        stripe_connect_completed: false,
+        subscription_completed: false,
+        go_live_completed: false,
       });
 
       if (providerError) {
@@ -268,8 +305,9 @@ export default function ProviderPortal() {
         state: {
           message:
             "Account created successfully! Please upload your documents for verification.",
-          businessType: signupData.businessType,
+          businessType: signupData.business_type,
           businessId: businessData.id,
+          businessName: signupData.business_name,
         },
       });
     } catch (error) {
