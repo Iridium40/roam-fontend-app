@@ -123,18 +123,22 @@ export default function ProviderPortal() {
     setError("");
 
     try {
+      console.log("Starting login process...");
       // Use AuthContext signIn method which handles profile fetching
       await signIn(loginData.email, loginData.password);
+      console.log("Login successful, navigating to dashboard...");
 
       // Success - redirect to provider dashboard
       navigate("/provider-dashboard");
     } catch (error) {
+      console.error("Login error:", error);
       setError(
         error instanceof Error
           ? error.message
           : "An error occurred during login",
       );
     } finally {
+      console.log("Setting isLoading to false");
       setIsLoading(false);
     }
   };
