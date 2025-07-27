@@ -431,6 +431,9 @@ export default function ProviderPortal() {
                   <CardTitle className="text-2xl">Provider Access</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-6">
+                    <TestLogin />
+                  </div>
                   <Tabs
                     value={activeTab}
                     onValueChange={setActiveTab}
