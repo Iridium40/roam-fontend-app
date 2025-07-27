@@ -131,6 +131,10 @@ class DirectSupabaseAPI {
     return null;
   }
 
+  get currentAccessToken(): string | null {
+    return this.accessToken;
+  }
+
   // Storage operations using direct API
   async uploadFile(bucket: string, path: string, file: File): Promise<{ path: string; publicUrl: string }> {
     const formData = new FormData();
