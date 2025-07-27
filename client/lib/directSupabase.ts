@@ -69,12 +69,19 @@ class DirectSupabaseAPI {
       },
     );
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Authentication failed: ${error}`);
+      throw new Error(`Authentication failed: ${responseText}`);
     }
 
-    const authData: AuthResponse = await response.json();
+    let authData: AuthResponse;
+    try {
+      authData = JSON.parse(responseText);
+    } catch (parseError) {
+      throw new Error(`Invalid response format: ${responseText}`);
+    }
+
     this.accessToken = authData.access_token;
     return authData;
   }
