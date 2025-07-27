@@ -264,14 +264,7 @@ export default function MyBookings() {
                           <MessageCircle className="w-4 h-4 mr-2" />
                           Contact Provider
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-blue-500 text-blue-700 hover:bg-blue-500 hover:text-white"
-                        >
-                          <Phone className="w-4 h-4 mr-2" />
-                          Call
-                        </Button>
+
                       </div>
                     </div>
                   </div>
