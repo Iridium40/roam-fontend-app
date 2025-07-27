@@ -301,5 +301,15 @@ export type ProviderRole = "owner" | "dispatcher" | "provider";
 
 export type VerificationStatus = "pending" | "under_review" | "approved" | "rejected" | "suspended";
 
+export type ProviderVerificationStatus = "pending" | "under_review" | "approved" | "rejected" | "suspended";
+
+export type BackgroundCheckStatus = "pending" | "under_review" | "approved" | "rejected" | "flagged";
+
+export type DeliveryType = "mobile" | "in_person" | "virtual";
+
 export type AdminUser = Database["public"]["Tables"]["admin_users"]["Row"];
 export type Provider = Database["public"]["Tables"]["providers"]["Row"];
+export type BusinessProfile = Database["public"]["Tables"]["business_profiles"]["Row"];
+export type BusinessLocation = Database["public"]["Tables"]["business_locations"]["Row"];
+export type BusinessService = Database["public"]["Tables"]["business_services"]["Row"];
+export type BusinessAddon = Database["public"]["Tables"]["business_addons"]["Row"];
