@@ -33,6 +33,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import type { BusinessRegistration, BusinessType } from "@/lib/database.types";
 import { useAuth } from "@/contexts/AuthContext";
+import { TestLogin } from "@/components/TestLogin";
 
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
