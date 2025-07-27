@@ -46,10 +46,16 @@ export interface Database {
           business_name: string;
           email: string;
           phone: string;
+          first_name: string;
+          last_name: string;
+          business_type: BusinessType;
+          roles: ProviderRole[];
           is_active: boolean;
-          verification_status: string;
+          verification_status: VerificationStatus;
           created_at: string;
           updated_at: string;
+          verified_at: string | null;
+          verified_by: string | null;
         };
         Insert: {
           id?: string;
@@ -57,10 +63,16 @@ export interface Database {
           business_name: string;
           email: string;
           phone: string;
+          first_name: string;
+          last_name: string;
+          business_type: BusinessType;
+          roles?: ProviderRole[];
           is_active?: boolean;
-          verification_status?: string;
+          verification_status?: VerificationStatus;
           created_at?: string;
           updated_at?: string;
+          verified_at?: string | null;
+          verified_by?: string | null;
         };
         Update: {
           id?: string;
@@ -68,10 +80,16 @@ export interface Database {
           business_name?: string;
           email?: string;
           phone?: string;
+          first_name?: string;
+          last_name?: string;
+          business_type?: BusinessType;
+          roles?: ProviderRole[];
           is_active?: boolean;
-          verification_status?: string;
+          verification_status?: VerificationStatus;
           created_at?: string;
           updated_at?: string;
+          verified_at?: string | null;
+          verified_by?: string | null;
         };
       };
     };
