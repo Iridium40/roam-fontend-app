@@ -16,6 +16,7 @@ import ProviderPortal from "./pages/ProviderPortal";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderOnboarding from "./pages/ProviderOnboarding";
 import ProviderProfile from "./pages/ProviderProfile";
+import BusinessManagement from "./pages/BusinessManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
