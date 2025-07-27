@@ -731,25 +731,7 @@ export default function ProviderDashboard() {
       }
 
       // Update business using direct API
-      const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_profiles?id=eq.${business.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
-          },
-          body: JSON.stringify(updateData),
-        }
-      );
-
-      const responseText = await response.text();
-
-      if (!response.ok) {
-        throw new Error(`Failed to update business details: ${responseText}`);
-      }
+      await directSupabaseAPI.updateBusinessProfile(business.id, updateData);
 
       // Update local business state
       setBusiness({
