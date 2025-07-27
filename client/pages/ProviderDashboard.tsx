@@ -617,76 +617,83 @@ export default function ProviderDashboard() {
               </div>
 
               <div className="space-y-4">
-                {recentBookings.map((booking) => {
-                  const statusConfig = getStatusBadge(booking.status);
-                  const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
+                {bookings.length > 0 ? (
+                  bookings.map((booking) => {
+                    const statusConfig = getStatusBadge(booking.status);
+                    const DeliveryIcon = getDeliveryIcon(booking.delivery_type || "mobile");
 
-                  return (
-                    <Card
-                      key={booking.id}
-                      className="hover:shadow-md transition-shadow"
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
-                              <Calendar className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold">
-                                {booking.service}
-                              </h3>
-                              <p className="text-sm text-foreground/60 mb-2">
-                                with {booking.customer}
-                              </p>
-                              <div className="flex items-center gap-4 text-sm text-foreground/60">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="w-4 h-4" />
-                                  {new Date(booking.date).toLocaleDateString()}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Clock className="w-4 h-4" />
-                                  {booking.time}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <DeliveryIcon className="w-4 h-4" />
-                                  {booking.location}
+                    return (
+                      <Card
+                        key={booking.id}
+                        className="hover:shadow-md transition-shadow"
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start gap-4">
+                              <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                <Calendar className="w-6 h-6 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">
+                                  {booking.services?.name || "Service"}
+                                </h3>
+                                <p className="text-sm text-foreground/60 mb-2">
+                                  with {booking.customer_name || "Customer"}
+                                </p>
+                                <div className="flex items-center gap-4 text-sm text-foreground/60">
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="w-4 h-4" />
+                                    {new Date(booking.service_date).toLocaleDateString()}
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="w-4 h-4" />
+                                    {booking.service_time}
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <DeliveryIcon className="w-4 h-4" />
+                                    {booking.service_location || "TBD"}
+                                  </div>
                                 </div>
                               </div>
                             </div>
+                            <div className="text-right">
+                              <Badge className={statusConfig.color}>
+                                {statusConfig.label}
+                              </Badge>
+                              <p className="text-lg font-semibold text-roam-blue mt-2">
+                                ${booking.total_price || "0"}
+                              </p>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <Badge className={statusConfig.color}>
-                              {statusConfig.label}
-                            </Badge>
-                            <p className="text-lg font-semibold text-roam-blue mt-2">
-                              ${booking.price}
-                            </p>
-                          </div>
-                        </div>
 
-                        {booking.status === "pending" && (
-                          <div className="mt-4 flex gap-2">
-                            <Button
-                              size="sm"
-                              className="bg-roam-blue hover:bg-roam-blue/90"
-                            >
-                              <CheckCircle className="w-4 h-4 mr-2" />
-                              Accept
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="border-red-300 text-red-600 hover:bg-red-50"
-                            >
-                              Decline
-                            </Button>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                          {booking.status === "pending" && (
+                            <div className="mt-4 flex gap-2">
+                              <Button
+                                size="sm"
+                                className="bg-roam-blue hover:bg-roam-blue/90"
+                              >
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Accept
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-red-300 text-red-600 hover:bg-red-50"
+                              >
+                                Decline
+                              </Button>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-8 text-foreground/60">
+                    <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No bookings to display</p>
+                  </div>
+                )}
               </div>
             </TabsContent>
 
