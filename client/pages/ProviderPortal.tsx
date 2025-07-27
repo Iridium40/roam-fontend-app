@@ -53,13 +53,50 @@ export default function ProviderPortal() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    setError("");
+
+    try {
+      // Authenticate with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: loginData.email,
+        password: loginData.password,
+      });
+
+      if (authError) {
+        throw new Error(authError.message);
+      }
+
+      if (!authData.user) {
+        throw new Error("Authentication failed");
+      }
+
+      // Check if user exists in providers table
+      const { data: providerData, error: providerError } = await supabase
+        .from('providers')
+        .select('*')
+        .eq('user_id', authData.user.id)
+        .single();
+
+      if (providerError) {
+        // If provider not found, sign out and show error
+        await supabase.auth.signOut();
+        throw new Error("Provider account not found. Please contact support or complete the onboarding process.");
+      }
+
+      if (!providerData.is_active) {
+        // If provider account is not active
+        await supabase.auth.signOut();
+        throw new Error("Your provider account is currently inactive. Please contact support.");
+      }
+
+      // Success - redirect to provider dashboard
+      navigate("/provider-dashboard");
+
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "An error occurred during login");
+    } finally {
       setIsLoading(false);
-      // Redirect to provider dashboard
-      window.location.href = "/provider-dashboard";
-    }, 2000);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
