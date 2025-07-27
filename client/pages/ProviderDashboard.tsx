@@ -3593,6 +3593,292 @@ export default function ProviderDashboard() {
               </div>
             </TabsContent>
 
+            {/* Financial Tab */}
+            <TabsContent value="financial" className="space-y-6">
+              <h2 className="text-2xl font-bold">Financial Management</h2>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {/* Earnings Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-roam-blue" />
+                      Earnings Overview
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">This Month</span>
+                        <span className="text-xl font-semibold text-roam-blue">$3,250</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">Last Month</span>
+                        <span className="text-lg font-medium">$2,890</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">Total Earned</span>
+                        <span className="text-lg font-medium">$47,325</span>
+                      </div>
+                      <div className="pt-2 border-t">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-green-600">Growth</span>
+                          <span className="text-sm text-green-600 font-medium">+12.4%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Pending Payments */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-roam-yellow" />
+                      Pending Payments
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">Outstanding</span>
+                        <span className="text-xl font-semibold text-roam-yellow">$485</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">Next Payout</span>
+                        <span className="text-sm font-medium">Tomorrow</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">Completed Services</span>
+                        <span className="text-sm font-medium">3 bookings</span>
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="w-full border-roam-yellow text-roam-yellow hover:bg-roam-yellow hover:text-white"
+                      >
+                        View Details
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Payment Methods */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-roam-blue" />
+                      Payment Methods
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                            <span className="text-xs font-bold text-blue-600">••••</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Bank Account</p>
+                            <p className="text-xs text-foreground/60">****4532</p>
+                          </div>
+                        </div>
+                        <Badge variant="secondary">Primary</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
+                            <span className="text-xs font-bold text-green-600">P</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">PayPal</p>
+                            <p className="text-xs text-foreground/60">john@email.com</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline">Active</Badge>
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Method
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Recent Transactions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-roam-blue" />
+                    Recent Transactions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Payment Received</p>
+                          <p className="text-sm text-foreground/60">Deep Tissue Massage - Sarah M.</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-green-600">+$120.00</p>
+                        <p className="text-xs text-foreground/60">Jan 15, 2024</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <DollarSign className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Payout Processed</p>
+                          <p className="text-sm text-foreground/60">Weekly earnings</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-blue-600">$850.00</p>
+                        <p className="text-xs text-foreground/60">Jan 12, 2024</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                          <Clock className="w-5 h-5 text-gray-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Service Fee</p>
+                          <p className="text-sm text-foreground/60">Platform commission (8%)</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-600">-$9.60</p>
+                        <p className="text-xs text-foreground/60">Jan 15, 2024</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Payment Received</p>
+                          <p className="text-sm text-foreground/60">Couples Massage - John & Lisa D.</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-green-600">+$240.00</p>
+                        <p className="text-xs text-foreground/60">Jan 14, 2024</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex justify-center">
+                    <Button variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                      View All Transactions
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Financial Settings */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Settings className="w-5 h-5 text-roam-blue" />
+                      Payout Settings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Auto Payout</Label>
+                        <p className="text-sm text-foreground/60">
+                          Automatically transfer earnings weekly
+                        </p>
+                      </div>
+                      <Switch
+                        defaultChecked
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Payout Day</Label>
+                      <Select defaultValue="friday">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="monday">Monday</SelectItem>
+                          <SelectItem value="tuesday">Tuesday</SelectItem>
+                          <SelectItem value="wednesday">Wednesday</SelectItem>
+                          <SelectItem value="thursday">Thursday</SelectItem>
+                          <SelectItem value="friday">Friday</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Minimum Payout Amount</Label>
+                      <Input type="number" defaultValue="50" min="25" />
+                      <p className="text-xs text-foreground/60">
+                        Minimum $25. Earnings below this amount will roll over to next payout.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-roam-blue" />
+                      Tax Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Tax ID</p>
+                        <p className="text-sm text-foreground/60">***-**-1234</p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Tax Documents</Label>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
+                          <span className="text-sm">2024 1099-NEC</span>
+                          <Badge variant="secondary">Available Soon</Badge>
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
+                          <span className="text-sm">2023 1099-NEC</span>
+                          <Button variant="outline" size="sm">Download</Button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="pt-2 border-t">
+                      <p className="text-xs text-foreground/60">
+                        Tax documents are typically available by January 31st of the following year.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
               <h2 className="text-2xl font-bold">Account Settings</h2>
