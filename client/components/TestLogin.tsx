@@ -19,16 +19,42 @@ export function TestLogin() {
   const handleSimpleLogin = async () => {
     setIsLoading(true);
     setLogs([]);
-    
+
     try {
       addLog("Starting simple login test...");
-      
-      // Step 1: Authenticate
+
+      // Check Supabase configuration first
+      addLog("Checking Supabase configuration...");
+      addLog(`Supabase URL: ${import.meta.env.VITE_PUBLIC_SUPABASE_URL}`);
+      addLog(`Anon Key: ${import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20)}...`);
+
+      // Test basic connectivity
+      addLog("Testing basic Supabase connectivity...");
+      const connectivityPromise = supabase.from("providers").select("count").limit(1);
+      const connectivityTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Connectivity test timeout")), 5000)
+      );
+
+      try {
+        await Promise.race([connectivityPromise, connectivityTimeout]);
+        addLog("Supabase connectivity: OK");
+      } catch (error) {
+        addLog(`Supabase connectivity error: ${error}`);
+        return;
+      }
+
+      // Step 1: Authenticate with timeout
       addLog("Step 1: Authenticating with Supabase...");
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      const authPromise = supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      const authTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Authentication timeout after 10 seconds")), 10000)
+      );
+
+      const { data: authData, error: authError } = await Promise.race([authPromise, authTimeout]);
 
       if (authError) {
         addLog(`Auth error: ${authError.message}`);
