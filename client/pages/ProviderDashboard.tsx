@@ -400,7 +400,7 @@ export default function ProviderDashboard() {
               >
                 Services
               </TabsTrigger>
-              {provider.provider_role === 'owner' && (
+              {provider.provider_role === "owner" && (
                 <TabsTrigger
                   value="business"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -578,7 +578,7 @@ export default function ProviderDashboard() {
             </TabsContent>
 
             {/* Business Tab */}
-            {provider.provider_role === 'owner' && (
+            {provider.provider_role === "owner" && (
               <TabsContent value="business" className="space-y-6">
                 <h2 className="text-2xl font-bold">Business Management</h2>
 
@@ -587,8 +587,13 @@ export default function ProviderDashboard() {
                     <CardContent className="p-6 text-center">
                       <Building className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Business Details</h3>
-                      <p className="text-sm text-foreground/60 mb-4">Manage business information, hours, and contact details</p>
-                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                      <p className="text-sm text-foreground/60 mb-4">
+                        Manage business information, hours, and contact details
+                      </p>
+                      <Button
+                        asChild
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                      >
                         <Link to="/business-management">
                           <Edit className="w-4 h-4 mr-2" />
                           Manage
@@ -601,8 +606,13 @@ export default function ProviderDashboard() {
                     <CardContent className="p-6 text-center">
                       <MapPin className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Locations</h3>
-                      <p className="text-sm text-foreground/60 mb-4">Add and manage business locations</p>
-                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                      <p className="text-sm text-foreground/60 mb-4">
+                        Add and manage business locations
+                      </p>
+                      <Button
+                        asChild
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                      >
                         <Link to="/business-management">
                           <Plus className="w-4 h-4 mr-2" />
                           Add Location
@@ -615,8 +625,13 @@ export default function ProviderDashboard() {
                     <CardContent className="p-6 text-center">
                       <Star className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Services & Pricing</h3>
-                      <p className="text-sm text-foreground/60 mb-4">Configure services and set business pricing</p>
-                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                      <p className="text-sm text-foreground/60 mb-4">
+                        Configure services and set business pricing
+                      </p>
+                      <Button
+                        asChild
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                      >
                         <Link to="/business-management">
                           <DollarSign className="w-4 h-4 mr-2" />
                           Set Prices
@@ -629,8 +644,13 @@ export default function ProviderDashboard() {
                     <CardContent className="p-6 text-center">
                       <Users className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Team Members</h3>
-                      <p className="text-sm text-foreground/60 mb-4">Manage providers and assign locations</p>
-                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                      <p className="text-sm text-foreground/60 mb-4">
+                        Manage providers and assign locations
+                      </p>
+                      <Button
+                        asChild
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                      >
                         <Link to="/business-management">
                           <Users className="w-4 h-4 mr-2" />
                           Manage Team
@@ -649,23 +669,37 @@ export default function ProviderDashboard() {
                     <CardContent>
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">Business Name</span>
-                          <span className="font-medium">ROAM Wellness Services</span>
+                          <span className="text-sm text-foreground/60">
+                            Business Name
+                          </span>
+                          <span className="font-medium">
+                            ROAM Wellness Services
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">Verification Status</span>
-                          <Badge className="bg-green-100 text-green-800">Verified</Badge>
+                          <span className="text-sm text-foreground/60">
+                            Verification Status
+                          </span>
+                          <Badge className="bg-green-100 text-green-800">
+                            Verified
+                          </Badge>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">Active Locations</span>
+                          <span className="text-sm text-foreground/60">
+                            Active Locations
+                          </span>
                           <span className="font-medium">3</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">Team Members</span>
+                          <span className="text-sm text-foreground/60">
+                            Team Members
+                          </span>
                           <span className="font-medium">5</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">Services Offered</span>
+                          <span className="text-sm text-foreground/60">
+                            Services Offered
+                          </span>
                           <span className="font-medium">12</span>
                         </div>
                       </div>
@@ -679,17 +713,24 @@ export default function ProviderDashboard() {
                     <CardContent>
                       <div className="space-y-3">
                         {[
-                          { day: 'Monday', hours: '9:00 AM - 7:00 PM' },
-                          { day: 'Tuesday', hours: '9:00 AM - 7:00 PM' },
-                          { day: 'Wednesday', hours: '9:00 AM - 7:00 PM' },
-                          { day: 'Thursday', hours: '9:00 AM - 7:00 PM' },
-                          { day: 'Friday', hours: '9:00 AM - 6:00 PM' },
-                          { day: 'Saturday', hours: '10:00 AM - 5:00 PM' },
-                          { day: 'Sunday', hours: 'Closed' }
+                          { day: "Monday", hours: "9:00 AM - 7:00 PM" },
+                          { day: "Tuesday", hours: "9:00 AM - 7:00 PM" },
+                          { day: "Wednesday", hours: "9:00 AM - 7:00 PM" },
+                          { day: "Thursday", hours: "9:00 AM - 7:00 PM" },
+                          { day: "Friday", hours: "9:00 AM - 6:00 PM" },
+                          { day: "Saturday", hours: "10:00 AM - 5:00 PM" },
+                          { day: "Sunday", hours: "Closed" },
                         ].map((schedule) => (
-                          <div key={schedule.day} className="flex justify-between items-center">
-                            <span className="text-sm font-medium">{schedule.day}</span>
-                            <span className="text-sm text-foreground/60">{schedule.hours}</span>
+                          <div
+                            key={schedule.day}
+                            className="flex justify-between items-center"
+                          >
+                            <span className="text-sm font-medium">
+                              {schedule.day}
+                            </span>
+                            <span className="text-sm text-foreground/60">
+                              {schedule.hours}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -712,20 +753,49 @@ export default function ProviderDashboard() {
                   <CardContent>
                     <div className="space-y-4">
                       {[
-                        { action: 'New location added', details: 'Downtown Miami location', time: '2 hours ago', icon: MapPin },
-                        { action: 'Service pricing updated', details: 'Deep Tissue Massage - $120', time: '1 day ago', icon: DollarSign },
-                        { action: 'Team member added', details: 'Jessica Park joined as Provider', time: '3 days ago', icon: Users },
-                        { action: 'Business hours updated', details: 'Saturday hours extended', time: '1 week ago', icon: Clock }
+                        {
+                          action: "New location added",
+                          details: "Downtown Miami location",
+                          time: "2 hours ago",
+                          icon: MapPin,
+                        },
+                        {
+                          action: "Service pricing updated",
+                          details: "Deep Tissue Massage - $120",
+                          time: "1 day ago",
+                          icon: DollarSign,
+                        },
+                        {
+                          action: "Team member added",
+                          details: "Jessica Park joined as Provider",
+                          time: "3 days ago",
+                          icon: Users,
+                        },
+                        {
+                          action: "Business hours updated",
+                          details: "Saturday hours extended",
+                          time: "1 week ago",
+                          icon: Clock,
+                        },
                       ].map((activity, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-accent/20">
+                        <div
+                          key={index}
+                          className="flex items-start gap-3 p-3 rounded-lg bg-accent/20"
+                        >
                           <div className="w-8 h-8 bg-roam-blue rounded-full flex items-center justify-center">
                             <activity.icon className="w-4 h-4 text-white" />
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium text-sm">{activity.action}</p>
-                            <p className="text-xs text-foreground/60">{activity.details}</p>
+                            <p className="font-medium text-sm">
+                              {activity.action}
+                            </p>
+                            <p className="text-xs text-foreground/60">
+                              {activity.details}
+                            </p>
                           </div>
-                          <span className="text-xs text-foreground/50">{activity.time}</span>
+                          <span className="text-xs text-foreground/50">
+                            {activity.time}
+                          </span>
                         </div>
                       ))}
                     </div>
