@@ -203,11 +203,11 @@ export default function ProviderPortal() {
         );
       }
 
-      // Success - redirect to onboarding
-      navigate("/provider-onboarding", {
+      // Success - redirect to document verification
+      navigate("/provider-document-verification", {
         state: {
           message:
-            "Account created successfully! Please complete the verification process.",
+            "Account created successfully! Please upload your documents for verification.",
           businessType: signupData.businessType,
         },
       });
