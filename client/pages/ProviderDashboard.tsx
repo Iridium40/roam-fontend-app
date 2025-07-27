@@ -955,7 +955,8 @@ export default function ProviderDashboard() {
     resetLocationForm();
   };
 
-  const handleBusinessDetailsFormChange = (field: string, value: string) => {
+  const handleBusinessDetailsFormChange = (field: string, value: any) => {
+    console.log(`Business form field change: ${field} = "${value}" (type: ${typeof value})`);
     setBusinessDetailsForm(prev => ({ ...prev, [field]: value }));
     if (businessDetailsSuccess) setBusinessDetailsSuccess("");
     if (businessDetailsError) setBusinessDetailsError("");
