@@ -322,6 +322,118 @@ export default function ProviderDashboard() {
     }
   };
 
+  const handleBusinessHoursChange = (day: string, field: string, value: string | boolean) => {
+    setBusinessHoursForm(prev => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [field]: value
+      }
+    }));
+
+    // Clear messages when user makes changes
+    if (businessHoursSuccess) setBusinessHoursSuccess("");
+    if (businessHoursError) setBusinessHoursError("");
+  };
+
+  const handleSaveBusinessHours = async () => {
+    if (!business) return;
+
+    setBusinessHoursSaving(true);
+    setBusinessHoursError("");
+    setBusinessHoursSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Convert form data to the required JSON format
+      const businessHoursJson = {};
+      Object.keys(businessHoursForm).forEach(day => {
+        if (businessHoursForm[day].isOpen) {
+          businessHoursJson[day] = {
+            open: businessHoursForm[day].open,
+            close: businessHoursForm[day].close
+          };
+        }
+      });
+
+      // Update business_profiles using direct API
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_profiles?id=eq.${business.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ business_hours: businessHoursJson }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update business hours: ${errorText}`);
+      }
+
+      // Update local state
+      setBusinessHours(businessHoursJson);
+      setBusiness({
+        ...business,
+        business_hours: businessHoursJson
+      });
+
+      setBusinessHoursSuccess("Business hours updated successfully!");
+      setEditingBusinessHours(false);
+
+    } catch (error: any) {
+      console.error('Business hours save error:', error);
+      let errorMessage = 'Failed to update business hours';
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
+      setBusinessHoursError(errorMessage);
+    } finally {
+      setBusinessHoursSaving(false);
+    }
+  };
+
+  const handleCancelBusinessHours = () => {
+    // Reset form to current data
+    if (businessHours) {
+      const resetForm = {
+        Monday: { isOpen: false, open: "09:00", close: "17:00" },
+        Tuesday: { isOpen: false, open: "09:00", close: "17:00" },
+        Wednesday: { isOpen: false, open: "09:00", close: "17:00" },
+        Thursday: { isOpen: false, open: "09:00", close: "17:00" },
+        Friday: { isOpen: false, open: "09:00", close: "17:00" },
+        Saturday: { isOpen: false, open: "09:00", close: "17:00" },
+        Sunday: { isOpen: false, open: "09:00", close: "17:00" },
+      };
+
+      Object.keys(resetForm).forEach(day => {
+        if (businessHours[day]) {
+          resetForm[day] = {
+            isOpen: true,
+            open: businessHours[day].open || "09:00",
+            close: businessHours[day].close || "17:00"
+          };
+        }
+      });
+
+      setBusinessHoursForm(resetForm);
+    }
+
+    setEditingBusinessHours(false);
+    setBusinessHoursError("");
+    setBusinessHoursSuccess("");
+  };
+
   useEffect(() => {
     if (user) {
       fetchDashboardData();
