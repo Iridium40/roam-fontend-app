@@ -1530,13 +1530,11 @@ export default function ProviderDashboard() {
                         Manage business information, hours, and contact details
                       </p>
                       <Button
-                        asChild
+                        onClick={() => setManagingBusinessDetails(true)}
                         className="w-full bg-roam-blue hover:bg-roam-blue/90"
                       >
-                        <Link to="/business-management">
-                          <Edit className="w-4 h-4 mr-2" />
-                          Manage
-                        </Link>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Manage
                       </Button>
                     </CardContent>
                   </Card>
