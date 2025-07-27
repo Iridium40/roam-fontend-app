@@ -45,6 +45,7 @@ export default function ProviderPortal() {
     password: "",
     confirmPassword: "",
     businessName: "",
+    businessType: "",
     agreedToTerms: false,
     agreedToBackground: false,
   });
