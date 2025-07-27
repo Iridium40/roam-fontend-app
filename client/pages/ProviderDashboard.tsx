@@ -1019,6 +1019,9 @@ export default function ProviderDashboard() {
           console.error("Error fetching recent activity:", activityError);
         }
 
+        // Fetch business services
+        await fetchBusinessServices();
+
         // Fetch business metrics using correct business_id from provider
         const [locationsResult, teamResult, servicesResult] = await Promise.all(
           [
