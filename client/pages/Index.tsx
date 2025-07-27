@@ -363,12 +363,12 @@ export default function Index() {
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center mb-12">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-roam-blue via-foreground to-roam-blue bg-clip-text text-transparent leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight drop-shadow-lg">
               Book Premium Services
               <br />
-              <span className="text-roam-blue">Anywhere in Florida</span>
+              <span className="text-roam-yellow">Anywhere in Florida</span>
             </h1>
-            <p className="text-xl text-foreground/70 mb-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
               Connect with verified professionals in Beauty, Fitness, Therapy,
               and Healthcare. Available mobile, in-studio, or virtual.
             </p>
