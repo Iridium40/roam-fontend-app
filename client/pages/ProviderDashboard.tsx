@@ -1255,35 +1255,7 @@ export default function ProviderDashboard() {
     },
   ];
 
-  const services = [
-    {
-      id: 1,
-      name: "Deep Tissue Massage",
-      duration: "90 minutes",
-      price: 120,
-      category: "Massage Therapy",
-      active: true,
-      bookings: 23,
-    },
-    {
-      id: 2,
-      name: "Swedish Massage",
-      duration: "60 minutes",
-      price: 90,
-      category: "Massage Therapy",
-      active: true,
-      bookings: 18,
-    },
-    {
-      id: 3,
-      name: "Sports Recovery Massage",
-      duration: "75 minutes",
-      price: 110,
-      category: "Massage Therapy",
-      active: false,
-      bookings: 6,
-    },
-  ];
+  // Remove hardcoded services - now using businessServices from state
 
   const getStatusBadge = (status: string) => {
     const configs = {
