@@ -1525,6 +1525,19 @@ export default function ProviderDashboard() {
     }
   }, [provider, activeTab]);
 
+  // Fetch team providers when provider is available and providers tab is active
+  useEffect(() => {
+    if (
+      provider &&
+      activeTab === "providers" &&
+      teamProviders.length === 0 &&
+      !providersLoading
+    ) {
+      console.log("Auto-fetching team providers for active tab");
+      fetchTeamProviders();
+    }
+  }, [provider, activeTab]);
+
   const fetchDashboardData = async () => {
     if (!user) return;
 
