@@ -1328,21 +1328,116 @@ export default function ProviderDashboard() {
                       <CardTitle>Business Hours</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        {businessHours
-                          ? [
-                              "Monday",
-                              "Tuesday",
-                              "Wednesday",
-                              "Thursday",
-                              "Friday",
-                              "Saturday",
-                              "Sunday"
-                            ].map((day) => {
-                              const dayHours = businessHours[day];
-                              const isOpen = dayHours && typeof dayHours === "object" && dayHours.open && dayHours.close;
+                      {businessHoursError && (
+                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                          {businessHoursError}
+                        </div>
+                      )}
 
-                              return (
+                      {businessHoursSuccess && (
+                        <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
+                          {businessHoursSuccess}
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        {editingBusinessHours ? (
+                          // Editing mode
+                          [
+                            "Monday",
+                            "Tuesday",
+                            "Wednesday",
+                            "Thursday",
+                            "Friday",
+                            "Saturday",
+                            "Sunday"
+                          ].map((day) => (
+                            <div
+                              key={day}
+                              className="flex items-center justify-between p-3 border rounded-lg"
+                            >
+                              <div className="flex items-center space-x-3">
+                                <Switch
+                                  checked={businessHoursForm[day].isOpen}
+                                  onCheckedChange={(checked) =>
+                                    handleBusinessHoursChange(day, "isOpen", checked)
+                                  }
+                                  disabled={businessHoursSaving}
+                                  className="data-[state=checked]:bg-roam-blue"
+                                />
+                                <span className="text-sm font-medium w-20">
+                                  {day}
+                                </span>
+                              </div>
+
+                              {businessHoursForm[day].isOpen ? (
+                                <div className="flex items-center space-x-2">
+                                  <Input
+                                    type="time"
+                                    value={businessHoursForm[day].open}
+                                    onChange={(e) =>
+                                      handleBusinessHoursChange(day, "open", e.target.value)
+                                    }
+                                    disabled={businessHoursSaving}
+                                    className="w-24"
+                                  />
+                                  <span className="text-sm text-foreground/60">to</span>
+                                  <Input
+                                    type="time"
+                                    value={businessHoursForm[day].close}
+                                    onChange={(e) =>
+                                      handleBusinessHoursChange(day, "close", e.target.value)
+                                    }
+                                    disabled={businessHoursSaving}
+                                    className="w-24"
+                                  />
+                                </div>
+                              ) : (
+                                <span className="text-sm text-foreground/60">Closed</span>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          // Display mode
+                          businessHours
+                            ? [
+                                "Monday",
+                                "Tuesday",
+                                "Wednesday",
+                                "Thursday",
+                                "Friday",
+                                "Saturday",
+                                "Sunday"
+                              ].map((day) => {
+                                const dayHours = businessHours[day];
+                                const isOpen = dayHours && typeof dayHours === "object" && dayHours.open && dayHours.close;
+
+                                return (
+                                  <div
+                                    key={day}
+                                    className="flex justify-between items-center"
+                                  >
+                                    <span className="text-sm font-medium">
+                                      {day}
+                                    </span>
+                                    <span className="text-sm text-foreground/60">
+                                      {isOpen
+                                        ? `${dayHours.open} - ${dayHours.close}`
+                                        : "Closed"
+                                      }
+                                    </span>
+                                  </div>
+                                );
+                              })
+                            : [
+                                "Monday",
+                                "Tuesday",
+                                "Wednesday",
+                                "Thursday",
+                                "Friday",
+                                "Saturday",
+                                "Sunday"
+                              ].map((day) => (
                                 <div
                                   key={day}
                                   className="flex justify-between items-center"
@@ -1351,43 +1446,51 @@ export default function ProviderDashboard() {
                                     {day}
                                   </span>
                                   <span className="text-sm text-foreground/60">
-                                    {isOpen
-                                      ? `${dayHours.open} - ${dayHours.close}`
-                                      : "Closed"
-                                    }
+                                    Loading...
                                   </span>
                                 </div>
-                              );
-                            })
-                          : [
-                              "Monday",
-                              "Tuesday",
-                              "Wednesday",
-                              "Thursday",
-                              "Friday",
-                              "Saturday",
-                              "Sunday"
-                            ].map((day) => (
-                              <div
-                                key={day}
-                                className="flex justify-between items-center"
-                              >
-                                <span className="text-sm font-medium">
-                                  {day}
-                                </span>
-                                <span className="text-sm text-foreground/60">
-                                  Loading...
-                                </span>
-                              </div>
-                            ))}
+                              ))
+                        )}
                       </div>
-                      <Button
-                        variant="outline"
-                        className="w-full mt-4 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                      >
-                        <Clock className="w-4 h-4 mr-2" />
-                        Edit Hours
-                      </Button>
+
+                      {editingBusinessHours ? (
+                        <div className="flex gap-2 mt-4">
+                          <Button
+                            className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                            onClick={handleSaveBusinessHours}
+                            disabled={businessHoursSaving}
+                          >
+                            {businessHoursSaving ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                Saving...
+                              </>
+                            ) : (
+                              <>
+                                <Clock className="w-4 h-4 mr-2" />
+                                Save Hours
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="flex-1"
+                            onClick={handleCancelBusinessHours}
+                            disabled={businessHoursSaving}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          className="w-full mt-4 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                          onClick={() => setEditingBusinessHours(true)}
+                        >
+                          <Clock className="w-4 h-4 mr-2" />
+                          Edit Hours
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
