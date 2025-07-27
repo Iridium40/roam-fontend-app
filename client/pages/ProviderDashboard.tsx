@@ -696,11 +696,12 @@ export default function ProviderDashboard() {
         throw new Error(`Failed to save location: ${errorText}`);
       }
 
+      const locationName = locationData.location_name;
       toast({
-        title: "Success",
+        title: editingLocation ? "Location Updated" : "Location Added",
         description: editingLocation
-          ? "Location updated successfully!"
-          : "Location added successfully!",
+          ? `\"${locationName}\" has been updated successfully!`
+          : `\"${locationName}\" has been added to your business!`,
         variant: "default",
       });
 
@@ -745,6 +746,13 @@ export default function ProviderDashboard() {
     });
     setEditingLocation(location);
     setAddingLocation(true);
+    setManagingLocations(true);
+
+    toast({
+      title: "Edit Location",
+      description: `Editing \"${location.location_name}\" - make your changes and save.`,
+      variant: "default",
+    });
   };
 
   const handleDeleteLocation = async (locationId: string) => {
