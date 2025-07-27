@@ -2119,22 +2119,6 @@ export default function ProviderDashboard() {
                     </CardContent>
                   </Card>
 
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                    <CardContent className="p-6 text-center">
-                      <Star className="w-12 h-12 text-roam-blue mx-auto mb-4" />
-                      <h3 className="font-semibold mb-2">Services & Pricing</h3>
-                      <p className="text-sm text-foreground/60 mb-4">
-                        Configure services and set business pricing
-                      </p>
-                      <Button
-                        onClick={() => setActiveTab("services")}
-                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      >
-                        <DollarSign className="w-4 h-4 mr-2" />
-                        Manage
-                      </Button>
-                    </CardContent>
-                  </Card>
 
                   <Card className="hover:shadow-md transition-shadow cursor-pointer">
                     <CardContent className="p-6 text-center">
