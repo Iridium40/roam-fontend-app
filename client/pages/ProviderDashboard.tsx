@@ -110,6 +110,20 @@ export default function ProviderDashboard() {
     mobile_service_radius: 10,
     is_active: true,
   });
+
+  // Business details form state
+  const [businessDetailsForm, setBusinessDetailsForm] = useState({
+    business_name: "",
+    business_type: "",
+    business_description: "",
+    business_phone: "",
+    business_email: "",
+    website_url: "",
+    tax_id: "",
+    license_number: "",
+    insurance_policy_number: "",
+    years_in_business: "",
+  });
   const navigate = useNavigate();
 
   const formatTimeAgo = (dateString: string) => {
