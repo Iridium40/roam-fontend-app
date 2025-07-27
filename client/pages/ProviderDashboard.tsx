@@ -565,6 +565,19 @@ export default function ProviderDashboard() {
   };
 
   const handleLocationFormChange = (field: string, value: any) => {
+    // Special handling for primary location changes
+    if (field === "is_primary" && value === true) {
+      const currentPrimary = locations.find(loc => loc.is_primary && loc.id !== editingLocation?.id);
+      if (currentPrimary) {
+        const confirmed = confirm(
+          `Setting this location as primary will remove the primary status from "${currentPrimary.location_name}". Continue?`
+        );
+        if (!confirmed) {
+          return; // Don't update if user cancels
+        }
+      }
+    }
+
     setLocationForm((prev) => ({ ...prev, [field]: value }));
     if (locationsSuccess) setLocationsSuccess("");
     if (locationsError) setLocationsError("");
