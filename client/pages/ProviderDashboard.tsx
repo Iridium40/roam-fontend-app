@@ -194,6 +194,149 @@ export default function ProviderDashboard() {
       .join(' ');
   };
 
+  const formatVerificationStatus = (status: string) => {
+    const statusMap = {
+      pending: "Pending",
+      verified: "Verified",
+      rejected: "Rejected",
+      suspended: "Suspended"
+    };
+    return statusMap[status] || status;
+  };
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !business) return;
+
+    setLogoUploading(true);
+    setLogoError("");
+
+    try {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Please select an image file");
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("File size must be less than 5MB");
+      }
+
+      // Generate unique filename
+      const fileExt = file.name.split(".").pop();
+      const fileName = `business-logo-${business.id}-${Date.now()}.${fileExt}`;
+      const filePath = `business-logos/${fileName}`;
+
+      // Use direct API for authenticated operations
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Remove old logo if exists
+      if (business.logo_url) {
+        try {
+          const urlParts = business.logo_url.split("/");
+          const oldFileName = urlParts[urlParts.length - 1];
+          const oldFilePath = `business-logos/${oldFileName}`;
+          await directSupabaseAPI.deleteFile("roam-file-storage", oldFilePath);
+        } catch (deleteError) {
+          console.warn("Failed to delete old logo:", deleteError);
+          // Continue with upload even if delete fails
+        }
+      }
+
+      // Upload new logo using direct API
+      const { publicUrl } = await directSupabaseAPI.uploadFile(
+        "roam-file-storage",
+        filePath,
+        file,
+      );
+
+      // Update business form state
+      setBusinessDetailsForm(prev => ({ ...prev, logo_url: publicUrl }));
+
+      // Also update the business state for immediate UI reflection
+      setBusiness(prev => prev ? { ...prev, logo_url: publicUrl } : prev);
+
+      toast({
+        title: "Logo Uploaded",
+        description: "Business logo has been uploaded successfully!",
+        variant: "default",
+      });
+    } catch (error: any) {
+      console.error("Logo upload error:", error);
+      let errorMessage = "Failed to upload logo";
+
+      if (error?.error && typeof error.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      setLogoError(errorMessage);
+      toast({
+        title: "Upload Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setLogoUploading(false);
+      // Reset file input
+      event.target.value = "";
+    }
+  };
+
+  const handleLogoRemove = async () => {
+    if (!business?.logo_url) return;
+
+    setLogoUploading(true);
+    setLogoError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Extract filename from URL
+      const urlParts = business.logo_url.split("/");
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `business-logos/${fileName}`;
+
+      // Remove from storage using direct API
+      await directSupabaseAPI.deleteFile("roam-file-storage", filePath);
+
+      // Update business form state
+      setBusinessDetailsForm(prev => ({ ...prev, logo_url: "" }));
+
+      // Also update the business state for immediate UI reflection
+      setBusiness(prev => prev ? { ...prev, logo_url: null } : prev);
+
+      toast({
+        title: "Logo Removed",
+        description: "Business logo has been removed successfully!",
+        variant: "default",
+      });
+    } catch (error: any) {
+      console.error("Logo remove error:", error);
+      let errorMessage = "Failed to remove logo";
+
+      if (error?.error && typeof error.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      setLogoError(errorMessage);
+      toast({
+        title: "Remove Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setLogoUploading(false);
+    }
+  };
+
   const handleAvatarUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
