@@ -72,6 +72,116 @@ export default function ProviderDashboard() {
     }
   };
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !provider) return;
+
+    setAvatarUploading(true);
+    setAvatarError("");
+
+    try {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Please select an image file');
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('File size must be less than 5MB');
+      }
+
+      // Generate unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${provider.id}-${Date.now()}.${fileExt}`;
+      const filePath = `avatar-provider-user/${fileName}`;
+
+      // Remove old avatar if exists
+      if (provider.image_url) {
+        const oldPath = provider.image_url.split('/').pop();
+        if (oldPath) {
+          await supabase.storage
+            .from('roam-file-storage')
+            .remove([`avatar-provider-user/${oldPath}`]);
+        }
+      }
+
+      // Upload new avatar
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('roam-file-storage')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('roam-file-storage')
+        .getPublicUrl(filePath);
+
+      // Update provider record
+      const { error: updateError } = await supabase
+        .from('providers')
+        .update({ image_url: urlData.publicUrl })
+        .eq('id', provider.id);
+
+      if (updateError) throw updateError;
+
+      // Update local state
+      setProvider({ ...provider, image_url: urlData.publicUrl });
+
+    } catch (error: any) {
+      console.error('Avatar upload error:', error);
+      setAvatarError(error.message || 'Failed to upload avatar');
+    } finally {
+      setAvatarUploading(false);
+      // Reset file input
+      event.target.value = '';
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    if (!provider?.image_url) return;
+
+    setAvatarUploading(true);
+    setAvatarError("");
+
+    try {
+      // Extract filename from URL
+      const urlParts = provider.image_url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `avatar-provider-user/${fileName}`;
+
+      // Remove from storage
+      const { error: removeError } = await supabase.storage
+        .from('roam-file-storage')
+        .remove([filePath]);
+
+      if (removeError) {
+        console.warn('Storage removal error:', removeError);
+        // Continue even if storage removal fails
+      }
+
+      // Update provider record
+      const { error: updateError } = await supabase
+        .from('providers')
+        .update({ image_url: null })
+        .eq('id', provider.id);
+
+      if (updateError) throw updateError;
+
+      // Update local state
+      setProvider({ ...provider, image_url: null });
+
+    } catch (error: any) {
+      console.error('Avatar remove error:', error);
+      setAvatarError(error.message || 'Failed to remove avatar');
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchDashboardData();
