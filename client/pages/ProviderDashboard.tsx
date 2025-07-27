@@ -1058,8 +1058,76 @@ export default function ProviderDashboard() {
           console.error("Error fetching recent activity:", activityError);
         }
 
-        // Fetch business services
-        await fetchBusinessServices();
+        // Fetch business services using providerData directly (since setProvider is async)
+        if (providerData && providerData.business_id) {
+          console.log("fetchDashboardData: Fetching business services for business_id:", providerData.business_id);
+
+          try {
+            setServicesLoading(true);
+            setServicesError("");
+
+            const { data: servicesData, error: servicesError } = await supabase
+              .from("business_services")
+              .select(`
+                *,
+                services (
+                  id,
+                  name,
+                  description,
+                  category,
+                  base_duration,
+                  base_price
+                )
+              `)
+              .eq("business_id", providerData.business_id)
+              .order("created_at", { ascending: false });
+
+            console.log("fetchDashboardData: business_services query result:", { servicesData, servicesError });
+
+            if (servicesError) {
+              console.error("fetchDashboardData: Error fetching business services:", servicesError);
+              setServicesError(`Failed to load services: ${servicesError.message}`);
+              setBusinessServices([]);
+            } else {
+              const servicesWithBookings = (servicesData || []).map((businessService) => ({
+                ...businessService,
+                booking_count: 0 // Placeholder for now
+              }));
+              console.log("fetchDashboardData: Setting business services:", servicesWithBookings);
+              setBusinessServices(servicesWithBookings);
+            }
+
+            // Also fetch addons
+            const { data: addonsData, error: addonsError } = await supabase
+              .from("business_addons")
+              .select(`
+                *,
+                service_addons (
+                  id,
+                  name,
+                  description,
+                  addon_type,
+                  default_price
+                )
+              `)
+              .eq("business_id", providerData.business_id)
+              .eq("is_available", true);
+
+            console.log("fetchDashboardData: business_addons query result:", { addonsData, addonsError });
+            setBusinessAddons(addonsData || []);
+
+          } catch (error: any) {
+            console.error("fetchDashboardData: Error in services fetch:", error);
+            setServicesError(`Failed to load services: ${error.message}`);
+            setBusinessServices([]);
+            setBusinessAddons([]);
+          } finally {
+            setServicesLoading(false);
+          }
+        } else {
+          console.warn("fetchDashboardData: No business_id found in provider data");
+          setServicesError("No business ID found for this provider");
+        }
 
         // Fetch business metrics using correct business_id from provider
         const [locationsResult, teamResult, servicesResult] = await Promise.all(
