@@ -2097,41 +2097,7 @@ export default function ProviderDashboard() {
               <TabsContent value="business" className="space-y-6">
                 <h2 className="text-2xl font-bold">Business Management</h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                    <CardContent className="p-6 text-center">
-                      <MapPin className="w-12 h-12 text-roam-blue mx-auto mb-4" />
-                      <h3 className="font-semibold mb-2">Locations</h3>
-                      <p className="text-sm text-foreground/60 mb-4">
-                        Add and manage business locations
-                      </p>
-                      <Button
-                        onClick={() => setActiveTab("locations")}
-                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      >
-                        <MapPin className="w-4 h-4 mr-2" />
-                        Manage
-                      </Button>
-                    </CardContent>
-                  </Card>
 
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                    <CardContent className="p-6 text-center">
-                      <Users className="w-12 h-12 text-roam-blue mx-auto mb-4" />
-                      <h3 className="font-semibold mb-2">Team Members</h3>
-                      <p className="text-sm text-foreground/60 mb-4">
-                        Manage providers and assign locations
-                      </p>
-                      <Button
-                        onClick={() => setActiveTab("providers")}
-                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      >
-                        <Users className="w-4 h-4 mr-2" />
-                        Manage Team
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
 
                 {/* Business Details Management */}
                 <Card>
