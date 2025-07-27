@@ -748,12 +748,17 @@ export default function ProviderDashboard() {
 
       console.log("fetchBusinessServices: business_services query result:", { servicesData, servicesError });
 
-      if (servicesError) throw servicesError;
+      if (servicesError) {
+        console.error("fetchBusinessServices: Error fetching business services:", servicesError);
+        throw servicesError;
+      }
 
       // Get service IDs for addon eligibility check
       const serviceIds = servicesData?.map(bs => bs.service_id) || [];
+      console.log("fetchBusinessServices: Found service IDs:", serviceIds);
 
       // Fetch business addons with addon details, filtered by service eligibility
+      // For now, let's simplify this query to avoid complex subqueries
       const { data: addonsData, error: addonsError } = await supabase
         .from("business_addons")
         .select(`
@@ -767,15 +772,14 @@ export default function ProviderDashboard() {
           )
         `)
         .eq("business_id", provider.business_id)
-        .eq("is_available", true)
-        .in("addon_id",
-          supabase
-            .from("service_addon_eligibility")
-            .select("addon_id")
-            .in("service_id", serviceIds)
-        );
+        .eq("is_available", true);
 
-      if (addonsError) throw addonsError;
+      console.log("fetchBusinessServices: business_addons query result:", { addonsData, addonsError });
+
+      if (addonsError) {
+        console.error("fetchBusinessServices: Error fetching business addons:", addonsError);
+        // Don't throw error for addons, just log it
+      }
 
       // For each service, get booking count from the current month
       const currentMonth = new Date();
