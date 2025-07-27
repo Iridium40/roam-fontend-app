@@ -34,36 +34,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    const initAuth = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session?.user) {
-          await fetchUserProfile(session.user.id);
-        }
-      } catch (error) {
-        console.error("Error initializing auth:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initAuth();
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        await fetchUserProfile(session.user.id);
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // Skip Supabase client session check since it hangs
+    // Authentication will be handled through direct API in signIn method
+    console.log("AuthContext: Initializing without session check");
+    setLoading(false);
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
