@@ -718,6 +718,61 @@ export default function ProviderDashboard() {
     if (businessDetailsError) setBusinessDetailsError("");
   };
 
+  const fetchBusinessServices = async () => {
+    if (!provider) return;
+
+    setServicesLoading(true);
+    setServicesError("");
+
+    try {
+      // Fetch business services with service details
+      const { data: servicesData, error: servicesError } = await supabase
+        .from("business_services")
+        .select(`
+          *,
+          services (
+            id,
+            name,
+            description,
+            category,
+            base_duration,
+            base_price
+          )
+        `)
+        .eq("business_id", provider.business_id)
+        .order("created_at", { ascending: false });
+
+      if (servicesError) throw servicesError;
+
+      // Fetch business addons with addon details
+      const { data: addonsData, error: addonsError } = await supabase
+        .from("business_addons")
+        .select(`
+          *,
+          service_addons (
+            id,
+            name,
+            description,
+            addon_type,
+            default_price
+          )
+        `)
+        .eq("business_id", provider.business_id)
+        .eq("is_available", true);
+
+      if (addonsError) throw addonsError;
+
+      setBusinessServices(servicesData || []);
+      setBusinessAddons(addonsData || []);
+
+    } catch (error: any) {
+      console.error("Error fetching business services:", error);
+      setServicesError("Failed to load services");
+    } finally {
+      setServicesLoading(false);
+    }
+  };
+
   const handleSaveBusinessDetails = async () => {
     if (!business) return;
 
