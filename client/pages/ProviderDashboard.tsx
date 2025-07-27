@@ -1330,10 +1330,6 @@ export default function ProviderDashboard() {
         is_active: businessDetailsForm.is_active,
       };
 
-      console.log("Business details form data:", businessDetailsForm);
-      console.log("Update data being sent:", updateData);
-      console.log("Contact email value:", `"${updateData.contact_email}"`);
-
       // Validate required fields
       if (!updateData.business_name) {
         throw new Error("Business name is required");
@@ -1346,17 +1342,13 @@ export default function ProviderDashboard() {
         updateData.contact_email = cleanEmail;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        console.log("Email validation - testing cleaned email:", `"${cleanEmail}"`);
-        console.log("Email length:", cleanEmail.length);
-        console.log("Email regex test result:", emailRegex.test(cleanEmail));
 
         if (!emailRegex.test(cleanEmail)) {
-          throw new Error(`Please enter a valid contact email address. Invalid format: "${cleanEmail}"`);
+          throw new Error(`Please enter a valid contact email address`);
         }
       } else {
         // If email is empty, set it to null to avoid database issues
         updateData.contact_email = null;
-        console.log("Contact email is empty, setting to null");
       }
 
       // Update business using direct API
