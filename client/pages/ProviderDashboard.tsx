@@ -2222,6 +2222,296 @@ export default function ProviderDashboard() {
           </Tabs>
         </div>
       </div>
+
+      {/* Location Management Modal */}
+      {managingLocations && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Manage Locations</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setManagingLocations(false);
+                  setAddingLocation(false);
+                  setEditingLocation(null);
+                  resetLocationForm();
+                }}
+              >
+                ×
+              </Button>
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+              {locationsError && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                  {locationsError}
+                </div>
+              )}
+
+              {locationsSuccess && (
+                <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
+                  {locationsSuccess}
+                </div>
+              )}
+
+              {!addingLocation ? (
+                <>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold">Business Locations</h3>
+                    <Button
+                      onClick={() => {
+                        setAddingLocation(true);
+                        if (!locations.length && !locationsLoading) {
+                          fetchLocations();
+                        }
+                      }}
+                      className="bg-roam-blue hover:bg-roam-blue/90"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Location
+                    </Button>
+                  </div>
+
+                  {locationsLoading ? (
+                    <div className="text-center py-8">
+                      <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                      <p>Loading locations...</p>
+                    </div>
+                  ) : locations.length > 0 ? (
+                    <div className="space-y-4">
+                      {locations.map((location) => (
+                        <Card key={location.id}>
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h4 className="font-semibold">{location.location_name}</h4>
+                                  {location.is_primary && (
+                                    <Badge className="bg-roam-blue/20 text-roam-blue">Primary</Badge>
+                                  )}
+                                  {!location.is_active && (
+                                    <Badge variant="outline" className="text-red-600 border-red-300">Inactive</Badge>
+                                  )}
+                                </div>
+                                <div className="text-sm text-foreground/70 space-y-1">
+                                  <p>{location.address_line1}</p>
+                                  {location.address_line2 && <p>{location.address_line2}</p>}
+                                  <p>{location.city}, {location.state} {location.postal_code}</p>
+                                  <p>{location.country}</p>
+                                  {location.offers_mobile_services && (
+                                    <p className="text-roam-blue">
+                                      <Smartphone className="w-4 h-4 inline mr-1" />
+                                      Mobile services within {location.mobile_service_radius} miles
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex gap-2 ml-4">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleEditLocation(location)}
+                                  disabled={locationsSaving}
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDeleteLocation(location.id)}
+                                  disabled={locationsSaving}
+                                  className="border-red-300 text-red-600 hover:bg-red-50"
+                                >
+                                  <AlertCircle className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-foreground/60">
+                      <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p className="text-lg mb-2">No locations added yet</p>
+                      <p className="text-sm">Add your first business location to get started</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                /* Location Form */
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold">
+                    {editingLocation ? "Edit Location" : "Add New Location"}
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="location_name">Location Name *</Label>
+                      <Input
+                        id="location_name"
+                        value={locationForm.location_name}
+                        onChange={(e) => handleLocationFormChange("location_name", e.target.value)}
+                        placeholder="e.g., Downtown Office, Main Store"
+                        disabled={locationsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="address_line1">Address Line 1 *</Label>
+                      <Input
+                        id="address_line1"
+                        value={locationForm.address_line1}
+                        onChange={(e) => handleLocationFormChange("address_line1", e.target.value)}
+                        placeholder="Street address"
+                        disabled={locationsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="address_line2">Address Line 2</Label>
+                      <Input
+                        id="address_line2"
+                        value={locationForm.address_line2}
+                        onChange={(e) => handleLocationFormChange("address_line2", e.target.value)}
+                        placeholder="Apt, suite, unit, etc."
+                        disabled={locationsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="city">City *</Label>
+                      <Input
+                        id="city"
+                        value={locationForm.city}
+                        onChange={(e) => handleLocationFormChange("city", e.target.value)}
+                        placeholder="City"
+                        disabled={locationsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="state">State</Label>
+                      <Input
+                        id="state"
+                        value={locationForm.state}
+                        onChange={(e) => handleLocationFormChange("state", e.target.value)}
+                        placeholder="State"
+                        disabled={locationsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="postal_code">Postal Code</Label>
+                      <Input
+                        id="postal_code"
+                        value={locationForm.postal_code}
+                        onChange={(e) => handleLocationFormChange("postal_code", e.target.value)}
+                        placeholder="ZIP/Postal code"
+                        disabled={locationsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="country">Country</Label>
+                      <Input
+                        id="country"
+                        value={locationForm.country}
+                        onChange={(e) => handleLocationFormChange("country", e.target.value)}
+                        disabled={locationsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="mobile_radius">Mobile Service Radius (miles)</Label>
+                      <Input
+                        id="mobile_radius"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={locationForm.mobile_service_radius}
+                        onChange={(e) => handleLocationFormChange("mobile_service_radius", parseInt(e.target.value) || 0)}
+                        disabled={locationsSaving || !locationForm.offers_mobile_services}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Primary Location</Label>
+                        <p className="text-sm text-foreground/60">Make this the main business location</p>
+                      </div>
+                      <Switch
+                        checked={locationForm.is_primary}
+                        onCheckedChange={(checked) => handleLocationFormChange("is_primary", checked)}
+                        disabled={locationsSaving}
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Offers Mobile Services</Label>
+                        <p className="text-sm text-foreground/60">Services can be provided at customer locations</p>
+                      </div>
+                      <Switch
+                        checked={locationForm.offers_mobile_services}
+                        onCheckedChange={(checked) => handleLocationFormChange("offers_mobile_services", checked)}
+                        disabled={locationsSaving}
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Active Location</Label>
+                        <p className="text-sm text-foreground/60">Location is currently operational</p>
+                      </div>
+                      <Switch
+                        checked={locationForm.is_active}
+                        onCheckedChange={(checked) => handleLocationFormChange("is_active", checked)}
+                        disabled={locationsSaving}
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-4 border-t">
+                    <Button
+                      onClick={handleSaveLocation}
+                      disabled={locationsSaving}
+                      className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                    >
+                      {locationsSaving ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <MapPin className="w-4 h-4 mr-2" />
+                          {editingLocation ? "Update Location" : "Add Location"}
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleCancelLocationEdit}
+                      disabled={locationsSaving}
+                      className="flex-1"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
