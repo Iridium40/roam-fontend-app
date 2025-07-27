@@ -45,6 +45,8 @@ export function TestLogin() {
 
       // Step 1: Authenticate with timeout
       addLog("Step 1: Authenticating with Supabase...");
+
+      let authResult;
       const authPromise = supabase.auth.signInWithPassword({
         email,
         password,
@@ -54,7 +56,14 @@ export function TestLogin() {
         setTimeout(() => reject(new Error("Authentication timeout after 10 seconds")), 10000)
       );
 
-      const { data: authData, error: authError } = await Promise.race([authPromise, authTimeout]);
+      try {
+        authResult = await Promise.race([authPromise, authTimeout]);
+      } catch (error) {
+        addLog(`Auth timeout or error: ${error}`);
+        return;
+      }
+
+      const { data: authData, error: authError } = authResult;
 
       if (authError) {
         addLog(`Auth error: ${authError.message}`);
