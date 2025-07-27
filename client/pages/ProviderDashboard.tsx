@@ -1433,7 +1433,7 @@ export default function ProviderDashboard() {
                                     </span>
                                     <span className="text-sm text-foreground/60">
                                       {isOpen
-                                        ? `${dayHours.open} - ${dayHours.close}`
+                                        ? `${formatTimeTo12Hour(dayHours.open)} - ${formatTimeTo12Hour(dayHours.close)}`
                                         : "Closed"
                                       }
                                     </span>
