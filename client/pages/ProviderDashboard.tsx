@@ -1325,7 +1325,6 @@ export default function ProviderDashboard() {
         phone: businessDetailsForm.phone.trim(),
         website_url: businessDetailsForm.website_url.trim(),
         years_in_business: businessDetailsForm.years_in_business ? parseInt(businessDetailsForm.years_in_business) : null,
-        image_url: businessDetailsForm.image_url.trim() || null,
         logo_url: businessDetailsForm.logo_url.trim() || null,
         is_active: businessDetailsForm.is_active,
       };
