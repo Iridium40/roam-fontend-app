@@ -1074,9 +1074,18 @@ export default function ProviderDashboard() {
                   id,
                   name,
                   description,
-                  category,
-                  base_duration,
-                  base_price
+                  min_price,
+                  duration_minutes,
+                  subcategory_id,
+                  service_subcategories (
+                    id,
+                    name,
+                    category_id,
+                    service_categories (
+                      id,
+                      name
+                    )
+                  )
                 )
               `)
               .eq("business_id", providerData.business_id)
