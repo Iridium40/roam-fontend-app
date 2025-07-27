@@ -104,7 +104,7 @@ export default function ProviderDashboard() {
     is_primary: false,
     offers_mobile_services: false,
     mobile_service_radius: 10,
-    is_active: true
+    is_active: true,
   });
   const navigate = useNavigate();
 
@@ -356,13 +356,17 @@ export default function ProviderDashboard() {
     }
   };
 
-  const handleBusinessHoursChange = (day: string, field: string, value: string | boolean) => {
-    setBusinessHoursForm(prev => ({
+  const handleBusinessHoursChange = (
+    day: string,
+    field: string,
+    value: string | boolean,
+  ) => {
+    setBusinessHoursForm((prev) => ({
       ...prev,
       [day]: {
         ...prev[day],
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
 
     // Clear messages when user makes changes
@@ -382,11 +386,11 @@ export default function ProviderDashboard() {
 
       // Convert form data to the required JSON format
       const businessHoursJson = {};
-      Object.keys(businessHoursForm).forEach(day => {
+      Object.keys(businessHoursForm).forEach((day) => {
         if (businessHoursForm[day].isOpen) {
           businessHoursJson[day] = {
             open: businessHoursForm[day].open,
-            close: businessHoursForm[day].close
+            close: businessHoursForm[day].close,
           };
         }
       });
@@ -395,15 +399,15 @@ export default function ProviderDashboard() {
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_profiles?id=eq.${business.id}`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           headers: {
-            'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal',
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
           },
           body: JSON.stringify({ business_hours: businessHoursJson }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -415,19 +419,18 @@ export default function ProviderDashboard() {
       setBusinessHours(businessHoursJson);
       setBusiness({
         ...business,
-        business_hours: businessHoursJson
+        business_hours: businessHoursJson,
       });
 
       setBusinessHoursSuccess("Business hours updated successfully!");
       setEditingBusinessHours(false);
-
     } catch (error: any) {
-      console.error('Business hours save error:', error);
-      let errorMessage = 'Failed to update business hours';
+      console.error("Business hours save error:", error);
+      let errorMessage = "Failed to update business hours";
 
       if (error?.message) {
         errorMessage = error.message;
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
       }
 
@@ -450,12 +453,12 @@ export default function ProviderDashboard() {
         Sunday: { isOpen: false, open: "09:00", close: "17:00" },
       };
 
-      Object.keys(resetForm).forEach(day => {
+      Object.keys(resetForm).forEach((day) => {
         if (businessHours[day]) {
           resetForm[day] = {
             isOpen: true,
             open: businessHours[day].open || "09:00",
-            close: businessHours[day].close || "17:00"
+            close: businessHours[day].close || "17:00",
           };
         }
       });
@@ -490,7 +493,7 @@ export default function ProviderDashboard() {
   };
 
   const handleLocationFormChange = (field: string, value: any) => {
-    setLocationForm(prev => ({ ...prev, [field]: value }));
+    setLocationForm((prev) => ({ ...prev, [field]: value }));
     if (locationsSuccess) setLocationsSuccess("");
     if (locationsError) setLocationsError("");
   };
@@ -507,7 +510,7 @@ export default function ProviderDashboard() {
       is_primary: false,
       offers_mobile_services: false,
       mobile_service_radius: 10,
-      is_active: true
+      is_active: true,
     });
   };
 
@@ -523,11 +526,15 @@ export default function ProviderDashboard() {
 
       const locationData = {
         ...locationForm,
-        business_id: provider.business_id
+        business_id: provider.business_id,
       };
 
       // Validate required fields
-      if (!locationData.location_name || !locationData.address_line1 || !locationData.city) {
+      if (
+        !locationData.location_name ||
+        !locationData.address_line1 ||
+        !locationData.city
+      ) {
         throw new Error("Location name, address, and city are required");
       }
 
@@ -537,30 +544,30 @@ export default function ProviderDashboard() {
         response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations?id=eq.${editingLocation.id}`,
           {
-            method: 'PATCH',
+            method: "PATCH",
             headers: {
-              'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=minimal',
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
             },
             body: JSON.stringify(locationData),
-          }
+          },
         );
       } else {
         // Create new location
         response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations`,
           {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=minimal',
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
             },
             body: JSON.stringify(locationData),
-          }
+          },
         );
       }
 
@@ -569,19 +576,22 @@ export default function ProviderDashboard() {
         throw new Error(`Failed to save location: ${errorText}`);
       }
 
-      setLocationsSuccess(editingLocation ? "Location updated successfully!" : "Location added successfully!");
+      setLocationsSuccess(
+        editingLocation
+          ? "Location updated successfully!"
+          : "Location added successfully!",
+      );
       setEditingLocation(null);
       setAddingLocation(false);
       resetLocationForm();
       await fetchLocations();
-
     } catch (error: any) {
-      console.error('Location save error:', error);
-      let errorMessage = 'Failed to save location';
+      console.error("Location save error:", error);
+      let errorMessage = "Failed to save location";
 
       if (error?.message) {
         errorMessage = error.message;
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
       }
 
@@ -603,7 +613,7 @@ export default function ProviderDashboard() {
       is_primary: location.is_primary || false,
       offers_mobile_services: location.offers_mobile_services || false,
       mobile_service_radius: location.mobile_service_radius || 10,
-      is_active: location.is_active !== false
+      is_active: location.is_active !== false,
     });
     setEditingLocation(location);
     setAddingLocation(true);
@@ -619,12 +629,12 @@ export default function ProviderDashboard() {
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations?id=eq.${locationId}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -635,8 +645,8 @@ export default function ProviderDashboard() {
       setLocationsSuccess("Location deleted successfully!");
       await fetchLocations();
     } catch (error: any) {
-      console.error('Location delete error:', error);
-      setLocationsError(error.message || 'Failed to delete location');
+      console.error("Location delete error:", error);
+      setLocationsError(error.message || "Failed to delete location");
     } finally {
       setLocationsSaving(false);
     }
@@ -711,12 +721,12 @@ export default function ProviderDashboard() {
           };
 
           // Populate with existing data
-          Object.keys(initialHoursForm).forEach(day => {
+          Object.keys(initialHoursForm).forEach((day) => {
             if (businessData.business_hours[day]) {
               initialHoursForm[day] = {
                 isOpen: true,
                 open: businessData.business_hours[day].open || "09:00",
-                close: businessData.business_hours[day].close || "17:00"
+                close: businessData.business_hours[day].close || "17:00",
               };
             }
           });
@@ -1558,65 +1568,80 @@ export default function ProviderDashboard() {
                       )}
 
                       <div className="space-y-3">
-                        {editingBusinessHours ? (
-                          // Editing mode
-                          [
-                            "Monday",
-                            "Tuesday",
-                            "Wednesday",
-                            "Thursday",
-                            "Friday",
-                            "Saturday",
-                            "Sunday"
-                          ].map((day) => (
-                            <div
-                              key={day}
-                              className="flex items-center justify-between p-3 border rounded-lg"
-                            >
-                              <div className="flex items-center space-x-3">
-                                <Switch
-                                  checked={businessHoursForm[day].isOpen}
-                                  onCheckedChange={(checked) =>
-                                    handleBusinessHoursChange(day, "isOpen", checked)
-                                  }
-                                  disabled={businessHoursSaving}
-                                  className="data-[state=checked]:bg-roam-blue"
-                                />
-                                <span className="text-sm font-medium w-20">
-                                  {day}
-                                </span>
-                              </div>
-
-                              {businessHoursForm[day].isOpen ? (
-                                <div className="flex items-center space-x-2">
-                                  <Input
-                                    type="time"
-                                    value={businessHoursForm[day].open}
-                                    onChange={(e) =>
-                                      handleBusinessHoursChange(day, "open", e.target.value)
+                        {editingBusinessHours
+                          ? // Editing mode
+                            [
+                              "Monday",
+                              "Tuesday",
+                              "Wednesday",
+                              "Thursday",
+                              "Friday",
+                              "Saturday",
+                              "Sunday",
+                            ].map((day) => (
+                              <div
+                                key={day}
+                                className="flex items-center justify-between p-3 border rounded-lg"
+                              >
+                                <div className="flex items-center space-x-3">
+                                  <Switch
+                                    checked={businessHoursForm[day].isOpen}
+                                    onCheckedChange={(checked) =>
+                                      handleBusinessHoursChange(
+                                        day,
+                                        "isOpen",
+                                        checked,
+                                      )
                                     }
                                     disabled={businessHoursSaving}
-                                    className="w-24"
+                                    className="data-[state=checked]:bg-roam-blue"
                                   />
-                                  <span className="text-sm text-foreground/60">to</span>
-                                  <Input
-                                    type="time"
-                                    value={businessHoursForm[day].close}
-                                    onChange={(e) =>
-                                      handleBusinessHoursChange(day, "close", e.target.value)
-                                    }
-                                    disabled={businessHoursSaving}
-                                    className="w-24"
-                                  />
+                                  <span className="text-sm font-medium w-20">
+                                    {day}
+                                  </span>
                                 </div>
-                              ) : (
-                                <span className="text-sm text-foreground/60">Closed</span>
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          // Display mode
-                          businessHours
+
+                                {businessHoursForm[day].isOpen ? (
+                                  <div className="flex items-center space-x-2">
+                                    <Input
+                                      type="time"
+                                      value={businessHoursForm[day].open}
+                                      onChange={(e) =>
+                                        handleBusinessHoursChange(
+                                          day,
+                                          "open",
+                                          e.target.value,
+                                        )
+                                      }
+                                      disabled={businessHoursSaving}
+                                      className="w-24"
+                                    />
+                                    <span className="text-sm text-foreground/60">
+                                      to
+                                    </span>
+                                    <Input
+                                      type="time"
+                                      value={businessHoursForm[day].close}
+                                      onChange={(e) =>
+                                        handleBusinessHoursChange(
+                                          day,
+                                          "close",
+                                          e.target.value,
+                                        )
+                                      }
+                                      disabled={businessHoursSaving}
+                                      className="w-24"
+                                    />
+                                  </div>
+                                ) : (
+                                  <span className="text-sm text-foreground/60">
+                                    Closed
+                                  </span>
+                                )}
+                              </div>
+                            ))
+                          : // Display mode
+                            businessHours
                             ? [
                                 "Monday",
                                 "Tuesday",
@@ -1624,10 +1649,14 @@ export default function ProviderDashboard() {
                                 "Thursday",
                                 "Friday",
                                 "Saturday",
-                                "Sunday"
+                                "Sunday",
                               ].map((day) => {
                                 const dayHours = businessHours[day];
-                                const isOpen = dayHours && typeof dayHours === "object" && dayHours.open && dayHours.close;
+                                const isOpen =
+                                  dayHours &&
+                                  typeof dayHours === "object" &&
+                                  dayHours.open &&
+                                  dayHours.close;
 
                                 return (
                                   <div
@@ -1640,8 +1669,7 @@ export default function ProviderDashboard() {
                                     <span className="text-sm text-foreground/60">
                                       {isOpen
                                         ? `${formatTimeTo12Hour(dayHours.open)} - ${formatTimeTo12Hour(dayHours.close)}`
-                                        : "Closed"
-                                      }
+                                        : "Closed"}
                                     </span>
                                   </div>
                                 );
@@ -1653,7 +1681,7 @@ export default function ProviderDashboard() {
                                 "Thursday",
                                 "Friday",
                                 "Saturday",
-                                "Sunday"
+                                "Sunday",
                               ].map((day) => (
                                 <div
                                   key={day}
@@ -1666,8 +1694,7 @@ export default function ProviderDashboard() {
                                     Loading...
                                   </span>
                                 </div>
-                              ))
-                        )}
+                              ))}
                       </div>
 
                       {editingBusinessHours ? (
@@ -2262,7 +2289,9 @@ export default function ProviderDashboard() {
               {!addingLocation ? (
                 <>
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold">Business Locations</h3>
+                    <h3 className="text-lg font-semibold">
+                      Business Locations
+                    </h3>
                     <Button
                       onClick={() => {
                         setAddingLocation(true);
@@ -2290,23 +2319,38 @@ export default function ProviderDashboard() {
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <h4 className="font-semibold">{location.location_name}</h4>
+                                  <h4 className="font-semibold">
+                                    {location.location_name}
+                                  </h4>
                                   {location.is_primary && (
-                                    <Badge className="bg-roam-blue/20 text-roam-blue">Primary</Badge>
+                                    <Badge className="bg-roam-blue/20 text-roam-blue">
+                                      Primary
+                                    </Badge>
                                   )}
                                   {!location.is_active && (
-                                    <Badge variant="outline" className="text-red-600 border-red-300">Inactive</Badge>
+                                    <Badge
+                                      variant="outline"
+                                      className="text-red-600 border-red-300"
+                                    >
+                                      Inactive
+                                    </Badge>
                                   )}
                                 </div>
                                 <div className="text-sm text-foreground/70 space-y-1">
                                   <p>{location.address_line1}</p>
-                                  {location.address_line2 && <p>{location.address_line2}</p>}
-                                  <p>{location.city}, {location.state} {location.postal_code}</p>
+                                  {location.address_line2 && (
+                                    <p>{location.address_line2}</p>
+                                  )}
+                                  <p>
+                                    {location.city}, {location.state}{" "}
+                                    {location.postal_code}
+                                  </p>
                                   <p>{location.country}</p>
                                   {location.offers_mobile_services && (
                                     <p className="text-roam-blue">
                                       <Smartphone className="w-4 h-4 inline mr-1" />
-                                      Mobile services within {location.mobile_service_radius} miles
+                                      Mobile services within{" "}
+                                      {location.mobile_service_radius} miles
                                     </p>
                                   )}
                                 </div>
@@ -2323,7 +2367,9 @@ export default function ProviderDashboard() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => handleDeleteLocation(location.id)}
+                                  onClick={() =>
+                                    handleDeleteLocation(location.id)
+                                  }
                                   disabled={locationsSaving}
                                   className="border-red-300 text-red-600 hover:bg-red-50"
                                 >
@@ -2339,7 +2385,9 @@ export default function ProviderDashboard() {
                     <div className="text-center py-8 text-foreground/60">
                       <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p className="text-lg mb-2">No locations added yet</p>
-                      <p className="text-sm">Add your first business location to get started</p>
+                      <p className="text-sm">
+                        Add your first business location to get started
+                      </p>
                     </div>
                   )}
                 </>
@@ -2356,7 +2404,12 @@ export default function ProviderDashboard() {
                       <Input
                         id="location_name"
                         value={locationForm.location_name}
-                        onChange={(e) => handleLocationFormChange("location_name", e.target.value)}
+                        onChange={(e) =>
+                          handleLocationFormChange(
+                            "location_name",
+                            e.target.value,
+                          )
+                        }
                         placeholder="e.g., Downtown Office, Main Store"
                         disabled={locationsSaving}
                       />
@@ -2367,7 +2420,12 @@ export default function ProviderDashboard() {
                       <Input
                         id="address_line1"
                         value={locationForm.address_line1}
-                        onChange={(e) => handleLocationFormChange("address_line1", e.target.value)}
+                        onChange={(e) =>
+                          handleLocationFormChange(
+                            "address_line1",
+                            e.target.value,
+                          )
+                        }
                         placeholder="Street address"
                         disabled={locationsSaving}
                       />
@@ -2378,7 +2436,12 @@ export default function ProviderDashboard() {
                       <Input
                         id="address_line2"
                         value={locationForm.address_line2}
-                        onChange={(e) => handleLocationFormChange("address_line2", e.target.value)}
+                        onChange={(e) =>
+                          handleLocationFormChange(
+                            "address_line2",
+                            e.target.value,
+                          )
+                        }
                         placeholder="Apt, suite, unit, etc."
                         disabled={locationsSaving}
                       />
@@ -2389,7 +2452,9 @@ export default function ProviderDashboard() {
                       <Input
                         id="city"
                         value={locationForm.city}
-                        onChange={(e) => handleLocationFormChange("city", e.target.value)}
+                        onChange={(e) =>
+                          handleLocationFormChange("city", e.target.value)
+                        }
                         placeholder="City"
                         disabled={locationsSaving}
                       />
@@ -2400,7 +2465,9 @@ export default function ProviderDashboard() {
                       <Input
                         id="state"
                         value={locationForm.state}
-                        onChange={(e) => handleLocationFormChange("state", e.target.value)}
+                        onChange={(e) =>
+                          handleLocationFormChange("state", e.target.value)
+                        }
                         placeholder="State"
                         disabled={locationsSaving}
                       />
@@ -2411,7 +2478,12 @@ export default function ProviderDashboard() {
                       <Input
                         id="postal_code"
                         value={locationForm.postal_code}
-                        onChange={(e) => handleLocationFormChange("postal_code", e.target.value)}
+                        onChange={(e) =>
+                          handleLocationFormChange(
+                            "postal_code",
+                            e.target.value,
+                          )
+                        }
                         placeholder="ZIP/Postal code"
                         disabled={locationsSaving}
                       />
@@ -2422,21 +2494,33 @@ export default function ProviderDashboard() {
                       <Input
                         id="country"
                         value={locationForm.country}
-                        onChange={(e) => handleLocationFormChange("country", e.target.value)}
+                        onChange={(e) =>
+                          handleLocationFormChange("country", e.target.value)
+                        }
                         disabled={locationsSaving}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="mobile_radius">Mobile Service Radius (miles)</Label>
+                      <Label htmlFor="mobile_radius">
+                        Mobile Service Radius (miles)
+                      </Label>
                       <Input
                         id="mobile_radius"
                         type="number"
                         min="0"
                         max="100"
                         value={locationForm.mobile_service_radius}
-                        onChange={(e) => handleLocationFormChange("mobile_service_radius", parseInt(e.target.value) || 0)}
-                        disabled={locationsSaving || !locationForm.offers_mobile_services}
+                        onChange={(e) =>
+                          handleLocationFormChange(
+                            "mobile_service_radius",
+                            parseInt(e.target.value) || 0,
+                          )
+                        }
+                        disabled={
+                          locationsSaving ||
+                          !locationForm.offers_mobile_services
+                        }
                       />
                     </div>
                   </div>
@@ -2445,11 +2529,15 @@ export default function ProviderDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Label>Primary Location</Label>
-                        <p className="text-sm text-foreground/60">Make this the main business location</p>
+                        <p className="text-sm text-foreground/60">
+                          Make this the main business location
+                        </p>
                       </div>
                       <Switch
                         checked={locationForm.is_primary}
-                        onCheckedChange={(checked) => handleLocationFormChange("is_primary", checked)}
+                        onCheckedChange={(checked) =>
+                          handleLocationFormChange("is_primary", checked)
+                        }
                         disabled={locationsSaving}
                         className="data-[state=checked]:bg-roam-blue"
                       />
@@ -2458,11 +2546,18 @@ export default function ProviderDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Label>Offers Mobile Services</Label>
-                        <p className="text-sm text-foreground/60">Services can be provided at customer locations</p>
+                        <p className="text-sm text-foreground/60">
+                          Services can be provided at customer locations
+                        </p>
                       </div>
                       <Switch
                         checked={locationForm.offers_mobile_services}
-                        onCheckedChange={(checked) => handleLocationFormChange("offers_mobile_services", checked)}
+                        onCheckedChange={(checked) =>
+                          handleLocationFormChange(
+                            "offers_mobile_services",
+                            checked,
+                          )
+                        }
                         disabled={locationsSaving}
                         className="data-[state=checked]:bg-roam-blue"
                       />
@@ -2471,11 +2566,15 @@ export default function ProviderDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Label>Active Location</Label>
-                        <p className="text-sm text-foreground/60">Location is currently operational</p>
+                        <p className="text-sm text-foreground/60">
+                          Location is currently operational
+                        </p>
                       </div>
                       <Switch
                         checked={locationForm.is_active}
-                        onCheckedChange={(checked) => handleLocationFormChange("is_active", checked)}
+                        onCheckedChange={(checked) =>
+                          handleLocationFormChange("is_active", checked)
+                        }
                         disabled={locationsSaving}
                         className="data-[state=checked]:bg-roam-blue"
                       />
