@@ -39,6 +39,104 @@ import type { Provider } from '@/lib/database.types';
 
 export default function ProviderDashboard() {
   const [isAvailable, setIsAvailable] = useState(true);
+  const [provider, setProvider] = useState<Provider | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
+
+  const checkAuthentication = async () => {
+    try {
+      // Check if user is authenticated
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        navigate('/provider-portal');
+        return;
+      }
+
+      // Get provider data
+      const { data: providerData, error: providerError } = await supabase
+        .from('providers')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (providerError || !providerData) {
+        setError("Provider account not found. Please contact support.");
+        return;
+      }
+
+      if (!providerData.is_active) {
+        setError("Your account is pending verification. Please wait for admin approval.");
+        return;
+      }
+
+      setProvider(providerData);
+    } catch (error) {
+      console.error('Authentication error:', error);
+      setError("An error occurred while checking authentication.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error signing out:', error);
+      }
+      navigate('/provider-portal');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <Users className="w-8 h-8 text-white" />
+          </div>
+          <p className="text-lg font-semibold">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-600" />
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
+          <p className="text-foreground/70 mb-6">{error}</p>
+          <div className="flex gap-4 justify-center">
+            <Button asChild variant="outline">
+              <Link to="/provider-portal">Back to Login</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/support">Contact Support</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Return null if no provider data
+  if (!provider) {
+    return null;
+  }
   
   const stats = {
     monthlyEarnings: 3250,
