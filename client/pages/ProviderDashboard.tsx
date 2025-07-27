@@ -48,6 +48,7 @@ export default function ProviderDashboard() {
     teamMembers: 0,
     servicesOffered: 0,
   });
+  const [businessHours, setBusinessHours] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -62,11 +63,11 @@ export default function ProviderDashboard() {
     if (!user) return;
 
     try {
-      // Fetch provider details
+      // First fetch provider details using auth.user.id -> providers.user_id relationship
       const { data: providerData, error: providerError } = await supabase
         .from("providers")
-        .select("*")
-        .eq("id", user.provider_id)
+        .select("*, business_id")
+        .eq("user_id", user.id)
         .single();
 
       if (providerError || !providerData) {
@@ -76,30 +77,35 @@ export default function ProviderDashboard() {
 
       setProvider(providerData);
 
-      // Fetch business details
+      // Fetch business details using providers.business_id -> businesses.id
       const { data: businessData, error: businessError } = await supabase
         .from("business_profiles")
         .select("*")
-        .eq("id", user.business_id)
+        .eq("id", providerData.business_id)
         .single();
 
       if (businessData) {
         setBusiness(businessData);
 
-        // Fetch business metrics
+        // Parse and set business hours if available
+        if (businessData.business_hours) {
+          setBusinessHours(businessData.business_hours);
+        }
+
+        // Fetch business metrics using correct business_id from provider
         const [locationsResult, teamResult, servicesResult] = await Promise.all([
           // Count active business locations
           supabase
             .from("business_locations")
             .select("id", { count: "exact" })
-            .eq("business_id", user.business_id)
+            .eq("business_id", providerData.business_id)
             .eq("is_active", true),
 
           // Count team members (providers) for this business
           supabase
             .from("providers")
             .select("id", { count: "exact" })
-            .eq("business_id", user.business_id)
+            .eq("business_id", providerData.business_id)
             .eq("is_active", true),
 
           // Count services offered by providers in this business
@@ -109,7 +115,7 @@ export default function ProviderDashboard() {
             .in("provider_id", (await supabase
               .from("providers")
               .select("id")
-              .eq("business_id", user.business_id)
+              .eq("business_id", providerData.business_id)
               .eq("is_active", true)
             ).data?.map(p => p.id) || [])
             .eq("is_active", true)
@@ -137,7 +143,7 @@ export default function ProviderDashboard() {
           services(name, description)
         `,
           )
-          .eq("provider_id", user.provider_id)
+          .eq("provider_id", providerData.id)
           .order("created_at", { ascending: false })
           .limit(10);
 
@@ -150,7 +156,7 @@ export default function ProviderDashboard() {
           await supabase
             .from("providers")
             .select("id")
-            .eq("business_id", user.business_id);
+            .eq("business_id", providerData.business_id);
 
         if (providersError) {
           setError("Failed to fetch business providers.");
@@ -833,27 +839,48 @@ export default function ProviderDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        {[
-                          { day: "Monday", hours: "9:00 AM - 7:00 PM" },
-                          { day: "Tuesday", hours: "9:00 AM - 7:00 PM" },
-                          { day: "Wednesday", hours: "9:00 AM - 7:00 PM" },
-                          { day: "Thursday", hours: "9:00 AM - 7:00 PM" },
-                          { day: "Friday", hours: "9:00 AM - 6:00 PM" },
-                          { day: "Saturday", hours: "10:00 AM - 5:00 PM" },
-                          { day: "Sunday", hours: "Closed" },
-                        ].map((schedule) => (
-                          <div
-                            key={schedule.day}
-                            className="flex justify-between items-center"
-                          >
-                            <span className="text-sm font-medium">
-                              {schedule.day}
-                            </span>
-                            <span className="text-sm text-foreground/60">
-                              {schedule.hours}
-                            </span>
-                          </div>
-                        ))}
+                        {businessHours ? (
+                          Object.entries(businessHours).map(([day, hours]) => (
+                            <div
+                              key={day}
+                              className="flex justify-between items-center"
+                            >
+                              <span className="text-sm font-medium capitalize">
+                                {day}
+                              </span>
+                              <span className="text-sm text-foreground/60">
+                                {typeof hours === 'object' && hours !== null
+                                  ? hours.is_closed
+                                    ? 'Closed'
+                                    : `${hours.open_time || 'N/A'} - ${hours.close_time || 'N/A'}`
+                                  : hours || 'N/A'
+                                }
+                              </span>
+                            </div>
+                          ))
+                        ) : (
+                          [
+                            { day: "Monday", hours: "Loading..." },
+                            { day: "Tuesday", hours: "Loading..." },
+                            { day: "Wednesday", hours: "Loading..." },
+                            { day: "Thursday", hours: "Loading..." },
+                            { day: "Friday", hours: "Loading..." },
+                            { day: "Saturday", hours: "Loading..." },
+                            { day: "Sunday", hours: "Loading..." },
+                          ].map((schedule) => (
+                            <div
+                              key={schedule.day}
+                              className="flex justify-between items-center"
+                            >
+                              <span className="text-sm font-medium">
+                                {schedule.day}
+                              </span>
+                              <span className="text-sm text-foreground/60">
+                                {schedule.hours}
+                              </span>
+                            </div>
+                          ))
+                        )}
                       </div>
                       <Button
                         variant="outline"
