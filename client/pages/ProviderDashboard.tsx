@@ -1791,7 +1791,7 @@ export default function ProviderDashboard() {
 
           {/* Main Content Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
+            <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:inline-grid">
               <TabsTrigger
                 value="bookings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -1810,6 +1810,14 @@ export default function ProviderDashboard() {
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
                 >
                   Business
+                </TabsTrigger>
+              )}
+              {(isOwner || isDispatcher) && (
+                <TabsTrigger
+                  value="providers"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
+                  Providers
                 </TabsTrigger>
               )}
               <TabsTrigger
@@ -2081,7 +2089,7 @@ export default function ProviderDashboard() {
               <TabsContent value="business" className="space-y-6">
                 <h2 className="text-2xl font-bold">Business Management</h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <Card className="hover:shadow-md transition-shadow cursor-pointer">
                     <CardContent className="p-6 text-center">
                       <Building className="w-12 h-12 text-roam-blue mx-auto mb-4" />
@@ -2128,13 +2136,11 @@ export default function ProviderDashboard() {
                         Manage providers and assign locations
                       </p>
                       <Button
-                        asChild
+                        onClick={() => setActiveTab("providers")}
                         className="w-full bg-roam-blue hover:bg-roam-blue/90"
                       >
-                        <Link to="/business-management">
-                          <Users className="w-4 h-4 mr-2" />
-                          Manage Team
-                        </Link>
+                        <Users className="w-4 h-4 mr-2" />
+                        Manage Team
                       </Button>
                     </CardContent>
                   </Card>
@@ -2446,6 +2452,121 @@ export default function ProviderDashboard() {
                           </p>
                         </div>
                       )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            )}
+
+            {/* Providers Tab */}
+            {(isOwner || isDispatcher) && (
+              <TabsContent value="providers" className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Team Management</h2>
+                  <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Provider
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Provider Management Card */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Users className="w-5 h-5 text-roam-blue" />
+                        Team Overview
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Active Providers
+                          </span>
+                          <span className="font-medium">
+                            {businessMetrics.teamMembers}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Total Locations
+                          </span>
+                          <span className="font-medium">
+                            {businessMetrics.activeLocations}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Services Offered
+                          </span>
+                          <span className="font-medium">
+                            {businessMetrics.servicesOffered}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Quick Actions Card */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Quick Actions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        asChild
+                      >
+                        <Link to="/business-management">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add New Provider
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        asChild
+                      >
+                        <Link to="/business-management">
+                          <Edit className="w-4 h-4 mr-2" />
+                          Manage Roles & Permissions
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        onClick={() => setActiveTab("business")}
+                      >
+                        <MapPin className="w-4 h-4 mr-2" />
+                        Assign Locations
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Provider List */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Current Team Members</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-8 text-foreground/60">
+                      <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p className="text-lg mb-2">Provider management coming soon</p>
+                      <p className="text-sm">
+                        Full provider management interface will be implemented here
+                      </p>
+                      <Button
+                        className="mt-4 bg-roam-blue hover:bg-roam-blue/90"
+                        asChild
+                      >
+                        <Link to="/business-management">
+                          <Users className="w-4 h-4 mr-2" />
+                          Manage Team (Legacy)
+                        </Link>
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
