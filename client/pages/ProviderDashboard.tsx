@@ -370,6 +370,30 @@ export default function ProviderDashboard() {
         // Parse and set business hours if available
         if (businessData.business_hours) {
           setBusinessHours(businessData.business_hours);
+
+          // Initialize business hours form
+          const initialHoursForm = {
+            Monday: { isOpen: false, open: "09:00", close: "17:00" },
+            Tuesday: { isOpen: false, open: "09:00", close: "17:00" },
+            Wednesday: { isOpen: false, open: "09:00", close: "17:00" },
+            Thursday: { isOpen: false, open: "09:00", close: "17:00" },
+            Friday: { isOpen: false, open: "09:00", close: "17:00" },
+            Saturday: { isOpen: false, open: "09:00", close: "17:00" },
+            Sunday: { isOpen: false, open: "09:00", close: "17:00" },
+          };
+
+          // Populate with existing data
+          Object.keys(initialHoursForm).forEach(day => {
+            if (businessData.business_hours[day]) {
+              initialHoursForm[day] = {
+                isOpen: true,
+                open: businessData.business_hours[day].open || "09:00",
+                close: businessData.business_hours[day].close || "17:00"
+              };
+            }
+          });
+
+          setBusinessHoursForm(initialHoursForm);
         }
 
         // Fetch recent business activity
