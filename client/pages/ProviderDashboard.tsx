@@ -282,7 +282,7 @@ export default function ProviderDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">
-                Welcome back, <span className="text-roam-blue">Sarah</span>
+                Welcome back, <span className="text-roam-blue">{provider.first_name || 'Provider'}</span>
               </h1>
               <p className="text-foreground/70">Here's what's happening with your business today.</p>
             </div>
