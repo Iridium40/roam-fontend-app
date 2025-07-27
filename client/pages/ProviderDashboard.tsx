@@ -85,6 +85,41 @@ export default function ProviderDashboard() {
 
       if (businessData) {
         setBusiness(businessData);
+
+        // Fetch business metrics
+        const [locationsResult, teamResult, servicesResult] = await Promise.all([
+          // Count active business locations
+          supabase
+            .from("business_locations")
+            .select("id", { count: "exact" })
+            .eq("business_id", user.business_id)
+            .eq("is_active", true),
+
+          // Count team members (providers) for this business
+          supabase
+            .from("providers")
+            .select("id", { count: "exact" })
+            .eq("business_id", user.business_id)
+            .eq("is_active", true),
+
+          // Count services offered by providers in this business
+          supabase
+            .from("provider_services")
+            .select("service_id", { count: "exact" })
+            .in("provider_id", (await supabase
+              .from("providers")
+              .select("id")
+              .eq("business_id", user.business_id)
+              .eq("is_active", true)
+            ).data?.map(p => p.id) || [])
+            .eq("is_active", true)
+        ]);
+
+        setBusinessMetrics({
+          activeLocations: locationsResult.count || 0,
+          teamMembers: teamResult.count || 0,
+          servicesOffered: servicesResult.count || 0,
+        });
       }
 
       // Fetch bookings based on role
