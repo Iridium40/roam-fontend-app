@@ -311,7 +311,9 @@ export default function ProviderProfile() {
               {/* Services */}
               <Card>
                 <CardHeader>
-                  <CardTitle><p>Services</p></CardTitle>
+                  <CardTitle>
+                    <p>Services</p>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -570,7 +572,6 @@ export default function ProviderProfile() {
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Send Message
                   </Button>
-
                 </CardContent>
               </Card>
             </div>

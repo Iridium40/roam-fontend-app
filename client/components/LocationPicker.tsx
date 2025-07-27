@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -68,16 +68,21 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
   const [mapLoading, setMapLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null,
+  );
   const [serviceRadius, setServiceRadius] = useState(initialRadius);
-  const [currentPosition, setCurrentPosition] = useState<Coordinates | null>(null);
+  const [currentPosition, setCurrentPosition] = useState<Coordinates | null>(
+    null,
+  );
   const [mapsLoaded, setMapsLoaded] = useState(false);
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<google.maps.Map | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
   const circleRef = useRef<google.maps.Circle | null>(null);
-  const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null);
+  const autocompleteService =
+    useRef<google.maps.places.AutocompleteService | null>(null);
   const placesService = useRef<google.maps.places.PlacesService | null>(null);
   const geocoder = useRef<google.maps.Geocoder | null>(null);
 
@@ -103,11 +108,11 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
       return;
     }
 
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
     script.async = true;
     script.onload = () => setMapsLoaded(true);
-    script.onerror = () => console.error('Failed to load Google Maps script');
+    script.onerror = () => console.error("Failed to load Google Maps script");
     document.head.appendChild(script);
   };
 
@@ -128,17 +133,22 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
     // Initialize services
     autocompleteService.current = new google.maps.places.AutocompleteService();
-    placesService.current = new google.maps.places.PlacesService(mapInstance.current);
+    placesService.current = new google.maps.places.PlacesService(
+      mapInstance.current,
+    );
     geocoder.current = new google.maps.Geocoder();
 
     // Add click listener to map
-    mapInstance.current.addListener('click', (event: google.maps.MapMouseEvent) => {
-      const latLng = event.latLng;
-      if (latLng) {
-        const coordinates = { lat: latLng.lat(), lng: latLng.lng() };
-        reverseGeocode(coordinates);
-      }
-    });
+    mapInstance.current.addListener(
+      "click",
+      (event: google.maps.MapMouseEvent) => {
+        const latLng = event.latLng;
+        if (latLng) {
+          const coordinates = { lat: latLng.lat(), lng: latLng.lng() };
+          reverseGeocode(coordinates);
+        }
+      },
+    );
 
     // Add marker if initial location provided
     if (initialLocation) {
@@ -167,21 +177,27 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     });
 
     // Add drag listener
-    markerRef.current.addListener('dragend', (event: google.maps.MapMouseEvent) => {
-      const latLng = event.latLng;
-      if (latLng) {
-        const newCoordinates = { lat: latLng.lat(), lng: latLng.lng() };
-        reverseGeocode(newCoordinates);
-        if (showServiceRadius && circleRef.current) {
-          circleRef.current.setCenter(newCoordinates);
+    markerRef.current.addListener(
+      "dragend",
+      (event: google.maps.MapMouseEvent) => {
+        const latLng = event.latLng;
+        if (latLng) {
+          const newCoordinates = { lat: latLng.lat(), lng: latLng.lng() };
+          reverseGeocode(newCoordinates);
+          if (showServiceRadius && circleRef.current) {
+            circleRef.current.setCenter(newCoordinates);
+          }
         }
-      }
-    });
+      },
+    );
 
     mapInstance.current.setCenter(coordinates);
   };
 
-  const addServiceRadiusCircle = (center: Coordinates, radiusInMiles: number) => {
+  const addServiceRadiusCircle = (
+    center: Coordinates,
+    radiusInMiles: number,
+  ) => {
     if (!mapInstance.current || !window.google?.maps) return;
 
     // Remove existing circle
@@ -192,10 +208,10 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     const radiusInMeters = radiusInMiles * 1609.34; // Convert miles to meters
 
     circleRef.current = new google.maps.Circle({
-      strokeColor: '#3b82f6',
+      strokeColor: "#3b82f6",
       strokeOpacity: 0.8,
       strokeWeight: 2,
-      fillColor: '#3b82f6',
+      fillColor: "#3b82f6",
       fillOpacity: 0.1,
       map: mapInstance.current,
       center: center,
@@ -208,15 +224,20 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
     setLoading(true);
     try {
-      const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
-        geocoder.current!.geocode({ location: coordinates }, (results, status) => {
-          if (status === 'OK' && results) {
-            resolve(results);
-          } else {
-            reject(new Error('Geocoding failed'));
-          }
-        });
-      });
+      const results = await new Promise<google.maps.GeocoderResult[]>(
+        (resolve, reject) => {
+          geocoder.current!.geocode(
+            { location: coordinates },
+            (results, status) => {
+              if (status === "OK" && results) {
+                resolve(results);
+              } else {
+                reject(new Error("Geocoding failed"));
+              }
+            },
+          );
+        },
+      );
 
       if (results.length > 0) {
         const result = results[0];
@@ -229,7 +250,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         setSelectedLocation(location);
       }
     } catch (error) {
-      console.error('Reverse geocoding error:', error);
+      console.error("Reverse geocoding error:", error);
     } finally {
       setLoading(false);
     }
@@ -242,33 +263,40 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     }
 
     try {
-      const predictions = await new Promise<google.maps.places.AutocompletePrediction[]>((resolve, reject) => {
+      const predictions = await new Promise<
+        google.maps.places.AutocompletePrediction[]
+      >((resolve, reject) => {
         autocompleteService.current!.getPlacePredictions(
           {
             input: query,
-            types: ['establishment', 'geocode'],
-            componentRestrictions: { country: 'us' },
+            types: ["establishment", "geocode"],
+            componentRestrictions: { country: "us" },
           },
           (predictions, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+            if (
+              status === google.maps.places.PlacesServiceStatus.OK &&
+              predictions
+            ) {
               resolve(predictions);
             } else {
               resolve([]);
             }
-          }
+          },
         );
       });
 
-      const formattedSuggestions: PlaceSuggestion[] = predictions.map(prediction => ({
-        description: prediction.description,
-        placeId: prediction.place_id,
-        mainText: prediction.structured_formatting.main_text,
-        secondaryText: prediction.structured_formatting.secondary_text,
-      }));
+      const formattedSuggestions: PlaceSuggestion[] = predictions.map(
+        (prediction) => ({
+          description: prediction.description,
+          placeId: prediction.place_id,
+          mainText: prediction.structured_formatting.main_text,
+          secondaryText: prediction.structured_formatting.secondary_text,
+        }),
+      );
 
       setSuggestions(formattedSuggestions);
     } catch (error) {
-      console.error('Places search error:', error);
+      console.error("Places search error:", error);
     }
   };
 
@@ -277,18 +305,23 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
     setLoading(true);
     try {
-      const place = await new Promise<google.maps.places.PlaceResult>((resolve, reject) => {
-        placesService.current!.getDetails(
-          { placeId, fields: ['geometry', 'formatted_address', 'name'] },
-          (place, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-              resolve(place);
-            } else {
-              reject(new Error('Place details failed'));
-            }
-          }
-        );
-      });
+      const place = await new Promise<google.maps.places.PlaceResult>(
+        (resolve, reject) => {
+          placesService.current!.getDetails(
+            { placeId, fields: ["geometry", "formatted_address", "name"] },
+            (place, status) => {
+              if (
+                status === google.maps.places.PlacesServiceStatus.OK &&
+                place
+              ) {
+                resolve(place);
+              } else {
+                reject(new Error("Place details failed"));
+              }
+            },
+          );
+        },
+      );
 
       if (place.geometry?.location) {
         const coordinates = {
@@ -297,7 +330,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         };
 
         const location: Location = {
-          address: place.formatted_address || place.name || '',
+          address: place.formatted_address || place.name || "",
           coordinates,
           placeId,
           formattedAddress: place.formatted_address,
@@ -305,16 +338,16 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
         setSelectedLocation(location);
         addMarker(coordinates);
-        
+
         if (showServiceRadius) {
           addServiceRadiusCircle(coordinates, serviceRadius);
         }
 
         setSuggestions([]);
-        setSearchQuery('');
+        setSearchQuery("");
       }
     } catch (error) {
-      console.error('Place selection error:', error);
+      console.error("Place selection error:", error);
     } finally {
       setLoading(false);
     }
@@ -322,7 +355,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by this browser.');
+      alert("Geolocation is not supported by this browser.");
       return;
     }
 
@@ -336,17 +369,17 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         setCurrentPosition(coordinates);
         addMarker(coordinates);
         reverseGeocode(coordinates);
-        
+
         if (showServiceRadius) {
           addServiceRadiusCircle(coordinates, serviceRadius);
         }
         setLoading(false);
       },
       (error) => {
-        console.error('Geolocation error:', error);
-        alert('Unable to get your current location.');
+        console.error("Geolocation error:", error);
+        alert("Unable to get your current location.");
         setLoading(false);
-      }
+      },
     );
   };
 
@@ -360,7 +393,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
   const handleRadiusChange = (values: number[]) => {
     const newRadius = values[0];
     setServiceRadius(newRadius);
-    
+
     if (circleRef.current) {
       const radiusInMeters = newRadius * 1609.34;
       circleRef.current.setRadius(radiusInMeters);
@@ -375,13 +408,13 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
           Choose Location
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent className="max-w-4xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Select Location</DialogTitle>
           <DialogDescription>
-            Choose your business location or service area. You can search for an address, 
-            use your current location, or click directly on the map.
+            Choose your business location or service area. You can search for an
+            address, use your current location, or click directly on the map.
           </DialogDescription>
         </DialogHeader>
 
@@ -398,7 +431,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
               }}
               className="pl-10"
             />
-            
+
             {/* Search Suggestions */}
             {suggestions.length > 0 && (
               <Card className="absolute top-full left-0 right-0 z-10 mt-1">
@@ -413,7 +446,9 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                       <MapPin className="w-4 h-4 mr-2 text-foreground/60" />
                       <div>
                         <div className="font-medium">{suggestion.mainText}</div>
-                        <div className="text-sm text-foreground/60">{suggestion.secondaryText}</div>
+                        <div className="text-sm text-foreground/60">
+                          {suggestion.secondaryText}
+                        </div>
                       </div>
                     </Button>
                   ))}
@@ -464,11 +499,11 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
           {/* Map Container */}
           <div className="relative">
-            <div 
-              ref={mapRef} 
+            <div
+              ref={mapRef}
               className="w-full h-96 bg-gray-100 rounded-lg border"
             />
-            
+
             {mapLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-lg">
                 <div className="text-center">
@@ -482,8 +517,12 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
                 <div className="text-center">
                   <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                  <p className="text-sm text-foreground/60">Failed to load Google Maps</p>
-                  <p className="text-xs text-foreground/40">Check your internet connection</p>
+                  <p className="text-sm text-foreground/60">
+                    Failed to load Google Maps
+                  </p>
+                  <p className="text-xs text-foreground/40">
+                    Check your internet connection
+                  </p>
                 </div>
               </div>
             )}
@@ -494,7 +533,8 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
             <Alert>
               <CheckCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Selected:</strong> {selectedLocation.formattedAddress || selectedLocation.address}
+                <strong>Selected:</strong>{" "}
+                {selectedLocation.formattedAddress || selectedLocation.address}
               </AlertDescription>
             </Alert>
           )}
@@ -503,8 +543,9 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
           <Alert>
             <Target className="h-4 w-4" />
             <AlertDescription>
-              <strong>Tips:</strong> Search for an address above, click "Use Current Location", 
-              or click directly on the map to set your location. You can drag the marker to fine-tune the position.
+              <strong>Tips:</strong> Search for an address above, click "Use
+              Current Location", or click directly on the map to set your
+              location. You can drag the marker to fine-tune the position.
             </AlertDescription>
           </Alert>
         </div>
@@ -513,7 +554,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={handleConfirm}
             disabled={!selectedLocation || loading}
             className="bg-roam-blue hover:bg-roam-blue/90"

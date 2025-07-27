@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,12 +36,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users,
   Plus,
@@ -65,11 +60,11 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import type { 
-  Provider, 
-  BusinessLocation, 
-  ProviderRole, 
-  ProviderVerificationStatus 
+import type {
+  Provider,
+  BusinessLocation,
+  ProviderRole,
+  ProviderVerificationStatus,
 } from "@/lib/database.types";
 
 interface StaffManagerProps {
@@ -97,35 +92,52 @@ interface StaffMemberWithStats extends Provider {
 
 const roleOptions = [
   {
-    value: 'provider' as ProviderRole,
-    label: 'Provider',
-    description: 'Delivers services to customers',
+    value: "provider" as ProviderRole,
+    label: "Provider",
+    description: "Delivers services to customers",
     icon: User,
-    permissions: ['View own bookings', 'Update own profile', 'Manage own schedule']
+    permissions: [
+      "View own bookings",
+      "Update own profile",
+      "Manage own schedule",
+    ],
   },
   {
-    value: 'dispatcher' as ProviderRole,
-    label: 'Dispatcher',
-    description: 'Manages bookings and coordinates providers',
+    value: "dispatcher" as ProviderRole,
+    label: "Dispatcher",
+    description: "Manages bookings and coordinates providers",
     icon: Shield,
-    permissions: ['Manage all bookings', 'View provider schedules', 'Customer communication']
+    permissions: [
+      "Manage all bookings",
+      "View provider schedules",
+      "Customer communication",
+    ],
   },
   {
-    value: 'owner' as ProviderRole,
-    label: 'Owner',
-    description: 'Full business management access',
+    value: "owner" as ProviderRole,
+    label: "Owner",
+    description: "Full business management access",
     icon: Crown,
-    permissions: ['All dispatcher permissions', 'Manage staff', 'Business settings', 'Financial reports']
-  }
+    permissions: [
+      "All dispatcher permissions",
+      "Manage staff",
+      "Business settings",
+      "Financial reports",
+    ],
+  },
 ];
 
-export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, locations }) => {
+export const StaffManager: React.FC<StaffManagerProps> = ({
+  businessId,
+  locations,
+}) => {
   const { user, isOwner } = useAuth();
   const [staff, setStaff] = useState<StaffMemberWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState<StaffMemberWithStats | null>(null);
+  const [selectedStaff, setSelectedStaff] =
+    useState<StaffMemberWithStats | null>(null);
   const [activeTab, setActiveTab] = useState("all");
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<ProviderRole>("provider");
@@ -149,13 +161,15 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
   const fetchStaff = async () => {
     try {
       const { data, error } = await supabase
-        .from('providers')
-        .select(`
+        .from("providers")
+        .select(
+          `
           *,
           business_locations!inner(location_name)
-        `)
-        .eq('business_id', businessId)
-        .order('created_at', { ascending: false });
+        `,
+        )
+        .eq("business_id", businessId)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
@@ -164,15 +178,26 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
         (data || []).map(async (member) => {
           // Get booking stats (simplified - in real app would use more complex queries)
           const { data: bookingStats } = await supabase
-            .from('bookings')
-            .select('total_amount, booking_status')
-            .eq('provider_id', member.id);
+            .from("bookings")
+            .select("total_amount, booking_status")
+            .eq("provider_id", member.id);
 
-          const totalRevenue = bookingStats?.reduce((sum, booking) => 
-            sum + (booking.booking_status === 'completed' ? booking.total_amount : 0), 0) || 0;
-          
-          const recentBookings = bookingStats?.filter(booking => 
-            new Date(booking.created_at).getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000).length || 0;
+          const totalRevenue =
+            bookingStats?.reduce(
+              (sum, booking) =>
+                sum +
+                (booking.booking_status === "completed"
+                  ? booking.total_amount
+                  : 0),
+              0,
+            ) || 0;
+
+          const recentBookings =
+            bookingStats?.filter(
+              (booking) =>
+                new Date(booking.created_at).getTime() >
+                Date.now() - 30 * 24 * 60 * 60 * 1000,
+            ).length || 0;
 
           return {
             ...member,
@@ -181,12 +206,12 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
             recent_bookings: recentBookings,
             customer_rating: member.average_rating || 0,
           };
-        })
+        }),
       );
 
       setStaff(staffWithStats);
     } catch (error) {
-      console.error('Error fetching staff:', error);
+      console.error("Error fetching staff:", error);
     } finally {
       setLoading(false);
     }
@@ -194,19 +219,17 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
 
   const handleAddStaff = async () => {
     try {
-      const { error } = await supabase
-        .from('providers')
-        .insert({
-          ...newStaff,
-          business_id: businessId,
-          verification_status: 'pending',
-          is_active: false, // Will be activated after email verification
-        });
+      const { error } = await supabase.from("providers").insert({
+        ...newStaff,
+        business_id: businessId,
+        verification_status: "pending",
+        is_active: false, // Will be activated after email verification
+      });
 
       if (error) throw error;
 
       // Send invitation email (in real app)
-      console.log('Invitation email would be sent to:', newStaff.email);
+      console.log("Invitation email would be sent to:", newStaff.email);
 
       setIsAddDialogOpen(false);
       setNewStaff({
@@ -219,10 +242,10 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
         bio: "",
         experience_years: 0,
       });
-      
+
       await fetchStaff();
     } catch (error) {
-      console.error('Error adding staff member:', error);
+      console.error("Error adding staff member:", error);
     }
   };
 
@@ -231,7 +254,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
 
     try {
       const { error } = await supabase
-        .from('providers')
+        .from("providers")
         .update({
           first_name: selectedStaff.first_name,
           last_name: selectedStaff.last_name,
@@ -242,7 +265,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
           bio: selectedStaff.bio,
           experience_years: selectedStaff.experience_years,
         })
-        .eq('id', selectedStaff.id);
+        .eq("id", selectedStaff.id);
 
       if (error) throw error;
 
@@ -250,35 +273,35 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
       setSelectedStaff(null);
       await fetchStaff();
     } catch (error) {
-      console.error('Error updating staff member:', error);
+      console.error("Error updating staff member:", error);
     }
   };
 
   const handleToggleActive = async (staffId: string, isActive: boolean) => {
     try {
       const { error } = await supabase
-        .from('providers')
+        .from("providers")
         .update({ is_active: isActive })
-        .eq('id', staffId);
+        .eq("id", staffId);
 
       if (error) throw error;
       await fetchStaff();
     } catch (error) {
-      console.error('Error updating staff status:', error);
+      console.error("Error updating staff status:", error);
     }
   };
 
   const handleDeleteStaff = async (staffId: string) => {
     try {
       const { error } = await supabase
-        .from('providers')
+        .from("providers")
         .delete()
-        .eq('id', staffId);
+        .eq("id", staffId);
 
       if (error) throw error;
       await fetchStaff();
     } catch (error) {
-      console.error('Error deleting staff member:', error);
+      console.error("Error deleting staff member:", error);
     }
   };
 
@@ -287,19 +310,17 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
 
     try {
       // Create pending staff member
-      const { error } = await supabase
-        .from('providers')
-        .insert({
-          first_name: "Pending",
-          last_name: "Invite",
-          email: inviteEmail,
-          phone: "",
-          provider_role: inviteRole,
-          location_id: inviteLocation,
-          business_id: businessId,
-          verification_status: 'pending',
-          is_active: false,
-        });
+      const { error } = await supabase.from("providers").insert({
+        first_name: "Pending",
+        last_name: "Invite",
+        email: inviteEmail,
+        phone: "",
+        provider_role: inviteRole,
+        location_id: inviteLocation,
+        business_id: businessId,
+        verification_status: "pending",
+        is_active: false,
+      });
 
       if (error) throw error;
 
@@ -307,10 +328,10 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
       setInviteEmail("");
       setInviteRole("provider");
       setInviteLocation("");
-      
+
       await fetchStaff();
     } catch (error) {
-      console.error('Error sending invite:', error);
+      console.error("Error sending invite:", error);
     }
   };
 
@@ -318,11 +339,11 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
     if (!member.is_active) {
       return <Badge className="bg-red-100 text-red-800">Inactive</Badge>;
     }
-    
+
     switch (member.verification_status) {
-      case 'approved':
+      case "approved":
         return <Badge className="bg-green-100 text-green-800">Active</Badge>;
-      case 'pending':
+      case "pending":
         return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
       default:
         return <Badge className="bg-gray-100 text-gray-800">Unknown</Badge>;
@@ -330,28 +351,32 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
   };
 
   const getRoleIcon = (role: ProviderRole) => {
-    const roleConfig = roleOptions.find(r => r.value === role);
-    return roleConfig ? <roleConfig.icon className="w-4 h-4" /> : <User className="w-4 h-4" />;
+    const roleConfig = roleOptions.find((r) => r.value === role);
+    return roleConfig ? (
+      <roleConfig.icon className="w-4 h-4" />
+    ) : (
+      <User className="w-4 h-4" />
+    );
   };
 
-  const filteredStaff = staff.filter(member => {
+  const filteredStaff = staff.filter((member) => {
     switch (activeTab) {
-      case 'owners':
-        return member.provider_role === 'owner';
-      case 'dispatchers':
-        return member.provider_role === 'dispatcher';
-      case 'providers':
-        return member.provider_role === 'provider';
-      case 'pending':
-        return member.verification_status === 'pending';
+      case "owners":
+        return member.provider_role === "owner";
+      case "dispatchers":
+        return member.provider_role === "dispatcher";
+      case "providers":
+        return member.provider_role === "provider";
+      case "pending":
+        return member.verification_status === "pending";
       default:
         return true;
     }
   });
 
   const getLocationName = (locationId: string) => {
-    const location = locations.find(l => l.id === locationId);
-    return location?.location_name || 'Unknown Location';
+    const location = locations.find((l) => l.id === locationId);
+    return location?.location_name || "Unknown Location";
   };
 
   if (loading) {
@@ -375,7 +400,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
             Manage your team members, roles, and permissions.
           </p>
         </div>
-        
+
         {isOwner && (
           <div className="flex gap-2">
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -392,7 +417,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                     Add a new team member to your business.
                   </DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -400,7 +425,12 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                       <Input
                         id="firstName"
                         value={newStaff.first_name}
-                        onChange={(e) => setNewStaff({ ...newStaff, first_name: e.target.value })}
+                        onChange={(e) =>
+                          setNewStaff({
+                            ...newStaff,
+                            first_name: e.target.value,
+                          })
+                        }
                         placeholder="John"
                       />
                     </div>
@@ -409,7 +439,12 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                       <Input
                         id="lastName"
                         value={newStaff.last_name}
-                        onChange={(e) => setNewStaff({ ...newStaff, last_name: e.target.value })}
+                        onChange={(e) =>
+                          setNewStaff({
+                            ...newStaff,
+                            last_name: e.target.value,
+                          })
+                        }
                         placeholder="Doe"
                       />
                     </div>
@@ -421,7 +456,9 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                       id="email"
                       type="email"
                       value={newStaff.email}
-                      onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
+                      onChange={(e) =>
+                        setNewStaff({ ...newStaff, email: e.target.value })
+                      }
                       placeholder="john@example.com"
                     />
                   </div>
@@ -432,7 +469,9 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                       id="phone"
                       type="tel"
                       value={newStaff.phone}
-                      onChange={(e) => setNewStaff({ ...newStaff, phone: e.target.value })}
+                      onChange={(e) =>
+                        setNewStaff({ ...newStaff, phone: e.target.value })
+                      }
                       placeholder="(555) 123-4567"
                     />
                   </div>
@@ -440,9 +479,14 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="role">Role *</Label>
-                      <Select 
-                        value={newStaff.provider_role} 
-                        onValueChange={(value) => setNewStaff({ ...newStaff, provider_role: value as ProviderRole })}
+                      <Select
+                        value={newStaff.provider_role}
+                        onValueChange={(value) =>
+                          setNewStaff({
+                            ...newStaff,
+                            provider_role: value as ProviderRole,
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -462,9 +506,11 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
 
                     <div className="space-y-2">
                       <Label htmlFor="location">Location *</Label>
-                      <Select 
-                        value={newStaff.location_id} 
-                        onValueChange={(value) => setNewStaff({ ...newStaff, location_id: value })}
+                      <Select
+                        value={newStaff.location_id}
+                        onValueChange={(value) =>
+                          setNewStaff({ ...newStaff, location_id: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select location" />
@@ -485,7 +531,9 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                     <Textarea
                       id="bio"
                       value={newStaff.bio}
-                      onChange={(e) => setNewStaff({ ...newStaff, bio: e.target.value })}
+                      onChange={(e) =>
+                        setNewStaff({ ...newStaff, bio: e.target.value })
+                      }
                       placeholder="Professional background and specialties..."
                       rows={3}
                     />
@@ -499,18 +547,32 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                       min="0"
                       max="50"
                       value={newStaff.experience_years}
-                      onChange={(e) => setNewStaff({ ...newStaff, experience_years: parseInt(e.target.value) || 0 })}
+                      onChange={(e) =>
+                        setNewStaff({
+                          ...newStaff,
+                          experience_years: parseInt(e.target.value) || 0,
+                        })
+                      }
                     />
                   </div>
                 </div>
 
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsAddDialogOpen(false)}
+                  >
                     Cancel
                   </Button>
-                  <Button 
+                  <Button
                     onClick={handleAddStaff}
-                    disabled={!newStaff.first_name || !newStaff.last_name || !newStaff.email || !newStaff.phone || !newStaff.location_id}
+                    disabled={
+                      !newStaff.first_name ||
+                      !newStaff.last_name ||
+                      !newStaff.email ||
+                      !newStaff.phone ||
+                      !newStaff.location_id
+                    }
                     className="bg-roam-blue hover:bg-roam-blue/90"
                   >
                     Add Staff Member
@@ -536,7 +598,10 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                 onChange={(e) => setInviteEmail(e.target.value)}
                 className="flex-1"
               />
-              <Select value={inviteRole} onValueChange={(value) => setInviteRole(value as ProviderRole)}>
+              <Select
+                value={inviteRole}
+                onValueChange={(value) => setInviteRole(value as ProviderRole)}
+              >
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
@@ -560,7 +625,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                   ))}
                 </SelectContent>
               </Select>
-              <Button 
+              <Button
                 onClick={sendInvite}
                 disabled={!inviteEmail || !inviteRole || !inviteLocation}
                 className="bg-roam-blue hover:bg-roam-blue/90"
@@ -577,10 +642,21 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid grid-cols-5 lg:w-auto lg:inline-grid">
           <TabsTrigger value="all">All ({staff.length})</TabsTrigger>
-          <TabsTrigger value="owners">Owners ({staff.filter(s => s.provider_role === 'owner').length})</TabsTrigger>
-          <TabsTrigger value="dispatchers">Dispatchers ({staff.filter(s => s.provider_role === 'dispatcher').length})</TabsTrigger>
-          <TabsTrigger value="providers">Providers ({staff.filter(s => s.provider_role === 'provider').length})</TabsTrigger>
-          <TabsTrigger value="pending">Pending ({staff.filter(s => s.verification_status === 'pending').length})</TabsTrigger>
+          <TabsTrigger value="owners">
+            Owners ({staff.filter((s) => s.provider_role === "owner").length})
+          </TabsTrigger>
+          <TabsTrigger value="dispatchers">
+            Dispatchers (
+            {staff.filter((s) => s.provider_role === "dispatcher").length})
+          </TabsTrigger>
+          <TabsTrigger value="providers">
+            Providers (
+            {staff.filter((s) => s.provider_role === "provider").length})
+          </TabsTrigger>
+          <TabsTrigger value="pending">
+            Pending (
+            {staff.filter((s) => s.verification_status === "pending").length})
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="space-y-4">
@@ -590,33 +666,45 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                 <Users className="w-12 h-12 text-foreground/40 mx-auto mb-4" />
                 <h4 className="font-medium mb-2">No Staff Members</h4>
                 <p className="text-sm text-foreground/60">
-                  {activeTab === 'all' ? 'Add your first staff member to get started.' : `No ${activeTab} found.`}
+                  {activeTab === "all"
+                    ? "Add your first staff member to get started."
+                    : `No ${activeTab} found.`}
                 </p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredStaff.map((member) => (
-                <Card key={member.id} className="hover:shadow-md transition-shadow">
+                <Card
+                  key={member.id}
+                  className="hover:shadow-md transition-shadow"
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <Avatar>
                           <AvatarContent>
                             {member.image_url ? (
-                              <img src={member.image_url} alt={`${member.first_name} ${member.last_name}`} />
+                              <img
+                                src={member.image_url}
+                                alt={`${member.first_name} ${member.last_name}`}
+                              />
                             ) : (
                               <AvatarFallback>
-                                {member.first_name[0]}{member.last_name[0]}
+                                {member.first_name[0]}
+                                {member.last_name[0]}
                               </AvatarFallback>
                             )}
                           </AvatarContent>
                         </Avatar>
                         <div>
-                          <h4 className="font-semibold">{member.first_name} {member.last_name}</h4>
+                          <h4 className="font-semibold">
+                            {member.first_name} {member.last_name}
+                          </h4>
                           <div className="flex items-center gap-1 text-sm text-foreground/60">
                             {getRoleIcon(member.provider_role)}
-                            {member.provider_role.charAt(0).toUpperCase() + member.provider_role.slice(1)}
+                            {member.provider_role.charAt(0).toUpperCase() +
+                              member.provider_role.slice(1)}
                           </div>
                         </div>
                       </div>
@@ -638,26 +726,32 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                       </div>
                     </div>
 
-                    {member.provider_role === 'provider' && (
+                    {member.provider_role === "provider" && (
                       <div className="mt-3 pt-3 border-t">
                         <div className="grid grid-cols-3 gap-2 text-center">
                           <div>
                             <div className="text-lg font-semibold text-roam-blue">
                               {member.customer_rating.toFixed(1)}
                             </div>
-                            <div className="text-xs text-foreground/60">Rating</div>
+                            <div className="text-xs text-foreground/60">
+                              Rating
+                            </div>
                           </div>
                           <div>
                             <div className="text-lg font-semibold text-roam-blue">
                               {member.recent_bookings}
                             </div>
-                            <div className="text-xs text-foreground/60">Recent</div>
+                            <div className="text-xs text-foreground/60">
+                              Recent
+                            </div>
                           </div>
                           <div>
                             <div className="text-lg font-semibold text-roam-blue">
                               ${member.total_revenue?.toLocaleString()}
                             </div>
-                            <div className="text-xs text-foreground/60">Revenue</div>
+                            <div className="text-xs text-foreground/60">
+                              Revenue
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -668,12 +762,14 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                         <div className="flex items-center gap-2">
                           <Switch
                             checked={member.is_active}
-                            onCheckedChange={(checked) => handleToggleActive(member.id, checked)}
+                            onCheckedChange={(checked) =>
+                              handleToggleActive(member.id, checked)
+                            }
                             className="scale-75"
                           />
                           <Label className="text-xs">Active</Label>
                         </div>
-                        
+
                         <div className="flex items-center gap-1">
                           <Button
                             size="sm"
@@ -685,19 +781,26 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          
+
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button size="sm" variant="ghost" className="text-red-600 hover:bg-red-50">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-red-600 hover:bg-red-50"
+                              >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Remove Staff Member</AlertDialogTitle>
+                                <AlertDialogTitle>
+                                  Remove Staff Member
+                                </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  This will permanently remove {member.first_name} {member.last_name} from your team. 
-                                  This action cannot be undone.
+                                  This will permanently remove{" "}
+                                  {member.first_name} {member.last_name} from
+                                  your team. This action cannot be undone.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
@@ -729,10 +832,11 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
             <DialogHeader>
               <DialogTitle>Edit Staff Member</DialogTitle>
               <DialogDescription>
-                Update {selectedStaff.first_name} {selectedStaff.last_name}'s information.
+                Update {selectedStaff.first_name} {selectedStaff.last_name}'s
+                information.
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -740,7 +844,12 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                   <Input
                     id="editFirstName"
                     value={selectedStaff.first_name}
-                    onChange={(e) => setSelectedStaff({ ...selectedStaff, first_name: e.target.value })}
+                    onChange={(e) =>
+                      setSelectedStaff({
+                        ...selectedStaff,
+                        first_name: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -748,7 +857,12 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                   <Input
                     id="editLastName"
                     value={selectedStaff.last_name}
-                    onChange={(e) => setSelectedStaff({ ...selectedStaff, last_name: e.target.value })}
+                    onChange={(e) =>
+                      setSelectedStaff({
+                        ...selectedStaff,
+                        last_name: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -759,16 +873,26 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
                   id="editEmail"
                   type="email"
                   value={selectedStaff.email}
-                  onChange={(e) => setSelectedStaff({ ...selectedStaff, email: e.target.value })}
+                  onChange={(e) =>
+                    setSelectedStaff({
+                      ...selectedStaff,
+                      email: e.target.value,
+                    })
+                  }
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="editRole">Role *</Label>
-                  <Select 
-                    value={selectedStaff.provider_role} 
-                    onValueChange={(value) => setSelectedStaff({ ...selectedStaff, provider_role: value as ProviderRole })}
+                  <Select
+                    value={selectedStaff.provider_role}
+                    onValueChange={(value) =>
+                      setSelectedStaff({
+                        ...selectedStaff,
+                        provider_role: value as ProviderRole,
+                      })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -788,9 +912,11 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
 
                 <div className="space-y-2">
                   <Label htmlFor="editLocation">Location *</Label>
-                  <Select 
-                    value={selectedStaff.location_id} 
-                    onValueChange={(value) => setSelectedStaff({ ...selectedStaff, location_id: value })}
+                  <Select
+                    value={selectedStaff.location_id}
+                    onValueChange={(value) =>
+                      setSelectedStaff({ ...selectedStaff, location_id: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -808,10 +934,13 @@ export const StaffManager: React.FC<StaffManagerProps> = ({ businessId, location
             </div>
 
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsEditDialogOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleUpdateStaff}
                 className="bg-roam-blue hover:bg-roam-blue/90"
               >

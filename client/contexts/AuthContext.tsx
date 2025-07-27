@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import type { AuthUser, ProviderRole } from '@/lib/database.types';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import type { AuthUser, ProviderRole } from "@/lib/database.types";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -37,12 +37,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Get initial session
     const initAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (session?.user) {
           await fetchUserProfile(session.user.id);
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        console.error("Error initializing auth:", error);
       } finally {
         setLoading(false);
       }
@@ -51,15 +53,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          await fetchUserProfile(session.user.id);
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null);
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        await fetchUserProfile(session.user.id);
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
       }
-    );
+    });
 
     return () => subscription.unsubscribe();
   }, []);
@@ -67,8 +69,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const fetchUserProfile = async (userId: string) => {
     try {
       const { data: provider, error } = await supabase
-        .from('providers')
-        .select(`
+        .from("providers")
+        .select(
+          `
           id,
           business_id,
           location_id,
@@ -77,13 +80,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           provider_role,
           is_active,
           email
-        `)
-        .eq('user_id', userId)
-        .eq('is_active', true)
+        `,
+        )
+        .eq("user_id", userId)
+        .eq("is_active", true)
         .single();
 
       if (error || !provider) {
-        console.error('Provider not found or inactive:', error);
+        console.error("Provider not found or inactive:", error);
         await supabase.auth.signOut();
         return;
       }
@@ -99,7 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         last_name: provider.last_name,
       });
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error("Error fetching user profile:", error);
       setUser(null);
     }
   };
@@ -128,7 +132,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const refreshUser = async () => {
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
     if (authUser) {
       await fetchUserProfile(authUser.id);
     }
@@ -145,9 +151,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return permissions.includes(permission);
   };
 
-  const isOwner = user?.provider_role === 'owner';
-  const isDispatcher = user?.provider_role === 'dispatcher';
-  const isProvider = user?.provider_role === 'provider';
+  const isOwner = user?.provider_role === "owner";
+  const isDispatcher = user?.provider_role === "dispatcher";
+  const isProvider = user?.provider_role === "provider";
 
   const value: AuthContextType = {
     user,
@@ -167,55 +173,55 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 // Permission definitions based on role matrix from spec
 const getPermissions = (role: ProviderRole): string[] => {
-  const basePermissions = ['view_own_profile', 'edit_own_profile'];
+  const basePermissions = ["view_own_profile", "edit_own_profile"];
 
   switch (role) {
-    case 'owner':
+    case "owner":
       return [
         ...basePermissions,
-        'manage_business_profile',
-        'manage_services_pricing',
-        'manage_staff',
-        'view_all_bookings',
-        'manage_all_bookings',
-        'reassign_bookings',
-        'view_all_provider_data',
-        'view_all_revenue',
-        'send_all_messages',
-        'manage_all_calendars',
-        'send_all_notifications',
-        'manage_integrations',
-        'view_analytics',
-        'manage_subscription',
-        'manage_locations',
+        "manage_business_profile",
+        "manage_services_pricing",
+        "manage_staff",
+        "view_all_bookings",
+        "manage_all_bookings",
+        "reassign_bookings",
+        "view_all_provider_data",
+        "view_all_revenue",
+        "send_all_messages",
+        "manage_all_calendars",
+        "send_all_notifications",
+        "manage_integrations",
+        "view_analytics",
+        "manage_subscription",
+        "manage_locations",
       ];
 
-    case 'dispatcher':
+    case "dispatcher":
       return [
         ...basePermissions,
-        'view_business_profile',
-        'view_services_pricing',
-        'view_all_bookings',
-        'manage_all_bookings',
-        'reassign_bookings',
-        'view_all_provider_data',
-        'view_all_revenue',
-        'send_all_messages',
-        'manage_all_calendars',
-        'send_all_notifications',
+        "view_business_profile",
+        "view_services_pricing",
+        "view_all_bookings",
+        "manage_all_bookings",
+        "reassign_bookings",
+        "view_all_provider_data",
+        "view_all_revenue",
+        "send_all_messages",
+        "manage_all_calendars",
+        "send_all_notifications",
       ];
 
-    case 'provider':
+    case "provider":
       return [
         ...basePermissions,
-        'view_business_profile',
-        'view_services_pricing',
-        'view_own_bookings',
-        'manage_own_bookings',
-        'view_own_revenue',
-        'send_own_messages',
-        'manage_own_calendar',
-        'receive_notifications',
+        "view_business_profile",
+        "view_services_pricing",
+        "view_own_bookings",
+        "manage_own_bookings",
+        "view_own_revenue",
+        "send_own_messages",
+        "manage_own_calendar",
+        "receive_notifications",
       ];
 
     default:

@@ -83,9 +83,7 @@ export default function ProviderDashboard() {
       }
 
       // Fetch bookings based on role
-      let bookingsQuery = supabase
-        .from("bookings")
-        .select(`
+      let bookingsQuery = supabase.from("bookings").select(`
           *,
           providers!inner(first_name, last_name),
           services(name, description)
@@ -101,7 +99,7 @@ export default function ProviderDashboard() {
           supabase
             .from("providers")
             .select("id")
-            .eq("business_id", user.business_id)
+            .eq("business_id", user.business_id),
         );
       }
 

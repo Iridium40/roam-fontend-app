@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -22,24 +28,31 @@ import {
 import type { BusinessRegistration, BusinessType } from "@/lib/database.types";
 
 interface BusinessRegistrationFormProps {
-  onSubmit: (data: BusinessRegistration & { password: string; confirmPassword: string; agreedToTerms: boolean; agreedToBackground: boolean; }) => Promise<void>;
+  onSubmit: (
+    data: BusinessRegistration & {
+      password: string;
+      confirmPassword: string;
+      agreedToTerms: boolean;
+      agreedToBackground: boolean;
+    },
+  ) => Promise<void>;
   loading: boolean;
   error: string;
 }
 
-export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> = ({
-  onSubmit,
-  loading,
-  error,
-}) => {
+export const BusinessRegistrationForm: React.FC<
+  BusinessRegistrationFormProps
+> = ({ onSubmit, loading, error }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<BusinessRegistration & {
-    password: string;
-    confirmPassword: string;
-    agreedToTerms: boolean;
-    agreedToBackground: boolean;
-  }>({
+  const [formData, setFormData] = useState<
+    BusinessRegistration & {
+      password: string;
+      confirmPassword: string;
+      agreedToTerms: boolean;
+      agreedToBackground: boolean;
+    }
+  >({
     // Business Information
     business_name: "",
     business_type: "independent",
@@ -48,14 +61,14 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
     website_url: "",
     business_description: "",
     years_in_business: 0,
-    
+
     // Owner/Primary Contact
     owner_first_name: "",
     owner_last_name: "",
     owner_email: "",
     owner_phone: "",
     owner_date_of_birth: new Date(),
-    
+
     // Business Address
     business_address: {
       address_line1: "",
@@ -65,7 +78,7 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
       postal_code: "",
       country: "United States",
     },
-    
+
     // Form fields
     password: "",
     confirmPassword: "",
@@ -74,17 +87,17 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
   });
 
   const handleInputChange = (field: string, value: any) => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      setFormData(prev => ({
+    if (field.includes(".")) {
+      const [parent, child] = field.split(".");
+      setFormData((prev) => ({
         ...prev,
         [parent]: {
           ...prev[parent as keyof typeof prev],
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
+      setFormData((prev) => ({ ...prev, [field]: value }));
     }
   };
 
@@ -141,42 +154,91 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
     }
   };
 
-  const businessTypes: { value: BusinessType; label: string; description: string; }[] = [
+  const businessTypes: {
+    value: BusinessType;
+    label: string;
+    description: string;
+  }[] = [
     {
       value: "independent",
       label: "Independent Provider",
-      description: "Solo practitioner offering services directly to customers"
+      description: "Solo practitioner offering services directly to customers",
     },
     {
       value: "small_business",
       label: "Small Business",
-      description: "Business with 2-25 providers across multiple locations"
+      description: "Business with 2-25 providers across multiple locations",
     },
     {
       value: "franchise",
       label: "Franchise",
-      description: "Part of a larger franchise network with standardized operations"
+      description:
+        "Part of a larger franchise network with standardized operations",
     },
     {
       value: "enterprise",
       label: "Enterprise",
-      description: "Large organization with 100+ providers and multiple locations"
+      description:
+        "Large organization with 100+ providers and multiple locations",
     },
     {
       value: "other",
       label: "Other",
-      description: "Other business structure not listed above"
-    }
+      description: "Other business structure not listed above",
+    },
   ];
 
   const usStates = [
-    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
-    "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
-    "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
-    "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
-    "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
-    "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+    "Alabama",
+    "Alaska",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "Florida",
+    "Georgia",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Pennsylvania",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming",
   ];
 
   return (
@@ -188,8 +250,8 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step <= currentStep
-                  ? 'bg-roam-blue text-white'
-                  : 'bg-gray-200 text-gray-500'
+                  ? "bg-roam-blue text-white"
+                  : "bg-gray-200 text-gray-500"
               }`}
             >
               {step}
@@ -197,7 +259,7 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
             {step < 4 && (
               <div
                 className={`w-16 h-0.5 ${
-                  step < currentStep ? 'bg-roam-blue' : 'bg-gray-200'
+                  step < currentStep ? "bg-roam-blue" : "bg-gray-200"
                 }`}
               />
             )}
@@ -220,7 +282,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
               <Input
                 id="business_name"
                 value={formData.business_name}
-                onChange={(e) => handleInputChange('business_name', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("business_name", e.target.value)
+                }
                 placeholder="Enter your business name"
                 required
               />
@@ -230,7 +294,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
               <Label htmlFor="business_type">Business Type *</Label>
               <Select
                 value={formData.business_type}
-                onValueChange={(value) => handleInputChange('business_type', value)}
+                onValueChange={(value) =>
+                  handleInputChange("business_type", value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select business type" />
@@ -240,7 +306,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                     <SelectItem key={type.value} value={type.value}>
                       <div>
                         <div className="font-medium">{type.label}</div>
-                        <div className="text-sm text-gray-500">{type.description}</div>
+                        <div className="text-sm text-gray-500">
+                          {type.description}
+                        </div>
                       </div>
                     </SelectItem>
                   ))}
@@ -249,11 +317,15 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="business_description">Business Description *</Label>
+              <Label htmlFor="business_description">
+                Business Description *
+              </Label>
               <Textarea
                 id="business_description"
                 value={formData.business_description}
-                onChange={(e) => handleInputChange('business_description', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("business_description", e.target.value)
+                }
                 placeholder="Describe your business and services"
                 rows={3}
                 required
@@ -269,7 +341,12 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   min="0"
                   max="100"
                   value={formData.years_in_business}
-                  onChange={(e) => handleInputChange('years_in_business', parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "years_in_business",
+                      parseInt(e.target.value) || 0,
+                    )
+                  }
                   required
                 />
               </div>
@@ -281,7 +358,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                     id="website_url"
                     type="url"
                     value={formData.website_url}
-                    onChange={(e) => handleInputChange('website_url', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("website_url", e.target.value)
+                    }
                     placeholder="https://yourwebsite.com"
                     className="pl-10"
                   />
@@ -308,7 +387,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Input
                   id="owner_first_name"
                   value={formData.owner_first_name}
-                  onChange={(e) => handleInputChange('owner_first_name', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("owner_first_name", e.target.value)
+                  }
                   placeholder="John"
                   required
                 />
@@ -318,7 +399,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Input
                   id="owner_last_name"
                   value={formData.owner_last_name}
-                  onChange={(e) => handleInputChange('owner_last_name', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("owner_last_name", e.target.value)
+                  }
                   placeholder="Doe"
                   required
                 />
@@ -333,7 +416,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   id="owner_email"
                   type="email"
                   value={formData.owner_email}
-                  onChange={(e) => handleInputChange('owner_email', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("owner_email", e.target.value)
+                  }
                   placeholder="john@example.com"
                   className="pl-10"
                   required
@@ -349,7 +434,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   id="owner_phone"
                   type="tel"
                   value={formData.owner_phone}
-                  onChange={(e) => handleInputChange('owner_phone', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("owner_phone", e.target.value)
+                  }
                   placeholder="(555) 123-4567"
                   className="pl-10"
                   required
@@ -364,8 +451,15 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Input
                   id="owner_date_of_birth"
                   type="date"
-                  value={formData.owner_date_of_birth.toISOString().split('T')[0]}
-                  onChange={(e) => handleInputChange('owner_date_of_birth', new Date(e.target.value))}
+                  value={
+                    formData.owner_date_of_birth.toISOString().split("T")[0]
+                  }
+                  onChange={(e) =>
+                    handleInputChange(
+                      "owner_date_of_birth",
+                      new Date(e.target.value),
+                    )
+                  }
                   className="pl-10"
                   required
                 />
@@ -379,7 +473,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   id="contact_email"
                   type="email"
                   value={formData.contact_email}
-                  onChange={(e) => handleInputChange('contact_email', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("contact_email", e.target.value)
+                  }
                   placeholder="Same as owner email if empty"
                 />
               </div>
@@ -389,7 +485,7 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   id="phone"
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  onChange={(e) => handleInputChange("phone", e.target.value)}
                   placeholder="Same as owner phone if empty"
                 />
               </div>
@@ -413,7 +509,12 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
               <Input
                 id="address_line1"
                 value={formData.business_address.address_line1}
-                onChange={(e) => handleInputChange('business_address.address_line1', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange(
+                    "business_address.address_line1",
+                    e.target.value,
+                  )
+                }
                 placeholder="123 Main Street"
                 required
               />
@@ -424,7 +525,12 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
               <Input
                 id="address_line2"
                 value={formData.business_address.address_line2}
-                onChange={(e) => handleInputChange('business_address.address_line2', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange(
+                    "business_address.address_line2",
+                    e.target.value,
+                  )
+                }
                 placeholder="Suite, Unit, etc."
               />
             </div>
@@ -435,7 +541,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Input
                   id="city"
                   value={formData.business_address.city}
-                  onChange={(e) => handleInputChange('business_address.city', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("business_address.city", e.target.value)
+                  }
                   placeholder="Miami"
                   required
                 />
@@ -444,7 +552,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Label htmlFor="state">State *</Label>
                 <Select
                   value={formData.business_address.state}
-                  onValueChange={(value) => handleInputChange('business_address.state', value)}
+                  onValueChange={(value) =>
+                    handleInputChange("business_address.state", value)
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select state" />
@@ -466,7 +576,12 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Input
                   id="postal_code"
                   value={formData.business_address.postal_code}
-                  onChange={(e) => handleInputChange('business_address.postal_code', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "business_address.postal_code",
+                      e.target.value,
+                    )
+                  }
                   placeholder="33101"
                   required
                 />
@@ -475,7 +590,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Label htmlFor="country">Country</Label>
                 <Select
                   value={formData.business_address.country}
-                  onValueChange={(value) => handleInputChange('business_address.country', value)}
+                  onValueChange={(value) =>
+                    handleInputChange("business_address.country", value)
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -509,7 +626,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("password", e.target.value)
+                  }
                   placeholder="Create a strong password"
                   className="pl-10 pr-10"
                   required
@@ -521,7 +640,11 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -534,15 +657,18 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                   id="confirmPassword"
                   type={showPassword ? "text" : "password"}
                   value={formData.confirmPassword}
-                  onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("confirmPassword", e.target.value)
+                  }
                   placeholder="Confirm your password"
                   className="pl-10"
                   required
                 />
               </div>
-              {formData.password !== formData.confirmPassword && formData.confirmPassword && (
-                <p className="text-sm text-red-600">Passwords do not match</p>
-              )}
+              {formData.password !== formData.confirmPassword &&
+                formData.confirmPassword && (
+                  <p className="text-sm text-red-600">Passwords do not match</p>
+                )}
             </div>
 
             <div className="space-y-4">
@@ -550,7 +676,9 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Checkbox
                   id="agreedToTerms"
                   checked={formData.agreedToTerms}
-                  onCheckedChange={(checked) => handleInputChange('agreedToTerms', checked)}
+                  onCheckedChange={(checked) =>
+                    handleInputChange("agreedToTerms", checked)
+                  }
                 />
                 <Label htmlFor="agreedToTerms" className="text-sm leading-5">
                   I agree to the{" "}
@@ -568,10 +696,16 @@ export const BusinessRegistrationForm: React.FC<BusinessRegistrationFormProps> =
                 <Checkbox
                   id="agreedToBackground"
                   checked={formData.agreedToBackground}
-                  onCheckedChange={(checked) => handleInputChange('agreedToBackground', checked)}
+                  onCheckedChange={(checked) =>
+                    handleInputChange("agreedToBackground", checked)
+                  }
                 />
-                <Label htmlFor="agreedToBackground" className="text-sm leading-5">
-                  I consent to background verification checks and document verification as required for platform approval
+                <Label
+                  htmlFor="agreedToBackground"
+                  className="text-sm leading-5"
+                >
+                  I consent to background verification checks and document
+                  verification as required for platform approval
                 </Label>
               </div>
             </div>

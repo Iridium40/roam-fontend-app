@@ -358,7 +358,7 @@ export default function Index() {
       <section
         className="py-12 lg:py-20 relative bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url('https://images.pexels.com/photos/1835718/pexels-photo-1835718.jpeg')`
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url('https://images.pexels.com/photos/1835718/pexels-photo-1835718.jpeg')`,
         }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -445,10 +445,15 @@ export default function Index() {
                     <category.icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold mb-2 group-hover:text-roam-blue transition-colors">
-                    {category.id === "therapy" ? <p>Therapy</p> :
-                     category.id === "fitness" ? <p>Fitness</p> :
-                     category.id === "beauty" ? <p>Beauty</p> :
-                     category.name}
+                    {category.id === "therapy" ? (
+                      <p>Therapy</p>
+                    ) : category.id === "fitness" ? (
+                      <p>Fitness</p>
+                    ) : category.id === "beauty" ? (
+                      <p>Beauty</p>
+                    ) : (
+                      category.name
+                    )}
                   </h3>
                   <p className="text-sm text-foreground/60 mb-3">
                     {category.description}

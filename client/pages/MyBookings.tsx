@@ -264,7 +264,6 @@ export default function MyBookings() {
                           <MessageCircle className="w-4 h-4 mr-2" />
                           Contact Provider
                         </Button>
-
                       </div>
                     </div>
                   </div>
@@ -502,7 +501,6 @@ function BookingCard({ booking }: { booking: any }) {
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Message
               </Button>
-
             </>
           )}
           {booking.status === "completed" && (

@@ -74,12 +74,14 @@ export default function ProviderPortal() {
     password: "",
   });
 
-  const [signupData, setSignupData] = useState<Partial<BusinessRegistration> & {
-    password: string;
-    confirmPassword: string;
-    agreedToTerms: boolean;
-    agreedToBackground: boolean;
-  }>({
+  const [signupData, setSignupData] = useState<
+    Partial<BusinessRegistration> & {
+      password: string;
+      confirmPassword: string;
+      agreedToTerms: boolean;
+      agreedToBackground: boolean;
+    }
+  >({
     // Business Information
     business_name: "",
     business_type: "" as BusinessType,
@@ -170,7 +172,14 @@ export default function ProviderPortal() {
     }
   };
 
-  const handleSignup = async (data: BusinessRegistration & { password: string; confirmPassword: string; agreedToTerms: boolean; agreedToBackground: boolean; }) => {
+  const handleSignup = async (
+    data: BusinessRegistration & {
+      password: string;
+      confirmPassword: string;
+      agreedToTerms: boolean;
+      agreedToBackground: boolean;
+    },
+  ) => {
     setIsLoading(true);
     setError("");
 
@@ -274,7 +283,7 @@ export default function ProviderPortal() {
         last_name: data.owner_last_name!,
         email: data.owner_email!,
         phone: data.owner_phone!,
-        date_of_birth: data.owner_date_of_birth?.toISOString().split('T')[0],
+        date_of_birth: data.owner_date_of_birth?.toISOString().split("T")[0],
         provider_role: "owner",
         verification_status: "pending",
         background_check_status: "under_review",

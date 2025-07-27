@@ -4,7 +4,7 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[]
+  | Json[];
 
 export type Database = {
   public: {
@@ -689,18 +689,33 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      business_type: 'independent' | 'small_business' | 'franchise' | 'enterprise' | 'other';
-      provider_role: 'owner' | 'dispatcher' | 'provider';
-      verification_status: 'pending' | 'under_review' | 'approved' | 'rejected' | 'requires_more_info';
-      provider_verification_status: 'pending' | 'approved' | 'rejected';
-      background_check_status: 'under_review' | 'passed' | 'failed';
-      document_verification_status: 'pending' | 'approved' | 'rejected';
-      subscription_status: 'trial' | 'active' | 'past_due' | 'cancelled';
-      delivery_type: 'business_location' | 'mobile' | 'virtual';
-      payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
-      booking_status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
-      tip_status: 'none' | 'requested' | 'paid' | 'declined';
-      calendar_type: 'google' | 'outlook' | 'apple';
+      business_type:
+        | "independent"
+        | "small_business"
+        | "franchise"
+        | "enterprise"
+        | "other";
+      provider_role: "owner" | "dispatcher" | "provider";
+      verification_status:
+        | "pending"
+        | "under_review"
+        | "approved"
+        | "rejected"
+        | "requires_more_info";
+      provider_verification_status: "pending" | "approved" | "rejected";
+      background_check_status: "under_review" | "passed" | "failed";
+      document_verification_status: "pending" | "approved" | "rejected";
+      subscription_status: "trial" | "active" | "past_due" | "cancelled";
+      delivery_type: "business_location" | "mobile" | "virtual";
+      payment_status: "pending" | "paid" | "failed" | "refunded";
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled";
+      tip_status: "none" | "requested" | "paid" | "declined";
+      calendar_type: "google" | "outlook" | "apple";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -709,18 +724,33 @@ export type Database = {
 };
 
 // Type exports
-export type BusinessType = 'independent' | 'small_business' | 'franchise' | 'enterprise' | 'other';
-export type ProviderRole = 'owner' | 'dispatcher' | 'provider';
-export type VerificationStatus = 'pending' | 'under_review' | 'approved' | 'rejected' | 'requires_more_info';
-export type ProviderVerificationStatus = 'pending' | 'approved' | 'rejected';
-export type BackgroundCheckStatus = 'under_review' | 'passed' | 'failed';
-export type DocumentVerificationStatus = 'pending' | 'approved' | 'rejected';
-export type SubscriptionStatus = 'trial' | 'active' | 'past_due' | 'cancelled';
-export type DeliveryType = 'business_location' | 'mobile' | 'virtual';
-export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
-export type BookingStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
-export type TipStatus = 'none' | 'requested' | 'paid' | 'declined';
-export type CalendarType = 'google' | 'outlook' | 'apple';
+export type BusinessType =
+  | "independent"
+  | "small_business"
+  | "franchise"
+  | "enterprise"
+  | "other";
+export type ProviderRole = "owner" | "dispatcher" | "provider";
+export type VerificationStatus =
+  | "pending"
+  | "under_review"
+  | "approved"
+  | "rejected"
+  | "requires_more_info";
+export type ProviderVerificationStatus = "pending" | "approved" | "rejected";
+export type BackgroundCheckStatus = "under_review" | "passed" | "failed";
+export type DocumentVerificationStatus = "pending" | "approved" | "rejected";
+export type SubscriptionStatus = "trial" | "active" | "past_due" | "cancelled";
+export type DeliveryType = "business_location" | "mobile" | "virtual";
+export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
+export type BookingStatus =
+  | "pending"
+  | "confirmed"
+  | "in_progress"
+  | "completed"
+  | "cancelled";
+export type TipStatus = "none" | "requested" | "paid" | "declined";
+export type CalendarType = "google" | "outlook" | "apple";
 
 // Enhanced interfaces
 export interface AuthUser {
@@ -743,14 +773,14 @@ export interface BusinessRegistration {
   website_url?: string;
   business_description: string;
   years_in_business: number;
-  
+
   // Owner/Primary Contact
   owner_first_name: string;
   owner_last_name: string;
   owner_email: string;
   owner_phone: string;
   owner_date_of_birth: Date;
-  
+
   // Business Address
   business_address: {
     address_line1: string;
@@ -793,17 +823,28 @@ export interface SubscriptionPlan {
 }
 
 // Table type exports
-export type BusinessProfile = Database["public"]["Tables"]["business_profiles"]["Row"];
-export type BusinessLocation = Database["public"]["Tables"]["business_locations"]["Row"];
+export type BusinessProfile =
+  Database["public"]["Tables"]["business_profiles"]["Row"];
+export type BusinessLocation =
+  Database["public"]["Tables"]["business_locations"]["Row"];
 export type Provider = Database["public"]["Tables"]["providers"]["Row"];
-export type BusinessService = Database["public"]["Tables"]["business_services"]["Row"];
-export type BusinessAddon = Database["public"]["Tables"]["business_addons"]["Row"];
+export type BusinessService =
+  Database["public"]["Tables"]["business_services"]["Row"];
+export type BusinessAddon =
+  Database["public"]["Tables"]["business_addons"]["Row"];
 export type Booking = Database["public"]["Tables"]["bookings"]["Row"];
-export type BookingAction = Database["public"]["Tables"]["booking_actions"]["Row"];
-export type ProviderDocument = Database["public"]["Tables"]["provider_documents"]["Row"];
-export type CalendarConnection = Database["public"]["Tables"]["provider_calendar_connections"]["Row"];
-export type PushSubscription = Database["public"]["Tables"]["push_subscriptions"]["Row"];
-export type CommunicationPreferences = Database["public"]["Tables"]["user_communication_preferences"]["Row"];
-export type BusinessSetupProgress = Database["public"]["Tables"]["business_setup_progress"]["Row"];
+export type BookingAction =
+  Database["public"]["Tables"]["booking_actions"]["Row"];
+export type ProviderDocument =
+  Database["public"]["Tables"]["provider_documents"]["Row"];
+export type CalendarConnection =
+  Database["public"]["Tables"]["provider_calendar_connections"]["Row"];
+export type PushSubscription =
+  Database["public"]["Tables"]["push_subscriptions"]["Row"];
+export type CommunicationPreferences =
+  Database["public"]["Tables"]["user_communication_preferences"]["Row"];
+export type BusinessSetupProgress =
+  Database["public"]["Tables"]["business_setup_progress"]["Row"];
 export type Service = Database["public"]["Tables"]["services"]["Row"];
-export type ServiceAddon = Database["public"]["Tables"]["service_addons"]["Row"];
+export type ServiceAddon =
+  Database["public"]["Tables"]["service_addons"]["Row"];
