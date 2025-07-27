@@ -2823,117 +2823,392 @@ export default function ProviderDashboard() {
                 </div>
               )}
 
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="business_name">Business Name *</Label>
-                    <Input
-                      id="business_name"
-                      value={businessDetailsForm.business_name}
-                      onChange={(e) => handleBusinessDetailsFormChange("business_name", e.target.value)}
-                      disabled={businessDetailsSaving}
-                    />
+              <div className="space-y-8">
+                {/* Basic Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">Basic Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business_name">Business Name *</Label>
+                      <Input
+                        id="business_name"
+                        value={businessDetailsForm.business_name}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_name", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_type">Business Type</Label>
+                      <Input
+                        id="business_type"
+                        value={formatBusinessType(businessDetailsForm.business_type)}
+                        readOnly
+                        className="bg-muted cursor-not-allowed"
+                        title="Business type cannot be changed"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="years_in_business">Years in Business</Label>
+                      <Input
+                        id="years_in_business"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={businessDetailsForm.years_in_business}
+                        onChange={(e) => handleBusinessDetailsFormChange("years_in_business", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="service_area_radius">Service Area Radius (miles)</Label>
+                      <Input
+                        id="service_area_radius"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={businessDetailsForm.service_area_radius}
+                        onChange={(e) => handleBusinessDetailsFormChange("service_area_radius", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="business_type">Business Type</Label>
-                    <Input
-                      id="business_type"
-                      value={formatBusinessType(businessDetailsForm.business_type)}
-                      readOnly
-                      className="bg-muted cursor-not-allowed"
-                      title="Business type cannot be changed"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="business_phone">Business Phone</Label>
-                    <Input
-                      id="business_phone"
-                      type="tel"
-                      value={businessDetailsForm.business_phone}
-                      onChange={(e) => handleBusinessDetailsFormChange("business_phone", e.target.value)}
-                      disabled={businessDetailsSaving}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="business_email">Business Email</Label>
-                    <Input
-                      id="business_email"
-                      type="email"
-                      value={businessDetailsForm.business_email}
-                      onChange={(e) => handleBusinessDetailsFormChange("business_email", e.target.value)}
-                      disabled={businessDetailsSaving}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="website_url">Website URL</Label>
-                    <Input
-                      id="website_url"
-                      type="url"
-                      value={businessDetailsForm.website_url}
-                      onChange={(e) => handleBusinessDetailsFormChange("website_url", e.target.value)}
-                      placeholder="https://"
-                      disabled={businessDetailsSaving}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="years_in_business">Years in Business</Label>
-                    <Input
-                      id="years_in_business"
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={businessDetailsForm.years_in_business}
-                      onChange={(e) => handleBusinessDetailsFormChange("years_in_business", e.target.value)}
-                      disabled={businessDetailsSaving}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="tax_id">Tax ID / EIN</Label>
-                    <Input
-                      id="tax_id"
-                      value={businessDetailsForm.tax_id}
-                      onChange={(e) => handleBusinessDetailsFormChange("tax_id", e.target.value)}
-                      disabled={businessDetailsSaving}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="license_number">License Number</Label>
-                    <Input
-                      id="license_number"
-                      value={businessDetailsForm.license_number}
-                      onChange={(e) => handleBusinessDetailsFormChange("license_number", e.target.value)}
+                    <Label htmlFor="business_description">Business Description</Label>
+                    <Textarea
+                      id="business_description"
+                      value={businessDetailsForm.business_description}
+                      onChange={(e) => handleBusinessDetailsFormChange("business_description", e.target.value)}
+                      rows={3}
+                      placeholder="Describe your business, services, and what makes you unique..."
                       disabled={businessDetailsSaving}
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="insurance_policy_number">Insurance Policy Number</Label>
-                  <Input
-                    id="insurance_policy_number"
-                    value={businessDetailsForm.insurance_policy_number}
-                    onChange={(e) => handleBusinessDetailsFormChange("insurance_policy_number", e.target.value)}
-                    disabled={businessDetailsSaving}
-                  />
+                {/* Contact Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">Contact Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business_phone">Business Phone</Label>
+                      <Input
+                        id="business_phone"
+                        type="tel"
+                        value={businessDetailsForm.business_phone}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_phone", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_email">Business Email</Label>
+                      <Input
+                        id="business_email"
+                        type="email"
+                        value={businessDetailsForm.business_email}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_email", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="website_url">Website URL</Label>
+                      <Input
+                        id="website_url"
+                        type="url"
+                        value={businessDetailsForm.website_url}
+                        onChange={(e) => handleBusinessDetailsFormChange("website_url", e.target.value)}
+                        placeholder="https://"
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="emergency_contact_name">Emergency Contact Name</Label>
+                      <Input
+                        id="emergency_contact_name"
+                        value={businessDetailsForm.emergency_contact_name}
+                        onChange={(e) => handleBusinessDetailsFormChange("emergency_contact_name", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="emergency_contact_phone">Emergency Contact Phone</Label>
+                      <Input
+                        id="emergency_contact_phone"
+                        type="tel"
+                        value={businessDetailsForm.emergency_contact_phone}
+                        onChange={(e) => handleBusinessDetailsFormChange("emergency_contact_phone", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="business_description">Business Description</Label>
-                  <Textarea
-                    id="business_description"
-                    value={businessDetailsForm.business_description}
-                    onChange={(e) => handleBusinessDetailsFormChange("business_description", e.target.value)}
-                    rows={4}
-                    placeholder="Describe your business, services, and what makes you unique..."
-                    disabled={businessDetailsSaving}
-                  />
+                {/* Business Address */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">Business Address</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business_address_line1">Address Line 1</Label>
+                      <Input
+                        id="business_address_line1"
+                        value={businessDetailsForm.business_address_line1}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_address_line1", e.target.value)}
+                        placeholder="Street address"
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_address_line2">Address Line 2</Label>
+                      <Input
+                        id="business_address_line2"
+                        value={businessDetailsForm.business_address_line2}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_address_line2", e.target.value)}
+                        placeholder="Apt, suite, unit, etc."
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_city">City</Label>
+                      <Input
+                        id="business_city"
+                        value={businessDetailsForm.business_city}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_city", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_state">State</Label>
+                      <Input
+                        id="business_state"
+                        value={businessDetailsForm.business_state}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_state", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_postal_code">Postal Code</Label>
+                      <Input
+                        id="business_postal_code"
+                        value={businessDetailsForm.business_postal_code}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_postal_code", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_country">Country</Label>
+                      <Input
+                        id="business_country"
+                        value={businessDetailsForm.business_country}
+                        readOnly
+                        className="bg-muted cursor-not-allowed"
+                        title="Country cannot be changed"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Legal & Registration */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">Legal & Registration</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="tax_id">Tax ID / EIN</Label>
+                      <Input
+                        id="tax_id"
+                        value={businessDetailsForm.tax_id}
+                        onChange={(e) => handleBusinessDetailsFormChange("tax_id", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="business_registration_number">Business Registration Number</Label>
+                      <Input
+                        id="business_registration_number"
+                        value={businessDetailsForm.business_registration_number}
+                        onChange={(e) => handleBusinessDetailsFormChange("business_registration_number", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="license_number">License Number</Label>
+                      <Input
+                        id="license_number"
+                        value={businessDetailsForm.license_number}
+                        onChange={(e) => handleBusinessDetailsFormChange("license_number", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="background_check_status">Background Check Status</Label>
+                      <Input
+                        id="background_check_status"
+                        value={businessDetailsForm.background_check_status}
+                        readOnly
+                        className="bg-muted cursor-not-allowed"
+                        title="Background check status is managed by system"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="certification_details">Certification Details</Label>
+                    <Textarea
+                      id="certification_details"
+                      value={businessDetailsForm.certification_details}
+                      onChange={(e) => handleBusinessDetailsFormChange("certification_details", e.target.value)}
+                      rows={2}
+                      placeholder="List your professional certifications and credentials..."
+                      disabled={businessDetailsSaving}
+                    />
+                  </div>
+                </div>
+
+                {/* Insurance */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">Insurance</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="liability_insurance_provider">Liability Insurance Provider</Label>
+                      <Input
+                        id="liability_insurance_provider"
+                        value={businessDetailsForm.liability_insurance_provider}
+                        onChange={(e) => handleBusinessDetailsFormChange("liability_insurance_provider", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="liability_insurance_amount">Liability Insurance Amount ($)</Label>
+                      <Input
+                        id="liability_insurance_amount"
+                        type="number"
+                        min="0"
+                        value={businessDetailsForm.liability_insurance_amount}
+                        onChange={(e) => handleBusinessDetailsFormChange("liability_insurance_amount", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="insurance_policy_number">Insurance Policy Number</Label>
+                      <Input
+                        id="insurance_policy_number"
+                        value={businessDetailsForm.insurance_policy_number}
+                        onChange={(e) => handleBusinessDetailsFormChange("insurance_policy_number", e.target.value)}
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Payment Methods */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">Payment Methods</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Accepts Cash</Label>
+                        <p className="text-sm text-foreground/60">Accept cash payments from customers</p>
+                      </div>
+                      <Switch
+                        checked={businessDetailsForm.accepts_cash}
+                        onCheckedChange={(checked) => handleBusinessDetailsFormChange("accepts_cash", checked)}
+                        disabled={businessDetailsSaving}
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Accepts Credit Cards</Label>
+                        <p className="text-sm text-foreground/60">Accept credit and debit card payments</p>
+                      </div>
+                      <Switch
+                        checked={businessDetailsForm.accepts_credit_cards}
+                        onCheckedChange={(checked) => handleBusinessDetailsFormChange("accepts_credit_cards", checked)}
+                        disabled={businessDetailsSaving}
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Accepts Mobile Payments</Label>
+                        <p className="text-sm text-foreground/60">Accept mobile payments (Apple Pay, Google Pay, etc.)</p>
+                      </div>
+                      <Switch
+                        checked={businessDetailsForm.accepts_mobile_payments}
+                        onCheckedChange={(checked) => handleBusinessDetailsFormChange("accepts_mobile_payments", checked)}
+                        disabled={businessDetailsSaving}
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
+                    </div>
+
+                    {/* Stripe Status Display */}
+                    <div className="p-4 bg-accent/20 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <Label>Stripe Payouts</Label>
+                        <span className={`font-medium ${
+                          business?.stripe_connected_account_id
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}>
+                          {business?.stripe_connected_account_id ? "Enabled" : "Disabled"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground/60 mt-1">
+                        {business?.stripe_connected_account_id
+                          ? "Your Stripe account is connected and ready to receive payments"
+                          : "Connect your Stripe account to enable automatic payouts"
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Policies */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold border-b pb-2">Business Policies</h3>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="cancellation_policy">Cancellation Policy</Label>
+                      <Textarea
+                        id="cancellation_policy"
+                        value={businessDetailsForm.cancellation_policy}
+                        onChange={(e) => handleBusinessDetailsFormChange("cancellation_policy", e.target.value)}
+                        rows={3}
+                        placeholder="Describe your cancellation policy and notice requirements..."
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="refund_policy">Refund Policy</Label>
+                      <Textarea
+                        id="refund_policy"
+                        value={businessDetailsForm.refund_policy}
+                        onChange={(e) => handleBusinessDetailsFormChange("refund_policy", e.target.value)}
+                        rows={3}
+                        placeholder="Describe your refund policy and procedures..."
+                        disabled={businessDetailsSaving}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t">
