@@ -170,33 +170,36 @@ export default function ProviderPortal() {
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignup = async (data: BusinessRegistration & { password: string; confirmPassword: string; agreedToTerms: boolean; agreedToBackground: boolean; }) => {
     setIsLoading(true);
     setError("");
 
     try {
       // Validate passwords match
-      if (signupData.password !== signupData.confirmPassword) {
+      if (data.password !== data.confirmPassword) {
         throw new Error("Passwords do not match");
       }
 
-      if (!signupData.business_type) {
+      if (!data.business_type) {
         throw new Error("Please select a business type");
       }
 
-      if (!signupData.business_name) {
+      if (!data.business_name) {
         throw new Error("Please enter a business name");
       }
 
-      if (!signupData.owner_first_name || !signupData.owner_last_name) {
+      if (!data.owner_first_name || !data.owner_last_name) {
         throw new Error("Please enter owner name");
+      }
+
+      if (!data.agreedToTerms || !data.agreedToBackground) {
+        throw new Error("Please agree to terms and background check");
       }
 
       // Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: signupData.owner_email!,
-        password: signupData.password,
+        email: data.owner_email!,
+        password: data.password,
       });
 
       if (authError) {
@@ -211,13 +214,13 @@ export default function ProviderPortal() {
       const { data: businessData, error: businessError } = await supabase
         .from("business_profiles")
         .insert({
-          business_name: signupData.business_name!,
-          business_type: signupData.business_type!,
-          contact_email: signupData.contact_email || signupData.owner_email,
-          phone: signupData.phone || signupData.owner_phone,
-          website_url: signupData.website_url,
-          business_description: signupData.business_description,
-          years_in_business: signupData.years_in_business,
+          business_name: data.business_name!,
+          business_type: data.business_type!,
+          contact_email: data.contact_email || data.owner_email,
+          phone: data.phone || data.owner_phone,
+          website_url: data.website_url,
+          business_description: data.business_description,
+          years_in_business: data.years_in_business,
           verification_status: "pending",
           is_active: false,
           setup_step: 1,
@@ -241,12 +244,12 @@ export default function ProviderPortal() {
         .insert({
           business_id: businessData.id,
           location_name: "Main Location",
-          address_line1: signupData.business_address?.address_line1,
-          address_line2: signupData.business_address?.address_line2,
-          city: signupData.business_address?.city,
-          state: signupData.business_address?.state,
-          postal_code: signupData.business_address?.postal_code,
-          country: signupData.business_address?.country,
+          address_line1: data.business_address?.address_line1,
+          address_line2: data.business_address?.address_line2,
+          city: data.business_address?.city,
+          state: data.business_address?.state,
+          postal_code: data.business_address?.postal_code,
+          country: data.business_address?.country,
           is_primary: true,
           is_active: true,
         })
@@ -267,11 +270,11 @@ export default function ProviderPortal() {
         user_id: authData.user.id,
         business_id: businessData.id,
         location_id: locationData.id,
-        first_name: signupData.owner_first_name!,
-        last_name: signupData.owner_last_name!,
-        email: signupData.owner_email!,
-        phone: signupData.owner_phone!,
-        date_of_birth: signupData.owner_date_of_birth?.toISOString().split('T')[0],
+        first_name: data.owner_first_name!,
+        last_name: data.owner_last_name!,
+        email: data.owner_email!,
+        phone: data.owner_phone!,
+        date_of_birth: data.owner_date_of_birth?.toISOString().split('T')[0],
         provider_role: "owner",
         verification_status: "pending",
         background_check_status: "under_review",
@@ -306,9 +309,9 @@ export default function ProviderPortal() {
         state: {
           message:
             "Account created successfully! Please upload your documents for verification.",
-          businessType: signupData.business_type,
+          businessType: data.business_type,
           businessId: businessData.id,
-          businessName: signupData.business_name,
+          businessName: data.business_name,
         },
       });
     } catch (error) {
