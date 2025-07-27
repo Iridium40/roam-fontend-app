@@ -3248,28 +3248,137 @@ export default function ProviderDashboard() {
                 {/* Provider List */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Current Team Members</CardTitle>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Current Team Members</span>
+                      <Button
+                        variant="outline"
+                        onClick={fetchTeamProviders}
+                        disabled={providersLoading}
+                        size="sm"
+                      >
+                        🔄 Refresh
+                      </Button>
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-center py-8 text-foreground/60">
-                      <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p className="text-lg mb-2">
-                        Provider management coming soon
-                      </p>
-                      <p className="text-sm">
-                        Full provider management interface will be implemented
-                        here
-                      </p>
-                      <Button
-                        className="mt-4 bg-roam-blue hover:bg-roam-blue/90"
-                        asChild
-                      >
-                        <Link to="/business-management">
-                          <Users className="w-4 h-4 mr-2" />
-                          Manage Team (Legacy)
-                        </Link>
-                      </Button>
-                    </div>
+                    {providersError && (
+                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                        {providersError}
+                      </div>
+                    )}
+
+                    {providersLoading ? (
+                      <div className="text-center py-8">
+                        <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p>Loading team members...</p>
+                      </div>
+                    ) : teamProviders.length > 0 ? (
+                      <div className="space-y-4">
+                        {teamProviders.map((teamProvider) => (
+                          <div
+                            key={teamProvider.id}
+                            className="flex items-center justify-between p-4 bg-accent/20 rounded-lg border hover:shadow-md transition-shadow"
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                {teamProvider.image_url ? (
+                                  <img
+                                    src={teamProvider.image_url}
+                                    alt={`${teamProvider.first_name} ${teamProvider.last_name}`}
+                                    className="w-12 h-12 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <span className="text-white font-semibold">
+                                    {teamProvider.first_name?.charAt(0)}{teamProvider.last_name?.charAt(0)}
+                                  </span>
+                                )}
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">
+                                  {teamProvider.first_name} {teamProvider.last_name}
+                                </h3>
+                                <p className="text-sm text-foreground/60">
+                                  {teamProvider.email}
+                                </p>
+                                <div className="flex items-center gap-4 text-sm text-foreground/60 mt-1">
+                                  <span className="capitalize">
+                                    {teamProvider.provider_role || 'Provider'}
+                                  </span>
+                                  {teamProvider.business_locations ? (
+                                    <div className="flex items-center gap-1">
+                                      <MapPin className="w-3 h-3" />
+                                      <span>
+                                        {teamProvider.business_locations.location_name}
+                                        {teamProvider.business_locations.is_primary && (
+                                          <Badge variant="secondary" className="ml-1 text-xs">Primary</Badge>
+                                        )}
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center gap-1">
+                                      <MapPin className="w-3 h-3" />
+                                      <span className="text-foreground/40">No location assigned</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Badge
+                                className={
+                                  teamProvider.is_active
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-red-100 text-red-800"
+                                }
+                              >
+                                {teamProvider.is_active ? "Active" : "Inactive"}
+                              </Badge>
+                              <Badge
+                                className={
+                                  teamProvider.verification_status === "verified"
+                                    ? "bg-green-100 text-green-800"
+                                    : teamProvider.verification_status === "pending"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : "bg-red-100 text-red-800"
+                                }
+                              >
+                                {teamProvider.verification_status === "verified"
+                                  ? "Verified"
+                                  : teamProvider.verification_status === "pending"
+                                    ? "Pending"
+                                    : "Unverified"}
+                              </Badge>
+                              <Button variant="outline" size="sm">
+                                <Settings className="w-4 h-4 mr-2" />
+                                Manage
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+
+                        <div className="mt-6 flex justify-center">
+                          <Button
+                            variant="outline"
+                            className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Invite New Provider
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-foreground/60">
+                        <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg mb-2">No team members found</p>
+                        <p className="text-sm mb-4">
+                          Start building your team by inviting providers to join your business
+                        </p>
+                        <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Invite Your First Provider
+                        </Button>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
