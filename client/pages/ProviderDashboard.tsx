@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { 
-  Sparkles, 
+import {
+  Sparkles,
   LogOut,
   Calendar,
   DollarSign,
@@ -30,12 +30,12 @@ import {
   Camera,
   Smartphone,
   Building,
-  Video
+  Video,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { supabase } from '@/lib/supabase';
-import type { Provider } from '@/lib/database.types';
+import { supabase } from "@/lib/supabase";
+import type { Provider } from "@/lib/database.types";
 
 export default function ProviderDashboard() {
   const [isAvailable, setIsAvailable] = useState(true);
@@ -51,18 +51,21 @@ export default function ProviderDashboard() {
   const checkAuthentication = async () => {
     try {
       // Check if user is authenticated
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
 
       if (authError || !user) {
-        navigate('/provider-portal');
+        navigate("/provider-portal");
         return;
       }
 
       // Get provider data
       const { data: providerData, error: providerError } = await supabase
-        .from('providers')
-        .select('*')
-        .eq('user_id', user.id)
+        .from("providers")
+        .select("*")
+        .eq("user_id", user.id)
         .single();
 
       if (providerError || !providerData) {
@@ -71,13 +74,15 @@ export default function ProviderDashboard() {
       }
 
       if (!providerData.is_active) {
-        setError("Your account is pending verification. Please wait for admin approval.");
+        setError(
+          "Your account is pending verification. Please wait for admin approval.",
+        );
         return;
       }
 
       setProvider(providerData);
     } catch (error) {
-      console.error('Authentication error:', error);
+      console.error("Authentication error:", error);
       setError("An error occurred while checking authentication.");
     } finally {
       setLoading(false);
@@ -88,11 +93,11 @@ export default function ProviderDashboard() {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Error signing out:', error);
+        console.error("Error signing out:", error);
       }
-      navigate('/provider-portal');
+      navigate("/provider-portal");
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
@@ -137,12 +142,12 @@ export default function ProviderDashboard() {
   if (!provider) {
     return null;
   }
-  
+
   const stats = {
     monthlyEarnings: 3250,
     completedBookings: 47,
     avgRating: 4.9,
-    responseRate: 98
+    responseRate: 98,
   };
 
   const recentBookings = [
@@ -155,10 +160,10 @@ export default function ProviderDashboard() {
       status: "confirmed",
       price: 120,
       deliveryType: "mobile",
-      location: "Miami, FL"
+      location: "Miami, FL",
     },
     {
-      id: "B002", 
+      id: "B002",
       service: "Couples Massage",
       customer: "John & Lisa D.",
       date: "2024-01-16",
@@ -166,19 +171,19 @@ export default function ProviderDashboard() {
       status: "pending",
       price: 240,
       deliveryType: "mobile",
-      location: "Coral Gables, FL"
+      location: "Coral Gables, FL",
     },
     {
       id: "B003",
       service: "Sports Massage",
       customer: "Mike R.",
       date: "2024-01-17",
-      time: "10:00 AM", 
+      time: "10:00 AM",
       status: "completed",
       price: 100,
       deliveryType: "business",
-      location: "Your Studio"
-    }
+      location: "Your Studio",
+    },
   ];
 
   const services = [
@@ -189,26 +194,26 @@ export default function ProviderDashboard() {
       price: 120,
       category: "Massage Therapy",
       active: true,
-      bookings: 23
+      bookings: 23,
     },
     {
       id: 2,
       name: "Swedish Massage",
-      duration: "60 minutes", 
+      duration: "60 minutes",
       price: 90,
       category: "Massage Therapy",
       active: true,
-      bookings: 18
+      bookings: 18,
     },
     {
       id: 3,
       name: "Sports Recovery Massage",
       duration: "75 minutes",
       price: 110,
-      category: "Massage Therapy", 
+      category: "Massage Therapy",
       active: false,
-      bookings: 6
-    }
+      bookings: 6,
+    },
   ];
 
   const getStatusBadge = (status: string) => {
@@ -216,7 +221,7 @@ export default function ProviderDashboard() {
       confirmed: { label: "Confirmed", color: "bg-green-100 text-green-800" },
       pending: { label: "Pending", color: "bg-yellow-100 text-yellow-800" },
       completed: { label: "Completed", color: "bg-gray-100 text-gray-800" },
-      cancelled: { label: "Cancelled", color: "bg-red-100 text-red-800" }
+      cancelled: { label: "Cancelled", color: "bg-red-100 text-red-800" },
     };
     return configs[status as keyof typeof configs] || configs.pending;
   };
@@ -225,7 +230,7 @@ export default function ProviderDashboard() {
     const icons = {
       mobile: Smartphone,
       business: Building,
-      virtual: Video
+      virtual: Video,
     };
     return icons[type as keyof typeof icons] || Smartphone;
   };
@@ -245,15 +250,20 @@ export default function ProviderDashboard() {
                   ROAM
                 </span>
               </div>
-              <Badge variant="secondary" className="bg-roam-light-blue/20 text-roam-blue">
+              <Badge
+                variant="secondary"
+                className="bg-roam-light-blue/20 text-roam-blue"
+              >
                 Provider Dashboard
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <Label htmlFor="availability" className="text-sm">Available</Label>
-                <Switch 
+                <Label htmlFor="availability" className="text-sm">
+                  Available
+                </Label>
+                <Switch
                   id="availability"
                   checked={isAvailable}
                   onCheckedChange={setIsAvailable}
@@ -277,18 +287,28 @@ export default function ProviderDashboard() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-7xl mx-auto space-y-8">
-          
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">
-                Welcome back, <span className="text-roam-blue">{provider.first_name || 'Provider'}</span>
+                Welcome back,{" "}
+                <span className="text-roam-blue">
+                  {provider.first_name || "Provider"}
+                </span>
               </h1>
-              <p className="text-foreground/70">Here's what's happening with your business today.</p>
+              <p className="text-foreground/70">
+                Here's what's happening with your business today.
+              </p>
             </div>
             <div className="text-right">
               <div className="text-sm text-foreground/60">Status</div>
-              <Badge className={isAvailable ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+              <Badge
+                className={
+                  isAvailable
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }
+              >
                 {isAvailable ? "Available for Bookings" : "Unavailable"}
               </Badge>
             </div>
@@ -300,48 +320,64 @@ export default function ProviderDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-foreground/60">Monthly Earnings</p>
-                    <p className="text-2xl font-bold text-roam-blue">${stats.monthlyEarnings.toLocaleString()}</p>
-                    <p className="text-xs text-green-600">+12% from last month</p>
+                    <p className="text-sm text-foreground/60">
+                      Monthly Earnings
+                    </p>
+                    <p className="text-2xl font-bold text-roam-blue">
+                      ${stats.monthlyEarnings.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-green-600">
+                      +12% from last month
+                    </p>
                   </div>
                   <DollarSign className="w-8 h-8 text-roam-blue" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-foreground/60">Completed Bookings</p>
-                    <p className="text-2xl font-bold text-roam-blue">{stats.completedBookings}</p>
+                    <p className="text-sm text-foreground/60">
+                      Completed Bookings
+                    </p>
+                    <p className="text-2xl font-bold text-roam-blue">
+                      {stats.completedBookings}
+                    </p>
                     <p className="text-xs text-green-600">+8 this month</p>
                   </div>
                   <Calendar className="w-8 h-8 text-roam-blue" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-foreground/60">Average Rating</p>
-                    <p className="text-2xl font-bold text-roam-blue">{stats.avgRating}</p>
+                    <p className="text-2xl font-bold text-roam-blue">
+                      {stats.avgRating}
+                    </p>
                     <p className="text-xs text-gray-600">From 127 reviews</p>
                   </div>
                   <Star className="w-8 h-8 text-roam-yellow fill-current" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-foreground/60">Response Rate</p>
-                    <p className="text-2xl font-bold text-roam-blue">{stats.responseRate}%</p>
-                    <p className="text-xs text-green-600">Excellent performance</p>
+                    <p className="text-2xl font-bold text-roam-blue">
+                      {stats.responseRate}%
+                    </p>
+                    <p className="text-xs text-green-600">
+                      Excellent performance
+                    </p>
                   </div>
                   <MessageCircle className="w-8 h-8 text-roam-blue" />
                 </div>
@@ -352,19 +388,34 @@ export default function ProviderDashboard() {
           {/* Main Content Tabs */}
           <Tabs defaultValue="bookings" className="space-y-6">
             <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
-              <TabsTrigger value="bookings" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+              <TabsTrigger
+                value="bookings"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
                 Bookings
               </TabsTrigger>
-              <TabsTrigger value="services" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+              <TabsTrigger
+                value="services"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
                 Services
               </TabsTrigger>
-              <TabsTrigger value="profile" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+              <TabsTrigger
+                value="profile"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
                 Profile
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+              <TabsTrigger
+                value="analytics"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="settings" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+              <TabsTrigger
+                value="settings"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
                 Settings
               </TabsTrigger>
             </TabsList>
@@ -378,14 +429,17 @@ export default function ProviderDashboard() {
                   View Calendar
                 </Button>
               </div>
-              
+
               <div className="space-y-4">
                 {recentBookings.map((booking) => {
                   const statusConfig = getStatusBadge(booking.status);
                   const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
-                  
+
                   return (
-                    <Card key={booking.id} className="hover:shadow-md transition-shadow">
+                    <Card
+                      key={booking.id}
+                      className="hover:shadow-md transition-shadow"
+                    >
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between">
                           <div className="flex items-start gap-4">
@@ -393,8 +447,12 @@ export default function ProviderDashboard() {
                               <Calendar className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                              <h3 className="font-semibold">{booking.service}</h3>
-                              <p className="text-sm text-foreground/60 mb-2">with {booking.customer}</p>
+                              <h3 className="font-semibold">
+                                {booking.service}
+                              </h3>
+                              <p className="text-sm text-foreground/60 mb-2">
+                                with {booking.customer}
+                              </p>
                               <div className="flex items-center gap-4 text-sm text-foreground/60">
                                 <div className="flex items-center gap-1">
                                   <Calendar className="w-4 h-4" />
@@ -420,14 +478,21 @@ export default function ProviderDashboard() {
                             </p>
                           </div>
                         </div>
-                        
+
                         {booking.status === "pending" && (
                           <div className="mt-4 flex gap-2">
-                            <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
+                            <Button
+                              size="sm"
+                              className="bg-roam-blue hover:bg-roam-blue/90"
+                            >
                               <CheckCircle className="w-4 h-4 mr-2" />
                               Accept
                             </Button>
-                            <Button size="sm" variant="outline" className="border-red-300 text-red-600 hover:bg-red-50">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-red-300 text-red-600 hover:bg-red-50"
+                            >
                               Decline
                             </Button>
                           </div>
@@ -448,35 +513,53 @@ export default function ProviderDashboard() {
                   Add Service
                 </Button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {services.map((service) => (
-                  <Card key={service.id} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={service.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <h3 className="font-semibold">{service.name}</h3>
-                          <p className="text-sm text-foreground/60">{service.category}</p>
+                          <p className="text-sm text-foreground/60">
+                            {service.category}
+                          </p>
                         </div>
-                        <Switch checked={service.active} className="data-[state=checked]:bg-roam-blue" />
+                        <Switch
+                          checked={service.active}
+                          className="data-[state=checked]:bg-roam-blue"
+                        />
                       </div>
-                      
+
                       <div className="space-y-2 mb-4">
                         <div className="flex justify-between text-sm">
                           <span>Duration:</span>
-                          <span className="font-medium">{service.duration}</span>
+                          <span className="font-medium">
+                            {service.duration}
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span>Price:</span>
-                          <span className="font-medium text-roam-blue">${service.price}</span>
+                          <span className="font-medium text-roam-blue">
+                            ${service.price}
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span>Bookings:</span>
-                          <span className="font-medium">{service.bookings} this month</span>
+                          <span className="font-medium">
+                            {service.bookings} this month
+                          </span>
                         </div>
                       </div>
-                      
-                      <Button variant="outline" size="sm" className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
                         <Edit className="w-4 h-4 mr-2" />
                         Edit Service
                       </Button>
@@ -489,7 +572,7 @@ export default function ProviderDashboard() {
             {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
               <h2 className="text-2xl font-bold">Provider Profile</h2>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Profile Photo & Basic Info */}
                 <Card>
@@ -500,7 +583,10 @@ export default function ProviderDashboard() {
                     <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto">
                       <Users className="w-16 h-16 text-white" />
                     </div>
-                    <Button variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                    <Button
+                      variant="outline"
+                      className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                    >
                       <Camera className="w-4 h-4 mr-2" />
                       Change Photo
                     </Button>
@@ -523,26 +609,34 @@ export default function ProviderDashboard() {
                         <Input id="lastName" defaultValue="Johnson" />
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="email">Email Address</Label>
-                      <Input id="email" type="email" defaultValue="sarah.johnson@example.com" />
+                      <Input
+                        id="email"
+                        type="email"
+                        defaultValue="sarah.johnson@example.com"
+                      />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone Number</Label>
-                      <Input id="phone" type="tel" defaultValue="(305) 555-0123" />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        defaultValue="(305) 555-0123"
+                      />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="bio">Professional Bio</Label>
-                      <Textarea 
-                        id="bio" 
+                      <Textarea
+                        id="bio"
                         defaultValue="Licensed massage therapist with 8+ years of experience specializing in deep tissue and therapeutic massage."
                         rows={4}
                       />
                     </div>
-                    
+
                     <Button className="bg-roam-blue hover:bg-roam-blue/90">
                       Save Changes
                     </Button>
@@ -554,7 +648,7 @@ export default function ProviderDashboard() {
             {/* Analytics Tab */}
             <TabsContent value="analytics" className="space-y-6">
               <h2 className="text-2xl font-bold">Business Analytics</h2>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -565,11 +659,13 @@ export default function ProviderDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="h-48 bg-gradient-to-r from-roam-light-blue/20 to-roam-blue/20 rounded-lg flex items-center justify-center">
-                      <p className="text-foreground/60">Chart visualization would go here</p>
+                      <p className="text-foreground/60">
+                        Chart visualization would go here
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -615,7 +711,7 @@ export default function ProviderDashboard() {
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
               <h2 className="text-2xl font-bold">Account Settings</h2>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card>
                   <CardHeader>
@@ -625,23 +721,35 @@ export default function ProviderDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Label>New Booking Alerts</Label>
-                        <p className="text-sm text-foreground/60">Get notified when customers book your services</p>
+                        <p className="text-sm text-foreground/60">
+                          Get notified when customers book your services
+                        </p>
                       </div>
-                      <Switch defaultChecked className="data-[state=checked]:bg-roam-blue" />
+                      <Switch
+                        defaultChecked
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div>
                         <Label>Payment Notifications</Label>
-                        <p className="text-sm text-foreground/60">Receive alerts for payments and payouts</p>
+                        <p className="text-sm text-foreground/60">
+                          Receive alerts for payments and payouts
+                        </p>
                       </div>
-                      <Switch defaultChecked className="data-[state=checked]:bg-roam-blue" />
+                      <Switch
+                        defaultChecked
+                        className="data-[state=checked]:bg-roam-blue"
+                      />
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div>
                         <Label>Marketing Updates</Label>
-                        <p className="text-sm text-foreground/60">Tips and updates to grow your business</p>
+                        <p className="text-sm text-foreground/60">
+                          Tips and updates to grow your business
+                        </p>
                       </div>
                       <Switch className="data-[state=checked]:bg-roam-blue" />
                     </div>
@@ -654,23 +762,35 @@ export default function ProviderDashboard() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <Button variant="outline" className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
                         <Edit className="w-4 h-4 mr-2" />
                         Change Password
                       </Button>
-                      
-                      <Button variant="outline" className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
                         <Mail className="w-4 h-4 mr-2" />
                         Update Email
                       </Button>
-                      
-                      <Button variant="outline" className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
                         <DollarSign className="w-4 h-4 mr-2" />
                         Payment Settings
                       </Button>
-                      
+
                       <div className="pt-4 border-t">
-                        <Button variant="outline" className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50">
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50"
+                        >
                           <AlertCircle className="w-4 h-4 mr-2" />
                           Deactivate Account
                         </Button>

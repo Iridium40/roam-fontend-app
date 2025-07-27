@@ -4,7 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Sparkles,
   ArrowLeft,
@@ -39,24 +45,26 @@ export default function ProviderPortal() {
 
   const checkIfAlreadyAuthenticated = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (user) {
         // Check if user has a provider account
         const { data: providerData } = await supabase
-          .from('providers')
-          .select('*')
-          .eq('user_id', user.id)
+          .from("providers")
+          .select("*")
+          .eq("user_id", user.id)
           .single();
 
         if (providerData) {
           // User is already authenticated as a provider, redirect to dashboard
-          navigate('/provider-dashboard');
+          navigate("/provider-dashboard");
         }
       }
     } catch (error) {
       // User is not authenticated, stay on login page
-      console.log('User not authenticated');
+      console.log("User not authenticated");
     }
   };
 
@@ -561,15 +569,26 @@ export default function ProviderPortal() {
                           <Label htmlFor="businessType">Business Type *</Label>
                           <Select
                             value={signupData.businessType}
-                            onValueChange={(value) => setSignupData({...signupData, businessType: value})}
+                            onValueChange={(value) =>
+                              setSignupData({
+                                ...signupData,
+                                businessType: value,
+                              })
+                            }
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Select your business type" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="independent">Independent Provider</SelectItem>
-                              <SelectItem value="small_business">Small Business</SelectItem>
-                              <SelectItem value="franchise">Franchise</SelectItem>
+                              <SelectItem value="independent">
+                                Independent Provider
+                              </SelectItem>
+                              <SelectItem value="small_business">
+                                Small Business
+                              </SelectItem>
+                              <SelectItem value="franchise">
+                                Franchise
+                              </SelectItem>
                               <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
@@ -578,8 +597,7 @@ export default function ProviderPortal() {
                               ? "Independent providers start as service providers and gain full business permissions after verification."
                               : signupData.businessType
                                 ? "Business owners have full account permissions after verification."
-                                : "Choose the option that best describes your business structure."
-                            }
+                                : "Choose the option that best describes your business structure."}
                           </p>
                         </div>
 
