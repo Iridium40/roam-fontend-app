@@ -206,11 +206,11 @@ export default function MyBookings() {
                   Back to Services
                 </Link>
               </Button>
-              <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+              <div className="w-24 h-24 rounded-lg overflow-hidden flex items-center justify-center">
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
                   alt="ROAM Logo"
-                  className="w-8 h-8 object-contain"
+                  className="w-24 h-24 object-contain"
                 />
               </div>
             </div>
