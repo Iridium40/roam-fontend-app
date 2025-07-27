@@ -782,8 +782,6 @@ export default function ProviderDashboard() {
     setEditingLocation(null);
     setAddingLocation(false);
     resetLocationForm();
-    setLocationsError("");
-    setLocationsSuccess("");
   };
 
   const handleBusinessDetailsFormChange = (field: string, value: string) => {
