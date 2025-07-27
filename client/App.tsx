@@ -38,6 +38,7 @@ const App = () => (
           <Route path="/provider-dashboard" element={<ProviderDashboard />} />
           <Route path="/provider-onboarding" element={<ProviderOnboarding />} />
           <Route path="/provider/:providerId" element={<ProviderProfile />} />
+          <Route path="/business-management" element={<BusinessManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
