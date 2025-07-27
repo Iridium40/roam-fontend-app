@@ -355,8 +355,13 @@ export default function Index() {
       </nav>
 
       {/* Hero Section with Search */}
-      <section className="py-12 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        className="py-12 lg:py-20 relative bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url('https://images.pexels.com/photos/1835718/pexels-photo-1835718.jpeg')`
+        }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center mb-12">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-roam-blue via-foreground to-roam-blue bg-clip-text text-transparent leading-tight">
               Book Premium Services
