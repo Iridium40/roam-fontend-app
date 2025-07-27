@@ -54,6 +54,20 @@ export default function ProviderDashboard() {
   const [error, setError] = useState("");
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState("");
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState("");
+
+  // Form state for contact information
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    bio: "",
+    dateOfBirth: "",
+    experienceYears: ""
+  });
   const navigate = useNavigate();
 
   const formatTimeAgo = (dateString: string) => {
