@@ -1355,7 +1355,6 @@ export default function ProviderDashboard() {
         throw new Error("Business ID is missing");
       }
 
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
       await directSupabaseAPI.updateBusinessProfile(business.id, updateData);
 
       // Update local business state
