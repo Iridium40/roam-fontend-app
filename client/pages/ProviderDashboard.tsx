@@ -259,7 +259,7 @@ export default function ProviderDashboard() {
           method: 'PATCH',
           headers: {
             'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${directSupabaseAPI.accessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal',
           },
