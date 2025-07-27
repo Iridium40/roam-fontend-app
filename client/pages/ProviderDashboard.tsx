@@ -3580,7 +3580,10 @@ export default function ProviderDashboard() {
                         <p className="text-sm mb-4">
                           Start building your team by inviting providers to join your business
                         </p>
-                        <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                        <Button
+                          className="bg-roam-blue hover:bg-roam-blue/90"
+                          onClick={handleStartAddProvider}
+                        >
                           <Plus className="w-4 h-4 mr-2" />
                           Invite Your First Provider
                         </Button>
