@@ -157,28 +157,19 @@ export default function ProviderDashboard() {
     setAvatarError("");
 
     try {
+      // Use direct API for authenticated operations
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
       // Extract filename from URL
       const urlParts = provider.image_url.split('/');
       const fileName = urlParts[urlParts.length - 1];
       const filePath = `avatar-provider-user/${fileName}`;
 
-      // Remove from storage
-      const { error: removeError } = await supabase.storage
-        .from('roam-file-storage')
-        .remove([filePath]);
+      // Remove from storage using direct API
+      await directSupabaseAPI.deleteFile('roam-file-storage', filePath);
 
-      if (removeError) {
-        console.warn('Storage removal error:', removeError);
-        // Continue even if storage removal fails
-      }
-
-      // Update provider record
-      const { error: updateError } = await supabase
-        .from('providers')
-        .update({ image_url: null })
-        .eq('id', provider.id);
-
-      if (updateError) throw updateError;
+      // Update provider record using direct API
+      await directSupabaseAPI.updateProviderImage(provider.id, null);
 
       // Update local state
       setProvider({ ...provider, image_url: null });
