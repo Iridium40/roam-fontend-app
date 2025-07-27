@@ -209,9 +209,35 @@ class DirectSupabaseAPI {
       },
     );
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Database update failed: ${errorText}`);
+      throw new Error(`Database update failed: ${responseText}`);
+    }
+  }
+
+  async updateBusinessProfile(
+    businessId: string,
+    updateData: any,
+  ): Promise<void> {
+    const response = await fetch(
+      `${this.baseURL}/rest/v1/business_profiles?id=eq.${businessId}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify(updateData),
+      },
+    );
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Failed to update business profile: ${responseText}`);
     }
   }
 }
