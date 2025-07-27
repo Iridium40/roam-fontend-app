@@ -588,9 +588,11 @@ export default function ProviderDashboard() {
                       <Building className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Business Details</h3>
                       <p className="text-sm text-foreground/60 mb-4">Manage business information, hours, and contact details</p>
-                      <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                        <Edit className="w-4 h-4 mr-2" />
-                        Manage
+                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                        <Link to="/business-management">
+                          <Edit className="w-4 h-4 mr-2" />
+                          Manage
+                        </Link>
                       </Button>
                     </CardContent>
                   </Card>
@@ -600,9 +602,11 @@ export default function ProviderDashboard() {
                       <MapPin className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Locations</h3>
                       <p className="text-sm text-foreground/60 mb-4">Add and manage business locations</p>
-                      <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Location
+                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                        <Link to="/business-management">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Location
+                        </Link>
                       </Button>
                     </CardContent>
                   </Card>
@@ -612,9 +616,11 @@ export default function ProviderDashboard() {
                       <Star className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Services & Pricing</h3>
                       <p className="text-sm text-foreground/60 mb-4">Configure services and set business pricing</p>
-                      <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                        <DollarSign className="w-4 h-4 mr-2" />
-                        Set Prices
+                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                        <Link to="/business-management">
+                          <DollarSign className="w-4 h-4 mr-2" />
+                          Set Prices
+                        </Link>
                       </Button>
                     </CardContent>
                   </Card>
@@ -624,9 +630,11 @@ export default function ProviderDashboard() {
                       <Users className="w-12 h-12 text-roam-blue mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Team Members</h3>
                       <p className="text-sm text-foreground/60 mb-4">Manage providers and assign locations</p>
-                      <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                        <Users className="w-4 h-4 mr-2" />
-                        Manage Team
+                      <Button asChild className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                        <Link to="/business-management">
+                          <Users className="w-4 h-4 mr-2" />
+                          Manage Team
+                        </Link>
                       </Button>
                     </CardContent>
                   </Card>
