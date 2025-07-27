@@ -2414,32 +2414,83 @@ export default function ProviderDashboard() {
                         </div>
                       </div>
 
-                      {/* Business Images */}
+                      {/* Business Logo */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">Business Images</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="image_url">Profile Image URL</Label>
-                            <Input
-                              id="image_url"
-                              type="url"
-                              value={businessDetailsForm.image_url}
-                              onChange={(e) => handleBusinessDetailsFormChange("image_url", e.target.value)}
-                              placeholder="https://..."
-                              disabled={businessDetailsSaving}
-                            />
+                        <h3 className="text-lg font-semibold border-b pb-2">Business Logo</h3>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          {/* Logo Preview */}
+                          <div className="space-y-4">
+                            <Label>Current Logo</Label>
+                            <div className="relative">
+                              <div className="w-32 h-32 bg-accent/20 border-2 border-dashed border-accent rounded-lg flex items-center justify-center overflow-hidden">
+                                {business?.logo_url ? (
+                                  <img
+                                    src={business.logo_url}
+                                    alt="Business Logo"
+                                    className="w-full h-full object-contain"
+                                  />
+                                ) : (
+                                  <div className="text-center text-foreground/60">
+                                    <Building className="w-12 h-12 mx-auto mb-2" />
+                                    <p className="text-sm">No logo uploaded</p>
+                                  </div>
+                                )}
+                              </div>
+                              {logoUploading && (
+                                <div className="absolute inset-0 w-32 h-32 bg-black/50 rounded-lg flex items-center justify-center">
+                                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                              )}
+                            </div>
                           </div>
 
-                          <div className="space-y-2">
-                            <Label htmlFor="logo_url">Logo URL</Label>
-                            <Input
-                              id="logo_url"
-                              type="url"
-                              value={businessDetailsForm.logo_url}
-                              onChange={(e) => handleBusinessDetailsFormChange("logo_url", e.target.value)}
-                              placeholder="https://..."
-                              disabled={businessDetailsSaving}
-                            />
+                          {/* Logo Upload Controls */}
+                          <div className="space-y-4">
+                            <Label>Logo Management</Label>
+
+                            {logoError && (
+                              <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                                {logoError}
+                              </div>
+                            )}
+
+                            <div className="space-y-3">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleLogoUpload}
+                                className="hidden"
+                                id="logo-upload"
+                                disabled={logoUploading}
+                              />
+                              <Button
+                                variant="outline"
+                                className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                                onClick={() =>
+                                  document.getElementById("logo-upload")?.click()
+                                }
+                                disabled={logoUploading}
+                              >
+                                <Camera className="w-4 h-4 mr-2" />
+                                {business?.logo_url ? "Change Logo" : "Upload Logo"}
+                              </Button>
+
+                              {business?.logo_url && (
+                                <Button
+                                  variant="outline"
+                                  className="w-full border-red-300 text-red-600 hover:bg-red-50"
+                                  onClick={handleLogoRemove}
+                                  disabled={logoUploading}
+                                >
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Remove Logo
+                                </Button>
+                              )}
+                            </div>
+
+                            <p className="text-xs text-foreground/60">
+                              Upload a business logo (max 5MB). Recommended size: 200x200px or larger.
+                            </p>
                           </div>
                         </div>
                       </div>
