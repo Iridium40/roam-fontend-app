@@ -155,6 +155,16 @@ export default function ProviderDashboard() {
     return `${hour12}:${minutes} ${ampm}`;
   };
 
+  const formatBusinessType = (businessType: string) => {
+    if (!businessType) return "";
+
+    // Convert underscore to space and capitalize each word
+    return businessType
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   const handleAvatarUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
