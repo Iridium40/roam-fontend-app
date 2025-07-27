@@ -1238,6 +1238,14 @@ export default function ProviderDashboard() {
     }
   }, [user]);
 
+  // Fetch locations when provider is available and locations tab is active
+  useEffect(() => {
+    if (provider && activeTab === "locations" && locations.length === 0 && !locationsLoading) {
+      console.log("Auto-fetching locations for active tab");
+      fetchLocations();
+    }
+  }, [provider, activeTab]);
+
   const fetchDashboardData = async () => {
     if (!user) return;
 
