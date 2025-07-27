@@ -3562,16 +3562,7 @@ export default function ProviderDashboard() {
                           </div>
                         ))}
 
-                        <div className="mt-6 flex justify-center">
-                          <Button
-                            variant="outline"
-                            className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                            onClick={handleStartAddProvider}
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Invite New Provider
-                          </Button>
-                        </div>
+
                       </div>
                     ) : (
                       <div className="text-center py-8 text-foreground/60">
