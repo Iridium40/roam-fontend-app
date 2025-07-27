@@ -193,9 +193,11 @@ class DirectSupabaseAPI {
       },
     );
 
+    // Read response text once for consistent handling
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.warn(`Delete failed: ${errorText}`);
+      console.warn(`Delete failed: ${responseText}`);
       // Don't throw error for delete failures, just warn
     }
   }
