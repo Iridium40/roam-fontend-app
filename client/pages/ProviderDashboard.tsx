@@ -1820,6 +1820,14 @@ export default function ProviderDashboard() {
                   Providers
                 </TabsTrigger>
               )}
+              {(isOwner || isDispatcher) && (
+                <TabsTrigger
+                  value="locations"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
+                  Locations
+                </TabsTrigger>
+              )}
               <TabsTrigger
                 value="profile"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
