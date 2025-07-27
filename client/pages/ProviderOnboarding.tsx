@@ -5,7 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   ArrowLeft,
   ArrowRight,
@@ -24,7 +30,7 @@ import {
   Calendar,
   Clock,
   Star,
-  Users
+  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -32,7 +38,7 @@ import { useState } from "react";
 export default function ProviderOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     // Personal Information
     firstName: "",
@@ -42,7 +48,7 @@ export default function ProviderOnboarding() {
     dateOfBirth: "",
     socialSecurity: "",
     driversLicense: "",
-    
+
     // Business Information
     businessName: "",
     businessType: "",
@@ -52,48 +58,101 @@ export default function ProviderOnboarding() {
     businessCity: "",
     businessState: "",
     businessZip: "",
-    
+
     // Verification Documents
     idDocument: null as File | null,
     businessLicense: null as File | null,
     insurance: null as File | null,
     certifications: [] as File[],
-    
+
     // Professional Details
     bio: "",
     specialties: [] as string[],
     languages: [] as string[],
-    
+
     // Agreement
     backgroundConsent: false,
     termsAccepted: false,
-    privacyAccepted: false
+    privacyAccepted: false,
   });
 
   const steps = [
-    { id: 1, title: "Personal Info", description: "Basic personal information", icon: User },
-    { id: 2, title: "Business Details", description: "Your business information", icon: Building },
-    { id: 3, title: "Verification", description: "Identity and document verification", icon: Shield },
-    { id: 4, title: "Professional Profile", description: "Services and expertise", icon: Star },
-    { id: 5, title: "Review & Submit", description: "Final review and submission", icon: CheckCircle }
+    {
+      id: 1,
+      title: "Personal Info",
+      description: "Basic personal information",
+      icon: User,
+    },
+    {
+      id: 2,
+      title: "Business Details",
+      description: "Your business information",
+      icon: Building,
+    },
+    {
+      id: 3,
+      title: "Verification",
+      description: "Identity and document verification",
+      icon: Shield,
+    },
+    {
+      id: 4,
+      title: "Professional Profile",
+      description: "Services and expertise",
+      icon: Star,
+    },
+    {
+      id: 5,
+      title: "Review & Submit",
+      description: "Final review and submission",
+      icon: CheckCircle,
+    },
   ];
 
   const serviceCategories = [
     "Beauty & Wellness",
-    "Massage Therapy", 
+    "Massage Therapy",
     "Personal Training",
     "Healthcare",
     "Home Services",
-    "Wellness Coaching"
+    "Wellness Coaching",
   ];
 
   const specialtiesByCategory = {
-    "Beauty & Wellness": ["Hair Styling", "Makeup", "Nails", "Skincare", "Lashes"],
-    "Massage Therapy": ["Deep Tissue", "Swedish", "Sports", "Prenatal", "Hot Stone"],
-    "Personal Training": ["Weight Training", "HIIT", "Yoga", "Pilates", "Cardio"],
-    "Healthcare": ["General Medicine", "Physical Therapy", "Mental Health", "Nutrition"],
+    "Beauty & Wellness": [
+      "Hair Styling",
+      "Makeup",
+      "Nails",
+      "Skincare",
+      "Lashes",
+    ],
+    "Massage Therapy": [
+      "Deep Tissue",
+      "Swedish",
+      "Sports",
+      "Prenatal",
+      "Hot Stone",
+    ],
+    "Personal Training": [
+      "Weight Training",
+      "HIIT",
+      "Yoga",
+      "Pilates",
+      "Cardio",
+    ],
+    Healthcare: [
+      "General Medicine",
+      "Physical Therapy",
+      "Mental Health",
+      "Nutrition",
+    ],
     "Home Services": ["Cleaning", "Organization", "Pet Care", "Childcare"],
-    "Wellness Coaching": ["Life Coaching", "Nutrition", "Mindfulness", "Stress Management"]
+    "Wellness Coaching": [
+      "Life Coaching",
+      "Nutrition",
+      "Mindfulness",
+      "Stress Management",
+    ],
   };
 
   const handleNext = () => {
@@ -110,37 +169,39 @@ export default function ProviderOnboarding() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
+
     // Simulate submission
     setTimeout(() => {
       setIsSubmitting(false);
       // Redirect to success page
-      alert("Application submitted successfully! You'll receive an email within 3-5 business days.");
+      alert(
+        "Application submitted successfully! You'll receive an email within 3-5 business days.",
+      );
     }, 3000);
   };
 
   const handleFileUpload = (field: string, file: File) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: file
+      [field]: file,
     }));
   };
 
   const toggleServiceCategory = (category: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       serviceCategories: prev.serviceCategories.includes(category)
-        ? prev.serviceCategories.filter(c => c !== category)
-        : [...prev.serviceCategories, category]
+        ? prev.serviceCategories.filter((c) => c !== category)
+        : [...prev.serviceCategories, category],
     }));
   };
 
   const toggleSpecialty = (specialty: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       specialties: prev.specialties.includes(specialty)
-        ? prev.specialties.filter(s => s !== specialty)
-        : [...prev.specialties, specialty]
+        ? prev.specialties.filter((s) => s !== specialty)
+        : [...prev.specialties, specialty],
     }));
   };
 
@@ -170,7 +231,10 @@ export default function ProviderOnboarding() {
                 </span>
               </div>
             </div>
-            <Badge variant="outline" className="border-roam-blue text-roam-blue">
+            <Badge
+              variant="outline"
+              className="border-roam-blue text-roam-blue"
+            >
               Provider Application
             </Badge>
           </div>
@@ -179,19 +243,20 @@ export default function ProviderOnboarding() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-4xl mx-auto">
-          
           {/* Progress Steps */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex items-center">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${
-                    currentStep > step.id 
-                      ? 'bg-roam-blue border-roam-blue text-white' 
-                      : currentStep === step.id
-                      ? 'border-roam-blue text-roam-blue'
-                      : 'border-gray-300 text-gray-400'
-                  }`}>
+                  <div
+                    className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${
+                      currentStep > step.id
+                        ? "bg-roam-blue border-roam-blue text-white"
+                        : currentStep === step.id
+                          ? "border-roam-blue text-roam-blue"
+                          : "border-gray-300 text-gray-400"
+                    }`}
+                  >
                     {currentStep > step.id ? (
                       <CheckCircle className="w-6 h-6" />
                     ) : (
@@ -199,23 +264,28 @@ export default function ProviderOnboarding() {
                     )}
                   </div>
                   {index < steps.length - 1 && (
-                    <div className={`hidden md:block w-24 h-1 mx-4 ${
-                      currentStep > step.id ? 'bg-roam-blue' : 'bg-gray-300'
-                    }`} />
+                    <div
+                      className={`hidden md:block w-24 h-1 mx-4 ${
+                        currentStep > step.id ? "bg-roam-blue" : "bg-gray-300"
+                      }`}
+                    />
                   )}
                 </div>
               ))}
             </div>
             <div className="mt-4 text-center">
-              <h2 className="text-2xl font-bold">{steps[currentStep - 1].title}</h2>
-              <p className="text-foreground/70">{steps[currentStep - 1].description}</p>
+              <h2 className="text-2xl font-bold">
+                {steps[currentStep - 1].title}
+              </h2>
+              <p className="text-foreground/70">
+                {steps[currentStep - 1].description}
+              </p>
             </div>
           </div>
 
           {/* Form Content */}
           <Card className="border-border/50">
             <CardContent className="p-8">
-              
               {/* Step 1: Personal Information */}
               {currentStep === 1 && (
                 <div className="space-y-6">
@@ -225,7 +295,12 @@ export default function ProviderOnboarding() {
                       <Input
                         id="firstName"
                         value={formData.firstName}
-                        onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            firstName: e.target.value,
+                          })
+                        }
                         placeholder="John"
                         required
                       />
@@ -235,7 +310,9 @@ export default function ProviderOnboarding() {
                       <Input
                         id="lastName"
                         value={formData.lastName}
-                        onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({ ...formData, lastName: e.target.value })
+                        }
                         placeholder="Doe"
                         required
                       />
@@ -249,7 +326,9 @@ export default function ProviderOnboarding() {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
                         placeholder="john@example.com"
                         required
                       />
@@ -260,7 +339,9 @@ export default function ProviderOnboarding() {
                         id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({ ...formData, phone: e.target.value })
+                        }
                         placeholder="(555) 123-4567"
                         required
                       />
@@ -274,16 +355,28 @@ export default function ProviderOnboarding() {
                         id="dateOfBirth"
                         type="date"
                         value={formData.dateOfBirth}
-                        onChange={(e) => setFormData({...formData, dateOfBirth: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfBirth: e.target.value,
+                          })
+                        }
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="driversLicense">Driver's License # *</Label>
+                      <Label htmlFor="driversLicense">
+                        Driver's License # *
+                      </Label>
                       <Input
                         id="driversLicense"
                         value={formData.driversLicense}
-                        onChange={(e) => setFormData({...formData, driversLicense: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            driversLicense: e.target.value,
+                          })
+                        }
                         placeholder="License number"
                         required
                       />
@@ -294,10 +387,14 @@ export default function ProviderOnboarding() {
                     <div className="flex items-start gap-3">
                       <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="font-medium text-yellow-900">Why we need this information</h4>
+                        <h4 className="font-medium text-yellow-900">
+                          Why we need this information
+                        </h4>
                         <p className="text-sm text-yellow-800 mt-1">
-                          This information is required for identity verification and background checks to ensure 
-                          the safety and trust of our platform. All data is encrypted and securely stored.
+                          This information is required for identity verification
+                          and background checks to ensure the safety and trust
+                          of our platform. All data is encrypted and securely
+                          stored.
                         </p>
                       </div>
                     </div>
@@ -314,30 +411,53 @@ export default function ProviderOnboarding() {
                       <Input
                         id="businessName"
                         value={formData.businessName}
-                        onChange={(e) => setFormData({...formData, businessName: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            businessName: e.target.value,
+                          })
+                        }
                         placeholder="Your Business Name"
                         required
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="businessType">Business Type *</Label>
-                      <Select value={formData.businessType} onValueChange={(value) => setFormData({...formData, businessType: value})}>
+                      <Select
+                        value={formData.businessType}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, businessType: value })
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select business type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="sole_proprietorship">Sole Proprietorship</SelectItem>
+                          <SelectItem value="sole_proprietorship">
+                            Sole Proprietorship
+                          </SelectItem>
                           <SelectItem value="llc">LLC</SelectItem>
-                          <SelectItem value="corporation">Corporation</SelectItem>
-                          <SelectItem value="partnership">Partnership</SelectItem>
+                          <SelectItem value="corporation">
+                            Corporation
+                          </SelectItem>
+                          <SelectItem value="partnership">
+                            Partnership
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="yearsExperience">Years of Experience *</Label>
-                    <Select value={formData.yearsExperience} onValueChange={(value) => setFormData({...formData, yearsExperience: value})}>
+                    <Label htmlFor="yearsExperience">
+                      Years of Experience *
+                    </Label>
+                    <Select
+                      value={formData.yearsExperience}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, yearsExperience: value })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select experience level" />
                       </SelectTrigger>
@@ -354,13 +474,23 @@ export default function ProviderOnboarding() {
                     <Label>Service Categories *</Label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {serviceCategories.map((category) => (
-                        <div key={category} className="flex items-center space-x-2">
+                        <div
+                          key={category}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={category}
-                            checked={formData.serviceCategories.includes(category)}
-                            onCheckedChange={() => toggleServiceCategory(category)}
+                            checked={formData.serviceCategories.includes(
+                              category,
+                            )}
+                            onCheckedChange={() =>
+                              toggleServiceCategory(category)
+                            }
                           />
-                          <Label htmlFor={category} className="text-sm font-normal">
+                          <Label
+                            htmlFor={category}
+                            className="text-sm font-normal"
+                          >
                             {category}
                           </Label>
                         </div>
@@ -374,23 +504,43 @@ export default function ProviderOnboarding() {
                       <Input
                         placeholder="Street Address"
                         value={formData.businessAddress}
-                        onChange={(e) => setFormData({...formData, businessAddress: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            businessAddress: e.target.value,
+                          })
+                        }
                       />
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Input
                           placeholder="City"
                           value={formData.businessCity}
-                          onChange={(e) => setFormData({...formData, businessCity: e.target.value})}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              businessCity: e.target.value,
+                            })
+                          }
                         />
                         <Input
                           placeholder="State"
                           value={formData.businessState}
-                          onChange={(e) => setFormData({...formData, businessState: e.target.value})}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              businessState: e.target.value,
+                            })
+                          }
                         />
                         <Input
                           placeholder="ZIP Code"
                           value={formData.businessZip}
-                          onChange={(e) => setFormData({...formData, businessZip: e.target.value})}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              businessZip: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
@@ -405,9 +555,13 @@ export default function ProviderOnboarding() {
                     <div className="flex items-start gap-3">
                       <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="font-medium text-blue-900">Document Verification Required</h4>
+                        <h4 className="font-medium text-blue-900">
+                          Document Verification Required
+                        </h4>
                         <p className="text-sm text-blue-800 mt-1">
-                          Please upload clear photos or scans of the required documents. All files must be in JPG, PNG, or PDF format.
+                          Please upload clear photos or scans of the required
+                          documents. All files must be in JPG, PNG, or PDF
+                          format.
                         </p>
                       </div>
                     </div>
@@ -418,13 +572,20 @@ export default function ProviderOnboarding() {
                       <Label>Government-Issued ID *</Label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600 mb-2">Click to upload or drag and drop</p>
-                        <p className="text-xs text-gray-500">Driver's License, Passport, or State ID</p>
+                        <p className="text-sm text-gray-600 mb-2">
+                          Click to upload or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Driver's License, Passport, or State ID
+                        </p>
                         <Input
                           type="file"
                           accept=".jpg,.jpeg,.png,.pdf"
                           className="mt-2"
-                          onChange={(e) => e.target.files?.[0] && handleFileUpload('idDocument', e.target.files[0])}
+                          onChange={(e) =>
+                            e.target.files?.[0] &&
+                            handleFileUpload("idDocument", e.target.files[0])
+                          }
                         />
                       </div>
                     </div>
@@ -433,8 +594,12 @@ export default function ProviderOnboarding() {
                       <Label>Professional License/Certification *</Label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600 mb-2">Upload your professional certifications</p>
-                        <p className="text-xs text-gray-500">Massage License, Training Certificates, etc.</p>
+                        <p className="text-sm text-gray-600 mb-2">
+                          Upload your professional certifications
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Massage License, Training Certificates, etc.
+                        </p>
                         <Input
                           type="file"
                           accept=".jpg,.jpeg,.png,.pdf"
@@ -448,8 +613,12 @@ export default function ProviderOnboarding() {
                       <Label>Liability Insurance (Optional)</Label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600 mb-2">Professional liability insurance certificate</p>
-                        <p className="text-xs text-gray-500">We can help you get coverage if needed</p>
+                        <p className="text-sm text-gray-600 mb-2">
+                          Professional liability insurance certificate
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          We can help you get coverage if needed
+                        </p>
                         <Input
                           type="file"
                           accept=".jpg,.jpeg,.png,.pdf"
@@ -463,11 +632,21 @@ export default function ProviderOnboarding() {
                     <Checkbox
                       id="backgroundConsent"
                       checked={formData.backgroundConsent}
-                      onCheckedChange={(checked) => setFormData({...formData, backgroundConsent: checked as boolean})}
+                      onCheckedChange={(checked) =>
+                        setFormData({
+                          ...formData,
+                          backgroundConsent: checked as boolean,
+                        })
+                      }
                     />
-                    <Label htmlFor="backgroundConsent" className="text-sm leading-relaxed">
-                      I consent to a comprehensive background check including criminal history, sex offender registry, 
-                      and identity verification. I understand this is required for platform approval.
+                    <Label
+                      htmlFor="backgroundConsent"
+                      className="text-sm leading-relaxed"
+                    >
+                      I consent to a comprehensive background check including
+                      criminal history, sex offender registry, and identity
+                      verification. I understand this is required for platform
+                      approval.
                     </Label>
                   </div>
                 </div>
@@ -481,30 +660,48 @@ export default function ProviderOnboarding() {
                     <Textarea
                       id="bio"
                       value={formData.bio}
-                      onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                      onChange={(e) =>
+                        setFormData({ ...formData, bio: e.target.value })
+                      }
                       placeholder="Tell customers about your experience, training, and what makes your services special..."
                       rows={4}
                       className="resize-none"
                     />
-                    <p className="text-xs text-gray-500">This will be shown to customers on your profile</p>
+                    <p className="text-xs text-gray-500">
+                      This will be shown to customers on your profile
+                    </p>
                   </div>
 
                   {formData.serviceCategories.length > 0 && (
                     <div className="space-y-3">
                       <Label>Specialties</Label>
-                      <p className="text-sm text-gray-600">Select your specific areas of expertise:</p>
+                      <p className="text-sm text-gray-600">
+                        Select your specific areas of expertise:
+                      </p>
                       {formData.serviceCategories.map((category) => (
                         <div key={category} className="space-y-2">
                           <h4 className="font-medium text-sm">{category}</h4>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ml-4">
-                            {specialtiesByCategory[category as keyof typeof specialtiesByCategory]?.map((specialty) => (
-                              <div key={specialty} className="flex items-center space-x-2">
+                            {specialtiesByCategory[
+                              category as keyof typeof specialtiesByCategory
+                            ]?.map((specialty) => (
+                              <div
+                                key={specialty}
+                                className="flex items-center space-x-2"
+                              >
                                 <Checkbox
                                   id={specialty}
-                                  checked={formData.specialties.includes(specialty)}
-                                  onCheckedChange={() => toggleSpecialty(specialty)}
+                                  checked={formData.specialties.includes(
+                                    specialty,
+                                  )}
+                                  onCheckedChange={() =>
+                                    toggleSpecialty(specialty)
+                                  }
                                 />
-                                <Label htmlFor={specialty} className="text-sm font-normal">
+                                <Label
+                                  htmlFor={specialty}
+                                  className="text-sm font-normal"
+                                >
                                   {specialty}
                                 </Label>
                               </div>
@@ -518,20 +715,41 @@ export default function ProviderOnboarding() {
                   <div className="space-y-3">
                     <Label>Languages Spoken</Label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {["English", "Spanish", "French", "Portuguese", "Italian", "German"].map((language) => (
-                        <div key={language} className="flex items-center space-x-2">
+                      {[
+                        "English",
+                        "Spanish",
+                        "French",
+                        "Portuguese",
+                        "Italian",
+                        "German",
+                      ].map((language) => (
+                        <div
+                          key={language}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={language}
                             checked={formData.languages.includes(language)}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setFormData(prev => ({...prev, languages: [...prev.languages, language]}));
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  languages: [...prev.languages, language],
+                                }));
                               } else {
-                                setFormData(prev => ({...prev, languages: prev.languages.filter(l => l !== language)}));
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  languages: prev.languages.filter(
+                                    (l) => l !== language,
+                                  ),
+                                }));
                               }
                             }}
                           />
-                          <Label htmlFor={language} className="text-sm font-normal">
+                          <Label
+                            htmlFor={language}
+                            className="text-sm font-normal"
+                          >
                             {language}
                           </Label>
                         </div>
@@ -548,9 +766,12 @@ export default function ProviderOnboarding() {
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="font-medium text-green-900">Almost Done!</h4>
+                        <h4 className="font-medium text-green-900">
+                          Almost Done!
+                        </h4>
                         <p className="text-sm text-green-800 mt-1">
-                          Please review your information below and agree to the final terms to submit your application.
+                          Please review your information below and agree to the
+                          final terms to submit your application.
                         </p>
                       </div>
                     </div>
@@ -561,14 +782,16 @@ export default function ProviderOnboarding() {
                     <div className="border rounded-lg p-4">
                       <h4 className="font-medium mb-2">Personal Information</h4>
                       <p className="text-sm text-gray-600">
-                        {formData.firstName} {formData.lastName} • {formData.email} • {formData.phone}
+                        {formData.firstName} {formData.lastName} •{" "}
+                        {formData.email} • {formData.phone}
                       </p>
                     </div>
 
                     <div className="border rounded-lg p-4">
                       <h4 className="font-medium mb-2">Business Information</h4>
                       <p className="text-sm text-gray-600">
-                        {formData.businessName} • {formData.businessType} • {formData.yearsExperience} experience
+                        {formData.businessName} • {formData.businessType} •{" "}
+                        {formData.yearsExperience} experience
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
                         Services: {formData.serviceCategories.join(", ")}
@@ -589,11 +812,25 @@ export default function ProviderOnboarding() {
                       <Checkbox
                         id="termsAccepted"
                         checked={formData.termsAccepted}
-                        onCheckedChange={(checked) => setFormData({...formData, termsAccepted: checked as boolean})}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            termsAccepted: checked as boolean,
+                          })
+                        }
                       />
-                      <Label htmlFor="termsAccepted" className="text-sm leading-relaxed">
-                        I agree to the ROAM <Button variant="link" className="p-0 h-auto text-roam-blue">Terms of Service</Button> and 
-                        understand the platform fees and payment structure.
+                      <Label
+                        htmlFor="termsAccepted"
+                        className="text-sm leading-relaxed"
+                      >
+                        I agree to the ROAM{" "}
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-roam-blue"
+                        >
+                          Terms of Service
+                        </Button>{" "}
+                        and understand the platform fees and payment structure.
                       </Label>
                     </div>
 
@@ -601,11 +838,26 @@ export default function ProviderOnboarding() {
                       <Checkbox
                         id="privacyAccepted"
                         checked={formData.privacyAccepted}
-                        onCheckedChange={(checked) => setFormData({...formData, privacyAccepted: checked as boolean})}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            privacyAccepted: checked as boolean,
+                          })
+                        }
                       />
-                      <Label htmlFor="privacyAccepted" className="text-sm leading-relaxed">
-                        I have read and agree to the <Button variant="link" className="p-0 h-auto text-roam-blue">Privacy Policy</Button> and 
-                        consent to the processing of my personal data for verification purposes.
+                      <Label
+                        htmlFor="privacyAccepted"
+                        className="text-sm leading-relaxed"
+                      >
+                        I have read and agree to the{" "}
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-roam-blue"
+                        >
+                          Privacy Policy
+                        </Button>{" "}
+                        and consent to the processing of my personal data for
+                        verification purposes.
                       </Label>
                     </div>
                   </div>
@@ -614,12 +866,25 @@ export default function ProviderOnboarding() {
                     <div className="flex items-start gap-3">
                       <Clock className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="font-medium text-yellow-900">What happens next?</h4>
+                        <h4 className="font-medium text-yellow-900">
+                          What happens next?
+                        </h4>
                         <ul className="text-sm text-yellow-800 mt-1 space-y-1">
-                          <li>• Background check and document verification (2-3 business days)</li>
-                          <li>• Admin review of your application (1-2 business days)</li>
-                          <li>��� Email notification with next steps for account setup</li>
-                          <li>• Stripe/Plaid integration for payments and payouts</li>
+                          <li>
+                            • Background check and document verification (2-3
+                            business days)
+                          </li>
+                          <li>
+                            • Admin review of your application (1-2 business
+                            days)
+                          </li>
+                          <li>
+                            ��� Email notification with next steps for account
+                            setup
+                          </li>
+                          <li>
+                            • Stripe/Plaid integration for payments and payouts
+                          </li>
                         </ul>
                       </div>
                     </div>
@@ -650,7 +915,12 @@ export default function ProviderOnboarding() {
                 ) : (
                   <Button
                     onClick={handleSubmit}
-                    disabled={isSubmitting || !formData.termsAccepted || !formData.privacyAccepted || !formData.backgroundConsent}
+                    disabled={
+                      isSubmitting ||
+                      !formData.termsAccepted ||
+                      !formData.privacyAccepted ||
+                      !formData.backgroundConsent
+                    }
                     className="bg-roam-blue hover:bg-roam-blue/90"
                   >
                     {isSubmitting ? "Submitting..." : "Submit Application"}

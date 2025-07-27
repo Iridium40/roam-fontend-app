@@ -43,10 +43,11 @@ export default function ProviderDocumentVerification() {
   });
 
   const handleFileUpload = (
-    documentType: keyof Omit<DocumentState, 'licenses'>,
-    file: File
+    documentType: keyof Omit<DocumentState, "licenses">,
+    file: File,
   ) => {
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+    if (file.size > 10 * 1024 * 1024) {
+      // 10MB limit
       alert("File size must be less than 10MB");
       return;
     }
@@ -54,13 +55,13 @@ export default function ProviderDocumentVerification() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const preview = e.target?.result as string;
-      setDocuments(prev => ({
+      setDocuments((prev) => ({
         ...prev,
         [documentType]: {
           file,
           uploaded: true,
-          preview: file.type.startsWith('image/') ? preview : undefined
-        }
+          preview: file.type.startsWith("image/") ? preview : undefined,
+        },
       }));
     };
     reader.readAsDataURL(file);
@@ -75,32 +76,34 @@ export default function ProviderDocumentVerification() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const preview = e.target?.result as string;
-      setDocuments(prev => ({
+      setDocuments((prev) => ({
         ...prev,
         licenses: [
           ...prev.licenses,
           {
             file,
             uploaded: true,
-            preview: file.type.startsWith('image/') ? preview : undefined
-          }
-        ]
+            preview: file.type.startsWith("image/") ? preview : undefined,
+          },
+        ],
       }));
     };
     reader.readAsDataURL(file);
   };
 
   const removeLicense = (index: number) => {
-    setDocuments(prev => ({
+    setDocuments((prev) => ({
       ...prev,
-      licenses: prev.licenses.filter((_, i) => i !== index)
+      licenses: prev.licenses.filter((_, i) => i !== index),
     }));
   };
 
-  const removeDocument = (documentType: keyof Omit<DocumentState, 'licenses'>) => {
-    setDocuments(prev => ({
+  const removeDocument = (
+    documentType: keyof Omit<DocumentState, "licenses">,
+  ) => {
+    setDocuments((prev) => ({
       ...prev,
-      [documentType]: { file: null, uploaded: false }
+      [documentType]: { file: null, uploaded: false },
     }));
   };
 
@@ -119,11 +122,11 @@ export default function ProviderDocumentVerification() {
     }
 
     setIsSubmitting(true);
-    
+
     try {
       // Simulate document upload process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Navigate to provider onboarding for additional setup
       navigate("/provider-onboarding");
     } catch (error) {
@@ -141,15 +144,16 @@ export default function ProviderDocumentVerification() {
       description: "Valid government-issued photo ID",
       icon: CreditCard,
       required: true,
-      document: documents.driversLicense
+      document: documents.driversLicense,
     },
     {
       type: "proofOfAddress",
       title: "Proof of Address",
-      description: "Utility bill, bank statement, or lease agreement (within 3 months)",
+      description:
+        "Utility bill, bank statement, or lease agreement (within 3 months)",
       icon: Home,
       required: true,
-      document: documents.proofOfAddress
+      document: documents.proofOfAddress,
     },
     {
       type: "liabilityInsurance",
@@ -157,8 +161,8 @@ export default function ProviderDocumentVerification() {
       description: "Professional liability insurance certificate",
       icon: Shield,
       required: true,
-      document: documents.liabilityInsurance
-    }
+      document: documents.liabilityInsurance,
+    },
   ];
 
   return (
@@ -169,7 +173,10 @@ export default function ProviderDocumentVerification() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Button asChild variant="ghost" size="sm">
-                <Link to="/provider-portal" className="flex items-center space-x-2">
+                <Link
+                  to="/provider-portal"
+                  className="flex items-center space-x-2"
+                >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Back to Portal</span>
                 </Link>
@@ -177,9 +184,9 @@ export default function ProviderDocumentVerification() {
             </div>
 
             <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
-              <img 
-                src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800" 
-                alt="ROAM Logo" 
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                alt="ROAM Logo"
                 className="w-8 h-8 object-contain"
               />
             </div>
@@ -191,12 +198,11 @@ export default function ProviderDocumentVerification() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-4">
-              Document Verification
-            </h1>
+            <h1 className="text-3xl font-bold mb-4">Document Verification</h1>
             <p className="text-foreground/70 max-w-2xl mx-auto">
-              Please upload the required documents to verify your identity and qualifications. 
-              All documents will be securely reviewed within 24-48 hours.
+              Please upload the required documents to verify your identity and
+              qualifications. All documents will be securely reviewed within
+              24-48 hours.
             </p>
           </div>
 
@@ -214,7 +220,9 @@ export default function ProviderDocumentVerification() {
                 <div className="w-8 h-8 bg-roam-blue rounded-full flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-sm font-medium text-roam-blue">Documents</span>
+                <span className="text-sm font-medium text-roam-blue">
+                  Documents
+                </span>
               </div>
               <div className="w-16 h-0.5 bg-border"></div>
               <div className="flex items-center space-x-2">
@@ -229,7 +237,7 @@ export default function ProviderDocumentVerification() {
           {/* Required Documents */}
           <div className="space-y-6 mb-8">
             <h2 className="text-xl font-semibold">Required Documents</h2>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {documentRequirements.map((req) => (
                 <Card key={req.type} className="relative">
@@ -240,7 +248,9 @@ export default function ProviderDocumentVerification() {
                       </div>
                       <div>
                         <h3 className="font-semibold">{req.title}</h3>
-                        <Badge variant="destructive" className="text-xs">Required</Badge>
+                        <Badge variant="destructive" className="text-xs">
+                          Required
+                        </Badge>
                       </div>
                     </CardTitle>
                   </CardHeader>
@@ -259,17 +269,24 @@ export default function ProviderDocumentVerification() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => removeDocument(req.type as keyof Omit<DocumentState, 'licenses'>)}
+                            onClick={() =>
+                              removeDocument(
+                                req.type as keyof Omit<
+                                  DocumentState,
+                                  "licenses"
+                                >,
+                              )
+                            }
                             className="ml-auto text-red-600 hover:text-red-800 hover:bg-red-50"
                           >
                             <X className="w-4 h-4" />
                           </Button>
                         </div>
-                        
+
                         {req.document.preview && (
                           <div className="w-full h-32 rounded-lg overflow-hidden border">
-                            <img 
-                              src={req.document.preview} 
+                            <img
+                              src={req.document.preview}
                               alt={`${req.title} preview`}
                               className="w-full h-full object-cover"
                             />
@@ -291,14 +308,24 @@ export default function ProviderDocumentVerification() {
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              handleFileUpload(req.type as keyof Omit<DocumentState, 'licenses'>, file);
+                              handleFileUpload(
+                                req.type as keyof Omit<
+                                  DocumentState,
+                                  "licenses"
+                                >,
+                                file,
+                              );
                             }
                           }}
                           className="hidden"
                           id={`upload-${req.type}`}
                         />
                         <Label htmlFor={`upload-${req.type}`}>
-                          <Button variant="outline" className="cursor-pointer" asChild>
+                          <Button
+                            variant="outline"
+                            className="cursor-pointer"
+                            asChild
+                          >
                             <span>
                               <Camera className="w-4 h-4 mr-2" />
                               Choose File
@@ -321,21 +348,29 @@ export default function ProviderDocumentVerification() {
                   <FileText className="w-5 h-5 text-roam-yellow" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">Professional Licenses & Certificates</h3>
-                  <Badge variant="secondary" className="text-xs">Optional</Badge>
+                  <h3 className="font-semibold">
+                    Professional Licenses & Certificates
+                  </h3>
+                  <Badge variant="secondary" className="text-xs">
+                    Optional
+                  </Badge>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-foreground/70 mb-4">
-                Upload any professional licenses, certifications, or training certificates related to the services you offer.
+                Upload any professional licenses, certifications, or training
+                certificates related to the services you offer.
               </p>
 
               {/* Uploaded Licenses */}
               {documents.licenses.length > 0 && (
                 <div className="space-y-3 mb-4">
                   {documents.licenses.map((license, index) => (
-                    <div key={index} className="flex items-center space-x-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div
+                      key={index}
+                      className="flex items-center space-x-2 p-3 bg-blue-50 rounded-lg border border-blue-200"
+                    >
                       <CheckCircle className="w-5 h-5 text-blue-600" />
                       <span className="text-sm font-medium text-blue-800">
                         {license.file?.name}
@@ -370,7 +405,7 @@ export default function ProviderDocumentVerification() {
                     if (file) {
                       handleLicenseUpload(file);
                     }
-                    e.target.value = ''; // Reset input to allow same file upload
+                    e.target.value = ""; // Reset input to allow same file upload
                   }}
                   className="hidden"
                   id="upload-licenses"
@@ -391,8 +426,10 @@ export default function ProviderDocumentVerification() {
           <Alert className="mb-8">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Important:</strong> All documents will be securely stored and reviewed by our verification team. 
-              You'll receive an email notification once your documents are approved. The verification process typically takes 24-48 hours.
+              <strong>Important:</strong> All documents will be securely stored
+              and reviewed by our verification team. You'll receive an email
+              notification once your documents are approved. The verification
+              process typically takes 24-48 hours.
             </AlertDescription>
           </Alert>
 

@@ -188,7 +188,8 @@ export default function ProviderPortal() {
         // Clean up auth user if business creation fails
         await supabase.auth.signOut();
         throw new Error(
-          "Failed to create business profile: " + (businessError?.message || "Unknown error"),
+          "Failed to create business profile: " +
+            (businessError?.message || "Unknown error"),
         );
       }
 
@@ -208,7 +209,8 @@ export default function ProviderPortal() {
         // Clean up auth user and business if location creation fails
         await supabase.auth.signOut();
         throw new Error(
-          "Failed to create business location: " + (locationError?.message || "Unknown error"),
+          "Failed to create business location: " +
+            (locationError?.message || "Unknown error"),
         );
       }
 

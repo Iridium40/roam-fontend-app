@@ -17,7 +17,7 @@ import {
   AlertCircle,
   CheckCircle,
   XCircle,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -37,7 +37,7 @@ export default function MyBookings() {
         name: "Sarah Johnson",
         rating: 4.9,
         phone: "(305) 555-0123",
-        image: "/api/placeholder/60/60"
+        image: "/api/placeholder/60/60",
       },
       date: "2024-01-15",
       time: "2:00 PM",
@@ -46,36 +46,36 @@ export default function MyBookings() {
       location: "Your Home - 123 Ocean Dr, Miami, FL",
       price: "$120",
       notes: "Please bring your own massage table",
-      bookingDate: "2024-01-10"
+      bookingDate: "2024-01-10",
     },
     {
-      id: "B002", 
+      id: "B002",
       status: "in_progress",
       service: "Personal Training Session",
       provider: {
         name: "Michael Chen",
         rating: 5.0,
         phone: "(407) 555-0456",
-        image: "/api/placeholder/60/60"
+        image: "/api/placeholder/60/60",
       },
       date: "2024-01-12",
       time: "6:00 AM",
-      duration: "60 minutes", 
+      duration: "60 minutes",
       deliveryType: "mobile",
       location: "Your Home - 456 Park Ave, Orlando, FL",
       price: "$80",
       notes: "HIIT workout focus",
-      bookingDate: "2024-01-05"
+      bookingDate: "2024-01-05",
     },
     {
       id: "B003",
       status: "pending",
       service: "Hair Cut & Color",
       provider: {
-        name: "Emily Rodriguez", 
+        name: "Emily Rodriguez",
         rating: 4.8,
         phone: "(813) 555-0789",
-        image: "/api/placeholder/60/60"
+        image: "/api/placeholder/60/60",
       },
       date: "2024-01-20",
       time: "10:00 AM",
@@ -84,7 +84,7 @@ export default function MyBookings() {
       location: "Beauty Studio - 789 Main St, Tampa, FL",
       price: "$185",
       notes: "Consultation for new color",
-      bookingDate: "2024-01-08"
+      bookingDate: "2024-01-08",
     },
     {
       id: "B004",
@@ -94,16 +94,16 @@ export default function MyBookings() {
         name: "Dr. Amanda White",
         rating: 4.9,
         phone: "(904) 555-0321",
-        image: "/api/placeholder/60/60"
+        image: "/api/placeholder/60/60",
       },
       date: "2024-01-05",
-      time: "3:00 PM", 
+      time: "3:00 PM",
       duration: "30 minutes",
       deliveryType: "virtual",
       location: "Video Call",
       price: "$125",
       notes: "Annual wellness check",
-      bookingDate: "2024-01-02"
+      bookingDate: "2024-01-02",
     },
     {
       id: "B005",
@@ -113,17 +113,17 @@ export default function MyBookings() {
         name: "Jessica Park",
         rating: 4.7,
         phone: "(561) 555-0654",
-        image: "/api/placeholder/60/60"
+        image: "/api/placeholder/60/60",
       },
       date: "2024-01-08",
       time: "7:00 AM",
       duration: "75 minutes",
-      deliveryType: "mobile", 
+      deliveryType: "mobile",
       location: "Your Home - 321 Beach Rd, West Palm Beach, FL",
       price: "$90",
       notes: "Cancelled due to weather",
-      bookingDate: "2024-01-03"
-    }
+      bookingDate: "2024-01-03",
+    },
   ];
 
   const getStatusConfig = (status: string) => {
@@ -132,32 +132,32 @@ export default function MyBookings() {
         label: "Confirmed",
         color: "bg-green-100 text-green-800",
         icon: CheckCircle,
-        description: "Your booking is confirmed"
+        description: "Your booking is confirmed",
       },
       pending: {
         label: "Pending",
-        color: "bg-yellow-100 text-yellow-800", 
+        color: "bg-yellow-100 text-yellow-800",
         icon: Clock,
-        description: "Waiting for provider confirmation"
+        description: "Waiting for provider confirmation",
       },
       in_progress: {
         label: "In Progress",
         color: "bg-blue-100 text-blue-800",
         icon: RefreshCw,
-        description: "Service is currently active"
+        description: "Service is currently active",
       },
       completed: {
         label: "Completed",
         color: "bg-gray-100 text-gray-800",
         icon: CheckCircle,
-        description: "Service completed successfully"
+        description: "Service completed successfully",
       },
       cancelled: {
-        label: "Cancelled", 
+        label: "Cancelled",
         color: "bg-red-100 text-red-800",
         icon: XCircle,
-        description: "Booking was cancelled"
-      }
+        description: "Booking was cancelled",
+      },
     };
     return configs[status as keyof typeof configs] || configs.pending;
   };
@@ -166,7 +166,7 @@ export default function MyBookings() {
     const icons = {
       mobile: Smartphone,
       business: Building,
-      virtual: Video
+      virtual: Video,
     };
     return icons[type as keyof typeof icons] || Smartphone;
   };
@@ -175,21 +175,25 @@ export default function MyBookings() {
     const labels = {
       mobile: "Mobile Service",
       business: "In-Studio",
-      virtual: "Virtual"
+      virtual: "Virtual",
     };
     return labels[type as keyof typeof labels] || type;
   };
 
-  const upcomingBookings = bookings.filter(b => b.status === "confirmed" || b.status === "pending");
-  const pastBookings = bookings.filter(b => b.status === "completed" || b.status === "cancelled");
-  const activeBookings = bookings.filter(b => b.status === "in_progress");
+  const upcomingBookings = bookings.filter(
+    (b) => b.status === "confirmed" || b.status === "pending",
+  );
+  const pastBookings = bookings.filter(
+    (b) => b.status === "completed" || b.status === "cancelled",
+  );
+  const activeBookings = bookings.filter((b) => b.status === "in_progress");
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric', 
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -244,16 +248,27 @@ export default function MyBookings() {
                       <RefreshCw className="w-6 h-6 text-white animate-spin" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-blue-900 mb-2">Service in Progress</h3>
+                      <h3 className="font-semibold text-blue-900 mb-2">
+                        Service in Progress
+                      </h3>
                       <p className="text-blue-800 mb-3">
-                        {activeBookings[0].service} with {activeBookings[0].provider.name} is currently active.
+                        {activeBookings[0].service} with{" "}
+                        {activeBookings[0].provider.name} is currently active.
                       </p>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" className="border-blue-500 text-blue-700 hover:bg-blue-500 hover:text-white">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-blue-500 text-blue-700 hover:bg-blue-500 hover:text-white"
+                        >
                           <MessageCircle className="w-4 h-4 mr-2" />
                           Contact Provider
                         </Button>
-                        <Button size="sm" variant="outline" className="border-blue-500 text-blue-700 hover:bg-blue-500 hover:text-white">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-blue-500 text-blue-700 hover:bg-blue-500 hover:text-white"
+                        >
                           <Phone className="w-4 h-4 mr-2" />
                           Call
                         </Button>
@@ -267,13 +282,22 @@ export default function MyBookings() {
             {/* Booking Tabs */}
             <Tabs defaultValue="upcoming" className="space-y-6">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="upcoming" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                <TabsTrigger
+                  value="upcoming"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
                   Upcoming ({upcomingBookings.length})
                 </TabsTrigger>
-                <TabsTrigger value="active" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                <TabsTrigger
+                  value="active"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
                   Active ({activeBookings.length})
                 </TabsTrigger>
-                <TabsTrigger value="past" className="data-[state=active]:bg-roam-blue data-[state=active]:text-white">
+                <TabsTrigger
+                  value="past"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
                   Past ({pastBookings.length})
                 </TabsTrigger>
               </TabsList>
@@ -282,12 +306,17 @@ export default function MyBookings() {
                 {upcomingBookings.length === 0 ? (
                   <Card className="p-12 text-center">
                     <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">No upcoming bookings</h3>
-                    <p className="text-foreground/60 mb-4">Book your next service to see it here.</p>
-                    <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                      <Link to="/">
-                        Browse Services
-                      </Link>
+                    <h3 className="text-lg font-semibold mb-2">
+                      No upcoming bookings
+                    </h3>
+                    <p className="text-foreground/60 mb-4">
+                      Book your next service to see it here.
+                    </p>
+                    <Button
+                      asChild
+                      className="bg-roam-blue hover:bg-roam-blue/90"
+                    >
+                      <Link to="/">Browse Services</Link>
                     </Button>
                   </Card>
                 ) : (
@@ -301,8 +330,12 @@ export default function MyBookings() {
                 {activeBookings.length === 0 ? (
                   <Card className="p-12 text-center">
                     <RefreshCw className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">No active services</h3>
-                    <p className="text-foreground/60">When a service is in progress, it will appear here.</p>
+                    <h3 className="text-lg font-semibold mb-2">
+                      No active services
+                    </h3>
+                    <p className="text-foreground/60">
+                      When a service is in progress, it will appear here.
+                    </p>
                   </Card>
                 ) : (
                   activeBookings.map((booking) => (
@@ -315,8 +348,12 @@ export default function MyBookings() {
                 {pastBookings.length === 0 ? (
                   <Card className="p-12 text-center">
                     <CheckCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">No past bookings</h3>
-                    <p className="text-foreground/60">Your completed services will appear here.</p>
+                    <h3 className="text-lg font-semibold mb-2">
+                      No past bookings
+                    </h3>
+                    <p className="text-foreground/60">
+                      Your completed services will appear here.
+                    </p>
                   </Card>
                 ) : (
                   pastBookings.map((booking) => (
@@ -338,44 +375,44 @@ function BookingCard({ booking }: { booking: any }) {
       label: "Confirmed",
       color: "bg-green-100 text-green-800",
       icon: CheckCircle,
-      description: "Your booking is confirmed"
+      description: "Your booking is confirmed",
     },
     pending: {
       label: "Pending",
-      color: "bg-yellow-100 text-yellow-800", 
+      color: "bg-yellow-100 text-yellow-800",
       icon: Clock,
-      description: "Waiting for provider confirmation"
+      description: "Waiting for provider confirmation",
     },
     in_progress: {
       label: "In Progress",
       color: "bg-blue-100 text-blue-800",
       icon: RefreshCw,
-      description: "Service is currently active"
+      description: "Service is currently active",
     },
     completed: {
       label: "Completed",
       color: "bg-gray-100 text-gray-800",
       icon: CheckCircle,
-      description: "Service completed successfully"
+      description: "Service completed successfully",
     },
     cancelled: {
-      label: "Cancelled", 
+      label: "Cancelled",
       color: "bg-red-100 text-red-800",
       icon: XCircle,
-      description: "Booking was cancelled"
-    }
+      description: "Booking was cancelled",
+    },
   }[booking.status];
 
   const DeliveryIcon = {
     mobile: Smartphone,
     business: Building,
-    virtual: Video
+    virtual: Video,
   }[booking.deliveryType];
 
   const deliveryLabel = {
     mobile: "Mobile Service",
-    business: "In-Studio", 
-    virtual: "Virtual"
+    business: "In-Studio",
+    virtual: "Virtual",
   }[booking.deliveryType];
 
   return (
@@ -388,7 +425,9 @@ function BookingCard({ booking }: { booking: any }) {
             </div>
             <div>
               <h3 className="font-semibold text-lg mb-1">{booking.service}</h3>
-              <p className="text-foreground/60 mb-2">with {booking.provider.name}</p>
+              <p className="text-foreground/60 mb-2">
+                with {booking.provider.name}
+              </p>
               <div className="flex items-center gap-4 text-sm text-foreground/60">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
@@ -418,7 +457,9 @@ function BookingCard({ booking }: { booking: any }) {
                 {booking.status === "confirmed" && (
                   <>
                     <DropdownMenuItem>Reschedule</DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600">Cancel</DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-600">
+                      Cancel
+                    </DropdownMenuItem>
                   </>
                 )}
                 {booking.status === "completed" && (
@@ -439,9 +480,13 @@ function BookingCard({ booking }: { booking: any }) {
           </div>
           <div className="flex items-center gap-2">
             <Star className="w-4 h-4 text-roam-warning fill-current" />
-            <span className="text-sm font-medium">{booking.provider.rating}</span>
+            <span className="text-sm font-medium">
+              {booking.provider.rating}
+            </span>
             <span className="text-sm text-foreground/60">•</span>
-            <span className="text-sm font-semibold text-roam-blue">{booking.price}</span>
+            <span className="text-sm font-semibold text-roam-blue">
+              {booking.price}
+            </span>
           </div>
         </div>
 
@@ -456,11 +501,19 @@ function BookingCard({ booking }: { booking: any }) {
         <div className="flex flex-wrap gap-2">
           {booking.status === "confirmed" && (
             <>
-              <Button size="sm" variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Message
               </Button>
-              <Button size="sm" variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              >
                 <Phone className="w-4 h-4 mr-2" />
                 Call
               </Button>

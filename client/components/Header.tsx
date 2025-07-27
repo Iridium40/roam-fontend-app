@@ -22,19 +22,31 @@ export function Header() {
               ROAM
             </span>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#services" className="text-foreground/70 hover:text-roam-blue transition-colors">
+            <a
+              href="#services"
+              className="text-foreground/70 hover:text-roam-blue transition-colors"
+            >
               Services
             </a>
-            <a href="#how-it-works" className="text-foreground/70 hover:text-roam-blue transition-colors">
+            <a
+              href="#how-it-works"
+              className="text-foreground/70 hover:text-roam-blue transition-colors"
+            >
               How it Works
             </a>
-            <Link to="/providers" className="text-foreground/70 hover:text-roam-blue transition-colors">
+            <Link
+              to="/providers"
+              className="text-foreground/70 hover:text-roam-blue transition-colors"
+            >
               Become a Provider
             </Link>
-            <Button variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+            <Button
+              variant="outline"
+              className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+            >
               Sign In
             </Button>
             <Button className="bg-roam-blue hover:bg-roam-blue/90">
@@ -49,7 +61,11 @@ export function Header() {
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </Button>
           </div>
         </div>
@@ -58,17 +74,29 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
-              <a href="#services" className="text-foreground/70 hover:text-roam-blue transition-colors">
+              <a
+                href="#services"
+                className="text-foreground/70 hover:text-roam-blue transition-colors"
+              >
                 Services
               </a>
-              <a href="#how-it-works" className="text-foreground/70 hover:text-roam-blue transition-colors">
+              <a
+                href="#how-it-works"
+                className="text-foreground/70 hover:text-roam-blue transition-colors"
+              >
                 How it Works
               </a>
-              <Link to="/providers" className="text-foreground/70 hover:text-roam-blue transition-colors">
+              <Link
+                to="/providers"
+                className="text-foreground/70 hover:text-roam-blue transition-colors"
+              >
                 Become a Provider
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                <Button
+                  variant="outline"
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                >
                   Sign In
                 </Button>
                 <Button className="bg-roam-blue hover:bg-roam-blue/90">

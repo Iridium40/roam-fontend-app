@@ -38,7 +38,10 @@ const App = () => (
           <Route path="/provider-portal" element={<ProviderPortal />} />
           <Route path="/provider-dashboard" element={<ProviderDashboard />} />
           <Route path="/provider-onboarding" element={<ProviderOnboarding />} />
-          <Route path="/provider-document-verification" element={<ProviderDocumentVerification />} />
+          <Route
+            path="/provider-document-verification"
+            element={<ProviderDocumentVerification />}
+          />
           <Route path="/provider/:providerId" element={<ProviderProfile />} />
           <Route path="/business-management" element={<BusinessManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
