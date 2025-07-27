@@ -1340,12 +1340,22 @@ export default function ProviderDashboard() {
 
       // Email validation - only validate if email is provided and not empty
       if (updateData.contact_email && updateData.contact_email.length > 0) {
+        // Clean the email value of any potential hidden characters
+        const cleanEmail = updateData.contact_email.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+        updateData.contact_email = cleanEmail;
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        console.log("Email validation - testing:", updateData.contact_email);
-        console.log("Email regex test result:", emailRegex.test(updateData.contact_email));
-        if (!emailRegex.test(updateData.contact_email)) {
-          throw new Error(`Please enter a valid contact email address. Current value: "${updateData.contact_email}"`);
+        console.log("Email validation - testing cleaned email:", `"${cleanEmail}"`);
+        console.log("Email length:", cleanEmail.length);
+        console.log("Email regex test result:", emailRegex.test(cleanEmail));
+
+        if (!emailRegex.test(cleanEmail)) {
+          throw new Error(`Please enter a valid contact email address. Invalid format: "${cleanEmail}"`);
         }
+      } else {
+        // If email is empty, set it to null to avoid database issues
+        updateData.contact_email = null;
+        console.log("Contact email is empty, setting to null");
       }
 
       // Update business using direct API
