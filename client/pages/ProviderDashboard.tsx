@@ -577,12 +577,16 @@ export default function ProviderDashboard() {
         if (!confirmed) {
           return; // Don't update if user cancels
         }
+
+        toast({
+          title: "Primary Location Changed",
+          description: `"${currentPrimary.location_name}" is no longer the primary location.`,
+          variant: "default",
+        });
       }
     }
 
     setLocationForm((prev) => ({ ...prev, [field]: value }));
-    if (locationsSuccess) setLocationsSuccess("");
-    if (locationsError) setLocationsError("");
   };
 
   const resetLocationForm = () => {
@@ -2833,17 +2837,7 @@ export default function ProviderDashboard() {
                   </Button>
                 </div>
 
-                {locationsError && (
-                  <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                    {locationsError}
-                  </div>
-                )}
 
-                {locationsSuccess && (
-                  <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
-                    {locationsSuccess}
-                  </div>
-                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Locations Overview Card */}
