@@ -36,10 +36,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
 export default function ProviderDashboard() {
   const { user, signOut, isOwner, isDispatcher, isProvider } = useAuth();
+  const { toast } = useToast();
   const [isAvailable, setIsAvailable] = useState(true);
   const [provider, setProvider] = useState<Provider | null>(null);
   const [business, setBusiness] = useState<BusinessProfile | null>(null);
@@ -678,11 +680,14 @@ export default function ProviderDashboard() {
         throw new Error(`Failed to save location: ${errorText}`);
       }
 
-      setLocationsSuccess(
-        editingLocation
+      toast({
+        title: "Success",
+        description: editingLocation
           ? "Location updated successfully!"
           : "Location added successfully!",
-      );
+        variant: "default",
+      });
+
       setEditingLocation(null);
       setAddingLocation(false);
       resetLocationForm();
@@ -697,6 +702,11 @@ export default function ProviderDashboard() {
         errorMessage = error;
       }
 
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
       setLocationsError(errorMessage);
     } finally {
       setLocationsSaving(false);
@@ -744,11 +754,21 @@ export default function ProviderDashboard() {
         throw new Error(`Failed to delete location: ${errorText}`);
       }
 
-      setLocationsSuccess("Location deleted successfully!");
+      toast({
+        title: "Success",
+        description: "Location deleted successfully!",
+        variant: "default",
+      });
       await fetchLocations();
     } catch (error: any) {
       console.error("Location delete error:", error);
-      setLocationsError(error.message || "Failed to delete location");
+      const errorMessage = error.message || "Failed to delete location";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      setLocationsError(errorMessage);
     } finally {
       setLocationsSaving(false);
     }
