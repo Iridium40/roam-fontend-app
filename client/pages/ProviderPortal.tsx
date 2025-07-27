@@ -35,6 +35,7 @@ import type { BusinessRegistration, BusinessType } from "@/lib/database.types";
 import { useAuth } from "@/contexts/AuthContext";
 import { TestLogin } from "@/components/TestLogin";
 import { SupabaseTest } from "@/components/SupabaseTest";
+import { DirectFetchTest } from "@/components/DirectFetchTest";
 
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
