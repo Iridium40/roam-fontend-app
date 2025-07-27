@@ -704,7 +704,9 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ businessId, onComplete
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <steps[currentStep - 1]?.icon className="w-5 h-5 text-roam-blue" />
+            {React.createElement(steps[currentStep - 1]?.icon || Building, {
+              className: "w-5 h-5 text-roam-blue"
+            })}
             Step {currentStep}: {steps[currentStep - 1]?.title}
           </CardTitle>
         </CardHeader>
