@@ -176,8 +176,8 @@ export default function ProviderPortal() {
         .from("business_profiles")
         .insert({
           business_name: signupData.businessName,
-          business_type: signupData.businessType as any,
-          owner_id: authData.user.id,
+          contact_email: signupData.email,
+          phone: signupData.phone,
           verification_status: "pending",
           is_active: false,
         })
