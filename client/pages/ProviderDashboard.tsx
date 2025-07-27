@@ -126,6 +126,41 @@ export default function ProviderDashboard() {
   const [providersLoading, setProvidersLoading] = useState(false);
   const [providersError, setProvidersError] = useState("");
 
+  // Add Provider Modal state
+  const [addProviderModal, setAddProviderModal] = useState(false);
+  const [addProviderStep, setAddProviderStep] = useState(1);
+  const [addProviderLoading, setAddProviderLoading] = useState(false);
+  const [addProviderError, setAddProviderError] = useState("");
+  const [addProviderSuccess, setAddProviderSuccess] = useState("");
+
+  // Step 1: User creation and email verification
+  const [newUserForm, setNewUserForm] = useState({
+    email: "",
+    confirmEmail: "",
+  });
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [newUserId, setNewUserId] = useState("");
+
+  // Step 2: Provider profile information
+  const [providerForm, setProviderForm] = useState({
+    first_name: "",
+    last_name: "",
+    phone: "",
+    bio: "",
+    date_of_birth: "",
+    experience_years: "",
+    location_id: "",
+    provider_role: "provider",
+  });
+
+  // Step 3: Business management settings
+  const [managementSettings, setManagementSettings] = useState({
+    managed_by_business: true,
+    inherit_business_services: true,
+    inherit_business_addons: true,
+  });
+
   // Form state for contact information
   const [formData, setFormData] = useState({
     firstName: "",
