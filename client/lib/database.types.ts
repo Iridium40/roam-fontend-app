@@ -110,5 +110,11 @@ export interface Database {
 
 export type UserRole = "super_admin" | "admin" | "moderator" | "support";
 
+export type BusinessType = "independent" | "small_business" | "franchise" | "other";
+
+export type ProviderRole = "owner" | "dispatcher" | "provider";
+
+export type VerificationStatus = "pending" | "under_review" | "approved" | "rejected" | "suspended";
+
 export type AdminUser = Database["public"]["Tables"]["admin_users"]["Row"];
 export type Provider = Database["public"]["Tables"]["providers"]["Row"];
