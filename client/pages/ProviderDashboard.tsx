@@ -1421,7 +1421,10 @@ export default function ProviderDashboard() {
                         Add and manage business locations
                       </p>
                       <Button
-                        onClick={() => setManagingLocations(true)}
+                        onClick={() => {
+                          setManagingLocations(true);
+                          fetchLocations();
+                        }}
                         className="w-full bg-roam-blue hover:bg-roam-blue/90"
                       >
                         <MapPin className="w-4 h-4 mr-2" />
