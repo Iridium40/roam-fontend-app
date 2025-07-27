@@ -434,6 +434,9 @@ export default function ProviderPortal() {
                 </CardHeader>
                 <CardContent>
                   <div className="mb-4">
+                    <DirectFetchTest />
+                  </div>
+                  <div className="mb-4">
                     <SupabaseTest />
                   </div>
                   <div className="mb-6">
