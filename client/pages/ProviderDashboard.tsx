@@ -78,6 +78,7 @@ export default function ProviderDashboard() {
   const [businessAddons, setBusinessAddons] = useState<any[]>([]);
   const [servicesLoading, setServicesLoading] = useState(false);
   const [servicesError, setServicesError] = useState("");
+  const [activeTab, setActiveTab] = useState("bookings");
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
@@ -1789,7 +1790,7 @@ export default function ProviderDashboard() {
           </div>
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="bookings" className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
               <TabsTrigger
                 value="bookings"
@@ -2126,13 +2127,11 @@ export default function ProviderDashboard() {
                         Configure services and set business pricing
                       </p>
                       <Button
-                        asChild
+                        onClick={() => setActiveTab("services")}
                         className="w-full bg-roam-blue hover:bg-roam-blue/90"
                       >
-                        <Link to="/business-management">
-                          <DollarSign className="w-4 h-4 mr-2" />
-                          Manage
-                        </Link>
+                        <DollarSign className="w-4 h-4 mr-2" />
+                        Manage
                       </Button>
                     </CardContent>
                   </Card>
