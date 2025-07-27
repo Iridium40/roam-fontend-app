@@ -1629,8 +1629,8 @@ export default function ProviderDashboard() {
                           <span className="text-sm text-foreground/60">
                             Business Type
                           </span>
-                          <span className="font-medium capitalize">
-                            {business?.business_type || "Loading..."}
+                          <span className="font-medium">
+                            {business?.business_type ? formatBusinessType(business.business_type) : "Loading..."}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
