@@ -3943,6 +3943,360 @@ export default function ProviderDashboard() {
                 </Card>
               </div>
 
+              {/* Tax Information Management */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold">Tax Information</h3>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Business Tax Registration */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Building className="w-5 h-5 text-roam-blue" />
+                        Business Tax Registration
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {taxInfoError && (
+                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                          {taxInfoError}
+                        </div>
+                      )}
+
+                      {taxInfoSuccess && (
+                        <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
+                          {taxInfoSuccess}
+                        </div>
+                      )}
+
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="legal_business_name">Legal Business Name *</Label>
+                            <Input
+                              id="legal_business_name"
+                              placeholder="Business legal name for tax purposes"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_id">Tax ID (EIN/SSN) *</Label>
+                            <Input
+                              id="tax_id"
+                              placeholder="XX-XXXXXXX"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_id_type">Tax ID Type *</Label>
+                            <Select>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select ID type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="EIN">EIN (Employer Identification Number)</SelectItem>
+                                <SelectItem value="SSN">SSN (Social Security Number)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="business_entity_type">Business Entity Type *</Label>
+                            <Select>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select entity type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="sole_proprietorship">Sole Proprietorship</SelectItem>
+                                <SelectItem value="partnership">Partnership</SelectItem>
+                                <SelectItem value="llc">LLC</SelectItem>
+                                <SelectItem value="corporation">Corporation</SelectItem>
+                                <SelectItem value="non_profit">Non-Profit</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="tax_contact_name">Tax Contact Name *</Label>
+                          <Input
+                            id="tax_contact_name"
+                            placeholder="Primary contact for tax matters"
+                            disabled={taxInfoSaving}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_contact_email">Tax Contact Email *</Label>
+                            <Input
+                              id="tax_contact_email"
+                              type="email"
+                              placeholder="tax@yourbusiness.com"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_contact_phone">Tax Contact Phone</Label>
+                            <Input
+                              id="tax_contact_phone"
+                              type="tel"
+                              placeholder="(XXX) XXX-XXXX"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            disabled={taxInfoSaving}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="bg-roam-blue hover:bg-roam-blue/90"
+                            disabled={taxInfoSaving}
+                          >
+                            {taxInfoSaving && (
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            )}
+                            Save Tax Info
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Tax Address */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <MapPin className="w-5 h-5 text-roam-blue" />
+                        Tax Mailing Address
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="tax_address_line1">Address Line 1 *</Label>
+                          <Input
+                            id="tax_address_line1"
+                            placeholder="Street address"
+                            disabled={taxInfoSaving}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tax_address_line2">Address Line 2</Label>
+                          <Input
+                            id="tax_address_line2"
+                            placeholder="Apt, suite, etc."
+                            disabled={taxInfoSaving}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_city">City *</Label>
+                            <Input
+                              id="tax_city"
+                              placeholder="City"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_state">State *</Label>
+                            <Select>
+                              <SelectTrigger>
+                                <SelectValue placeholder="State" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="FL">Florida</SelectItem>
+                                <SelectItem value="CA">California</SelectItem>
+                                <SelectItem value="NY">New York</SelectItem>
+                                <SelectItem value="TX">Texas</SelectItem>
+                                {/* Add more states as needed */}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_postal_code">ZIP Code *</Label>
+                            <Input
+                              id="tax_postal_code"
+                              placeholder="12345"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Stripe Tax Status & 1099 Information */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-roam-blue" />
+                        Stripe Tax Registration
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">Registration Status</span>
+                          <Badge className="bg-green-100 text-green-800">
+                            Registered
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">Stripe Tax ID</span>
+                          <span className="text-sm font-medium">txr_****xyz123</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">Registration Date</span>
+                          <span className="text-sm font-medium">Jan 15, 2024</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">W-9 Status</span>
+                          <Badge className="bg-green-100 text-green-800">
+                            Received
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">Tax Setup</span>
+                          <Badge className="bg-green-100 text-green-800">
+                            Complete
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Star className="w-5 h-5 text-roam-blue" />
+                        1099 Information
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">2024 Earnings</span>
+                          <span className="text-xl font-semibold text-roam-blue">$47,325</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">1099 Threshold</span>
+                          <span className="text-sm font-medium">$600 (Met)</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">Threshold Reached</span>
+                          <span className="text-sm font-medium">Feb 12, 2024</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">1099 Status</span>
+                          <Badge className="bg-yellow-100 text-yellow-800">
+                            Will Generate
+                          </Badge>
+                        </div>
+                        <div className="pt-2 border-t">
+                          <p className="text-xs text-foreground/60">
+                            1099-NEC forms will be generated and sent by January 31st of the following year.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Annual Tax Tracking */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5 text-roam-blue" />
+                      Annual Tax Summary
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="text-center p-4 bg-blue-50 rounded-lg">
+                          <div className="text-2xl font-bold text-roam-blue">2024</div>
+                          <div className="text-sm text-foreground/60">Current Year</div>
+                          <div className="text-lg font-semibold text-roam-blue mt-1">$47,325</div>
+                        </div>
+                        <div className="text-center p-4 bg-accent/20 rounded-lg">
+                          <div className="text-2xl font-bold text-gray-600">2023</div>
+                          <div className="text-sm text-foreground/60">Previous Year</div>
+                          <div className="text-lg font-semibold text-gray-600 mt-1">$32,150</div>
+                        </div>
+                        <div className="text-center p-4 bg-accent/20 rounded-lg">
+                          <div className="text-2xl font-bold text-gray-600">2022</div>
+                          <div className="text-sm text-foreground/60">Previous Year</div>
+                          <div className="text-lg font-semibold text-gray-600 mt-1">$18,900</div>
+                        </div>
+                        <div className="text-center p-4 bg-accent/20 rounded-lg">
+                          <div className="text-2xl font-bold text-gray-600">Total</div>
+                          <div className="text-sm text-foreground/60">All Years</div>
+                          <div className="text-lg font-semibold text-gray-600 mt-1">$98,375</div>
+                        </div>
+                      </div>
+
+                      <div className="border-t pt-4">
+                        <h4 className="font-semibold mb-3">Tax Documents</h4>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                                <span className="text-xs font-bold text-blue-600">24</span>
+                              </div>
+                              <div>
+                                <span className="text-sm font-medium">2024 1099-NEC</span>
+                                <p className="text-xs text-foreground/60">Available January 31, 2025</p>
+                              </div>
+                            </div>
+                            <Badge variant="secondary">Pending</Badge>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
+                                <span className="text-xs font-bold text-green-600">23</span>
+                              </div>
+                              <div>
+                                <span className="text-sm font-medium">2023 1099-NEC</span>
+                                <p className="text-xs text-foreground/60">Form generated and sent</p>
+                              </div>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              <Download className="w-4 h-4 mr-2" />
+                              Download
+                            </Button>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
+                                <span className="text-xs font-bold text-green-600">22</span>
+                              </div>
+                              <div>
+                                <span className="text-sm font-medium">2022 1099-NEC</span>
+                                <p className="text-xs text-foreground/60">Form generated and sent</p>
+                              </div>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              <Download className="w-4 h-4 mr-2" />
+                              Download
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
               {/* Recent Transactions */}
               <Card>
                 <CardHeader>
