@@ -237,6 +237,17 @@ export default function ProviderDashboard() {
 
       setProvider(providerData);
 
+      // Initialize form data
+      setFormData({
+        firstName: providerData.first_name || "",
+        lastName: providerData.last_name || "",
+        email: providerData.email || "",
+        phone: providerData.phone || "",
+        bio: providerData.bio || "",
+        dateOfBirth: providerData.date_of_birth || "",
+        experienceYears: providerData.experience_years?.toString() || ""
+      });
+
       // Fetch business details using providers.business_id -> businesses.id
       const { data: businessData, error: businessError } = await supabase
         .from("business_profiles")
