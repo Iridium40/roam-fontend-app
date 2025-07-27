@@ -1705,7 +1705,7 @@ export default function ProviderDashboard() {
                           <div>
                             <h3 className="font-semibold">{businessService.services?.name}</h3>
                             <p className="text-sm text-foreground/60">
-                              {businessService.services?.category}
+                              {businessService.services?.service_subcategories?.service_categories?.name} → {businessService.services?.service_subcategories?.name}
                             </p>
                             {businessService.services?.description && (
                               <p className="text-xs text-foreground/50 mt-1">
@@ -1723,13 +1723,13 @@ export default function ProviderDashboard() {
                           <div className="flex justify-between text-sm">
                             <span>Duration:</span>
                             <span className="font-medium">
-                              {businessService.duration || businessService.services?.base_duration || 'N/A'}
+                              {businessService.duration || (businessService.services?.duration_minutes ? `${businessService.services.duration_minutes} mins` : 'N/A')}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Price:</span>
                             <span className="font-medium text-roam-blue">
-                              ${businessService.custom_price || businessService.services?.base_price || '0'}
+                              ${businessService.custom_price || businessService.services?.min_price || '0'}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
