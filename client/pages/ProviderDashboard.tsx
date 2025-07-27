@@ -1578,59 +1578,117 @@ export default function ProviderDashboard() {
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {services.map((service) => (
-                  <Card
-                    key={service.id}
-                    className="hover:shadow-md transition-shadow"
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h3 className="font-semibold">{service.name}</h3>
-                          <p className="text-sm text-foreground/60">
-                            {service.category}
-                          </p>
-                        </div>
-                        <Switch
-                          checked={service.active}
-                          className="data-[state=checked]:bg-roam-blue"
-                        />
-                      </div>
+              {servicesError && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                  {servicesError}
+                </div>
+              )}
 
-                      <div className="space-y-2 mb-4">
-                        <div className="flex justify-between text-sm">
-                          <span>Duration:</span>
-                          <span className="font-medium">
-                            {service.duration}
-                          </span>
+              {servicesLoading ? (
+                <div className="text-center py-8">
+                  <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p>Loading services...</p>
+                </div>
+              ) : businessServices.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {businessServices.map((businessService) => (
+                    <Card
+                      key={businessService.id}
+                      className="hover:shadow-md transition-shadow"
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <h3 className="font-semibold">{businessService.services?.name}</h3>
+                            <p className="text-sm text-foreground/60">
+                              {businessService.services?.category}
+                            </p>
+                            {businessService.services?.description && (
+                              <p className="text-xs text-foreground/50 mt-1">
+                                {businessService.services.description}
+                              </p>
+                            )}
+                          </div>
+                          <Switch
+                            checked={businessService.is_available}
+                            className="data-[state=checked]:bg-roam-blue"
+                          />
                         </div>
-                        <div className="flex justify-between text-sm">
+
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between text-sm">
+                            <span>Duration:</span>
+                            <span className="font-medium">
+                              {businessService.duration || businessService.services?.base_duration || 'N/A'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Price:</span>
+                            <span className="font-medium text-roam-blue">
+                              ${businessService.custom_price || businessService.services?.base_price || '0'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Bookings:</span>
+                            <span className="font-medium">
+                              {businessService.booking_count || 0} this month
+                            </span>
+                          </div>
+                        </div>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit Service
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-foreground/60">
+                  <Star className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p className="text-lg mb-2">No services added yet</p>
+                  <p className="text-sm">Add your first service to start accepting bookings</p>
+                </div>
+              )}
+
+              {/* Available Add-ons Section */}
+              {businessAddons.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold">Available Add-ons</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {businessAddons.map((businessAddon) => (
+                      <Card key={businessAddon.id} className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h4 className="font-medium">{businessAddon.service_addons?.name}</h4>
+                            <p className="text-sm text-foreground/60">
+                              {businessAddon.service_addons?.addon_type}
+                            </p>
+                          </div>
+                          <Switch
+                            checked={businessAddon.is_available}
+                            className="data-[state=checked]:bg-roam-blue"
+                          />
+                        </div>
+                        <p className="text-xs text-foreground/50 mb-2">
+                          {businessAddon.service_addons?.description}
+                        </p>
+                        <div className="flex justify-between items-center text-sm">
                           <span>Price:</span>
                           <span className="font-medium text-roam-blue">
-                            ${service.price}
+                            ${businessAddon.custom_price || businessAddon.service_addons?.default_price || '0'}
                           </span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Bookings:</span>
-                          <span className="font-medium">
-                            {service.bookings} this month
-                          </span>
-                        </div>
-                      </div>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit Service
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             {/* Business Tab */}
