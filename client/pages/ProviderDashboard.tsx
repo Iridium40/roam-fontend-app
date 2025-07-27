@@ -756,9 +756,34 @@ export default function ProviderDashboard() {
   };
 
   const handleDeleteLocation = async (locationId: string) => {
-    if (!confirm("Are you sure you want to delete this location?")) return;
+    // Find the location being deleted for better messaging
+    const locationToDelete = locations.find(loc => loc.id === locationId);
+    const locationName = locationToDelete?.location_name || "this location";
+
+    // Enhanced confirmation with location name
+    const confirmed = confirm(
+      `Are you sure you want to delete \"${locationName}\"?\n\nThis action cannot be undone. Any bookings or assignments to this location may be affected.`
+    );
+
+    if (!confirmed) return;
+
+    // Check if trying to delete primary location
+    if (locationToDelete?.is_primary) {
+      const confirmPrimary = confirm(
+        `Warning: \"${locationName}\" is your primary location.\n\nDeleting it will leave your business without a primary location. Are you sure you want to continue?`
+      );
+      if (!confirmPrimary) return;
+    }
 
     setLocationsSaving(true);
+
+    // Show deleting toast
+    toast({
+      title: "Deleting Location",
+      description: `Removing \"${locationName}\" from your business...`,
+      variant: "default",
+    });
+
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
@@ -779,8 +804,8 @@ export default function ProviderDashboard() {
       }
 
       toast({
-        title: "Success",
-        description: "Location deleted successfully!",
+        title: "Location Deleted",
+        description: `\"${locationName}\" has been successfully removed from your business.`,
         variant: "default",
       });
       await fetchLocations();
@@ -788,8 +813,8 @@ export default function ProviderDashboard() {
       console.error("Location delete error:", error);
       const errorMessage = error.message || "Failed to delete location";
       toast({
-        title: "Error",
-        description: errorMessage,
+        title: "Delete Failed",
+        description: `Failed to delete \"${locationName}\": ${errorMessage}`,
         variant: "destructive",
       });
       setLocationsError(errorMessage);
