@@ -468,6 +468,188 @@ export default function ProviderDashboard() {
     setBusinessHoursSuccess("");
   };
 
+  const fetchLocations = async () => {
+    if (!provider) return;
+
+    setLocationsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("business_locations")
+        .select("*")
+        .eq("business_id", provider.business_id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setLocations(data || []);
+    } catch (error: any) {
+      console.error("Error fetching locations:", error);
+      setLocationsError("Failed to load locations");
+    } finally {
+      setLocationsLoading(false);
+    }
+  };
+
+  const handleLocationFormChange = (field: string, value: any) => {
+    setLocationForm(prev => ({ ...prev, [field]: value }));
+    if (locationsSuccess) setLocationsSuccess("");
+    if (locationsError) setLocationsError("");
+  };
+
+  const resetLocationForm = () => {
+    setLocationForm({
+      location_name: "",
+      address_line1: "",
+      address_line2: "",
+      city: "",
+      state: "",
+      postal_code: "",
+      country: "United States",
+      is_primary: false,
+      offers_mobile_services: false,
+      mobile_service_radius: 10,
+      is_active: true
+    });
+  };
+
+  const handleSaveLocation = async () => {
+    if (!provider) return;
+
+    setLocationsSaving(true);
+    setLocationsError("");
+    setLocationsSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const locationData = {
+        ...locationForm,
+        business_id: provider.business_id
+      };
+
+      // Validate required fields
+      if (!locationData.location_name || !locationData.address_line1 || !locationData.city) {
+        throw new Error("Location name, address, and city are required");
+      }
+
+      let response;
+      if (editingLocation) {
+        // Update existing location
+        response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations?id=eq.${editingLocation.id}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal',
+            },
+            body: JSON.stringify(locationData),
+          }
+        );
+      } else {
+        // Create new location
+        response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations`,
+          {
+            method: 'POST',
+            headers: {
+              'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal',
+            },
+            body: JSON.stringify(locationData),
+          }
+        );
+      }
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to save location: ${errorText}`);
+      }
+
+      setLocationsSuccess(editingLocation ? "Location updated successfully!" : "Location added successfully!");
+      setEditingLocation(null);
+      setAddingLocation(false);
+      resetLocationForm();
+      await fetchLocations();
+
+    } catch (error: any) {
+      console.error('Location save error:', error);
+      let errorMessage = 'Failed to save location';
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
+      setLocationsError(errorMessage);
+    } finally {
+      setLocationsSaving(false);
+    }
+  };
+
+  const handleEditLocation = (location: any) => {
+    setLocationForm({
+      location_name: location.location_name || "",
+      address_line1: location.address_line1 || "",
+      address_line2: location.address_line2 || "",
+      city: location.city || "",
+      state: location.state || "",
+      postal_code: location.postal_code || "",
+      country: location.country || "United States",
+      is_primary: location.is_primary || false,
+      offers_mobile_services: location.offers_mobile_services || false,
+      mobile_service_radius: location.mobile_service_radius || 10,
+      is_active: location.is_active !== false
+    });
+    setEditingLocation(location);
+    setAddingLocation(true);
+  };
+
+  const handleDeleteLocation = async (locationId: string) => {
+    if (!confirm("Are you sure you want to delete this location?")) return;
+
+    setLocationsSaving(true);
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations?id=eq.${locationId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to delete location: ${errorText}`);
+      }
+
+      setLocationsSuccess("Location deleted successfully!");
+      await fetchLocations();
+    } catch (error: any) {
+      console.error('Location delete error:', error);
+      setLocationsError(error.message || 'Failed to delete location');
+    } finally {
+      setLocationsSaving(false);
+    }
+  };
+
+  const handleCancelLocationEdit = () => {
+    setEditingLocation(null);
+    setAddingLocation(false);
+    resetLocationForm();
+    setLocationsError("");
+    setLocationsSuccess("");
+  };
+
   useEffect(() => {
     if (user) {
       fetchDashboardData();
