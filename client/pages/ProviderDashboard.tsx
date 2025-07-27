@@ -61,6 +61,14 @@ export default function ProviderDashboard() {
   const [businessHoursError, setBusinessHoursError] = useState("");
   const [businessHoursSuccess, setBusinessHoursSuccess] = useState("");
   const [editingBusinessHours, setEditingBusinessHours] = useState(false);
+  const [managingLocations, setManagingLocations] = useState(false);
+  const [locations, setLocations] = useState<any[]>([]);
+  const [locationsLoading, setLocationsLoading] = useState(false);
+  const [locationsSaving, setLocationsSaving] = useState(false);
+  const [locationsError, setLocationsError] = useState("");
+  const [locationsSuccess, setLocationsSuccess] = useState("");
+  const [editingLocation, setEditingLocation] = useState<any>(null);
+  const [addingLocation, setAddingLocation] = useState(false);
 
   // Form state for contact information
   const [formData, setFormData] = useState({
