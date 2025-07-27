@@ -802,12 +802,16 @@ export default function ProviderDashboard() {
         })
       );
 
+      console.log("fetchBusinessServices: Final services with bookings:", servicesWithBookings);
       setBusinessServices(servicesWithBookings);
       setBusinessAddons(addonsData || []);
 
     } catch (error: any) {
-      console.error("Error fetching business services:", error);
-      setServicesError("Failed to load services");
+      console.error("fetchBusinessServices: Caught error:", error);
+      setServicesError(`Failed to load services: ${error.message}`);
+      // Set empty arrays so we show the empty state instead of loading forever
+      setBusinessServices([]);
+      setBusinessAddons([]);
     } finally {
       setServicesLoading(false);
     }
