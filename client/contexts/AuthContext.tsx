@@ -109,17 +109,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      console.log("AuthContext signIn: Starting authentication...");
 
-    if (error) {
-      throw error;
-    }
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (data.user) {
+      if (error) {
+        console.error("AuthContext signIn: Auth error:", error);
+        throw error;
+      }
+
+      if (!data.user) {
+        console.error("AuthContext signIn: No user returned");
+        throw new Error("Authentication failed - no user returned");
+      }
+
+      console.log("AuthContext signIn: Auth successful, fetching profile...");
       await fetchUserProfile(data.user.id);
+      console.log("AuthContext signIn: Profile fetch completed");
+
+    } catch (error) {
+      console.error("AuthContext signIn: Error:", error);
+      throw error;
     }
   };
 
