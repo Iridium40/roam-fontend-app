@@ -40,61 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const fetchUserProfile = async (userId: string) => {
-    try {
-      console.log("fetchUserProfile: Looking up provider for user:", userId);
 
-      const { data: provider, error } = await supabase
-        .from("providers")
-        .select(
-          `
-          id,
-          business_id,
-          location_id,
-          first_name,
-          last_name,
-          provider_role,
-          is_active,
-          email
-        `,
-        )
-        .eq("user_id", userId)
-        .eq("is_active", true)
-        .single();
-
-      if (error) {
-        console.error("fetchUserProfile: Database error:", error);
-        await supabase.auth.signOut();
-        throw new Error(`Provider lookup failed: ${error.message}`);
-      }
-
-      if (!provider) {
-        console.error("fetchUserProfile: No provider found for user");
-        await supabase.auth.signOut();
-        throw new Error("Provider account not found or inactive");
-      }
-
-      console.log("fetchUserProfile: Provider found:", provider);
-
-      setUser({
-        id: userId,
-        email: provider.email,
-        provider_id: provider.id,
-        business_id: provider.business_id,
-        location_id: provider.location_id,
-        provider_role: provider.provider_role,
-        first_name: provider.first_name,
-        last_name: provider.last_name,
-      });
-
-      console.log("fetchUserProfile: User state updated successfully");
-
-    } catch (error) {
-      console.error("fetchUserProfile: Error:", error);
-      setUser(null);
-      throw error;
-    }
-  };
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
