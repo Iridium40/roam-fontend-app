@@ -3432,12 +3432,10 @@ export default function ProviderDashboard() {
                       <Button
                         variant="outline"
                         className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        asChild
+                        onClick={handleStartAddProvider}
                       >
-                        <Link to="/business-management">
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add New Provider
-                        </Link>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add New Provider
                       </Button>
                       <Button
                         variant="outline"
