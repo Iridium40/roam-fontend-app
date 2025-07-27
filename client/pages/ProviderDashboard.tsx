@@ -1572,10 +1572,19 @@ export default function ProviderDashboard() {
             <TabsContent value="services" className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Your Services</h2>
-                <Button className="bg-roam-blue hover:bg-roam-blue/90">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Service
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={fetchBusinessServices}
+                    disabled={servicesLoading}
+                  >
+                    🔄 Refresh
+                  </Button>
+                  <Button className="bg-roam-blue hover:bg-roam-blue/90">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Service
+                  </Button>
+                </div>
               </div>
 
               {servicesError && (
