@@ -447,6 +447,7 @@ export default function Index() {
                   <h3 className="text-lg font-semibold mb-2 group-hover:text-roam-blue transition-colors">
                     {category.id === "therapy" ? <p>Therapy</p> :
                      category.id === "fitness" ? <p>Fitness</p> :
+                     category.id === "beauty" ? <p>Beauty</p> :
                      category.name}
                   </h3>
                   <p className="text-sm text-foreground/60 mb-3">
