@@ -1135,24 +1135,65 @@ export default function ProviderDashboard() {
                     <CardTitle>Profile Photo</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center space-y-4">
-                    <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto overflow-hidden">
-                      {provider?.image_url ? (
-                        <img
-                          src={provider.image_url}
-                          alt="Profile"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Users className="w-16 h-16 text-white" />
+                    <div className="relative">
+                      <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto overflow-hidden">
+                        {provider?.image_url ? (
+                          <img
+                            src={provider.image_url}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Users className="w-16 h-16 text-white" />
+                        )}
+                      </div>
+                      {avatarUploading && (
+                        <div className="absolute inset-0 w-32 h-32 bg-black/50 rounded-full flex items-center justify-center mx-auto">
+                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        </div>
                       )}
                     </div>
-                    <Button
-                      variant="outline"
-                      className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                    >
-                      <Camera className="w-4 h-4 mr-2" />
-                      Change Photo
-                    </Button>
+
+                    {avatarError && (
+                      <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                        {avatarError}
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 justify-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        className="hidden"
+                        id="avatar-upload"
+                        disabled={avatarUploading}
+                      />
+                      <Button
+                        variant="outline"
+                        className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        onClick={() => document.getElementById('avatar-upload')?.click()}
+                        disabled={avatarUploading}
+                      >
+                        <Camera className="w-4 h-4 mr-2" />
+                        {provider?.image_url ? 'Change Photo' : 'Upload Photo'}
+                      </Button>
+
+                      {provider?.image_url && (
+                        <Button
+                          variant="outline"
+                          className="border-red-300 text-red-600 hover:bg-red-50"
+                          onClick={handleAvatarRemove}
+                          disabled={avatarUploading}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+
+                    <p className="text-xs text-foreground/60">
+                      Upload a professional photo (max 5MB)
+                    </p>
                   </CardContent>
                 </Card>
 
