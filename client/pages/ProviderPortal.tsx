@@ -124,6 +124,20 @@ export default function ProviderPortal() {
 
     try {
       console.log("Starting login process...");
+
+      // Test database connection first
+      const { data: testData, error: testError } = await supabase
+        .from("providers")
+        .select("count")
+        .limit(1);
+
+      if (testError) {
+        console.error("Database connection error:", testError);
+        throw new Error("Database connection failed. Please try again.");
+      }
+
+      console.log("Database connection OK");
+
       // Use AuthContext signIn method which handles profile fetching
       await signIn(loginData.email, loginData.password);
       console.log("Login successful, navigating to dashboard...");
