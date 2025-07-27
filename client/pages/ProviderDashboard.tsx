@@ -1428,7 +1428,6 @@ export default function ProviderDashboard() {
         .single();
 
       if (businessData) {
-        console.log("Fetched business data from database:", businessData);
         setBusiness(businessData);
 
         // Initialize business details form
