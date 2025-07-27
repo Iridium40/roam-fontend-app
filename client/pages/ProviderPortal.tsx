@@ -240,6 +240,14 @@ export default function ProviderPortal() {
                     {/* Login Form */}
                     <TabsContent value="login">
                       <form onSubmit={handleLogin} className="space-y-4">
+                        {error && (
+                          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                            <div className="flex items-start gap-2">
+                              <div className="w-4 h-4 text-red-600 mt-0.5">⚠️</div>
+                              <p className="text-sm text-red-800">{error}</p>
+                            </div>
+                          </div>
+                        )}
                         <div className="space-y-2">
                           <Label htmlFor="login-email">Email Address</Label>
                           <div className="relative">
