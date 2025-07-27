@@ -6,7 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   LogOut,
   Calendar,
@@ -92,7 +98,8 @@ export default function ProviderDashboard() {
   const [serviceSuccess, setServiceSuccess] = useState("");
   const [addingService, setAddingService] = useState(false);
   const [availableServices, setAvailableServices] = useState<any[]>([]);
-  const [availableServicesLoading, setAvailableServicesLoading] = useState(false);
+  const [availableServicesLoading, setAvailableServicesLoading] =
+    useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [addServiceForm, setAddServiceForm] = useState({
     delivery_type: "business_location",
@@ -189,9 +196,9 @@ export default function ProviderDashboard() {
 
     // Convert underscore to space and capitalize each word
     return businessType
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
   };
 
   const formatVerificationStatus = (status: string) => {
@@ -199,12 +206,14 @@ export default function ProviderDashboard() {
       pending: "Pending",
       verified: "Verified",
       rejected: "Rejected",
-      suspended: "Suspended"
+      suspended: "Suspended",
     };
     return statusMap[status] || status;
   };
 
-  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file || !business) return;
 
@@ -251,10 +260,10 @@ export default function ProviderDashboard() {
       );
 
       // Update business form state
-      setBusinessDetailsForm(prev => ({ ...prev, logo_url: publicUrl }));
+      setBusinessDetailsForm((prev) => ({ ...prev, logo_url: publicUrl }));
 
       // Also update the business state for immediate UI reflection
-      setBusiness(prev => prev ? { ...prev, logo_url: publicUrl } : prev);
+      setBusiness((prev) => (prev ? { ...prev, logo_url: publicUrl } : prev));
 
       toast({
         title: "Logo Uploaded",
@@ -304,10 +313,10 @@ export default function ProviderDashboard() {
       await directSupabaseAPI.deleteFile("roam-file-storage", filePath);
 
       // Update business form state
-      setBusinessDetailsForm(prev => ({ ...prev, logo_url: "" }));
+      setBusinessDetailsForm((prev) => ({ ...prev, logo_url: "" }));
 
       // Also update the business state for immediate UI reflection
-      setBusiness(prev => prev ? { ...prev, logo_url: null } : prev);
+      setBusiness((prev) => (prev ? { ...prev, logo_url: null } : prev));
 
       toast({
         title: "Logo Removed",
@@ -677,7 +686,10 @@ export default function ProviderDashboard() {
       return;
     }
 
-    console.log("fetchLocations: Starting fetch for business_id:", provider.business_id);
+    console.log(
+      "fetchLocations: Starting fetch for business_id:",
+      provider.business_id,
+    );
     setLocationsLoading(true);
     try {
       const { data, error } = await supabase
@@ -707,10 +719,12 @@ export default function ProviderDashboard() {
   const handleLocationFormChange = (field: string, value: any) => {
     // Special handling for primary location changes
     if (field === "is_primary" && value === true) {
-      const currentPrimary = locations.find(loc => loc.is_primary && loc.id !== editingLocation?.id);
+      const currentPrimary = locations.find(
+        (loc) => loc.is_primary && loc.id !== editingLocation?.id,
+      );
       if (currentPrimary) {
         const confirmed = confirm(
-          `Setting this location as primary will remove the primary status from "${currentPrimary.location_name}". Continue?`
+          `Setting this location as primary will remove the primary status from "${currentPrimary.location_name}". Continue?`,
         );
         if (!confirmed) {
           return; // Don't update if user cancels
@@ -883,12 +897,12 @@ export default function ProviderDashboard() {
 
   const handleDeleteLocation = async (locationId: string) => {
     // Find the location being deleted for better messaging
-    const locationToDelete = locations.find(loc => loc.id === locationId);
+    const locationToDelete = locations.find((loc) => loc.id === locationId);
     const locationName = locationToDelete?.location_name || "this location";
 
     // Enhanced confirmation with location name
     const confirmed = confirm(
-      `Are you sure you want to delete \"${locationName}\"?\n\nThis action cannot be undone. Any bookings or assignments to this location may be affected.`
+      `Are you sure you want to delete \"${locationName}\"?\n\nThis action cannot be undone. Any bookings or assignments to this location may be affected.`,
     );
 
     if (!confirmed) return;
@@ -896,7 +910,7 @@ export default function ProviderDashboard() {
     // Check if trying to delete primary location
     if (locationToDelete?.is_primary) {
       const confirmPrimary = confirm(
-        `Warning: \"${locationName}\" is your primary location.\n\nDeleting it will leave your business without a primary location. Are you sure you want to continue?`
+        `Warning: \"${locationName}\" is your primary location.\n\nDeleting it will leave your business without a primary location. Are you sure you want to continue?`,
       );
       if (!confirmPrimary) return;
     }
@@ -956,13 +970,13 @@ export default function ProviderDashboard() {
   };
 
   const handleBusinessDetailsFormChange = (field: string, value: any) => {
-    setBusinessDetailsForm(prev => ({ ...prev, [field]: value }));
+    setBusinessDetailsForm((prev) => ({ ...prev, [field]: value }));
     if (businessDetailsSuccess) setBusinessDetailsSuccess("");
     if (businessDetailsError) setBusinessDetailsError("");
   };
 
   const handleServiceFormChange = (field: string, value: any) => {
-    setServiceForm(prev => ({ ...prev, [field]: value }));
+    setServiceForm((prev) => ({ ...prev, [field]: value }));
     if (serviceSuccess) setServiceSuccess("");
     if (serviceError) setServiceError("");
   };
@@ -990,12 +1004,18 @@ export default function ProviderDashboard() {
 
       const updateData = {
         delivery_type: serviceForm.delivery_type,
-        custom_price: serviceForm.custom_price ? parseFloat(serviceForm.custom_price) : null,
+        custom_price: serviceForm.custom_price
+          ? parseFloat(serviceForm.custom_price)
+          : null,
         is_active: serviceForm.is_active,
       };
 
       // Validate price if provided
-      if (serviceForm.custom_price && (isNaN(parseFloat(serviceForm.custom_price)) || parseFloat(serviceForm.custom_price) < 0)) {
+      if (
+        serviceForm.custom_price &&
+        (isNaN(parseFloat(serviceForm.custom_price)) ||
+          parseFloat(serviceForm.custom_price) < 0)
+      ) {
         throw new Error("Please enter a valid price (0 or greater)");
       }
 
@@ -1019,12 +1039,12 @@ export default function ProviderDashboard() {
       }
 
       // Update local state
-      setBusinessServices(prev =>
-        prev.map(service =>
+      setBusinessServices((prev) =>
+        prev.map((service) =>
           service.id === editingService.id
             ? { ...service, ...updateData }
-            : service
-        )
+            : service,
+        ),
       );
 
       setServiceSuccess("Service updated successfully!");
@@ -1074,7 +1094,8 @@ export default function ProviderDashboard() {
       // Get all services
       const { data: allServices, error: servicesError } = await supabase
         .from("services")
-        .select(`
+        .select(
+          `
           *,
           service_subcategories (
             id,
@@ -1084,7 +1105,8 @@ export default function ProviderDashboard() {
               name
             )
           )
-        `)
+        `,
+        )
         .order("name");
 
       if (servicesError) throw servicesError;
@@ -1098,8 +1120,12 @@ export default function ProviderDashboard() {
       if (businessError) throw businessError;
 
       // Filter out already added services
-      const addedServiceIds = new Set(businessServices?.map(bs => bs.service_id) || []);
-      const available = allServices?.filter(service => !addedServiceIds.has(service.id)) || [];
+      const addedServiceIds = new Set(
+        businessServices?.map((bs) => bs.service_id) || [],
+      );
+      const available =
+        allServices?.filter((service) => !addedServiceIds.has(service.id)) ||
+        [];
 
       setAvailableServices(available);
     } catch (error: any) {
@@ -1111,7 +1137,7 @@ export default function ProviderDashboard() {
   };
 
   const handleAddServiceFormChange = (field: string, value: any) => {
-    setAddServiceForm(prev => ({ ...prev, [field]: value }));
+    setAddServiceForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleStartAddService = () => {
@@ -1144,12 +1170,18 @@ export default function ProviderDashboard() {
         business_id: provider.business_id,
         service_id: selectedServiceId,
         delivery_type: addServiceForm.delivery_type,
-        custom_price: addServiceForm.custom_price ? parseFloat(addServiceForm.custom_price) : null,
+        custom_price: addServiceForm.custom_price
+          ? parseFloat(addServiceForm.custom_price)
+          : null,
         is_active: addServiceForm.is_active,
       };
 
       // Validate price if provided
-      if (addServiceForm.custom_price && (isNaN(parseFloat(addServiceForm.custom_price)) || parseFloat(addServiceForm.custom_price) < 0)) {
+      if (
+        addServiceForm.custom_price &&
+        (isNaN(parseFloat(addServiceForm.custom_price)) ||
+          parseFloat(addServiceForm.custom_price) < 0)
+      ) {
         throw new Error("Please enter a valid price (0 or greater)");
       }
 
@@ -1213,10 +1245,15 @@ export default function ProviderDashboard() {
 
     console.log("fetchBusinessServices: Provider data:", provider);
     console.log("fetchBusinessServices: User data:", user);
-    console.log("fetchBusinessServices: Starting fetch for business_id:", provider.business_id);
+    console.log(
+      "fetchBusinessServices: Starting fetch for business_id:",
+      provider.business_id,
+    );
 
     if (!provider.business_id) {
-      console.error("fetchBusinessServices: No business_id found in provider data");
+      console.error(
+        "fetchBusinessServices: No business_id found in provider data",
+      );
       setServicesError("No business ID found for this provider");
       return;
     }
@@ -1228,7 +1265,8 @@ export default function ProviderDashboard() {
       // Fetch business services with service details and booking counts
       const { data: servicesData, error: servicesError } = await supabase
         .from("business_services")
-        .select(`
+        .select(
+          `
           *,
           services (
             id,
@@ -1247,26 +1285,34 @@ export default function ProviderDashboard() {
               )
             )
           )
-        `)
+        `,
+        )
         .eq("business_id", provider.business_id)
         .order("created_at", { ascending: false });
 
-      console.log("fetchBusinessServices: business_services query result:", { servicesData, servicesError });
+      console.log("fetchBusinessServices: business_services query result:", {
+        servicesData,
+        servicesError,
+      });
 
       if (servicesError) {
-        console.error("fetchBusinessServices: Error fetching business services:", servicesError);
+        console.error(
+          "fetchBusinessServices: Error fetching business services:",
+          servicesError,
+        );
         throw servicesError;
       }
 
       // Get service IDs for addon eligibility check
-      const serviceIds = servicesData?.map(bs => bs.service_id) || [];
+      const serviceIds = servicesData?.map((bs) => bs.service_id) || [];
       console.log("fetchBusinessServices: Found service IDs:", serviceIds);
 
       // Fetch business addons with addon details, filtered by service eligibility
       // For now, let's simplify this query to avoid complex subqueries
       const { data: addonsData, error: addonsError } = await supabase
         .from("business_addons")
-        .select(`
+        .select(
+          `
           *,
           service_addons (
             id,
@@ -1275,28 +1321,39 @@ export default function ProviderDashboard() {
             addon_type,
             default_price
           )
-        `)
+        `,
+        )
         .eq("business_id", provider.business_id)
         .eq("is_available", true);
 
-      console.log("fetchBusinessServices: business_addons query result:", { addonsData, addonsError });
+      console.log("fetchBusinessServices: business_addons query result:", {
+        addonsData,
+        addonsError,
+      });
 
       if (addonsError) {
-        console.error("fetchBusinessServices: Error fetching business addons:", addonsError);
+        console.error(
+          "fetchBusinessServices: Error fetching business addons:",
+          addonsError,
+        );
         // Don't throw error for addons, just log it
       }
 
       // For now, simplify by setting booking count to 0 to avoid complex async operations
       // We can enhance this later once basic services are loading
-      const servicesWithBookings = (servicesData || []).map((businessService) => ({
-        ...businessService,
-        booking_count: 0 // Placeholder for now
-      }));
+      const servicesWithBookings = (servicesData || []).map(
+        (businessService) => ({
+          ...businessService,
+          booking_count: 0, // Placeholder for now
+        }),
+      );
 
-      console.log("fetchBusinessServices: Final services with bookings:", servicesWithBookings);
+      console.log(
+        "fetchBusinessServices: Final services with bookings:",
+        servicesWithBookings,
+      );
       setBusinessServices(servicesWithBookings);
       setBusinessAddons(addonsData || []);
-
     } catch (error: any) {
       console.error("fetchBusinessServices: Caught error:", error);
       setServicesError(`Failed to load services: ${error.message}`);
@@ -1320,11 +1377,14 @@ export default function ProviderDashboard() {
 
       const updateData = {
         business_name: businessDetailsForm.business_name?.trim() || "",
-        business_description: businessDetailsForm.business_description?.trim() || "",
+        business_description:
+          businessDetailsForm.business_description?.trim() || "",
         contact_email: businessDetailsForm.contact_email?.trim() || "",
         phone: businessDetailsForm.phone?.trim() || "",
         website_url: businessDetailsForm.website_url?.trim() || "",
-        years_in_business: businessDetailsForm.years_in_business ? parseInt(businessDetailsForm.years_in_business) : null,
+        years_in_business: businessDetailsForm.years_in_business
+          ? parseInt(businessDetailsForm.years_in_business)
+          : null,
         logo_url: businessDetailsForm.logo_url?.trim() || null,
         is_active: businessDetailsForm.is_active,
       };
@@ -1337,7 +1397,9 @@ export default function ProviderDashboard() {
       // Email validation - only validate if email is provided and not empty
       if (updateData.contact_email && updateData.contact_email.length > 0) {
         // Clean the email value of any potential hidden characters
-        const cleanEmail = updateData.contact_email.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+        const cleanEmail = updateData.contact_email
+          .replace(/[\u200B-\u200D\uFEFF]/g, "")
+          .trim();
         updateData.contact_email = cleanEmail;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -1364,7 +1426,6 @@ export default function ProviderDashboard() {
       });
 
       setBusinessDetailsSuccess("Business details updated successfully!");
-
     } catch (error: any) {
       console.error("Business details save error:", error);
       let errorMessage = "Failed to update business details";
@@ -1389,7 +1450,12 @@ export default function ProviderDashboard() {
 
   // Fetch locations when provider is available and locations tab is active
   useEffect(() => {
-    if (provider && activeTab === "locations" && locations.length === 0 && !locationsLoading) {
+    if (
+      provider &&
+      activeTab === "locations" &&
+      locations.length === 0 &&
+      !locationsLoading
+    ) {
       console.log("Auto-fetching locations for active tab");
       fetchLocations();
     }
@@ -1535,7 +1601,10 @@ export default function ProviderDashboard() {
 
         // Fetch business services using providerData directly (since setProvider is async)
         if (providerData && providerData.business_id) {
-          console.log("fetchDashboardData: Fetching business services for business_id:", providerData.business_id);
+          console.log(
+            "fetchDashboardData: Fetching business services for business_id:",
+            providerData.business_id,
+          );
 
           try {
             setServicesLoading(true);
@@ -1543,7 +1612,8 @@ export default function ProviderDashboard() {
 
             const { data: servicesData, error: servicesError } = await supabase
               .from("business_services")
-              .select(`
+              .select(
+                `
                 *,
                 services (
                   id,
@@ -1562,29 +1632,44 @@ export default function ProviderDashboard() {
                     )
                   )
                 )
-              `)
+              `,
+              )
               .eq("business_id", providerData.business_id)
               .order("created_at", { ascending: false });
 
-            console.log("fetchDashboardData: business_services query result:", { servicesData, servicesError });
+            console.log("fetchDashboardData: business_services query result:", {
+              servicesData,
+              servicesError,
+            });
 
             if (servicesError) {
-              console.error("fetchDashboardData: Error fetching business services:", servicesError);
-              setServicesError(`Failed to load services: ${servicesError.message}`);
+              console.error(
+                "fetchDashboardData: Error fetching business services:",
+                servicesError,
+              );
+              setServicesError(
+                `Failed to load services: ${servicesError.message}`,
+              );
               setBusinessServices([]);
             } else {
-              const servicesWithBookings = (servicesData || []).map((businessService) => ({
-                ...businessService,
-                booking_count: 0 // Placeholder for now
-              }));
-              console.log("fetchDashboardData: Setting business services:", servicesWithBookings);
+              const servicesWithBookings = (servicesData || []).map(
+                (businessService) => ({
+                  ...businessService,
+                  booking_count: 0, // Placeholder for now
+                }),
+              );
+              console.log(
+                "fetchDashboardData: Setting business services:",
+                servicesWithBookings,
+              );
               setBusinessServices(servicesWithBookings);
             }
 
             // Also fetch addons
             const { data: addonsData, error: addonsError } = await supabase
               .from("business_addons")
-              .select(`
+              .select(
+                `
                 *,
                 service_addons (
                   id,
@@ -1593,15 +1678,21 @@ export default function ProviderDashboard() {
                   addon_type,
                   default_price
                 )
-              `)
+              `,
+              )
               .eq("business_id", providerData.business_id)
               .eq("is_available", true);
 
-            console.log("fetchDashboardData: business_addons query result:", { addonsData, addonsError });
+            console.log("fetchDashboardData: business_addons query result:", {
+              addonsData,
+              addonsError,
+            });
             setBusinessAddons(addonsData || []);
-
           } catch (error: any) {
-            console.error("fetchDashboardData: Error in services fetch:", error);
+            console.error(
+              "fetchDashboardData: Error in services fetch:",
+              error,
+            );
             setServicesError(`Failed to load services: ${error.message}`);
             setBusinessServices([]);
             setBusinessAddons([]);
@@ -1609,7 +1700,9 @@ export default function ProviderDashboard() {
             setServicesLoading(false);
           }
         } else {
-          console.warn("fetchDashboardData: No business_id found in provider data");
+          console.warn(
+            "fetchDashboardData: No business_id found in provider data",
+          );
           setServicesError("No business ID found for this provider");
         }
 
@@ -1992,7 +2085,11 @@ export default function ProviderDashboard() {
           </div>
 
           {/* Main Content Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             <TabsList className="grid w-full grid-cols-9 lg:w-auto lg:inline-grid">
               <TabsTrigger
                 value="bookings"
@@ -2200,9 +2297,19 @@ export default function ProviderDashboard() {
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div>
-                            <h3 className="font-semibold">{businessService.services?.name}</h3>
+                            <h3 className="font-semibold">
+                              {businessService.services?.name}
+                            </h3>
                             <p className="text-sm text-foreground/60">
-                              {businessService.services?.service_subcategories?.service_categories?.name} ��� {businessService.services?.service_subcategories?.name}
+                              {
+                                businessService.services?.service_subcategories
+                                  ?.service_categories?.name
+                              }{" "}
+                              ���{" "}
+                              {
+                                businessService.services?.service_subcategories
+                                  ?.name
+                              }
                             </p>
                             {businessService.services?.description && (
                               <p className="text-xs text-foreground/50 mt-1">
@@ -2221,19 +2328,28 @@ export default function ProviderDashboard() {
                           <div className="flex justify-between text-sm">
                             <span>Duration:</span>
                             <span className="font-medium">
-                              {businessService.duration || (businessService.services?.duration_minutes ? `${businessService.services.duration_minutes} mins` : 'N/A')}
+                              {businessService.duration ||
+                                (businessService.services?.duration_minutes
+                                  ? `${businessService.services.duration_minutes} mins`
+                                  : "N/A")}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Price:</span>
                             <span className="font-medium text-roam-blue">
-                              ${businessService.custom_price || businessService.services?.min_price || '0'}
+                              $
+                              {businessService.custom_price ||
+                                businessService.services?.min_price ||
+                                "0"}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Delivery:</span>
                             <span className="font-medium">
-                              {getDeliveryTypeLabel(businessService.delivery_type || "business_location")}
+                              {getDeliveryTypeLabel(
+                                businessService.delivery_type ||
+                                  "business_location",
+                              )}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
@@ -2261,7 +2377,9 @@ export default function ProviderDashboard() {
                 <div className="text-center py-8 text-foreground/60">
                   <Star className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p className="text-lg mb-2">No services added yet</p>
-                  <p className="text-sm">Add your first service to start accepting bookings</p>
+                  <p className="text-sm">
+                    Add your first service to start accepting bookings
+                  </p>
                 </div>
               )}
 
@@ -2274,7 +2392,9 @@ export default function ProviderDashboard() {
                       <Card key={businessAddon.id} className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h4 className="font-medium">{businessAddon.service_addons?.name}</h4>
+                            <h4 className="font-medium">
+                              {businessAddon.service_addons?.name}
+                            </h4>
                             <p className="text-sm text-foreground/60">
                               {businessAddon.service_addons?.addon_type}
                             </p>
@@ -2290,7 +2410,10 @@ export default function ProviderDashboard() {
                         <div className="flex justify-between items-center text-sm">
                           <span>Price:</span>
                           <span className="font-medium text-roam-blue">
-                            ${businessAddon.custom_price || businessAddon.service_addons?.default_price || '0'}
+                            $
+                            {businessAddon.custom_price ||
+                              businessAddon.service_addons?.default_price ||
+                              "0"}
                           </span>
                         </div>
                       </Card>
@@ -2304,8 +2427,6 @@ export default function ProviderDashboard() {
             {isOwner && (
               <TabsContent value="business" className="space-y-6">
                 <h2 className="text-2xl font-bold">Business Management</h2>
-
-
 
                 {/* Business Details Management */}
                 <Card>
@@ -2331,14 +2452,23 @@ export default function ProviderDashboard() {
                     <div className="space-y-8">
                       {/* Basic Information */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">Basic Information</h3>
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          Basic Information
+                        </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="business_name">Business Name *</Label>
+                            <Label htmlFor="business_name">
+                              Business Name *
+                            </Label>
                             <Input
                               id="business_name"
                               value={businessDetailsForm.business_name}
-                              onChange={(e) => handleBusinessDetailsFormChange("business_name", e.target.value)}
+                              onChange={(e) =>
+                                handleBusinessDetailsFormChange(
+                                  "business_name",
+                                  e.target.value,
+                                )
+                              }
                               disabled={businessDetailsSaving}
                             />
                           </div>
@@ -2347,7 +2477,9 @@ export default function ProviderDashboard() {
                             <Label htmlFor="business_type">Business Type</Label>
                             <Input
                               id="business_type"
-                              value={formatBusinessType(businessDetailsForm.business_type)}
+                              value={formatBusinessType(
+                                businessDetailsForm.business_type,
+                              )}
                               readOnly
                               className="bg-muted cursor-not-allowed"
                               title="Business type cannot be changed"
@@ -2355,23 +2487,34 @@ export default function ProviderDashboard() {
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor="years_in_business">Years in Business</Label>
+                            <Label htmlFor="years_in_business">
+                              Years in Business
+                            </Label>
                             <Input
                               id="years_in_business"
                               type="number"
                               min="0"
                               max="100"
                               value={businessDetailsForm.years_in_business}
-                              onChange={(e) => handleBusinessDetailsFormChange("years_in_business", e.target.value)}
+                              onChange={(e) =>
+                                handleBusinessDetailsFormChange(
+                                  "years_in_business",
+                                  e.target.value,
+                                )
+                              }
                               disabled={businessDetailsSaving}
                             />
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor="verification_status">Verification Status</Label>
+                            <Label htmlFor="verification_status">
+                              Verification Status
+                            </Label>
                             <Input
                               id="verification_status"
-                              value={formatVerificationStatus(businessDetailsForm.verification_status)}
+                              value={formatVerificationStatus(
+                                businessDetailsForm.verification_status,
+                              )}
                               readOnly
                               className="bg-muted cursor-not-allowed"
                               title="Verification status is managed by system"
@@ -2380,11 +2523,18 @@ export default function ProviderDashboard() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="business_description">Business Description</Label>
+                          <Label htmlFor="business_description">
+                            Business Description
+                          </Label>
                           <Textarea
                             id="business_description"
                             value={businessDetailsForm.business_description}
-                            onChange={(e) => handleBusinessDetailsFormChange("business_description", e.target.value)}
+                            onChange={(e) =>
+                              handleBusinessDetailsFormChange(
+                                "business_description",
+                                e.target.value,
+                              )
+                            }
                             rows={3}
                             placeholder="Describe your business, services, and what makes you unique..."
                             disabled={businessDetailsSaving}
@@ -2394,7 +2544,9 @@ export default function ProviderDashboard() {
 
                       {/* Contact Information */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">Contact Information</h3>
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          Contact Information
+                        </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="contact_email">Contact Email</Label>
@@ -2402,7 +2554,12 @@ export default function ProviderDashboard() {
                               id="contact_email"
                               type="email"
                               value={businessDetailsForm.contact_email}
-                              onChange={(e) => handleBusinessDetailsFormChange("contact_email", e.target.value)}
+                              onChange={(e) =>
+                                handleBusinessDetailsFormChange(
+                                  "contact_email",
+                                  e.target.value,
+                                )
+                              }
                               disabled={businessDetailsSaving}
                             />
                           </div>
@@ -2413,7 +2570,12 @@ export default function ProviderDashboard() {
                               id="phone"
                               type="tel"
                               value={businessDetailsForm.phone}
-                              onChange={(e) => handleBusinessDetailsFormChange("phone", e.target.value)}
+                              onChange={(e) =>
+                                handleBusinessDetailsFormChange(
+                                  "phone",
+                                  e.target.value,
+                                )
+                              }
                               disabled={businessDetailsSaving}
                             />
                           </div>
@@ -2424,7 +2586,12 @@ export default function ProviderDashboard() {
                               id="website_url"
                               type="url"
                               value={businessDetailsForm.website_url}
-                              onChange={(e) => handleBusinessDetailsFormChange("website_url", e.target.value)}
+                              onChange={(e) =>
+                                handleBusinessDetailsFormChange(
+                                  "website_url",
+                                  e.target.value,
+                                )
+                              }
                               placeholder="https://"
                               disabled={businessDetailsSaving}
                             />
@@ -2434,7 +2601,9 @@ export default function ProviderDashboard() {
 
                       {/* Business Logo */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">Business Logo</h3>
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          Business Logo
+                        </h3>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                           {/* Logo Preview */}
                           <div className="space-y-4">
@@ -2485,12 +2654,16 @@ export default function ProviderDashboard() {
                                 variant="outline"
                                 className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                                 onClick={() =>
-                                  document.getElementById("logo-upload")?.click()
+                                  document
+                                    .getElementById("logo-upload")
+                                    ?.click()
                                 }
                                 disabled={logoUploading}
                               >
                                 <Camera className="w-4 h-4 mr-2" />
-                                {business?.logo_url ? "Change Logo" : "Upload Logo"}
+                                {business?.logo_url
+                                  ? "Change Logo"
+                                  : "Upload Logo"}
                               </Button>
 
                               {business?.logo_url && (
@@ -2507,7 +2680,8 @@ export default function ProviderDashboard() {
                             </div>
 
                             <p className="text-xs text-foreground/60">
-                              Upload a business logo (max 5MB). Recommended size: 200x200px or larger.
+                              Upload a business logo (max 5MB). Recommended
+                              size: 200x200px or larger.
                             </p>
                           </div>
                         </div>
@@ -2515,16 +2689,25 @@ export default function ProviderDashboard() {
 
                       {/* Business Status */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">Business Status</h3>
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          Business Status
+                        </h3>
                         <div className="space-y-4">
                           <div className="flex items-center justify-between">
                             <div>
                               <Label>Business Active</Label>
-                              <p className="text-sm text-foreground/60">Enable or disable your business listing</p>
+                              <p className="text-sm text-foreground/60">
+                                Enable or disable your business listing
+                              </p>
                             </div>
                             <Switch
                               checked={businessDetailsForm.is_active}
-                              onCheckedChange={(checked) => handleBusinessDetailsFormChange("is_active", checked)}
+                              onCheckedChange={(checked) =>
+                                handleBusinessDetailsFormChange(
+                                  "is_active",
+                                  checked,
+                                )
+                              }
                               disabled={businessDetailsSaving}
                               className="data-[state=checked]:bg-roam-blue"
                             />
@@ -2534,19 +2717,22 @@ export default function ProviderDashboard() {
                           <div className="p-4 bg-accent/20 rounded-lg">
                             <div className="flex items-center justify-between">
                               <Label>Stripe Payouts</Label>
-                              <span className={`font-medium ${
-                                business?.stripe_connect_account_id
-                                  ? "text-green-600"
-                                  : "text-red-600"
-                              }`}>
-                                {business?.stripe_connect_account_id ? "Enabled" : "Disabled"}
+                              <span
+                                className={`font-medium ${
+                                  business?.stripe_connect_account_id
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }`}
+                              >
+                                {business?.stripe_connect_account_id
+                                  ? "Enabled"
+                                  : "Disabled"}
                               </span>
                             </div>
                             <p className="text-sm text-foreground/60 mt-1">
                               {business?.stripe_connect_account_id
                                 ? "Your Stripe account is connected and ready to receive payments"
-                                : "Connect your Stripe account to enable automatic payouts"
-                              }
+                                : "Connect your Stripe account to enable automatic payouts"}
                             </p>
                           </div>
                         </div>
@@ -2597,7 +2783,9 @@ export default function ProviderDashboard() {
                             Business Type
                           </span>
                           <span className="font-medium">
-                            {business?.business_type ? formatBusinessType(business.business_type) : "Loading..."}
+                            {business?.business_type
+                              ? formatBusinessType(business.business_type)
+                              : "Loading..."}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
@@ -2644,12 +2832,16 @@ export default function ProviderDashboard() {
                           <span className="text-sm text-foreground/60">
                             Stripe Payouts
                           </span>
-                          <span className={`font-medium ${
-                            business?.stripe_connected_account_id
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}>
-                            {business?.stripe_connected_account_id ? "Enabled" : "Disabled"}
+                          <span
+                            className={`font-medium ${
+                              business?.stripe_connected_account_id
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {business?.stripe_connected_account_id
+                              ? "Enabled"
+                              : "Disabled"}
                           </span>
                         </div>
                       </div>
@@ -2984,9 +3176,12 @@ export default function ProviderDashboard() {
                   <CardContent>
                     <div className="text-center py-8 text-foreground/60">
                       <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p className="text-lg mb-2">Provider management coming soon</p>
+                      <p className="text-lg mb-2">
+                        Provider management coming soon
+                      </p>
                       <p className="text-sm">
-                        Full provider management interface will be implemented here
+                        Full provider management interface will be implemented
+                        here
                       </p>
                       <Button
                         className="mt-4 bg-roam-blue hover:bg-roam-blue/90"
@@ -3023,8 +3218,6 @@ export default function ProviderDashboard() {
                   </Button>
                 </div>
 
-
-
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Locations Overview Card */}
                   <Card>
@@ -3049,7 +3242,7 @@ export default function ProviderDashboard() {
                             Active Locations
                           </span>
                           <span className="font-medium">
-                            {locations.filter(loc => loc.is_active).length}
+                            {locations.filter((loc) => loc.is_active).length}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
@@ -3057,7 +3250,11 @@ export default function ProviderDashboard() {
                             Mobile Service Areas
                           </span>
                           <span className="font-medium">
-                            {locations.filter(loc => loc.offers_mobile_services).length}
+                            {
+                              locations.filter(
+                                (loc) => loc.offers_mobile_services,
+                              ).length
+                            }
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
@@ -3065,7 +3262,8 @@ export default function ProviderDashboard() {
                             Primary Location
                           </span>
                           <span className="font-medium">
-                            {locations.find(loc => loc.is_primary)?.location_name || "None set"}
+                            {locations.find((loc) => loc.is_primary)
+                              ?.location_name || "None set"}
                           </span>
                         </div>
                       </div>
@@ -3609,21 +3807,31 @@ export default function ProviderDashboard() {
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">This Month</span>
-                        <span className="text-xl font-semibold text-roam-blue">$3,250</span>
+                        <span className="text-sm text-foreground/60">
+                          This Month
+                        </span>
+                        <span className="text-xl font-semibold text-roam-blue">
+                          $3,250
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">Last Month</span>
+                        <span className="text-sm text-foreground/60">
+                          Last Month
+                        </span>
                         <span className="text-lg font-medium">$2,890</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">Total Earned</span>
+                        <span className="text-sm text-foreground/60">
+                          Total Earned
+                        </span>
                         <span className="text-lg font-medium">$47,325</span>
                       </div>
                       <div className="pt-2 border-t">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-green-600">Growth</span>
-                          <span className="text-sm text-green-600 font-medium">+12.4%</span>
+                          <span className="text-sm text-green-600 font-medium">
+                            +12.4%
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -3641,15 +3849,23 @@ export default function ProviderDashboard() {
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">Outstanding</span>
-                        <span className="text-xl font-semibold text-roam-yellow">$485</span>
+                        <span className="text-sm text-foreground/60">
+                          Outstanding
+                        </span>
+                        <span className="text-xl font-semibold text-roam-yellow">
+                          $485
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">Next Payout</span>
+                        <span className="text-sm text-foreground/60">
+                          Next Payout
+                        </span>
                         <span className="text-sm font-medium">Tomorrow</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">Completed Services</span>
+                        <span className="text-sm text-foreground/60">
+                          Completed Services
+                        </span>
                         <span className="text-sm font-medium">3 bookings</span>
                       </div>
                       <Button
@@ -3675,11 +3891,15 @@ export default function ProviderDashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-blue-600">••••</span>
+                            <span className="text-xs font-bold text-blue-600">
+                              ••••
+                            </span>
                           </div>
                           <div>
                             <p className="text-sm font-medium">Bank Account</p>
-                            <p className="text-xs text-foreground/60">****4532</p>
+                            <p className="text-xs text-foreground/60">
+                              ****4532
+                            </p>
                           </div>
                         </div>
                         <Badge variant="secondary">Primary</Badge>
@@ -3687,11 +3907,15 @@ export default function ProviderDashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-green-600">P</span>
+                            <span className="text-xs font-bold text-green-600">
+                              P
+                            </span>
                           </div>
                           <div>
                             <p className="text-sm font-medium">PayPal</p>
-                            <p className="text-xs text-foreground/60">john@email.com</p>
+                            <p className="text-xs text-foreground/60">
+                              john@email.com
+                            </p>
                           </div>
                         </div>
                         <Badge variant="outline">Active</Badge>
@@ -3725,12 +3949,16 @@ export default function ProviderDashboard() {
                         </div>
                         <div>
                           <p className="font-medium">Payment Received</p>
-                          <p className="text-sm text-foreground/60">Deep Tissue Massage - Sarah M.</p>
+                          <p className="text-sm text-foreground/60">
+                            Deep Tissue Massage - Sarah M.
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-green-600">+$120.00</p>
-                        <p className="text-xs text-foreground/60">Jan 15, 2024</p>
+                        <p className="text-xs text-foreground/60">
+                          Jan 15, 2024
+                        </p>
                       </div>
                     </div>
 
@@ -3741,12 +3969,16 @@ export default function ProviderDashboard() {
                         </div>
                         <div>
                           <p className="font-medium">Payout Processed</p>
-                          <p className="text-sm text-foreground/60">Weekly earnings</p>
+                          <p className="text-sm text-foreground/60">
+                            Weekly earnings
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-blue-600">$850.00</p>
-                        <p className="text-xs text-foreground/60">Jan 12, 2024</p>
+                        <p className="text-xs text-foreground/60">
+                          Jan 12, 2024
+                        </p>
                       </div>
                     </div>
 
@@ -3757,12 +3989,16 @@ export default function ProviderDashboard() {
                         </div>
                         <div>
                           <p className="font-medium">Service Fee</p>
-                          <p className="text-sm text-foreground/60">Platform commission (8%)</p>
+                          <p className="text-sm text-foreground/60">
+                            Platform commission (8%)
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-gray-600">-$9.60</p>
-                        <p className="text-xs text-foreground/60">Jan 15, 2024</p>
+                        <p className="text-xs text-foreground/60">
+                          Jan 15, 2024
+                        </p>
                       </div>
                     </div>
 
@@ -3773,18 +4009,25 @@ export default function ProviderDashboard() {
                         </div>
                         <div>
                           <p className="font-medium">Payment Received</p>
-                          <p className="text-sm text-foreground/60">Couples Massage - John & Lisa D.</p>
+                          <p className="text-sm text-foreground/60">
+                            Couples Massage - John & Lisa D.
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-green-600">+$240.00</p>
-                        <p className="text-xs text-foreground/60">Jan 14, 2024</p>
+                        <p className="text-xs text-foreground/60">
+                          Jan 14, 2024
+                        </p>
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-6 flex justify-center">
-                    <Button variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+                    <Button
+                      variant="outline"
+                      className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                    >
                       View All Transactions
                     </Button>
                   </div>
@@ -3832,7 +4075,8 @@ export default function ProviderDashboard() {
                       <Label>Minimum Payout Amount</Label>
                       <Input type="number" defaultValue="50" min="25" />
                       <p className="text-xs text-foreground/60">
-                        Minimum $25. Earnings below this amount will roll over to next payout.
+                        Minimum $25. Earnings below this amount will roll over
+                        to next payout.
                       </p>
                     </div>
                   </CardContent>
@@ -3849,7 +4093,9 @@ export default function ProviderDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium">Tax ID</p>
-                        <p className="text-sm text-foreground/60">***-**-1234</p>
+                        <p className="text-sm text-foreground/60">
+                          ***-**-1234
+                        </p>
                       </div>
                       <Button variant="outline" size="sm">
                         <Edit className="w-4 h-4 mr-2" />
@@ -3865,13 +4111,16 @@ export default function ProviderDashboard() {
                         </div>
                         <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
                           <span className="text-sm">2023 1099-NEC</span>
-                          <Button variant="outline" size="sm">Download</Button>
+                          <Button variant="outline" size="sm">
+                            Download
+                          </Button>
                         </div>
                       </div>
                     </div>
                     <div className="pt-2 border-t">
                       <p className="text-xs text-foreground/60">
-                        Tax documents are typically available by January 31st of the following year.
+                        Tax documents are typically available by January 31st of
+                        the following year.
                       </p>
                     </div>
                   </CardContent>
@@ -4251,7 +4500,8 @@ export default function ProviderDashboard() {
                       <div>
                         <Label>Primary Location</Label>
                         <p className="text-sm text-foreground/60">
-                          Make this the main business location (only one primary allowed)
+                          Make this the main business location (only one primary
+                          allowed)
                         </p>
                       </div>
                       <Switch
@@ -4336,8 +4586,6 @@ export default function ProviderDashboard() {
         </div>
       )}
 
-
-
       {/* Edit Service Modal */}
       {editingService && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -4368,9 +4616,15 @@ export default function ProviderDashboard() {
 
               {/* Service Info */}
               <div className="space-y-2">
-                <h3 className="font-semibold">{editingService.services?.name}</h3>
+                <h3 className="font-semibold">
+                  {editingService.services?.name}
+                </h3>
                 <p className="text-sm text-foreground/60">
-                  {editingService.services?.service_subcategories?.service_categories?.name} → {editingService.services?.service_subcategories?.name}
+                  {
+                    editingService.services?.service_subcategories
+                      ?.service_categories?.name
+                  }{" "}
+                  → {editingService.services?.service_subcategories?.name}
                 </p>
               </div>
 
@@ -4379,17 +4633,23 @@ export default function ProviderDashboard() {
                 <Label htmlFor="delivery_type">Delivery Type</Label>
                 <Select
                   value={serviceForm.delivery_type}
-                  onValueChange={(value) => handleServiceFormChange("delivery_type", value)}
+                  onValueChange={(value) =>
+                    handleServiceFormChange("delivery_type", value)
+                  }
                   disabled={serviceSaving}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select delivery type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="business_location">In-Studio/Business</SelectItem>
+                    <SelectItem value="business_location">
+                      In-Studio/Business
+                    </SelectItem>
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
-                    <SelectItem value="both_locations">In-Studio or Mobile</SelectItem>
+                    <SelectItem value="both_locations">
+                      In-Studio or Mobile
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -4403,8 +4663,10 @@ export default function ProviderDashboard() {
                   step="0.01"
                   min="0"
                   value={serviceForm.custom_price}
-                  onChange={(e) => handleServiceFormChange("custom_price", e.target.value)}
-                  placeholder={`Default: $${editingService.services?.min_price || '0'}`}
+                  onChange={(e) =>
+                    handleServiceFormChange("custom_price", e.target.value)
+                  }
+                  placeholder={`Default: $${editingService.services?.min_price || "0"}`}
                   disabled={serviceSaving}
                 />
                 <p className="text-xs text-foreground/60">
@@ -4422,7 +4684,9 @@ export default function ProviderDashboard() {
                 </div>
                 <Switch
                   checked={serviceForm.is_active}
-                  onCheckedChange={(checked) => handleServiceFormChange("is_active", checked)}
+                  onCheckedChange={(checked) =>
+                    handleServiceFormChange("is_active", checked)
+                  }
                   disabled={serviceSaving}
                   className="data-[state=checked]:bg-roam-blue"
                 />
@@ -4512,7 +4776,11 @@ export default function ProviderDashboard() {
                           <div className="flex flex-col">
                             <span className="font-medium">{service.name}</span>
                             <span className="text-xs text-foreground/60">
-                              {service.service_subcategories?.service_categories?.name} → {service.service_subcategories?.name}
+                              {
+                                service.service_subcategories
+                                  ?.service_categories?.name
+                              }{" "}
+                              → {service.service_subcategories?.name}
                             </span>
                           </div>
                         </SelectItem>
@@ -4521,50 +4789,71 @@ export default function ProviderDashboard() {
                   </Select>
                 ) : (
                   <div className="text-center py-4 text-foreground/60">
-                    <p className="text-sm">All available services have been added to your business</p>
+                    <p className="text-sm">
+                      All available services have been added to your business
+                    </p>
                   </div>
                 )}
               </div>
 
               {/* Service Details */}
-              {selectedServiceId && (() => {
-                const selectedService = availableServices.find(s => s.id === selectedServiceId);
-                return selectedService ? (
-                  <div className="p-4 bg-accent/20 rounded-lg">
-                    <h4 className="font-medium mb-2">{selectedService.name}</h4>
-                    {selectedService.description && (
-                      <p className="text-sm text-foreground/60 mb-2">{selectedService.description}</p>
-                    )}
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-foreground/60">Default Price:</span>
-                        <span className="font-medium ml-2">${selectedService.min_price || '0'}</span>
-                      </div>
-                      <div>
-                        <span className="text-foreground/60">Duration:</span>
-                        <span className="font-medium ml-2">{selectedService.duration_minutes || 'N/A'} mins</span>
+              {selectedServiceId &&
+                (() => {
+                  const selectedService = availableServices.find(
+                    (s) => s.id === selectedServiceId,
+                  );
+                  return selectedService ? (
+                    <div className="p-4 bg-accent/20 rounded-lg">
+                      <h4 className="font-medium mb-2">
+                        {selectedService.name}
+                      </h4>
+                      {selectedService.description && (
+                        <p className="text-sm text-foreground/60 mb-2">
+                          {selectedService.description}
+                        </p>
+                      )}
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-foreground/60">
+                            Default Price:
+                          </span>
+                          <span className="font-medium ml-2">
+                            ${selectedService.min_price || "0"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-foreground/60">Duration:</span>
+                          <span className="font-medium ml-2">
+                            {selectedService.duration_minutes || "N/A"} mins
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : null;
-              })()}
+                  ) : null;
+                })()}
 
               {/* Delivery Type */}
               <div className="space-y-2">
                 <Label htmlFor="add_delivery_type">Delivery Type</Label>
                 <Select
                   value={addServiceForm.delivery_type}
-                  onValueChange={(value) => handleAddServiceFormChange("delivery_type", value)}
+                  onValueChange={(value) =>
+                    handleAddServiceFormChange("delivery_type", value)
+                  }
                   disabled={serviceSaving}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select delivery type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="business_location">In-Studio/Business</SelectItem>
+                    <SelectItem value="business_location">
+                      In-Studio/Business
+                    </SelectItem>
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
-                    <SelectItem value="both_locations">In-Studio or Mobile</SelectItem>
+                    <SelectItem value="both_locations">
+                      In-Studio or Mobile
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -4578,8 +4867,14 @@ export default function ProviderDashboard() {
                   step="0.01"
                   min="0"
                   value={addServiceForm.custom_price}
-                  onChange={(e) => handleAddServiceFormChange("custom_price", e.target.value)}
-                  placeholder={selectedServiceId ? `Default: $${availableServices.find(s => s.id === selectedServiceId)?.min_price || '0'}` : "Enter custom price"}
+                  onChange={(e) =>
+                    handleAddServiceFormChange("custom_price", e.target.value)
+                  }
+                  placeholder={
+                    selectedServiceId
+                      ? `Default: $${availableServices.find((s) => s.id === selectedServiceId)?.min_price || "0"}`
+                      : "Enter custom price"
+                  }
                   disabled={serviceSaving}
                 />
                 <p className="text-xs text-foreground/60">
@@ -4597,7 +4892,9 @@ export default function ProviderDashboard() {
                 </div>
                 <Switch
                   checked={addServiceForm.is_active}
-                  onCheckedChange={(checked) => handleAddServiceFormChange("is_active", checked)}
+                  onCheckedChange={(checked) =>
+                    handleAddServiceFormChange("is_active", checked)
+                  }
                   disabled={serviceSaving}
                   className="data-[state=checked]:bg-roam-blue"
                 />
@@ -4607,7 +4904,11 @@ export default function ProviderDashboard() {
               <div className="flex gap-3 pt-4 border-t">
                 <Button
                   onClick={handleAddService}
-                  disabled={serviceSaving || !selectedServiceId || availableServices.length === 0}
+                  disabled={
+                    serviceSaving ||
+                    !selectedServiceId ||
+                    availableServices.length === 0
+                  }
                   className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
                 >
                   {serviceSaving ? (
