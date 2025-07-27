@@ -1023,8 +1023,16 @@ export default function ProviderDashboard() {
                     <CardTitle>Profile Photo</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center space-y-4">
-                    <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto">
-                      <Users className="w-16 h-16 text-white" />
+                    <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto overflow-hidden">
+                      {provider?.image_url ? (
+                        <img
+                          src={provider.image_url}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Users className="w-16 h-16 text-white" />
+                      )}
                     </div>
                     <Button
                       variant="outline"
@@ -1045,11 +1053,17 @@ export default function ProviderDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="firstName">First Name</Label>
-                        <Input id="firstName" defaultValue="Sarah" />
+                        <Input
+                          id="firstName"
+                          defaultValue={provider?.first_name || ""}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lastName">Last Name</Label>
-                        <Input id="lastName" defaultValue="Johnson" />
+                        <Input
+                          id="lastName"
+                          defaultValue={provider?.last_name || ""}
+                        />
                       </div>
                     </div>
 
@@ -1058,7 +1072,7 @@ export default function ProviderDashboard() {
                       <Input
                         id="email"
                         type="email"
-                        defaultValue="sarah.johnson@example.com"
+                        defaultValue={provider?.email || ""}
                       />
                     </div>
 
@@ -1067,7 +1081,7 @@ export default function ProviderDashboard() {
                       <Input
                         id="phone"
                         type="tel"
-                        defaultValue="(305) 555-0123"
+                        defaultValue={provider?.phone || ""}
                       />
                     </div>
 
@@ -1075,14 +1089,134 @@ export default function ProviderDashboard() {
                       <Label htmlFor="bio">Professional Bio</Label>
                       <Textarea
                         id="bio"
-                        defaultValue="Licensed massage therapist with 8+ years of experience specializing in deep tissue and therapeutic massage."
+                        defaultValue={provider?.bio || ""}
                         rows={4}
+                        placeholder="Tell customers about your professional background and expertise..."
                       />
                     </div>
 
                     <Button className="bg-roam-blue hover:bg-roam-blue/90">
                       Save Changes
                     </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Provider Statistics */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Professional Details</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                        <Input
+                          id="dateOfBirth"
+                          type="date"
+                          defaultValue={provider?.date_of_birth || ""}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="experienceYears">Years of Experience</Label>
+                        <Input
+                          id="experienceYears"
+                          type="number"
+                          defaultValue={provider?.experience_years || ""}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">
+                          Verification Status
+                        </span>
+                        <Badge className={
+                          provider?.verification_status === "verified"
+                            ? "bg-green-100 text-green-800"
+                            : provider?.verification_status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }>
+                          {provider?.verification_status || "Unknown"}
+                        </Badge>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-foreground/60">
+                          Background Check
+                        </span>
+                        <Badge className={
+                          provider?.background_check_status === "approved"
+                            ? "bg-green-100 text-green-800"
+                            : provider?.background_check_status === "under_review"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }>
+                          {provider?.background_check_status || "Unknown"}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Performance Statistics</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue">
+                          {provider?.total_bookings || 0}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Total Bookings
+                        </div>
+                      </div>
+
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue">
+                          {provider?.completed_bookings || 0}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Completed
+                        </div>
+                      </div>
+
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue">
+                          {provider?.average_rating || "0.0"}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Average Rating
+                        </div>
+                      </div>
+
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue">
+                          {provider?.total_reviews || 0}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Total Reviews
+                        </div>
+                      </div>
+                    </div>
+
+                    {provider?.provider_role && (
+                      <div className="mt-4 p-4 bg-roam-light-blue/10 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-foreground/60">
+                            Provider Role
+                          </span>
+                          <Badge className="bg-roam-blue/20 text-roam-blue capitalize">
+                            {provider.provider_role}
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
