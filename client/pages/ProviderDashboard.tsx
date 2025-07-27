@@ -77,6 +77,15 @@ export default function ProviderDashboard() {
   const [businessAddons, setBusinessAddons] = useState<any[]>([]);
   const [servicesLoading, setServicesLoading] = useState(false);
   const [servicesError, setServicesError] = useState("");
+  const [editingService, setEditingService] = useState<any>(null);
+  const [serviceForm, setServiceForm] = useState({
+    delivery_type: "business_location",
+    custom_price: "",
+    is_active: true,
+  });
+  const [serviceSaving, setServiceSaving] = useState(false);
+  const [serviceError, setServiceError] = useState("");
+  const [serviceSuccess, setServiceSuccess] = useState("");
 
   // Form state for contact information
   const [formData, setFormData] = useState({
@@ -716,6 +725,111 @@ export default function ProviderDashboard() {
     setBusinessDetailsForm(prev => ({ ...prev, [field]: value }));
     if (businessDetailsSuccess) setBusinessDetailsSuccess("");
     if (businessDetailsError) setBusinessDetailsError("");
+  };
+
+  const handleServiceFormChange = (field: string, value: any) => {
+    setServiceForm(prev => ({ ...prev, [field]: value }));
+    if (serviceSuccess) setServiceSuccess("");
+    if (serviceError) setServiceError("");
+  };
+
+  const handleEditService = (businessService: any) => {
+    setServiceForm({
+      delivery_type: businessService.delivery_type || "business_location",
+      custom_price: businessService.custom_price?.toString() || "",
+      is_active: businessService.is_active !== false,
+    });
+    setEditingService(businessService);
+    setServiceError("");
+    setServiceSuccess("");
+  };
+
+  const handleSaveService = async () => {
+    if (!editingService || !provider) return;
+
+    setServiceSaving(true);
+    setServiceError("");
+    setServiceSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const updateData = {
+        delivery_type: serviceForm.delivery_type,
+        custom_price: serviceForm.custom_price ? parseFloat(serviceForm.custom_price) : null,
+        is_active: serviceForm.is_active,
+      };
+
+      // Validate price if provided
+      if (serviceForm.custom_price && (isNaN(parseFloat(serviceForm.custom_price)) || parseFloat(serviceForm.custom_price) < 0)) {
+        throw new Error("Please enter a valid price (0 or greater)");
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update service: ${errorText}`);
+      }
+
+      // Update local state
+      setBusinessServices(prev =>
+        prev.map(service =>
+          service.id === editingService.id
+            ? { ...service, ...updateData }
+            : service
+        )
+      );
+
+      setServiceSuccess("Service updated successfully!");
+      setEditingService(null);
+    } catch (error: any) {
+      console.error("Service save error:", error);
+      let errorMessage = "Failed to update service";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      setServiceError(errorMessage);
+    } finally {
+      setServiceSaving(false);
+    }
+  };
+
+  const handleCancelServiceEdit = () => {
+    setEditingService(null);
+    setServiceForm({
+      delivery_type: "business_location",
+      custom_price: "",
+      is_active: true,
+    });
+    setServiceError("");
+    setServiceSuccess("");
+  };
+
+  const getDeliveryTypeLabel = (type: string) => {
+    const labels = {
+      business_location: "In-Studio/Business",
+      customer_location: "Mobile",
+      virtual: "Virtual",
+      both_locations: "In-Studio or Mobile",
+    };
+    return labels[type] || type;
   };
 
   const fetchBusinessServices = async () => {
@@ -1688,6 +1802,12 @@ export default function ProviderDashboard() {
                 </div>
               )}
 
+              {serviceSuccess && (
+                <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                  {serviceSuccess}
+                </div>
+              )}
+
               {servicesLoading ? (
                 <div className="text-center py-8">
                   <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -1714,8 +1834,9 @@ export default function ProviderDashboard() {
                             )}
                           </div>
                           <Switch
-                            checked={businessService.is_available}
+                            checked={businessService.is_active !== false}
                             className="data-[state=checked]:bg-roam-blue"
+                            disabled
                           />
                         </div>
 
@@ -1733,6 +1854,12 @@ export default function ProviderDashboard() {
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
+                            <span>Delivery:</span>
+                            <span className="font-medium">
+                              {getDeliveryTypeLabel(businessService.delivery_type || "business_location")}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
                             <span>Bookings:</span>
                             <span className="font-medium">
                               {businessService.booking_count || 0} this month
@@ -1744,6 +1871,7 @@ export default function ProviderDashboard() {
                           variant="outline"
                           size="sm"
                           className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                          onClick={() => handleEditService(businessService)}
                         >
                           <Edit className="w-4 h-4 mr-2" />
                           Edit Service
@@ -3464,6 +3592,126 @@ export default function ProviderDashboard() {
                     Cancel
                   </Button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Service Modal */}
+      {editingService && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6 border-b flex items-center justify-between">
+              <h2 className="text-xl font-bold">Edit Service</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCancelServiceEdit}
+              >
+                ×
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {serviceError && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                  {serviceError}
+                </div>
+              )}
+
+              {serviceSuccess && (
+                <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                  {serviceSuccess}
+                </div>
+              )}
+
+              {/* Service Info */}
+              <div className="space-y-2">
+                <h3 className="font-semibold">{editingService.services?.name}</h3>
+                <p className="text-sm text-foreground/60">
+                  {editingService.services?.service_subcategories?.service_categories?.name} → {editingService.services?.service_subcategories?.name}
+                </p>
+              </div>
+
+              {/* Delivery Type */}
+              <div className="space-y-2">
+                <Label htmlFor="delivery_type">Delivery Type</Label>
+                <select
+                  id="delivery_type"
+                  value={serviceForm.delivery_type}
+                  onChange={(e) => handleServiceFormChange("delivery_type", e.target.value)}
+                  disabled={serviceSaving}
+                  className="w-full p-2 border border-input rounded-md bg-background"
+                >
+                  <option value="business_location">In-Studio/Business</option>
+                  <option value="customer_location">Mobile</option>
+                  <option value="virtual">Virtual</option>
+                  <option value="both_locations">In-Studio or Mobile</option>
+                </select>
+              </div>
+
+              {/* Custom Price */}
+              <div className="space-y-2">
+                <Label htmlFor="custom_price">Business Price ($)</Label>
+                <Input
+                  id="custom_price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={serviceForm.custom_price}
+                  onChange={(e) => handleServiceFormChange("custom_price", e.target.value)}
+                  placeholder={`Default: $${editingService.services?.min_price || '0'}`}
+                  disabled={serviceSaving}
+                />
+                <p className="text-xs text-foreground/60">
+                  Leave empty to use default service price
+                </p>
+              </div>
+
+              {/* Is Active */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Service Active</Label>
+                  <p className="text-sm text-foreground/60">
+                    Allow bookings for this service
+                  </p>
+                </div>
+                <Switch
+                  checked={serviceForm.is_active}
+                  onCheckedChange={(checked) => handleServiceFormChange("is_active", checked)}
+                  disabled={serviceSaving}
+                  className="data-[state=checked]:bg-roam-blue"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4 border-t">
+                <Button
+                  onClick={handleSaveService}
+                  disabled={serviceSaving}
+                  className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                >
+                  {serviceSaving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Edit className="w-4 h-4 mr-2" />
+                      Update Service
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleCancelServiceEdit}
+                  disabled={serviceSaving}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
               </div>
             </div>
           </div>
