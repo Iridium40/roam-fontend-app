@@ -209,11 +209,13 @@ class DirectSupabaseAPI {
       },
     );
 
+    // Read response text once and use it for both success and error cases
     const responseText = await response.text();
 
     if (!response.ok) {
       throw new Error(`Database update failed: ${responseText}`);
     }
+    // Success case - responseText is empty due to Prefer: return=minimal
   }
 
   async updateBusinessProfile(
