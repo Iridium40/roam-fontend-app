@@ -774,34 +774,54 @@ export default function ProviderDashboard() {
                             Business Name
                           </span>
                           <span className="font-medium">
-                            ROAM Wellness Services
+                            {business?.business_name || "Loading..."}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Business Type
+                          </span>
+                          <span className="font-medium capitalize">
+                            {business?.business_type || "Loading..."}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-foreground/60">
                             Verification Status
                           </span>
-                          <Badge className="bg-green-100 text-green-800">
-                            Verified
+                          <Badge className={
+                            business?.verification_status === "verified"
+                              ? "bg-green-100 text-green-800"
+                              : business?.verification_status === "pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }>
+                            {business?.verification_status || "Unknown"}
                           </Badge>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-foreground/60">
                             Active Locations
                           </span>
-                          <span className="font-medium">3</span>
+                          <span className="font-medium">
+                            {businessMetrics.activeLocations}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-foreground/60">
                             Team Members
                           </span>
-                          <span className="font-medium">5</span>
+                          <span className="font-medium">
+                            {businessMetrics.teamMembers}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-foreground/60">
                             Services Offered
                           </span>
-                          <span className="font-medium">12</span>
+                          <span className="font-medium">
+                            {businessMetrics.servicesOffered}
+                          </span>
                         </div>
                       </div>
                     </CardContent>
