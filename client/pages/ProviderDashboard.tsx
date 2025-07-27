@@ -735,9 +735,10 @@ export default function ProviderDashboard() {
         }
       );
 
+      const responseText = await response.text();
+
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update business details: ${errorText}`);
+        throw new Error(`Failed to update business details: ${responseText}`);
       }
 
       // Update local business state
