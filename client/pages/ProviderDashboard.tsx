@@ -1328,29 +1328,47 @@ export default function ProviderDashboard() {
                     <CardTitle>Contact Information</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    {profileError && (
+                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                        {profileError}
+                      </div>
+                    )}
+
+                    {profileSuccess && (
+                      <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                        {profileSuccess}
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>
+                        <Label htmlFor="firstName">First Name *</Label>
                         <Input
                           id="firstName"
-                          defaultValue={provider?.first_name || ""}
+                          value={formData.firstName}
+                          onChange={(e) => handleFormChange("firstName", e.target.value)}
+                          disabled={profileSaving}
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>
+                        <Label htmlFor="lastName">Last Name *</Label>
                         <Input
                           id="lastName"
-                          defaultValue={provider?.last_name || ""}
+                          value={formData.lastName}
+                          onChange={(e) => handleFormChange("lastName", e.target.value)}
+                          disabled={profileSaving}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
+                      <Label htmlFor="email">Email Address *</Label>
                       <Input
                         id="email"
                         type="email"
-                        defaultValue={provider?.email || ""}
+                        value={formData.email}
+                        onChange={(e) => handleFormChange("email", e.target.value)}
+                        disabled={profileSaving}
                       />
                     </div>
 
@@ -1359,7 +1377,9 @@ export default function ProviderDashboard() {
                       <Input
                         id="phone"
                         type="tel"
-                        defaultValue={provider?.phone || ""}
+                        value={formData.phone}
+                        onChange={(e) => handleFormChange("phone", e.target.value)}
+                        disabled={profileSaving}
                       />
                     </div>
 
@@ -1367,14 +1387,27 @@ export default function ProviderDashboard() {
                       <Label htmlFor="bio">Professional Bio</Label>
                       <Textarea
                         id="bio"
-                        defaultValue={provider?.bio || ""}
+                        value={formData.bio}
+                        onChange={(e) => handleFormChange("bio", e.target.value)}
                         rows={4}
                         placeholder="Tell customers about your professional background and expertise..."
+                        disabled={profileSaving}
                       />
                     </div>
 
-                    <Button className="bg-roam-blue hover:bg-roam-blue/90">
-                      Save Changes
+                    <Button
+                      className="bg-roam-blue hover:bg-roam-blue/90"
+                      onClick={handleSaveProfile}
+                      disabled={profileSaving}
+                    >
+                      {profileSaving ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                          Saving...
+                        </>
+                      ) : (
+                        "Save Changes"
+                      )}
                     </Button>
                   </CardContent>
                 </Card>
