@@ -956,7 +956,6 @@ export default function ProviderDashboard() {
   };
 
   const handleBusinessDetailsFormChange = (field: string, value: any) => {
-    console.log(`Business form field change: ${field} = "${value}" (type: ${typeof value})`);
     setBusinessDetailsForm(prev => ({ ...prev, [field]: value }));
     if (businessDetailsSuccess) setBusinessDetailsSuccess("");
     if (businessDetailsError) setBusinessDetailsError("");
