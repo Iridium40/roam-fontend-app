@@ -52,6 +52,8 @@ export default function ProviderDashboard() {
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
   const navigate = useNavigate();
 
   const formatTimeAgo = (dateString: string) => {
