@@ -3765,7 +3765,7 @@ export default function ProviderDashboard() {
                       <div>
                         <Label>Primary Location</Label>
                         <p className="text-sm text-foreground/60">
-                          Make this the main business location
+                          Make this the main business location (only one primary allowed)
                         </p>
                       </div>
                       <Switch
