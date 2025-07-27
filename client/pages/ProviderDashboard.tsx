@@ -1791,7 +1791,7 @@ export default function ProviderDashboard() {
 
           {/* Main Content Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:inline-grid">
+            <TabsList className="grid w-full grid-cols-8 lg:w-auto lg:inline-grid">
               <TabsTrigger
                 value="bookings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
