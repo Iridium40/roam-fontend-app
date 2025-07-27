@@ -110,13 +110,75 @@ export default function ProviderPortal() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Validate passwords match
+      if (signupData.password !== signupData.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      if (!signupData.businessType) {
+        throw new Error("Please select a business type");
+      }
+
+      // Create auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: signupData.email,
+        password: signupData.password,
+      });
+
+      if (authError) {
+        throw new Error(authError.message);
+      }
+
+      if (!authData.user) {
+        throw new Error("Failed to create user account");
+      }
+
+      // Determine roles based on business type
+      let initialRoles: string[];
+      if (signupData.businessType === "independent") {
+        // Independent providers start as "provider" and get additional roles after verification
+        initialRoles = ["provider"];
+      } else {
+        // Small business, franchise, and other start as "owner"
+        initialRoles = ["owner"];
+      }
+
+      // Create provider record
+      const { error: providerError } = await supabase.from("providers").insert({
+        user_id: authData.user.id,
+        first_name: signupData.firstName,
+        last_name: signupData.lastName,
+        email: signupData.email,
+        phone: signupData.phone,
+        business_name: signupData.businessName,
+        business_type: signupData.businessType as any,
+        roles: initialRoles,
+        verification_status: "pending",
+        is_active: false, // Inactive until verified by admin
+      });
+
+      if (providerError) {
+        // Clean up auth user if provider creation fails
+        await supabase.auth.signOut();
+        throw new Error("Failed to create provider profile: " + providerError.message);
+      }
+
+      // Success - redirect to onboarding
+      navigate("/provider-onboarding", {
+        state: {
+          message: "Account created successfully! Please complete the verification process.",
+          businessType: signupData.businessType
+        }
+      });
+
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "An error occurred during signup");
+    } finally {
       setIsLoading(false);
-      // Redirect to onboarding flow
-      window.location.href = "/provider-onboarding";
-    }, 2000);
+    }
   };
 
   const benefits = [
