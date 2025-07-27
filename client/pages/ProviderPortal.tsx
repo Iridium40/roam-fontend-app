@@ -33,6 +33,33 @@ export default function ProviderPortal() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    checkIfAlreadyAuthenticated();
+  }, []);
+
+  const checkIfAlreadyAuthenticated = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        // Check if user has a provider account
+        const { data: providerData } = await supabase
+          .from('providers')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (providerData) {
+          // User is already authenticated as a provider, redirect to dashboard
+          navigate('/provider-dashboard');
+        }
+      }
+    } catch (error) {
+      // User is not authenticated, stay on login page
+      console.log('User not authenticated');
+    }
+  };
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
