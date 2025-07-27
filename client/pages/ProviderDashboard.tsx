@@ -2397,7 +2397,7 @@ export default function ProviderDashboard() {
                         <h3 className="text-lg font-semibold border-b pb-2">Contact Information</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="contact_email">Contact Email *</Label>
+                            <Label htmlFor="contact_email">Contact Email</Label>
                             <Input
                               id="contact_email"
                               type="email"
