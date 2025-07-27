@@ -432,6 +432,9 @@ export default function ProviderPortal() {
                   <CardTitle className="text-2xl">Provider Access</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-4">
+                    <SupabaseTest />
+                  </div>
                   <div className="mb-6">
                     <TestLogin />
                   </div>
