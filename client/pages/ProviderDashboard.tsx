@@ -49,6 +49,7 @@ export default function ProviderDashboard() {
     servicesOffered: 0,
   });
   const [businessHours, setBusinessHours] = useState<any>(null);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
