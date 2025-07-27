@@ -126,24 +126,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log("AuthContext signIn: Starting authentication...");
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      // Use direct API to bypass hanging Supabase client
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      if (error) {
-        console.error("AuthContext signIn: Auth error:", error);
-        throw error;
-      }
+      const authData = await directSupabaseAPI.signInWithPassword(email, password);
 
-      if (!data.user) {
+      if (!authData.user) {
         console.error("AuthContext signIn: No user returned");
         throw new Error("Authentication failed - no user returned");
       }
 
       console.log("AuthContext signIn: Auth successful, fetching profile...");
-      await fetchUserProfile(data.user.id);
-      console.log("AuthContext signIn: Profile fetch completed");
+
+      // Use direct API for provider lookup too
+      const provider = await directSupabaseAPI.getProviderByUserId(authData.user.id);
+
+      if (!provider) {
+        console.error("AuthContext signIn: No provider found");
+        await directSupabaseAPI.signOut();
+        throw new Error("Provider account not found or inactive");
+      }
+
+      console.log("AuthContext signIn: Provider found:", provider);
+
+      setUser({
+        id: authData.user.id,
+        email: provider.email,
+        provider_id: provider.id,
+        business_id: provider.business_id,
+        location_id: provider.location_id,
+        provider_role: provider.provider_role,
+        first_name: provider.first_name,
+        last_name: provider.last_name,
+      });
+
+      console.log("AuthContext signIn: User state updated successfully");
 
     } catch (error) {
       console.error("AuthContext signIn: Error:", error);
