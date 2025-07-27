@@ -94,12 +94,19 @@ class DirectSupabaseAPI {
       },
     );
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Provider lookup failed: ${error}`);
+      throw new Error(`Provider lookup failed: ${responseText}`);
     }
 
-    const providers: ProviderRecord[] = await response.json();
+    let providers: ProviderRecord[];
+    try {
+      providers = JSON.parse(responseText);
+    } catch (parseError) {
+      throw new Error(`Invalid response format: ${responseText}`);
+    }
+
     return providers.length > 0 ? providers[0] : null;
   }
 
