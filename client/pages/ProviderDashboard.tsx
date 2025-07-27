@@ -72,6 +72,17 @@ export default function ProviderDashboard() {
     dateOfBirth: "",
     experienceYears: "",
   });
+
+  // Business hours editing state
+  const [businessHoursForm, setBusinessHoursForm] = useState({
+    Monday: { isOpen: false, open: "09:00", close: "17:00" },
+    Tuesday: { isOpen: false, open: "09:00", close: "17:00" },
+    Wednesday: { isOpen: false, open: "09:00", close: "17:00" },
+    Thursday: { isOpen: false, open: "09:00", close: "17:00" },
+    Friday: { isOpen: false, open: "09:00", close: "17:00" },
+    Saturday: { isOpen: false, open: "09:00", close: "17:00" },
+    Sunday: { isOpen: false, open: "09:00", close: "17:00" },
+  });
   const navigate = useNavigate();
 
   const formatTimeAgo = (dateString: string) => {
