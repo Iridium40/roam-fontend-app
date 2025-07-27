@@ -678,6 +678,92 @@ export default function ProviderDashboard() {
     setLocationsSuccess("");
   };
 
+  const handleBusinessDetailsFormChange = (field: string, value: string) => {
+    setBusinessDetailsForm(prev => ({ ...prev, [field]: value }));
+    if (businessDetailsSuccess) setBusinessDetailsSuccess("");
+    if (businessDetailsError) setBusinessDetailsError("");
+  };
+
+  const handleSaveBusinessDetails = async () => {
+    if (!business) return;
+
+    setBusinessDetailsSaving(true);
+    setBusinessDetailsError("");
+    setBusinessDetailsSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const updateData = {
+        business_name: businessDetailsForm.business_name.trim(),
+        business_type: businessDetailsForm.business_type.trim(),
+        business_description: businessDetailsForm.business_description.trim(),
+        business_phone: businessDetailsForm.business_phone.trim(),
+        business_email: businessDetailsForm.business_email.trim(),
+        website_url: businessDetailsForm.website_url.trim(),
+        tax_id: businessDetailsForm.tax_id.trim(),
+        license_number: businessDetailsForm.license_number.trim(),
+        insurance_policy_number: businessDetailsForm.insurance_policy_number.trim(),
+        years_in_business: businessDetailsForm.years_in_business ? parseInt(businessDetailsForm.years_in_business) : null,
+      };
+
+      // Validate required fields
+      if (!updateData.business_name) {
+        throw new Error("Business name is required");
+      }
+
+      // Email validation
+      if (updateData.business_email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(updateData.business_email)) {
+          throw new Error("Please enter a valid business email address");
+        }
+      }
+
+      // Update business using direct API
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_profiles?id=eq.${business.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update business details: ${errorText}`);
+      }
+
+      // Update local business state
+      setBusiness({
+        ...business,
+        ...updateData,
+      });
+
+      setBusinessDetailsSuccess("Business details updated successfully!");
+
+    } catch (error: any) {
+      console.error("Business details save error:", error);
+      let errorMessage = "Failed to update business details";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      setBusinessDetailsError(errorMessage);
+    } finally {
+      setBusinessDetailsSaving(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchDashboardData();
