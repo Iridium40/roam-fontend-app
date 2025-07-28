@@ -2870,6 +2870,12 @@ export default function ProviderDashboard() {
     if (user) {
       fetchDashboardData();
       loadServiceCategoriesAndSubcategories();
+
+      // Load providers and all bookings for owners/dispatchers
+      if (isOwner || isDispatcher) {
+        loadAllProviders();
+        loadAllBookings();
+      }
     }
   }, [user]);
 
