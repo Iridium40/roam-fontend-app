@@ -2547,10 +2547,10 @@ export default function ProviderDashboard() {
             if (servicesError) {
               console.error(
                 "fetchDashboardData: Error fetching business services:",
-                servicesError,
+                JSON.stringify(servicesError, null, 2),
               );
               setServicesError(
-                `Failed to load services: ${servicesError.message}`,
+                `Failed to load services: ${servicesError.message || servicesError.details || JSON.stringify(servicesError)}`,
               );
               setBusinessServices([]);
             } else {
