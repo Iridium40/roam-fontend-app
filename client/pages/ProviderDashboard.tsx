@@ -2316,6 +2316,32 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Helper functions to filter bookings by date
+  const filterBookingsByDate = (bookings: any[], filterType: 'today' | 'future' | 'past') => {
+    const today = new Date();
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+
+    return bookings.filter(booking => {
+      const bookingDate = new Date(booking.booking_date);
+
+      switch (filterType) {
+        case 'today':
+          return bookingDate >= startOfToday && bookingDate <= endOfToday;
+        case 'future':
+          return bookingDate > endOfToday;
+        case 'past':
+          return bookingDate < startOfToday;
+        default:
+          return true;
+      }
+    });
+  };
+
+  const getFilteredBookings = () => {
+    return filterBookingsByDate(bookings, activeBookingTab as 'today' | 'future' | 'past');
+  };
+
   const loadServiceCategoriesAndSubcategories = async () => {
     setCategoriesLoading(true);
     try {
