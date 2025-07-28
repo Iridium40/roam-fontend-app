@@ -332,25 +332,7 @@ export default function ProviderDocumentVerification() {
   };
 
   const handleSubmit = async () => {
-    if (!allRequiredDocumentsUploaded()) {
-      alert("Please upload all required documents before proceeding.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Simulate document upload process
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Navigate to provider onboarding for additional setup
-      navigate("/provider-onboarding");
-    } catch (error) {
-      console.error("Error submitting documents:", error);
-      alert("Error uploading documents. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    await handleSubmitDocuments();
   };
 
   const documentRequirements = [
