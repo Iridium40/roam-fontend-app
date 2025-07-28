@@ -2175,7 +2175,15 @@ export default function ProviderDashboard() {
             `
           *,
           providers!inner(first_name, last_name),
-          services(name, description)
+          services(name, description),
+          customer_profiles!inner(
+            id,
+            first_name,
+            last_name,
+            phone,
+            email,
+            image_url
+          )
         `,
           )
           .eq("provider_id", providerData.id)
