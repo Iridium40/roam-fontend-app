@@ -2201,11 +2201,11 @@ export default function ProviderDashboard() {
           : null,
         logo_url: businessDetailsForm.logo_url?.trim() || null,
         is_active: businessDetailsForm.is_active,
-        service_categories: businessDetailsForm.service_categories && businessDetailsForm.service_categories.length > 0
-          ? businessDetailsForm.service_categories
+        service_categories: Array.isArray(businessDetailsForm.service_categories) && businessDetailsForm.service_categories.length > 0
+          ? businessDetailsForm.service_categories.filter(cat => typeof cat === 'string' && cat.trim().length > 0)
           : null,
-        service_subcategories: businessDetailsForm.service_subcategories && businessDetailsForm.service_subcategories.length > 0
-          ? businessDetailsForm.service_subcategories
+        service_subcategories: Array.isArray(businessDetailsForm.service_subcategories) && businessDetailsForm.service_subcategories.length > 0
+          ? businessDetailsForm.service_subcategories.filter(sub => typeof sub === 'string' && sub.trim().length > 0)
           : null,
       };
 
