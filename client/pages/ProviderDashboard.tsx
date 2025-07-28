@@ -63,7 +63,7 @@ const SERVICE_SUBCATEGORIES = [
   { value: "iv_therapy", label: "IV Therapy" },
   { value: "physical_therapy", label: "Physical Therapy" },
   { value: "nurse_practitioner", label: "Nurse Practitioner" },
-  { value: "physician", label: "Physician" },
+  { value: "phycisian", label: "Physician" },
   { value: "chiropractor", label: "Chiropractor" },
   { value: "yoga_instructor", label: "Yoga Instructor" },
   { value: "pilates_instructor", label: "Pilates Instructor" },
