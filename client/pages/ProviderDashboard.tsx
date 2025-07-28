@@ -2203,10 +2203,10 @@ export default function ProviderDashboard() {
         is_active: businessDetailsForm.is_active,
         service_categories: Array.isArray(businessDetailsForm.service_categories) && businessDetailsForm.service_categories.length > 0
           ? businessDetailsForm.service_categories.filter(cat => typeof cat === 'string' && cat.trim().length > 0)
-          : null,
+          : [],
         service_subcategories: Array.isArray(businessDetailsForm.service_subcategories) && businessDetailsForm.service_subcategories.length > 0
           ? businessDetailsForm.service_subcategories.filter(sub => typeof sub === 'string' && sub.trim().length > 0)
-          : null,
+          : [],
       };
 
       // Validate enum values against expected database enums
