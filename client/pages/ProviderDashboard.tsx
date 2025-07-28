@@ -2350,7 +2350,7 @@ export default function ProviderDashboard() {
   };
 
   const getFilteredBookings = () => {
-    return filterBookingsByDate(bookings, activeBookingTab as 'today' | 'future' | 'past');
+    return filterBookingsByDate(bookings, activeBookingTab as 'present' | 'future' | 'past');
   };
 
   const loadServiceCategoriesAndSubcategories = async () => {
