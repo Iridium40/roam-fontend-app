@@ -47,28 +47,25 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
-// Service category and subcategory options
-const SERVICE_CATEGORIES = [
-  { value: "beauty", label: "Beauty" },
-  { value: "fitness", label: "Fitness" },
-  { value: "therapy", label: "Therapy" },
-  { value: "healthcare", label: "Healthcare" },
-];
+// Service category and subcategory types for database integration
+interface ServiceCategory {
+  id: string;
+  service_category_type: string;
+  description: string;
+  is_active: boolean;
+  image_url?: string;
+  sort_order?: number;
+}
 
-const SERVICE_SUBCATEGORIES = [
-  { value: "hair_and_makup", label: "Hair & Makeup", categories: ["beauty"] },
-  { value: "spray_tan", label: "Spray Tan", categories: ["beauty"] },
-  { value: "esthetician", label: "Esthetician", categories: ["beauty"] },
-  { value: "massage_therapy", label: "Massage Therapy", categories: ["therapy", "healthcare"] },
-  { value: "iv_therapy", label: "IV Therapy", categories: ["healthcare"] },
-  { value: "physical_therapy", label: "Physical Therapy", categories: ["therapy", "healthcare"] },
-  { value: "nurse_practitioner", label: "Nurse Practitioner", categories: ["healthcare"] },
-  { value: "phycisian", label: "Physician", categories: ["healthcare"] },
-  { value: "chiropractor", label: "Chiropractor", categories: ["therapy", "healthcare"] },
-  { value: "yoga_instructor", label: "Yoga Instructor", categories: ["fitness"] },
-  { value: "pilates_instructor", label: "Pilates Instructor", categories: ["fitness"] },
-  { value: "personal_trainer", label: "Personal Trainer", categories: ["fitness"] },
-];
+interface ServiceSubcategory {
+  id: string;
+  category_id: string;
+  service_subcategory_type: string;
+  description: string;
+  is_active: boolean;
+  image_url?: string;
+  category?: ServiceCategory;
+}
 
 export default function ProviderDashboard() {
   const { user, signOut, isOwner, isDispatcher, isProvider } = useAuth();
