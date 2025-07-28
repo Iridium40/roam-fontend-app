@@ -108,6 +108,9 @@ export default function ProviderDashboard() {
   const [businessAddons, setBusinessAddons] = useState<any[]>([]);
   const [servicesLoading, setServicesLoading] = useState(false);
   const [servicesError, setServicesError] = useState("");
+  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([]);
+  const [serviceSubcategories, setServiceSubcategories] = useState<ServiceSubcategory[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
