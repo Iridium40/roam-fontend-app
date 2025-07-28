@@ -5852,7 +5852,7 @@ export default function ProviderDashboard() {
                                   {statusConfig.label}
                                 </Badge>
                                 <p className="text-lg font-semibold text-roam-blue mt-2">
-                                  ${booking.total_price || "0"}
+                                  ${booking.total_amount || "0"}
                                 </p>
                               </div>
                             </div>
