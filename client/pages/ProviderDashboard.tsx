@@ -1147,6 +1147,102 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Manage Provider functionality
+  const handleManageProvider = (teamProvider) => {
+    setManagingProvider(teamProvider);
+    setProviderManagementForm({
+      is_active: teamProvider.is_active !== false,
+      provider_role: teamProvider.provider_role || "provider",
+      business_managed: teamProvider.business_managed !== false,
+      location_id: teamProvider.location_id || "",
+      verification_status: teamProvider.verification_status || "pending",
+    });
+    setManageProviderModal(true);
+    setManageProviderError("");
+    setManageProviderSuccess("");
+  };
+
+  const handleProviderManagementFormChange = (field, value) => {
+    setProviderManagementForm((prev) => ({ ...prev, [field]: value }));
+    if (manageProviderSuccess) setManageProviderSuccess("");
+    if (manageProviderError) setManageProviderError("");
+  };
+
+  const handleSaveProviderManagement = async () => {
+    if (!managingProvider) return;
+
+    setManageProviderLoading(true);
+    setManageProviderError("");
+    setManageProviderSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const updateData = {
+        is_active: providerManagementForm.is_active,
+        provider_role: providerManagementForm.provider_role,
+        business_managed: providerManagementForm.business_managed,
+        location_id: providerManagementForm.location_id || null,
+        verification_status: providerManagementForm.verification_status,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update provider: ${errorText}`);
+      }
+
+      setManageProviderSuccess("Provider settings updated successfully!");
+
+      toast({
+        title: "Provider Updated",
+        description: `${managingProvider.first_name} ${managingProvider.last_name}'s settings have been updated.`,
+        variant: "default",
+      });
+
+      // Refresh the provider list to show updated data
+      await fetchTeamProviders();
+    } catch (error: any) {
+      console.error("Provider management save error:", error);
+      let errorMessage = "Failed to update provider settings";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      setManageProviderError(errorMessage);
+      toast({
+        title: "Update Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setManageProviderLoading(false);
+    }
+  };
+
+  const handleCloseManageProvider = () => {
+    setManageProviderModal(false);
+    setManagingProvider(null);
+    setManageProviderError("");
+    setManageProviderSuccess("");
+  };
+
   // Calendar functionality
   const fetchCalendarBookings = async () => {
     if (!provider) {
@@ -4135,7 +4231,11 @@ export default function ProviderDashboard() {
                               >
                                 {teamProvider.business_managed ? "Business Managed" : "Self Managed"}
                               </Badge>
-                              <Button variant="outline" size="sm">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleManageProvider(teamProvider)}
+                              >
                                 <Settings className="w-4 h-4 mr-2" />
                                 Manage
                               </Button>
