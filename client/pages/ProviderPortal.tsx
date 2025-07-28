@@ -174,7 +174,6 @@ export default function ProviderPortal() {
           contact_email: data.contact_email || data.owner_email,
           phone: data.phone || data.owner_phone,
           website_url: data.website_url,
-          years_in_business: data.years_in_business,
           verification_status: "pending",
           is_active: false,
           setup_step: 1,
