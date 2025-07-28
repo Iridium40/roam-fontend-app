@@ -5821,7 +5821,7 @@ export default function ProviderDashboard() {
                                     )}
                                   </div>
                                   <p className="text-sm text-foreground/60 mb-2">
-                                    Customer: {booking.customer_name || "Unknown"}
+                                    Customer: {booking.guest_name || "Unknown"}
                                   </p>
                                   <div className="flex items-center gap-4 text-sm text-foreground/60">
                                     <div className="flex items-center gap-1">
