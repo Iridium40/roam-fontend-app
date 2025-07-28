@@ -94,13 +94,64 @@ export default function ProviderDocumentVerification() {
     }
   };
 
+  // Upload file to Supabase storage
+  const uploadToStorage = async (file: File, folderPath: string): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `${folderPath}/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('roam-provider-documents')
+      .upload(filePath, file);
+
+    if (error) {
+      throw error;
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('roam-provider-documents')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
+  // Save document record to database
+  const saveDocumentRecord = async (
+    documentType: string,
+    documentName: string,
+    fileUrl: string,
+    fileSizeBytes: number,
+    expiryDate?: string
+  ) => {
+    const { error } = await supabase
+      .from('provider_documents')
+      .insert({
+        provider_id: providerId,
+        document_type: documentType,
+        document_name: documentName,
+        file_url: fileUrl,
+        file_size_bytes: fileSizeBytes,
+        verification_status: 'pending',
+        expiry_date: expiryDate || null,
+      });
+
+    if (error) {
+      throw error;
+    }
+  };
+
   const handleFileUpload = (
     documentType: keyof Omit<DocumentState, "licenses">,
     file: File,
   ) => {
     if (file.size > 10 * 1024 * 1024) {
       // 10MB limit
-      alert("File size must be less than 10MB");
+      toast({
+        title: "File too large",
+        description: "File size must be less than 10MB",
+        variant: "destructive",
+      });
       return;
     }
 
