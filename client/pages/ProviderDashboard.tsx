@@ -167,6 +167,20 @@ export default function ProviderDashboard() {
     inherit_business_addons: true,
   });
 
+  // Manage Provider Modal state
+  const [manageProviderModal, setManageProviderModal] = useState(false);
+  const [managingProvider, setManagingProvider] = useState(null);
+  const [manageProviderLoading, setManageProviderLoading] = useState(false);
+  const [manageProviderError, setManageProviderError] = useState("");
+  const [manageProviderSuccess, setManageProviderSuccess] = useState("");
+  const [providerManagementForm, setProviderManagementForm] = useState({
+    is_active: true,
+    provider_role: "provider",
+    business_managed: true,
+    location_id: "",
+    verification_status: "pending",
+  });
+
   // Form state for contact information
   const [formData, setFormData] = useState({
     firstName: "",
