@@ -1154,7 +1154,7 @@ export default function ProviderDashboard() {
       is_active: teamProvider.is_active !== false,
       provider_role: teamProvider.provider_role || "provider",
       business_managed: teamProvider.business_managed !== false,
-      location_id: teamProvider.location_id || "",
+      location_id: teamProvider.location_id || "none",
       verification_status: teamProvider.verification_status || "pending",
     });
     setManageProviderModal(true);
