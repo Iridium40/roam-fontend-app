@@ -3677,6 +3677,8 @@ export default function ProviderDashboard() {
                   <CalendarGrid
                     bookings={bookings}
                     viewType={calendarViewType}
+                    currentDate={calendarDate}
+                    onDateChange={setCalendarDate}
                   />
                 </div>
               )}
