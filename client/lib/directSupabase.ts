@@ -257,7 +257,13 @@ class DirectSupabaseAPI {
     }
 
     if (!response.ok) {
-      throw new Error(`Failed to update business profile: ${responseText}`);
+      console.error("Business profile update failed:", {
+        status: response.status,
+        statusText: response.statusText,
+        responseText: responseText,
+        updateData: updateData
+      });
+      throw new Error(`Failed to update business profile: ${responseText || `HTTP ${response.status} - ${response.statusText}`}`);
     }
     // Success case - responseText is empty due to Prefer: return=minimal
   }
