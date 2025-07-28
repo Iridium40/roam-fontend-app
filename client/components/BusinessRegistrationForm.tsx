@@ -59,7 +59,6 @@ export const BusinessRegistrationForm: React.FC<
     contact_email: "",
     phone: "",
     website_url: "",
-    years_in_business: 0,
 
     // Owner/Primary Contact
     owner_first_name: "",
