@@ -3608,23 +3608,23 @@ export default function ProviderDashboard() {
                             <Label className="text-base font-medium">Business Service Categories</Label>
                             <p className="text-sm text-foreground/60">Select the main categories of services your business offers</p>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                              {SERVICE_CATEGORIES.map((category) => (
-                                <div key={category.value} className="flex items-center space-x-2">
+                              {serviceCategories.map((category) => (
+                                <div key={category.id} className="flex items-center space-x-2">
                                   <input
                                     type="checkbox"
-                                    id={`category-${category.value}`}
-                                    checked={businessDetailsForm.service_categories.includes(category.value)}
+                                    id={`category-${category.service_category_type}`}
+                                    checked={businessDetailsForm.service_categories.includes(category.service_category_type)}
                                     onChange={(e) => {
                                       const updatedCategories = e.target.checked
-                                        ? [...businessDetailsForm.service_categories, category.value]
-                                        : businessDetailsForm.service_categories.filter(c => c !== category.value);
+                                        ? [...businessDetailsForm.service_categories, category.service_category_type]
+                                        : businessDetailsForm.service_categories.filter(c => c !== category.service_category_type);
 
                                       // If unchecking a category, remove all related subcategories
                                       let updatedSubcategories = businessDetailsForm.service_subcategories;
                                       if (!e.target.checked) {
-                                        const subcategoriesToRemove = SERVICE_SUBCATEGORIES
-                                          .filter(sub => sub.categories.includes(category.value))
-                                          .map(sub => sub.value);
+                                        const subcategoriesToRemove = serviceSubcategories
+                                          .filter(sub => sub.category_id === category.id)
+                                          .map(sub => sub.service_subcategory_type);
                                         updatedSubcategories = businessDetailsForm.service_subcategories
                                           .filter(sub => !subcategoriesToRemove.includes(sub));
                                         handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
@@ -3632,11 +3632,11 @@ export default function ProviderDashboard() {
 
                                       handleBusinessDetailsFormChange("service_categories", updatedCategories);
                                     }}
-                                    disabled={businessDetailsSaving}
+                                    disabled={businessDetailsSaving || categoriesLoading}
                                     className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
                                   />
-                                  <Label htmlFor={`category-${category.value}`} className="text-sm font-normal cursor-pointer">
-                                    {category.label}
+                                  <Label htmlFor={`category-${category.service_category_type}`} className="text-sm font-normal cursor-pointer">
+                                    {category.description || category.service_category_type}
                                   </Label>
                                 </div>
                               ))}
