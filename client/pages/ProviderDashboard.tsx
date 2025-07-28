@@ -3656,29 +3656,31 @@ export default function ProviderDashboard() {
                                 <p className="text-sm text-gray-500 italic">Please select service categories first to see available specializations</p>
                               ) : (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                  {SERVICE_SUBCATEGORIES
-                                    .filter(subcategory =>
-                                      subcategory.categories.some(cat =>
-                                        businessDetailsForm.service_categories.includes(cat)
-                                      )
-                                    )
+                                  {serviceSubcategories
+                                    .filter(subcategory => {
+                                      // Find the selected categories and check if this subcategory belongs to any of them
+                                      const selectedCategoryIds = serviceCategories
+                                        .filter(cat => businessDetailsForm.service_categories.includes(cat.service_category_type))
+                                        .map(cat => cat.id);
+                                      return selectedCategoryIds.includes(subcategory.category_id);
+                                    })
                                     .map((subcategory) => (
-                                      <div key={subcategory.value} className="flex items-center space-x-2">
+                                      <div key={subcategory.id} className="flex items-center space-x-2">
                                         <input
                                           type="checkbox"
-                                          id={`subcategory-${subcategory.value}`}
-                                          checked={businessDetailsForm.service_subcategories.includes(subcategory.value)}
+                                          id={`subcategory-${subcategory.service_subcategory_type}`}
+                                          checked={businessDetailsForm.service_subcategories.includes(subcategory.service_subcategory_type)}
                                           onChange={(e) => {
                                             const updatedSubcategories = e.target.checked
-                                              ? [...businessDetailsForm.service_subcategories, subcategory.value]
-                                              : businessDetailsForm.service_subcategories.filter(s => s !== subcategory.value);
+                                              ? [...businessDetailsForm.service_subcategories, subcategory.service_subcategory_type]
+                                              : businessDetailsForm.service_subcategories.filter(s => s !== subcategory.service_subcategory_type);
                                             handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
                                           }}
-                                          disabled={businessDetailsSaving}
+                                          disabled={businessDetailsSaving || categoriesLoading}
                                           className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
                                         />
-                                        <Label htmlFor={`subcategory-${subcategory.value}`} className="text-sm font-normal cursor-pointer">
-                                          {subcategory.label}
+                                        <Label htmlFor={`subcategory-${subcategory.service_subcategory_type}`} className="text-sm font-normal cursor-pointer">
+                                          {subcategory.description || subcategory.service_subcategory_type}
                                         </Label>
                                       </div>
                                     ))
