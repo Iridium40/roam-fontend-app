@@ -953,6 +953,7 @@ export default function ProviderDashboard() {
         experience_years: providerForm.experience_years ? parseInt(providerForm.experience_years) : null,
         location_id: providerForm.location_id || null,
         provider_role: providerForm.provider_role,
+        business_managed: managementSettings.business_managed,
         is_active: true,
         verification_status: "pending",
       };
