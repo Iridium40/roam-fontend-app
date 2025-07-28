@@ -1211,6 +1211,10 @@ export default function ProviderDashboard() {
         verification_status: providerManagementForm.verification_status,
       };
 
+      // Debug logging
+      console.log("Updating provider with data:", JSON.stringify(updateData, null, 2));
+      console.log("Provider ID:", managingProvider.id);
+
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`,
         {
