@@ -2191,10 +2191,12 @@ export default function ProviderDashboard() {
           .trim();
         updateData.contact_email = cleanEmail;
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // More comprehensive email validation
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         if (!emailRegex.test(cleanEmail)) {
-          throw new Error(`Please enter a valid contact email address`);
+          console.error("Email validation failed for:", cleanEmail);
+          throw new Error(`Please enter a valid contact email address: "${cleanEmail}"`);
         }
       } else {
         // If email is empty, set it to null to avoid database issues
