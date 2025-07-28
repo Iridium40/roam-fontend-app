@@ -1010,22 +1010,27 @@ export default function ProviderDashboard() {
 
     setCalendarLoading(true);
     try {
-      let bookingsQuery = supabase
-        .from("bookings")
-        .select(`
-          *,
-          providers!inner(first_name, last_name),
-          services(name, description)
-        `)
-        .order("service_date", { ascending: true });
+      let bookingsData = [];
+      let bookingsError = null;
 
-      // For regular providers, only show their own bookings
+      // For regular providers, only show their own bookings (matching main dashboard pattern)
       if (isProvider && !isOwner && !isDispatcher) {
         console.log("fetchCalendarBookings: Filtering for provider only, provider_id:", provider.id);
-        bookingsQuery = bookingsQuery.eq("provider_id", provider.id);
+        const result = await supabase
+          .from("bookings")
+          .select(`
+            *,
+            providers!inner(first_name, last_name),
+            services(name, description)
+          `)
+          .eq("provider_id", provider.id)
+          .order("service_date", { ascending: true });
+
+        bookingsData = result.data;
+        bookingsError = result.error;
       } else {
         console.log("fetchCalendarBookings: Fetching business bookings for business_id:", provider.business_id);
-        // For owners/dispatchers, show all business bookings
+        // For owners/dispatchers, show all business bookings (matching main dashboard pattern)
         const { data: businessProviders, error: providersError } = await supabase
           .from("providers")
           .select("id")
@@ -1033,26 +1038,39 @@ export default function ProviderDashboard() {
 
         console.log("fetchCalendarBookings: Business providers query result:", { businessProviders, providersError });
 
-        if (providersError) throw providersError;
+        if (providersError) {
+          throw providersError;
+        }
 
         if (businessProviders && businessProviders.length > 0) {
           const providerIds = businessProviders.map((p) => p.id);
           console.log("fetchCalendarBookings: Filtering by provider IDs:", providerIds);
-          bookingsQuery = bookingsQuery.in("provider_id", providerIds);
+
+          const result = await supabase
+            .from("bookings")
+            .select(`
+              *,
+              providers!inner(first_name, last_name),
+              services(name, description)
+            `)
+            .in("provider_id", providerIds)
+            .order("service_date", { ascending: true });
+
+          bookingsData = result.data;
+          bookingsError = result.error;
         } else {
           console.log("fetchCalendarBookings: No business providers found");
+          bookingsData = [];
+          bookingsError = null;
         }
       }
 
-      console.log("fetchCalendarBookings: Executing final query");
-      const { data, error } = await bookingsQuery;
+      console.log("fetchCalendarBookings: Final result:", { bookingsData, bookingsError });
 
-      console.log("fetchCalendarBookings: Query result:", { data, error });
+      if (bookingsError) throw bookingsError;
 
-      if (error) throw error;
-
-      console.log("fetchCalendarBookings: Successfully fetched", (data || []).length, "bookings");
-      setCalendarBookings(data || []);
+      console.log("fetchCalendarBookings: Successfully fetched", (bookingsData || []).length, "bookings");
+      setCalendarBookings(bookingsData || []);
     } catch (error: any) {
       console.error("Error fetching calendar bookings:", error);
 
