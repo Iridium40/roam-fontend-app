@@ -162,7 +162,7 @@ export default function ProviderDashboard() {
 
   // Step 3: Business management settings
   const [managementSettings, setManagementSettings] = useState({
-    managed_by_business: true,
+    business_managed: true,
     inherit_business_services: true,
     inherit_business_addons: true,
   });
