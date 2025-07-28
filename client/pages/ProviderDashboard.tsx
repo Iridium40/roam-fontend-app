@@ -1526,6 +1526,33 @@ export default function ProviderDashboard() {
     return labels[type] || type;
   };
 
+  const formatBookingLocation = (booking: any) => {
+    if (booking.delivery_type === 'virtual') {
+      return 'Virtual Session';
+    } else if (booking.delivery_type === 'customer_location' && booking.customer_locations) {
+      const loc = booking.customer_locations;
+      const address = `${loc.street_address}${loc.unit_number ? ` ${loc.unit_number}` : ''}, ${loc.city}, ${loc.state} ${loc.zip_code}`;
+      return {
+        name: loc.location_name || 'Customer Location',
+        address: address,
+        instructions: loc.access_instructions
+      };
+    } else if (booking.delivery_type === 'business_location' && booking.business_locations) {
+      const loc = booking.business_locations;
+      const address = `${loc.address_line1}${loc.address_line2 ? ` ${loc.address_line2}` : ''}, ${loc.city}, ${loc.state} ${loc.postal_code}`;
+      return {
+        name: loc.location_name || 'Business Location',
+        address: address,
+        instructions: null
+      };
+    } else {
+      // Fallback for when location data is not available
+      return booking.delivery_type === 'customer_location' ? 'Customer Location' :
+             booking.delivery_type === 'business_location' ? 'Business Location' :
+             'Location TBD';
+    }
+  };
+
   const fetchAvailableServices = async () => {
     if (!provider) return;
 
