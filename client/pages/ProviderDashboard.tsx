@@ -5671,6 +5671,182 @@ export default function ProviderDashboard() {
         </div>
       )}
 
+      {/* Calendar Modal */}
+      <Dialog open={showCalendar} onOpenChange={setShowCalendar}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-roam-blue" />
+              {isProvider && !isOwner && !isDispatcher ? "My Calendar" : "Business Calendar"}
+            </DialogTitle>
+          </DialogHeader>
+
+          {calendarLoading ? (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p>Loading calendar...</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Calendar Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-roam-blue">
+                        {calendarBookings.length}
+                      </div>
+                      <div className="text-sm text-foreground/60">Total Bookings</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        {calendarBookings.filter(b => b.status === 'confirmed').length}
+                      </div>
+                      <div className="text-sm text-foreground/60">Confirmed</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-yellow-600">
+                        {calendarBookings.filter(b => b.status === 'pending').length}
+                      </div>
+                      <div className="text-sm text-foreground/60">Pending</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {calendarBookings.filter(b => b.status === 'completed').length}
+                      </div>
+                      <div className="text-sm text-foreground/60">Completed</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Bookings List */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Upcoming & Recent Bookings</h3>
+                {calendarBookings.length > 0 ? (
+                  <div className="space-y-3">
+                    {calendarBookings.map((booking) => {
+                      const statusConfig = getStatusBadge(booking.status);
+                      const DeliveryIcon = getDeliveryIcon(booking.delivery_type || "mobile");
+                      const bookingDate = new Date(booking.service_date);
+                      const isUpcoming = bookingDate >= new Date();
+
+                      return (
+                        <Card
+                          key={booking.id}
+                          className={`hover:shadow-md transition-shadow ${
+                            isUpcoming ? 'border-l-4 border-l-roam-blue' : ''
+                          }`}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-start gap-4">
+                                <div className={`w-3 h-3 rounded-full mt-2 ${
+                                  booking.status === 'confirmed' ? 'bg-green-500' :
+                                  booking.status === 'pending' ? 'bg-yellow-500' :
+                                  booking.status === 'completed' ? 'bg-blue-500' :
+                                  'bg-gray-500'
+                                }`}></div>
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <h4 className="font-semibold">
+                                      {booking.services?.name || "Service"}
+                                    </h4>
+                                    {isUpcoming && (
+                                      <Badge variant="secondary" className="text-xs">
+                                        Upcoming
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-foreground/60 mb-2">
+                                    Customer: {booking.customer_name || "Unknown"}
+                                  </p>
+                                  <div className="flex items-center gap-4 text-sm text-foreground/60">
+                                    <div className="flex items-center gap-1">
+                                      <Calendar className="w-4 h-4" />
+                                      {bookingDate.toLocaleDateString()}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <Clock className="w-4 h-4" />
+                                      {booking.service_time}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <DeliveryIcon className="w-4 h-4" />
+                                      {booking.service_location || "TBD"}
+                                    </div>
+                                    {!isProvider || isOwner || isDispatcher ? (
+                                      <div className="flex items-center gap-1">
+                                        <Users className="w-4 h-4" />
+                                        {booking.providers?.first_name} {booking.providers?.last_name}
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <Badge className={statusConfig.color}>
+                                  {statusConfig.label}
+                                </Badge>
+                                <p className="text-lg font-semibold text-roam-blue mt-2">
+                                  ${booking.total_price || "0"}
+                                </p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-foreground/60">
+                    <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg mb-2">No bookings found</p>
+                    <p className="text-sm">
+                      {isProvider && !isOwner && !isDispatcher
+                        ? "You don't have any bookings yet"
+                        : "No bookings found for this business"
+                      }
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Calendar Note */}
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-700">
+                  <strong>Calendar View:</strong> {
+                    isProvider && !isOwner && !isDispatcher
+                      ? "This shows only your personal bookings and appointments."
+                      : "This shows all bookings for your business across all providers."
+                  }
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end pt-4 border-t">
+            <Button
+              variant="outline"
+              onClick={() => setShowCalendar(false)}
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Add Provider Modal */}
       <Dialog open={addProviderModal} onOpenChange={setAddProviderModal}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
