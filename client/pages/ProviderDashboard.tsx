@@ -3191,13 +3191,24 @@ export default function ProviderDashboard() {
             <TabsContent value="bookings" className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Bookings</h2>
-                <Button
-                  className="bg-roam-blue hover:bg-roam-blue/90"
-                  onClick={handleViewCalendar}
-                >
-                  <Calendar className="w-4 h-4 mr-2" />
-                  View Calendar
-                </Button>
+                <div className="flex gap-2">
+                  <Select value={calendarViewType} onValueChange={(value: 'week' | 'month') => setCalendarViewType(value)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="week">Week View</SelectItem>
+                      <SelectItem value="month">Month View</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    className="bg-roam-blue hover:bg-roam-blue/90"
+                    onClick={() => setShowCalendarView(!showCalendarView)}
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Calendar View
+                  </Button>
+                </div>
               </div>
 
               {/* Only show sub-tabs for providers with provider role */}
