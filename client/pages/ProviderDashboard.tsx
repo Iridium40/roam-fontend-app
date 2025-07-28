@@ -978,7 +978,7 @@ export default function ProviderDashboard() {
       }
 
       // If managed by business, inherit services and addons
-      if (managementSettings.managed_by_business && managementSettings.inherit_business_services) {
+      if (managementSettings.business_managed && managementSettings.inherit_business_services) {
         // This would be implemented to copy business services to provider services
         console.log("Would inherit business services for provider");
       }
