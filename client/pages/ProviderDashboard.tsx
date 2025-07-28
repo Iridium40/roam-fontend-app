@@ -977,10 +977,50 @@ export default function ProviderDashboard() {
         throw new Error(`Failed to create provider: ${errorText}`);
       }
 
-      // If managed by business, inherit services and addons
-      if (managementSettings.business_managed && managementSettings.inherit_business_services) {
-        // This would be implemented to copy business services to provider services
-        console.log("Would inherit business services for provider");
+      // Assign business services and addons to the new provider
+      if (managementSettings.inherit_business_services) {
+        try {
+          // Get all business services
+          const { data: businessServices, error: servicesError } = await supabase
+            .from("business_services")
+            .select("*")
+            .eq("business_id", provider.business_id)
+            .eq("is_active", true);
+
+          if (servicesError) {
+            console.error("Error fetching business services:", servicesError);
+          } else if (businessServices && businessServices.length > 0) {
+            // Create provider_services records for each business service
+            const providerServicesData = businessServices.map(businessService => ({
+              provider_id: response.data?.[0]?.id, // Will need to get the created provider ID
+              service_id: businessService.service_id,
+              delivery_type: businessService.delivery_type,
+              custom_price: businessService.custom_price,
+              is_active: true, // Assigned by default
+              managed_by_business: managementSettings.business_managed,
+            }));
+
+            // Note: This would require the provider ID from the response
+            console.log("Would create provider services:", providerServicesData);
+          }
+
+          // Get all business addons if inheriting addons
+          if (managementSettings.inherit_business_addons) {
+            const { data: businessAddons, error: addonsError } = await supabase
+              .from("business_addons")
+              .select("*")
+              .eq("business_id", provider.business_id)
+              .eq("is_available", true);
+
+            if (addonsError) {
+              console.error("Error fetching business addons:", addonsError);
+            } else if (businessAddons && businessAddons.length > 0) {
+              console.log("Would create provider addons for:", businessAddons.length, "addons");
+            }
+          }
+        } catch (error) {
+          console.error("Error inheriting services/addons:", error);
+        }
       }
 
       toast({
