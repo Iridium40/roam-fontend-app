@@ -3092,15 +3092,25 @@ export default function ProviderDashboard() {
                           </div>
                         </div>
 
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                          onClick={() => handleEditService(businessService)}
-                        >
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit Service
-                        </Button>
+                        {(isOwner || isDispatcher) ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                            onClick={() => handleEditService(businessService)}
+                          >
+                            <Edit className="w-4 h-4 mr-2" />
+                            Edit Service
+                          </Button>
+                        ) : (
+                          <div className="text-center py-2">
+                            <span className="text-xs text-foreground/60">
+                              {provider?.business_managed
+                                ? "Service managed by business"
+                                : "Toggle above to activate/deactivate"}
+                            </span>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   ))}
