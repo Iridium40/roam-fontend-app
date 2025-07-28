@@ -2574,9 +2574,9 @@ export default function ProviderDashboard() {
               <div className="space-y-4">
                 {bookings.length > 0 ? (
                   bookings.map((booking) => {
-                    const statusConfig = getStatusBadge(booking.status);
+                    const statusConfig = getStatusBadge(booking.booking_status);
                     const DeliveryIcon = getDeliveryIcon(
-                      booking.delivery_type || "mobile",
+                      booking.delivery_type || "business_location",
                     );
 
                     return (
