@@ -109,8 +109,7 @@ export const BusinessRegistrationForm: React.FC<
       case 1:
         return !!(
           formData.business_name &&
-          formData.business_type &&
-          formData.years_in_business >= 0
+          formData.business_type
         );
       case 2:
         return !!(
