@@ -113,6 +113,8 @@ export default function ProviderDashboard() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
   const [activeBookingTab, setActiveBookingTab] = useState("present");
+  const [showCalendarView, setShowCalendarView] = useState(false);
+  const [calendarViewType, setCalendarViewType] = useState<'week' | 'month'>('month');
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
