@@ -6997,6 +6997,200 @@ export default function ProviderDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Manage Provider Modal */}
+      <Dialog open={manageProviderModal} onOpenChange={setManageProviderModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              Manage Provider - {managingProvider?.first_name} {managingProvider?.last_name}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {manageProviderError && (
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                {manageProviderError}
+              </div>
+            )}
+
+            {manageProviderSuccess && (
+              <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                {manageProviderSuccess}
+              </div>
+            )}
+
+            {/* Provider Info Display */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Provider Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-foreground/60">Email:</span>
+                    <span>{managingProvider?.email}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-foreground/60">Phone:</span>
+                    <span>{managingProvider?.phone || "Not provided"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-foreground/60">Created:</span>
+                    <span>{managingProvider?.created_at ? new Date(managingProvider.created_at).toLocaleDateString() : "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-foreground/60">Experience:</span>
+                    <span>{managingProvider?.experience_years ? `${managingProvider.experience_years} years` : "Not specified"}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Management Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Management Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Status & Role */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="provider_role">Provider Role</Label>
+                    <Select
+                      value={providerManagementForm.provider_role}
+                      onValueChange={(value) => handleProviderManagementFormChange("provider_role", value)}
+                      disabled={manageProviderLoading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="provider">Provider</SelectItem>
+                        <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                        <SelectItem value="owner">Owner</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="verification_status">Verification Status</Label>
+                    <Select
+                      value={providerManagementForm.verification_status}
+                      onValueChange={(value) => handleProviderManagementFormChange("verification_status", value)}
+                      disabled={manageProviderLoading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="verified">Verified</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                        <SelectItem value="suspended">Suspended</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Location Assignment */}
+                <div className="space-y-2">
+                  <Label htmlFor="location_assignment">Assigned Location</Label>
+                  <Select
+                    value={providerManagementForm.location_id}
+                    onValueChange={(value) => handleProviderManagementFormChange("location_id", value)}
+                    disabled={manageProviderLoading}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a business location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">No location assigned</SelectItem>
+                      {locations.map((location) => (
+                        <SelectItem key={location.id} value={location.id}>
+                          {location.location_name} {location.is_primary && "(Primary)"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Provider Management Toggles */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Active Status</Label>
+                      <p className="text-sm text-foreground/60">
+                        Provider can receive bookings and access the platform
+                      </p>
+                    </div>
+                    <Switch
+                      checked={providerManagementForm.is_active}
+                      onCheckedChange={(checked) => handleProviderManagementFormChange("is_active", checked)}
+                      disabled={manageProviderLoading}
+                      className="data-[state=checked]:bg-roam-blue"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Business Managed</Label>
+                      <p className="text-sm text-foreground/60">
+                        Business controls this provider's services and settings
+                      </p>
+                    </div>
+                    <Switch
+                      checked={providerManagementForm.business_managed}
+                      onCheckedChange={(checked) => handleProviderManagementFormChange("business_managed", checked)}
+                      disabled={manageProviderLoading}
+                      className="data-[state=checked]:bg-roam-blue"
+                    />
+                  </div>
+                </div>
+
+                {/* Service Management Status Display */}
+                <div className="p-4 bg-accent/20 rounded-lg">
+                  <h4 className="font-medium mb-2">Service Management</h4>
+                  <p className="text-sm text-foreground/60">
+                    {providerManagementForm.business_managed
+                      ? "This provider's services are managed by the business. They can view assigned services but cannot change assignments or pricing."
+                      : "This provider has self-management enabled. They can activate/deactivate their service assignments, though pricing is still controlled by the business."}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4 border-t">
+              <Button
+                onClick={handleSaveProviderManagement}
+                disabled={manageProviderLoading}
+                className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+              >
+                {manageProviderLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Settings className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleCloseManageProvider}
+                disabled={manageProviderLoading}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
