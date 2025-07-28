@@ -364,8 +364,6 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({
                 Complete Your Business Profile
               </h3>
               <div className="space-y-4">
-
-
                 <div className="space-y-2">
                   <Label htmlFor="website">Website URL</Label>
                   <Input

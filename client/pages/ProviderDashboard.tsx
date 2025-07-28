@@ -328,8 +328,10 @@ export default function ProviderDashboard() {
     "month",
   );
   const [calendarDate, setCalendarDate] = useState(new Date());
-  const [selectedLocationFilter, setSelectedLocationFilter] = useState<string>("all");
-  const [selectedProviderFilter, setSelectedProviderFilter] = useState<string>("all");
+  const [selectedLocationFilter, setSelectedLocationFilter] =
+    useState<string>("all");
+  const [selectedProviderFilter, setSelectedProviderFilter] =
+    useState<string>("all");
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
   const [editingService, setEditingService] = useState<any>(null);
@@ -2719,7 +2721,9 @@ export default function ProviderDashboard() {
 
     // For owners/dispatchers, filter by location and provider
     if ((isOwner || isDispatcher) && selectedProviderFilter !== "all") {
-      filtered = filtered.filter(booking => booking.provider_id === selectedProviderFilter);
+      filtered = filtered.filter(
+        (booking) => booking.provider_id === selectedProviderFilter,
+      );
     }
 
     return filtered;
@@ -2728,30 +2732,38 @@ export default function ProviderDashboard() {
   // Load all providers for owners/dispatchers
   const loadAllProviders = async () => {
     if (!isOwner && !isDispatcher) {
-      console.log('Not loading providers - user is not owner or dispatcher');
+      console.log("Not loading providers - user is not owner or dispatcher");
       return;
     }
 
-    console.log('Loading providers for owner/dispatcher...');
+    console.log("Loading providers for owner/dispatcher...");
 
     try {
       // First, load providers without location join
       const { data: providers, error } = await supabase
-        .from('providers')
-        .select(`
+        .from("providers")
+        .select(
+          `
           id,
           first_name,
           last_name,
           provider_role,
           location_id,
           is_active
-        `)
-        .eq('provider_role', 'provider')
-        .eq('is_active', true);
+        `,
+        )
+        .eq("provider_role", "provider")
+        .eq("is_active", true);
 
       if (error) {
-        console.error('Error loading providers:', JSON.stringify(error, null, 2));
-        console.error('Error details:', error.message || error.details || error);
+        console.error(
+          "Error loading providers:",
+          JSON.stringify(error, null, 2),
+        );
+        console.error(
+          "Error details:",
+          error.message || error.details || error,
+        );
         return;
       }
 
@@ -2760,37 +2772,48 @@ export default function ProviderDashboard() {
 
       if (providers && providers.length > 0) {
         // Get unique location IDs
-        const locationIds = [...new Set(providers.map(p => p.location_id).filter(Boolean))];
+        const locationIds = [
+          ...new Set(providers.map((p) => p.location_id).filter(Boolean)),
+        ];
 
         if (locationIds.length > 0) {
           // Load location data separately
           const { data: locationData, error: locationError } = await supabase
-            .from('business_locations')
-            .select('id, name, address_line1')
-            .in('id', locationIds);
+            .from("business_locations")
+            .select("id, name, address_line1")
+            .in("id", locationIds);
 
           if (!locationError && locationData) {
             // Merge location data with providers
-            enrichedProviders = providers.map(provider => ({
+            enrichedProviders = providers.map((provider) => ({
               ...provider,
-              business_locations: locationData.find(loc => loc.id === provider.location_id) || null
+              business_locations:
+                locationData.find((loc) => loc.id === provider.location_id) ||
+                null,
             }));
           } else {
-            console.warn('Could not load location data:', locationError);
+            console.warn("Could not load location data:", locationError);
             // Use providers without location data
             enrichedProviders = providers;
           }
         }
       }
 
-      console.log('Loaded providers:', enrichedProviders?.length || 0);
+      console.log("Loaded providers:", enrichedProviders?.length || 0);
       setAllProviders(enrichedProviders || []);
-      filterProvidersByLocation(enrichedProviders || [], selectedLocationFilter);
-
-
+      filterProvidersByLocation(
+        enrichedProviders || [],
+        selectedLocationFilter,
+      );
     } catch (error) {
-      console.error('Error loading providers (catch):', JSON.stringify(error, null, 2));
-      console.error('Error details (catch):', error instanceof Error ? error.message : error);
+      console.error(
+        "Error loading providers (catch):",
+        JSON.stringify(error, null, 2),
+      );
+      console.error(
+        "Error details (catch):",
+        error instanceof Error ? error.message : error,
+      );
     }
   };
 
@@ -2800,14 +2823,18 @@ export default function ProviderDashboard() {
     if (locationId === "all") {
       filtered = providers;
     } else {
-      filtered = providers.filter(provider => provider.location_id === locationId);
+      filtered = providers.filter(
+        (provider) => provider.location_id === locationId,
+      );
     }
 
     setFilteredProviders(filtered);
 
     // Reset provider selection if current selection is not available in filtered list
     if (selectedProviderFilter !== "all") {
-      const isProviderInFiltered = filtered.some(p => p.id === selectedProviderFilter);
+      const isProviderInFiltered = filtered.some(
+        (p) => p.id === selectedProviderFilter,
+      );
       if (!isProviderInFiltered) {
         setSelectedProviderFilter("all");
       }
@@ -2826,8 +2853,9 @@ export default function ProviderDashboard() {
 
     try {
       const { data: allBookings, error } = await supabase
-        .from('bookings')
-        .select(`
+        .from("bookings")
+        .select(
+          `
           *,
           services (
             id,
@@ -2847,20 +2875,33 @@ export default function ProviderDashboard() {
             last_name,
             location_id
           )
-        `)
-        .order('booking_date', { ascending: false })
+        `,
+        )
+        .order("booking_date", { ascending: false })
         .limit(50);
 
       if (error) {
-        console.error('Error loading all bookings:', JSON.stringify(error, null, 2));
-        console.error('Booking error details:', error.message || error.details || error);
+        console.error(
+          "Error loading all bookings:",
+          JSON.stringify(error, null, 2),
+        );
+        console.error(
+          "Booking error details:",
+          error.message || error.details || error,
+        );
       } else {
-        console.log('Loaded all bookings:', allBookings?.length || 0);
+        console.log("Loaded all bookings:", allBookings?.length || 0);
         setBookings(allBookings || []);
       }
     } catch (error) {
-      console.error('Error loading all bookings (catch):', JSON.stringify(error, null, 2));
-      console.error('Booking error details (catch):', error instanceof Error ? error.message : error);
+      console.error(
+        "Error loading all bookings (catch):",
+        JSON.stringify(error, null, 2),
+      );
+      console.error(
+        "Booking error details (catch):",
+        error instanceof Error ? error.message : error,
+      );
     }
   };
 
@@ -3750,10 +3791,16 @@ export default function ProviderDashboard() {
               {(isOwner || isDispatcher) && (
                 <div className="flex gap-4 items-center">
                   <div className="flex items-center gap-2">
-                    <Label htmlFor="location-filter" className="text-sm font-medium">
+                    <Label
+                      htmlFor="location-filter"
+                      className="text-sm font-medium"
+                    >
                       Location:
                     </Label>
-                    <Select value={selectedLocationFilter} onValueChange={handleLocationFilterChange}>
+                    <Select
+                      value={selectedLocationFilter}
+                      onValueChange={handleLocationFilterChange}
+                    >
                       <SelectTrigger className="w-48" id="location-filter">
                         <SelectValue placeholder="Select location" />
                       </SelectTrigger>
@@ -3769,10 +3816,16 @@ export default function ProviderDashboard() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Label htmlFor="provider-filter" className="text-sm font-medium">
+                    <Label
+                      htmlFor="provider-filter"
+                      className="text-sm font-medium"
+                    >
                       Provider:
                     </Label>
-                    <Select value={selectedProviderFilter} onValueChange={setSelectedProviderFilter}>
+                    <Select
+                      value={selectedProviderFilter}
+                      onValueChange={setSelectedProviderFilter}
+                    >
                       <SelectTrigger className="w-48" id="provider-filter">
                         <SelectValue placeholder="Select provider" />
                       </SelectTrigger>
@@ -3781,7 +3834,8 @@ export default function ProviderDashboard() {
                         {filteredProviders.map((provider) => (
                           <SelectItem key={provider.id} value={provider.id}>
                             {provider.first_name} {provider.last_name}
-                            {provider.business_locations?.name && ` (${provider.business_locations.name})`}
+                            {provider.business_locations?.name &&
+                              ` (${provider.business_locations.name})`}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -4495,8 +4549,6 @@ export default function ProviderDashboard() {
                             />
                           </div>
                         </div>
-
-
                       </div>
 
                       {/* Service Categories */}
