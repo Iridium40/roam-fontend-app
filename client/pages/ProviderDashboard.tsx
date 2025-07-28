@@ -998,6 +998,60 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Calendar functionality
+  const fetchCalendarBookings = async () => {
+    if (!provider) return;
+
+    setCalendarLoading(true);
+    try {
+      let bookingsQuery = supabase
+        .from("bookings")
+        .select(`
+          *,
+          providers!inner(first_name, last_name),
+          services(name, description)
+        `)
+        .order("service_date", { ascending: true });
+
+      // For regular providers, only show their own bookings
+      if (isProvider && !isOwner && !isDispatcher) {
+        bookingsQuery = bookingsQuery.eq("provider_id", provider.id);
+      } else {
+        // For owners/dispatchers, show all business bookings
+        const { data: businessProviders, error: providersError } = await supabase
+          .from("providers")
+          .select("id")
+          .eq("business_id", provider.business_id);
+
+        if (providersError) throw providersError;
+
+        if (businessProviders && businessProviders.length > 0) {
+          const providerIds = businessProviders.map((p) => p.id);
+          bookingsQuery = bookingsQuery.in("provider_id", providerIds);
+        }
+      }
+
+      const { data, error } = await bookingsQuery;
+      if (error) throw error;
+
+      setCalendarBookings(data || []);
+    } catch (error: any) {
+      console.error("Error fetching calendar bookings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load calendar bookings",
+        variant: "destructive",
+      });
+    } finally {
+      setCalendarLoading(false);
+    }
+  };
+
+  const handleViewCalendar = () => {
+    setShowCalendar(true);
+    fetchCalendarBookings();
+  };
+
   const handleLocationFormChange = (field: string, value: any) => {
     // Special handling for primary location changes
     if (field === "is_primary" && value === true) {
@@ -2606,7 +2660,7 @@ export default function ProviderDashboard() {
                                 businessService.services?.service_subcategories
                                   ?.service_categories?.name
                               }{" "}
-                              �����{" "}
+                              ���{" "}
                               {
                                 businessService.services?.service_subcategories
                                   ?.name
