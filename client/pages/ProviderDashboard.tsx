@@ -178,6 +178,15 @@ export default function ProviderDashboard() {
     experienceYears: "",
   });
 
+  // Notification preferences state
+  const [notificationSettings, setNotificationSettings] = useState({
+    notification_email: "",
+    notification_phone: "",
+  });
+  const [notificationSettingsSaving, setNotificationSettingsSaving] = useState(false);
+  const [notificationSettingsError, setNotificationSettingsError] = useState("");
+  const [notificationSettingsSuccess, setNotificationSettingsSuccess] = useState("");
+
   // Business hours editing state
   const [businessHoursForm, setBusinessHoursForm] = useState({
     Monday: { isOpen: false, open: "09:00", close: "17:00" },
@@ -2080,6 +2089,12 @@ export default function ProviderDashboard() {
         bio: providerData.bio || "",
         dateOfBirth: providerData.date_of_birth || "",
         experienceYears: providerData.experience_years?.toString() || "",
+      });
+
+      // Initialize notification settings
+      setNotificationSettings({
+        notification_email: providerData.notification_email || "",
+        notification_phone: providerData.notification_phone || "",
       });
 
       // Fetch business details using providers.business_id -> businesses.id
