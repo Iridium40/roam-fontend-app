@@ -71,7 +71,6 @@ export default function ProviderPortal() {
     contact_email: "",
     phone: "",
     website_url: "",
-    business_description: "",
     years_in_business: 0,
 
     // Owner/Primary Contact
