@@ -111,7 +111,6 @@ export const BusinessRegistrationForm: React.FC<
         return !!(
           formData.business_name &&
           formData.business_type &&
-          formData.business_description &&
           formData.years_in_business >= 0
         );
       case 2:
