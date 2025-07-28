@@ -5877,9 +5877,37 @@ export default function ProviderDashboard() {
                                       </Badge>
                                     )}
                                   </div>
-                                  <p className="text-sm text-foreground/60 mb-2">
-                                    Customer: {booking.guest_name || "Unknown"}
-                                  </p>
+                                  <div className="flex items-center gap-2 mb-2">
+                                    {booking.customer_profiles?.image_url ? (
+                                      <img
+                                        src={booking.customer_profiles.image_url}
+                                        alt="Customer"
+                                        className="w-8 h-8 rounded-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                                        <span className="text-sm text-gray-600 font-medium">
+                                          {booking.customer_profiles?.first_name?.charAt(0) ||
+                                           booking.guest_name?.charAt(0) || "C"}
+                                        </span>
+                                      </div>
+                                    )}
+                                    <div>
+                                      <p className="text-sm font-medium text-foreground/80">
+                                        {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+                                          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                          : booking.guest_name || "Unknown Customer"}
+                                      </p>
+                                      <div className="flex items-center gap-2 text-xs text-foreground/60">
+                                        {booking.customer_profiles?.email && (
+                                          <span>{booking.customer_profiles.email}</span>
+                                        )}
+                                        {booking.customer_profiles?.phone && (
+                                          <span>• {booking.customer_profiles.phone}</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
                                   <div className="flex items-center gap-4 text-sm text-foreground/60">
                                     <div className="flex items-center gap-1">
                                       <Calendar className="w-4 h-4" />
