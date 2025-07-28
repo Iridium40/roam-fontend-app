@@ -2749,13 +2749,16 @@ export default function ProviderDashboard() {
         .eq('is_active', true);
 
       if (error) {
-        console.error('Error loading providers:', error);
+        console.error('Error loading providers:', JSON.stringify(error, null, 2));
+        console.error('Error details:', error.message || error.details || error);
       } else {
+        console.log('Loaded providers:', providers?.length || 0);
         setAllProviders(providers || []);
         filterProvidersByLocation(providers || [], selectedLocationFilter);
       }
     } catch (error) {
-      console.error('Error loading providers:', error);
+      console.error('Error loading providers (catch):', JSON.stringify(error, null, 2));
+      console.error('Error details (catch):', error instanceof Error ? error.message : error);
     }
   };
 
