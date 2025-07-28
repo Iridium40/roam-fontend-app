@@ -6544,7 +6544,7 @@ export default function ProviderDashboard() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-foreground/60">Management:</span>
-                        <span>{managementSettings.managed_by_business ? "Business Managed" : "Self Managed"}</span>
+                        <span>{managementSettings.business_managed ? "Business Managed" : "Self Managed"}</span>
                       </div>
                     </div>
                   </CardContent>
