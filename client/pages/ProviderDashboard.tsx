@@ -842,7 +842,7 @@ export default function ProviderDashboard() {
       provider_role: "provider",
     });
     setManagementSettings({
-      managed_by_business: true,
+      business_managed: true,
       inherit_business_services: true,
       inherit_business_addons: true,
     });
