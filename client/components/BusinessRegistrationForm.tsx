@@ -312,23 +312,20 @@ export const BusinessRegistrationForm: React.FC<
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-
-              <div className="space-y-2">
-                <Label htmlFor="website_url">Website (Optional)</Label>
-                <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                  <Input
-                    id="website_url"
-                    type="url"
-                    value={formData.website_url}
-                    onChange={(e) =>
-                      handleInputChange("website_url", e.target.value)
-                    }
-                    placeholder="https://yourwebsite.com"
-                    className="pl-10"
-                  />
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="website_url">Website (Optional)</Label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Input
+                  id="website_url"
+                  type="url"
+                  value={formData.website_url}
+                  onChange={(e) =>
+                    handleInputChange("website_url", e.target.value)
+                  }
+                  placeholder="https://yourwebsite.com"
+                  className="pl-10"
+                />
               </div>
             </div>
           </CardContent>
