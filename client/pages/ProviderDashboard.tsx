@@ -2627,7 +2627,7 @@ export default function ProviderDashboard() {
                             </div>
                           </div>
 
-                          {booking.status === "pending" && (
+                          {booking.booking_status === "pending" && (
                             <div className="mt-4 flex gap-2">
                               <Button
                                 size="sm"
