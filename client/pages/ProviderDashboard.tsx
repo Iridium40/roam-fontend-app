@@ -3330,9 +3330,9 @@ export default function ProviderDashboard() {
                           <div className="text-center py-8 text-foreground/60">
                             <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
                             <p className="text-sm">
-                              {tabValue === "today" && "No bookings for today"}
+                              {tabValue === "present" && "No current bookings"}
                               {tabValue === "future" && "No upcoming bookings"}
-                              {tabValue === "past" && "No past bookings"}
+                              {tabValue === "past" && "No completed or cancelled bookings"}
                             </p>
                           </div>
                         )}
