@@ -2316,22 +2316,33 @@ export default function ProviderDashboard() {
     }
   };
 
-  // Helper functions to filter bookings by date
-  const filterBookingsByDate = (bookings: any[], filterType: 'today' | 'future' | 'past') => {
+  // Helper functions to filter bookings by date and status
+  const filterBookingsByDate = (bookings: any[], filterType: 'present' | 'future' | 'past') => {
     const today = new Date();
     const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
     return bookings.filter(booking => {
       const bookingDate = new Date(booking.booking_date);
+      const status = booking.booking_status?.toLowerCase();
 
       switch (filterType) {
-        case 'today':
-          return bookingDate >= startOfToday && bookingDate <= endOfToday;
+        case 'present':
+          // Present = all bookings with date of today OR in the past with status NOT cancelled or completed
+          if (bookingDate >= startOfToday && bookingDate <= endOfToday) {
+            // Today's bookings regardless of status
+            return true;
+          } else if (bookingDate < startOfToday) {
+            // Past bookings that are NOT cancelled or completed
+            return status !== 'cancelled' && status !== 'completed';
+          }
+          return false;
         case 'future':
+          // Future = all bookings with date of tomorrow and beyond (today's date +1)
           return bookingDate > endOfToday;
         case 'past':
-          return bookingDate < startOfToday;
+          // Past = bookings before today that are completed or cancelled
+          return bookingDate < startOfToday && (status === 'completed' || status === 'cancelled');
         default:
           return true;
       }
