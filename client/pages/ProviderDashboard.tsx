@@ -473,7 +473,6 @@ export default function ProviderDashboard() {
   const [businessDetailsForm, setBusinessDetailsForm] = useState({
     business_name: "",
     business_type: "",
-    business_description: "",
     contact_email: "",
     phone: "",
     website_url: "",
