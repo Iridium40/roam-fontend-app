@@ -314,21 +314,7 @@ export const BusinessRegistrationForm: React.FC<
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="business_description">
-                Business Description *
-              </Label>
-              <Textarea
-                id="business_description"
-                value={formData.business_description}
-                onChange={(e) =>
-                  handleInputChange("business_description", e.target.value)
-                }
-                placeholder="Describe your business and services"
-                rows={3}
-                required
-              />
-            </div>
+
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
