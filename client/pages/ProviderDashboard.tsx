@@ -2283,9 +2283,47 @@ export default function ProviderDashboard() {
     }
   };
 
+  const loadServiceCategoriesAndSubcategories = async () => {
+    setCategoriesLoading(true);
+    try {
+      // Load service categories
+      const { data: categories, error: categoriesError } = await supabase
+        .from('service_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+
+      if (categoriesError) {
+        console.error('Error loading service categories:', categoriesError);
+      } else {
+        setServiceCategories(categories || []);
+      }
+
+      // Load service subcategories with category info
+      const { data: subcategories, error: subcategoriesError } = await supabase
+        .from('service_subcategories')
+        .select(`
+          *,
+          category:service_categories(*)
+        `)
+        .eq('is_active', true);
+
+      if (subcategoriesError) {
+        console.error('Error loading service subcategories:', subcategoriesError);
+      } else {
+        setServiceSubcategories(subcategories || []);
+      }
+    } catch (error) {
+      console.error('Error loading categories and subcategories:', error);
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchDashboardData();
+      loadServiceCategoriesAndSubcategories();
     }
   }, [user]);
 
