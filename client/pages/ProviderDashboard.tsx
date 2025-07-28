@@ -328,6 +328,10 @@ export default function ProviderDashboard() {
     "month",
   );
   const [calendarDate, setCalendarDate] = useState(new Date());
+  const [selectedLocationFilter, setSelectedLocationFilter] = useState<string>("all");
+  const [selectedProviderFilter, setSelectedProviderFilter] = useState<string>("all");
+  const [allProviders, setAllProviders] = useState<any[]>([]);
+  const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
