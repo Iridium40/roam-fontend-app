@@ -2626,9 +2626,32 @@ export default function ProviderDashboard() {
                                 <h3 className="font-semibold">
                                   {booking.services?.name || "Service"}
                                 </h3>
-                                <p className="text-sm text-foreground/60 mb-2">
-                                  with {booking.guest_name || "Customer"}
-                                </p>
+                                <div className="flex items-center gap-2 mb-2">
+                                  {booking.customer_profiles?.image_url ? (
+                                    <img
+                                      src={booking.customer_profiles.image_url}
+                                      alt="Customer"
+                                      className="w-6 h-6 rounded-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                      <span className="text-xs text-gray-600">
+                                        {booking.customer_profiles?.first_name?.charAt(0) ||
+                                         booking.guest_name?.charAt(0) || "C"}
+                                      </span>
+                                    </div>
+                                  )}
+                                  <p className="text-sm text-foreground/60">
+                                    {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+                                      ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                      : booking.guest_name || "Customer"}
+                                  </p>
+                                  {booking.customer_profiles?.email && (
+                                    <span className="text-xs text-foreground/40">
+                                      • {booking.customer_profiles.email}
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="flex items-center gap-4 text-sm text-foreground/60">
                                   <div className="flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
