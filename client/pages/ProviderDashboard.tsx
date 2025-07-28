@@ -130,16 +130,53 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
     return date.getMonth() === currentDate.getMonth();
   };
 
+  const navigatePrevious = () => {
+    const newDate = new Date(currentDate);
+    if (viewType === 'week') {
+      newDate.setDate(currentDate.getDate() - 7);
+    } else {
+      newDate.setMonth(currentDate.getMonth() - 1);
+    }
+    onDateChange(newDate);
+  };
+
+  const navigateNext = () => {
+    const newDate = new Date(currentDate);
+    if (viewType === 'week') {
+      newDate.setDate(currentDate.getDate() + 7);
+    } else {
+      newDate.setMonth(currentDate.getMonth() + 1);
+    }
+    onDateChange(newDate);
+  };
+
+  const goToToday = () => {
+    onDateChange(new Date());
+  };
+
   return (
     <div className="space-y-4">
-      {/* Calendar Header */}
-      <div className="text-center">
-        <h4 className="text-xl font-semibold">
-          {viewType === 'week'
-            ? `Week of ${calendarDays[0].toLocaleDateString()} - ${calendarDays[6].toLocaleDateString()}`
-            : `${currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
-          }
-        </h4>
+      {/* Calendar Header with Navigation */}
+      <div className="flex items-center justify-between">
+        <Button variant="outline" size="sm" onClick={navigatePrevious}>
+          ← Previous
+        </Button>
+
+        <div className="text-center">
+          <h4 className="text-xl font-semibold">
+            {viewType === 'week'
+              ? `Week of ${calendarDays[0].toLocaleDateString()} - ${calendarDays[6].toLocaleDateString()}`
+              : `${currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+            }
+          </h4>
+          <Button variant="ghost" size="sm" onClick={goToToday} className="mt-1">
+            Today
+          </Button>
+        </div>
+
+        <Button variant="outline" size="sm" onClick={navigateNext}>
+          Next →
+        </Button>
       </div>
 
       {/* Calendar Grid */}
