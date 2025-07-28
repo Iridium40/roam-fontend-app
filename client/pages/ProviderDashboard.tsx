@@ -2744,7 +2744,7 @@ export default function ProviderDashboard() {
           provider_role,
           location_id,
           is_active,
-          locations (
+          business_locations (
             id,
             name,
             address_line1
