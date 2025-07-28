@@ -99,7 +99,6 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({
   const [error, setError] = useState("");
 
   const [businessData, setBusinessData] = useState({
-    business_description: "",
     website_url: "",
     business_hours: {
       monday: { open: "09:00", close: "17:00", closed: false },
@@ -700,7 +699,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({
                           {plan.features.max_locations > 1 ? "s" : ""}
                         </li>
                         <li>
-                          {plan.features.advanced_analytics ? "✓" : "✗"}{" "}
+                          {plan.features.advanced_analytics ? "✓" : "���"}{" "}
                           Advanced Analytics
                         </li>
                         <li>
