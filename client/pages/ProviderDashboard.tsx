@@ -4854,31 +4854,37 @@ export default function ProviderDashboard() {
                         Change Password
                       </Button>
 
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                      >
-                        <Mail className="w-4 h-4 mr-2" />
-                        Update Email
-                      </Button>
-
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                      >
-                        <DollarSign className="w-4 h-4 mr-2" />
-                        Payment Settings
-                      </Button>
-
-                      <div className="pt-4 border-t">
+                      {(isOwner || isDispatcher) && (
                         <Button
                           variant="outline"
-                          className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50"
+                          className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                         >
-                          <AlertCircle className="w-4 h-4 mr-2" />
-                          Deactivate Account
+                          <Mail className="w-4 h-4 mr-2" />
+                          Update Email
                         </Button>
-                      </div>
+                      )}
+
+                      {(isOwner || isDispatcher) && (
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        >
+                          <DollarSign className="w-4 h-4 mr-2" />
+                          Payment Settings
+                        </Button>
+                      )}
+
+                      {(isOwner || isDispatcher) && (
+                        <div className="pt-4 border-t">
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50"
+                          >
+                            <AlertCircle className="w-4 h-4 mr-2" />
+                            Deactivate Account
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
