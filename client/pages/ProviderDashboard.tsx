@@ -3016,6 +3016,7 @@ export default function ProviderDashboard() {
                           <Switch
                             checked={businessService.is_active !== false}
                             className="data-[state=checked]:bg-roam-blue"
+                            disabled={isProvider && !isOwner && !isDispatcher && provider?.business_managed}
                             onCheckedChange={(checked) => {
                               // Quick toggle service active status
                               handleQuickToggleService(businessService.id, checked);
