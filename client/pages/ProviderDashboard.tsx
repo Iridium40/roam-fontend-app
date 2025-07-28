@@ -1560,11 +1560,29 @@ export default function ProviderDashboard() {
   const handleQuickToggleService = async (serviceId: string, isActive: boolean) => {
     if (!provider) return;
 
+    // Check if provider can edit service assignments
+    const canEditServices = isOwner || isDispatcher || (isProvider && !provider.business_managed);
+
+    if (!canEditServices) {
+      toast({
+        title: "Action Not Allowed",
+        description: "Service assignments are managed by the business and cannot be changed.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      // For regular providers who can edit (business_managed = false),
+      // update provider_services instead of business_services
+      const endpoint = (isProvider && !isOwner && !isDispatcher)
+        ? "provider_services"
+        : "business_services";
+
       const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${serviceId}`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/${endpoint}?id=eq.${serviceId}`,
         {
           method: "PATCH",
           headers: {
