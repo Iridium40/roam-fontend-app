@@ -6247,7 +6247,8 @@ export default function ProviderDashboard() {
                     editingService.services?.service_subcategories
                       ?.service_categories?.service_category_type
                   }{" "}
-                  → {editingService.services?.service_subcategories?.name}
+                  → {editingService.services?.service_subcategories?.description ||
+                      editingService.services?.service_subcategories?.service_subcategory_type}
                 </p>
               </div>
 
