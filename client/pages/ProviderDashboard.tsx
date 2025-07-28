@@ -6406,7 +6406,8 @@ export default function ProviderDashboard() {
                                 service.service_subcategories
                                   ?.service_categories?.service_category_type
                               }{" "}
-                              → {service.service_subcategories?.name}
+                              → {service.service_subcategories?.description ||
+                                  service.service_subcategories?.service_subcategory_type}
                             </span>
                           </div>
                         </SelectItem>
