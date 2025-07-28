@@ -3177,7 +3177,7 @@ export default function ProviderDashboard() {
             {/* Bookings Tab */}
             <TabsContent value="bookings" className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Recent Bookings</h2>
+                <h2 className="text-2xl font-bold">Bookings</h2>
                 <Button
                   className="bg-roam-blue hover:bg-roam-blue/90"
                   onClick={handleViewCalendar}
@@ -3187,130 +3187,274 @@ export default function ProviderDashboard() {
                 </Button>
               </div>
 
-              <div className="space-y-4">
-                {bookings.length > 0 ? (
-                  bookings.map((booking) => {
-                    const statusConfig = getStatusBadge(booking.booking_status);
-                    const DeliveryIcon = getDeliveryIcon(
-                      booking.delivery_type || "business_location",
-                    );
+              {/* Only show sub-tabs for providers with provider role */}
+              {provider?.provider_role === "provider" ? (
+                <Tabs value={activeBookingTab} onValueChange={setActiveBookingTab} className="space-y-4">
+                  <TabsList className="grid grid-cols-3 w-full max-w-md">
+                    <TabsTrigger value="today">Today</TabsTrigger>
+                    <TabsTrigger value="future">Future</TabsTrigger>
+                    <TabsTrigger value="past">Past</TabsTrigger>
+                  </TabsList>
 
-                    return (
-                      <Card
-                        key={booking.id}
-                        className="hover:shadow-md transition-shadow"
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-start gap-4">
-                              <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
-                                <Calendar className="w-6 h-6 text-white" />
-                              </div>
-                              <div>
-                                <h3 className="font-semibold">
-                                  {booking.services?.name || "Service"}
-                                </h3>
-                                <div className="flex items-center gap-2 mb-2">
-                                  {booking.customer_profiles?.image_url ? (
-                                    <img
-                                      src={booking.customer_profiles.image_url}
-                                      alt="Customer"
-                                      className="w-6 h-6 rounded-full object-cover"
-                                    />
-                                  ) : (
-                                    <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-                                      <span className="text-xs text-gray-600">
-                                        {booking.customer_profiles?.first_name?.charAt(0) ||
-                                         booking.guest_name?.charAt(0) || "C"}
-                                      </span>
-                                    </div>
-                                  )}
-                                  <p className="text-sm text-foreground/60">
-                                    {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
-                                      ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
-                                      : booking.guest_name || "Customer"}
-                                  </p>
-                                  {booking.customer_profiles?.email && (
-                                    <span className="text-xs text-foreground/40">
-                                      • {booking.customer_profiles.email}
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-4 text-sm text-foreground/60">
-                                  <div className="flex items-center gap-1">
-                                    <Calendar className="w-4 h-4" />
-                                    {new Date(
-                                      booking.booking_date,
-                                    ).toLocaleDateString()}
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <Clock className="w-4 h-4" />
-                                    {booking.start_time}
-                                  </div>
-                                  <div className="flex items-start gap-1">
-                                    <DeliveryIcon className="w-4 h-4 mt-0.5" />
-                                    <div className="flex flex-col">
-                                      {(() => {
-                                        const location = formatBookingLocation(booking);
-                                        if (typeof location === 'string') {
-                                          return <span className="text-sm">{location}</span>;
-                                        } else {
-                                          return (
-                                            <div>
-                                              <span className="text-sm font-medium">{location.name}</span>
-                                              {location.address && (
-                                                <span className="text-xs text-foreground/50 block max-w-48 truncate">
-                                                  {location.address}
-                                                </span>
-                                              )}
+                  {["today", "future", "past"].map((tabValue) => (
+                    <TabsContent key={tabValue} value={tabValue} className="space-y-4">
+                      <div className="space-y-4">
+                        {filterBookingsByDate(bookings, tabValue as 'today' | 'future' | 'past').length > 0 ? (
+                          filterBookingsByDate(bookings, tabValue as 'today' | 'future' | 'past').map((booking) => {
+                            const statusConfig = getStatusBadge(booking.booking_status);
+                            const DeliveryIcon = getDeliveryIcon(
+                              booking.delivery_type || "business_location",
+                            );
+
+                            return (
+                              <Card
+                                key={booking.id}
+                                className="hover:shadow-md transition-shadow"
+                              >
+                                <CardContent className="p-6">
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex items-start gap-4">
+                                      <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                        <Calendar className="w-6 h-6 text-white" />
+                                      </div>
+                                      <div>
+                                        <h3 className="font-semibold">
+                                          {booking.services?.name || "Service"}
+                                        </h3>
+                                        <div className="flex items-center gap-2 mb-2">
+                                          {booking.customer_profiles?.image_url ? (
+                                            <img
+                                              src={booking.customer_profiles.image_url}
+                                              alt="Customer"
+                                              className="w-6 h-6 rounded-full object-cover"
+                                            />
+                                          ) : (
+                                            <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                              <span className="text-xs text-gray-600">
+                                                {booking.customer_profiles?.first_name?.charAt(0) ||
+                                                 booking.guest_name?.charAt(0) || "C"}
+                                              </span>
                                             </div>
-                                          );
-                                        }
-                                      })()}
+                                          )}
+                                          <p className="text-sm text-foreground/60">
+                                            {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+                                              ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                              : booking.guest_name || "Customer"}
+                                          </p>
+                                          {booking.customer_profiles?.email && (
+                                            <span className="text-xs text-foreground/40">
+                                              • {booking.customer_profiles.email}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div className="flex items-center gap-4 text-sm text-foreground/60">
+                                          <div className="flex items-center gap-1">
+                                            <Calendar className="w-4 h-4" />
+                                            {new Date(
+                                              booking.booking_date,
+                                            ).toLocaleDateString()}
+                                          </div>
+                                          <div className="flex items-center gap-1">
+                                            <Clock className="w-4 h-4" />
+                                            {booking.start_time}
+                                          </div>
+                                          <div className="flex items-start gap-1">
+                                            <DeliveryIcon className="w-4 h-4 mt-0.5" />
+                                            <div className="flex flex-col">
+                                              {(() => {
+                                                const location = formatBookingLocation(booking);
+                                                if (typeof location === 'string') {
+                                                  return <span className="text-sm">{location}</span>;
+                                                } else {
+                                                  return (
+                                                    <div>
+                                                      <span className="text-sm font-medium">{location.name}</span>
+                                                      {location.address && (
+                                                        <span className="text-xs text-foreground/50 block max-w-48 truncate">
+                                                          {location.address}
+                                                        </span>
+                                                      )}
+                                                    </div>
+                                                  );
+                                                }
+                                              })()}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="text-right">
+                                      <Badge className={statusConfig.color}>
+                                        {statusConfig.label}
+                                      </Badge>
+                                      <p className="text-lg font-semibold text-roam-blue mt-2">
+                                        ${booking.total_amount || "0"}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  {booking.booking_status === "pending" && (
+                                    <div className="mt-4 flex gap-2">
+                                      <Button
+                                        size="sm"
+                                        className="bg-roam-blue hover:bg-roam-blue/90"
+                                      >
+                                        <CheckCircle className="w-4 h-4 mr-2" />
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="border-red-300 text-red-600 hover:bg-red-50"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            );
+                          })
+                        ) : (
+                          <div className="text-center py-8 text-foreground/60">
+                            <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">
+                              {tabValue === "today" && "No bookings for today"}
+                              {tabValue === "future" && "No upcoming bookings"}
+                              {tabValue === "past" && "No past bookings"}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              ) : (
+                <div className="space-y-4">
+                  {bookings.length > 0 ? (
+                    bookings.map((booking) => {
+                      const statusConfig = getStatusBadge(booking.booking_status);
+                      const DeliveryIcon = getDeliveryIcon(
+                        booking.delivery_type || "business_location",
+                      );
+
+                      return (
+                        <Card
+                          key={booking.id}
+                          className="hover:shadow-md transition-shadow"
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                  <Calendar className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                  <h3 className="font-semibold">
+                                    {booking.services?.name || "Service"}
+                                  </h3>
+                                  <div className="flex items-center gap-2 mb-2">
+                                    {booking.customer_profiles?.image_url ? (
+                                      <img
+                                        src={booking.customer_profiles.image_url}
+                                        alt="Customer"
+                                        className="w-6 h-6 rounded-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                        <span className="text-xs text-gray-600">
+                                          {booking.customer_profiles?.first_name?.charAt(0) ||
+                                           booking.guest_name?.charAt(0) || "C"}
+                                        </span>
+                                      </div>
+                                    )}
+                                    <p className="text-sm text-foreground/60">
+                                      {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+                                        ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                        : booking.guest_name || "Customer"}
+                                    </p>
+                                    {booking.customer_profiles?.email && (
+                                      <span className="text-xs text-foreground/40">
+                                        • {booking.customer_profiles.email}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-4 text-sm text-foreground/60">
+                                    <div className="flex items-center gap-1">
+                                      <Calendar className="w-4 h-4" />
+                                      {new Date(
+                                        booking.booking_date,
+                                      ).toLocaleDateString()}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <Clock className="w-4 h-4" />
+                                      {booking.start_time}
+                                    </div>
+                                    <div className="flex items-start gap-1">
+                                      <DeliveryIcon className="w-4 h-4 mt-0.5" />
+                                      <div className="flex flex-col">
+                                        {(() => {
+                                          const location = formatBookingLocation(booking);
+                                          if (typeof location === 'string') {
+                                            return <span className="text-sm">{location}</span>;
+                                          } else {
+                                            return (
+                                              <div>
+                                                <span className="text-sm font-medium">{location.name}</span>
+                                                {location.address && (
+                                                  <span className="text-xs text-foreground/50 block max-w-48 truncate">
+                                                    {location.address}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            );
+                                          }
+                                        })()}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
+                              <div className="text-right">
+                                <Badge className={statusConfig.color}>
+                                  {statusConfig.label}
+                                </Badge>
+                                <p className="text-lg font-semibold text-roam-blue mt-2">
+                                  ${booking.total_amount || "0"}
+                                </p>
+                              </div>
                             </div>
-                            <div className="text-right">
-                              <Badge className={statusConfig.color}>
-                                {statusConfig.label}
-                              </Badge>
-                              <p className="text-lg font-semibold text-roam-blue mt-2">
-                                ${booking.total_amount || "0"}
-                              </p>
-                            </div>
-                          </div>
 
-                          {booking.booking_status === "pending" && (
-                            <div className="mt-4 flex gap-2">
-                              <Button
-                                size="sm"
-                                className="bg-roam-blue hover:bg-roam-blue/90"
-                              >
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Accept
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="border-red-300 text-red-600 hover:bg-red-50"
-                              >
-                                Decline
-                              </Button>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    );
-                  })
-                ) : (
-                  <div className="text-center py-8 text-foreground/60">
-                    <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No bookings to display</p>
-                  </div>
-                )}
-              </div>
+                            {booking.booking_status === "pending" && (
+                              <div className="mt-4 flex gap-2">
+                                <Button
+                                  size="sm"
+                                  className="bg-roam-blue hover:bg-roam-blue/90"
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-2" />
+                                  Accept
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-red-300 text-red-600 hover:bg-red-50"
+                                >
+                                  Decline
+                                </Button>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })
+                  ) : (
+                    <div className="text-center py-8 text-foreground/60">
+                      <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No bookings to display</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </TabsContent>
 
             {/* Services Tab */}
