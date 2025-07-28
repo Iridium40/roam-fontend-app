@@ -202,7 +202,6 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({
           await supabase
             .from("business_profiles")
             .update({
-              business_description: businessData.business_description,
               website_url: businessData.website_url,
               business_hours: businessData.business_hours,
               social_media: businessData.social_media,
