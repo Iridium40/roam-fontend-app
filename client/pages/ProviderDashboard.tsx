@@ -67,6 +67,144 @@ interface ServiceSubcategory {
   category?: ServiceCategory;
 }
 
+// Calendar Grid Component
+const CalendarGrid = ({ bookings, viewType }: { bookings: any[], viewType: 'week' | 'month' }) => {
+  const today = new Date();
+  const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  // Generate calendar days
+  const generateCalendarDays = () => {
+    if (viewType === 'week') {
+      // Generate current week
+      const startOfWeek = new Date(currentDate);
+      startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Start from Sunday
+
+      return Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(startOfWeek);
+        date.setDate(startOfWeek.getDate() + i);
+        return date;
+      });
+    } else {
+      // Generate current month
+      const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      const startDate = new Date(firstDay);
+      startDate.setDate(firstDay.getDate() - firstDay.getDay()); // Start from Sunday of first week
+
+      const days = [];
+      const current = new Date(startDate);
+
+      // Generate 6 weeks (42 days) to cover the month
+      for (let i = 0; i < 42; i++) {
+        days.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+
+        // Stop if we've gone past the month and completed a week
+        if (current > lastDay && current.getDay() === 0) break;
+      }
+
+      return days;
+    }
+  };
+
+  const calendarDays = generateCalendarDays();
+
+  // Get bookings for a specific date
+  const getBookingsForDate = (date: Date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return bookings.filter(booking => {
+      const bookingDate = new Date(booking.booking_date).toISOString().split('T')[0];
+      return bookingDate === dateStr;
+    });
+  };
+
+  const isToday = (date: Date) => {
+    return date.toDateString() === today.toDateString();
+  };
+
+  const isCurrentMonth = (date: Date) => {
+    return date.getMonth() === currentDate.getMonth();
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Calendar Header */}
+      <div className="text-center">
+        <h4 className="text-xl font-semibold">
+          {viewType === 'week'
+            ? `Week of ${calendarDays[0].toLocaleDateString()} - ${calendarDays[6].toLocaleDateString()}`
+            : `${currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+          }
+        </h4>
+      </div>
+
+      {/* Calendar Grid */}
+      <div className={`grid gap-2 ${viewType === 'week' ? 'grid-cols-7' : 'grid-cols-7'}`}>
+        {/* Day headers */}
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          <div key={day} className="text-center font-semibold p-2 bg-muted rounded text-sm">
+            {day}
+          </div>
+        ))}
+
+        {/* Calendar days */}
+        {calendarDays.map((date, index) => {
+          const dayBookings = getBookingsForDate(date);
+          const isCurrentDay = isToday(date);
+          const isCurrentMonthDay = isCurrentMonth(date);
+
+          return (
+            <div
+              key={index}
+              className={`
+                min-h-24 p-2 border rounded-lg relative
+                ${isCurrentDay ? 'bg-roam-blue/10 border-roam-blue' : 'bg-background'}
+                ${!isCurrentMonthDay && viewType === 'month' ? 'opacity-30' : ''}
+                ${dayBookings.length > 0 ? 'border-green-300 bg-green-50' : ''}
+              `}
+            >
+              <div className="font-medium text-sm mb-1">
+                {date.getDate()}
+              </div>
+
+              {/* Booking indicators */}
+              <div className="space-y-1">
+                {dayBookings.slice(0, 3).map((booking, bookingIndex) => (
+                  <div
+                    key={bookingIndex}
+                    className="text-xs p-1 rounded bg-roam-blue/20 text-roam-blue truncate"
+                    title={`${booking.services?.name || 'Service'} - ${booking.start_time}`}
+                  >
+                    {booking.start_time} {booking.services?.name || 'Service'}
+                  </div>
+                ))}
+
+                {dayBookings.length > 3 && (
+                  <div className="text-xs text-foreground/60">
+                    +{dayBookings.length - 3} more
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-4 text-sm text-foreground/60">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border-roam-blue bg-roam-blue/10 border rounded"></div>
+          <span>Today</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border-green-300 bg-green-50 border rounded"></div>
+          <span>Has Bookings</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function ProviderDashboard() {
   const { user, signOut, isOwner, isDispatcher, isProvider } = useAuth();
   const { toast } = useToast();
