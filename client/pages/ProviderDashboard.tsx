@@ -47,6 +47,29 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
+// Service category and subcategory options
+const SERVICE_CATEGORIES = [
+  { value: "beauty", label: "Beauty" },
+  { value: "fitness", label: "Fitness" },
+  { value: "therapy", label: "Therapy" },
+  { value: "healthcare", label: "Healthcare" },
+];
+
+const SERVICE_SUBCATEGORIES = [
+  { value: "hair_and_makup", label: "Hair & Makeup" },
+  { value: "spray_tan", label: "Spray Tan" },
+  { value: "esthetician", label: "Esthetician" },
+  { value: "massage_therapy", label: "Massage Therapy" },
+  { value: "iv_therapy", label: "IV Therapy" },
+  { value: "physical_therapy", label: "Physical Therapy" },
+  { value: "nurse_practitioner", label: "Nurse Practitioner" },
+  { value: "phycisian", label: "Physician" },
+  { value: "chiropractor", label: "Chiropractor" },
+  { value: "yoga_instructor", label: "Yoga Instructor" },
+  { value: "pilates_instructor", label: "Pilates Instructor" },
+  { value: "personal_trainer", label: "Personal Trainer" },
+];
+
 export default function ProviderDashboard() {
   const { user, signOut, isOwner, isDispatcher, isProvider } = useAuth();
   const { toast } = useToast();
