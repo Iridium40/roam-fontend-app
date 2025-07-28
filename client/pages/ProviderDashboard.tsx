@@ -1201,7 +1201,13 @@ export default function ProviderDashboard() {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
+        let errorText = "Unknown error";
+        try {
+          errorText = await response.text();
+        } catch (readError) {
+          console.warn("Could not read response text:", readError);
+          errorText = `HTTP ${response.status} - ${response.statusText}`;
+        }
         throw new Error(`Failed to update provider: ${errorText}`);
       }
 
