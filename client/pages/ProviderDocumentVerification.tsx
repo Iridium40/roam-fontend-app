@@ -642,12 +642,12 @@ export default function ProviderDocumentVerification() {
 
             <Button
               onClick={handleSubmit}
-              disabled={!allRequiredDocumentsUploaded() || isSubmitting}
+              disabled={!allRequiredDocumentsUploaded() || isSubmitting || uploading}
               className="bg-roam-blue hover:bg-roam-blue/90"
               size="lg"
             >
-              {isSubmitting ? (
-                <>Processing...</>
+              {isSubmitting || uploading ? (
+                <>{uploading ? "Uploading..." : "Processing..."}</>
               ) : (
                 <>
                   <CheckCircle className="w-4 h-4 mr-2" />
