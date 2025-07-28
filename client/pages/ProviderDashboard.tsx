@@ -112,7 +112,7 @@ export default function ProviderDashboard() {
   const [serviceSubcategories, setServiceSubcategories] = useState<ServiceSubcategory[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
-  const [activeBookingTab, setActiveBookingTab] = useState("today");
+  const [activeBookingTab, setActiveBookingTab] = useState("present");
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
