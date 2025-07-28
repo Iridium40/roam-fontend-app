@@ -224,6 +224,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({
         business_id: businessId,
         verification_status: "pending",
         is_active: false, // Will be activated after email verification
+        business_managed: true, // Default to true
       });
 
       if (error) throw error;
