@@ -2595,22 +2595,24 @@ export default function ProviderDashboard() {
                                   {booking.services?.name || "Service"}
                                 </h3>
                                 <p className="text-sm text-foreground/60 mb-2">
-                                  with {booking.customer_name || "Customer"}
+                                  with {booking.guest_name || "Customer"}
                                 </p>
                                 <div className="flex items-center gap-4 text-sm text-foreground/60">
                                   <div className="flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
                                     {new Date(
-                                      booking.service_date,
+                                      booking.booking_date,
                                     ).toLocaleDateString()}
                                   </div>
                                   <div className="flex items-center gap-1">
                                     <Clock className="w-4 h-4" />
-                                    {booking.service_time}
+                                    {booking.start_time}
                                   </div>
                                   <div className="flex items-center gap-1">
                                     <DeliveryIcon className="w-4 h-4" />
-                                    {booking.service_location || "TBD"}
+                                    {booking.delivery_type === 'business_location' ? 'Business Location' :
+                                     booking.delivery_type === 'customer_location' ? 'Customer Location' :
+                                     booking.delivery_type === 'virtual' ? 'Virtual' : 'TBD'}
                                   </div>
                                 </div>
                               </div>
