@@ -6805,7 +6805,7 @@ export default function ProviderDashboard() {
                       <SelectValue placeholder="Select a business location" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No location assigned</SelectItem>
+                      <SelectItem value="none">No location assigned</SelectItem>
                       {locations.map((location) => (
                         <SelectItem key={location.id} value={location.id}>
                           {location.location_name} {location.is_primary && "(Primary)"}
@@ -7105,7 +7105,7 @@ export default function ProviderDashboard() {
                       <SelectValue placeholder="Select a business location" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No location assigned</SelectItem>
+                      <SelectItem value="none">No location assigned</SelectItem>
                       {locations.map((location) => (
                         <SelectItem key={location.id} value={location.id}>
                           {location.location_name} {location.is_primary && "(Primary)"}
