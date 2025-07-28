@@ -3045,15 +3045,20 @@ export default function ProviderDashboard() {
                               </p>
                             )}
                           </div>
-                          <Switch
-                            checked={businessService.is_active !== false}
-                            className="data-[state=checked]:bg-roam-blue"
-                            disabled={isProvider && !isOwner && !isDispatcher && provider?.business_managed}
-                            onCheckedChange={(checked) => {
-                              // Quick toggle service active status
-                              handleQuickToggleService(businessService.id, checked);
-                            }}
-                          />
+                          <div className="flex flex-col items-end gap-1">
+                            <Switch
+                              checked={businessService.is_active !== false}
+                              className="data-[state=checked]:bg-roam-blue"
+                              disabled={isProvider && !isOwner && !isDispatcher && provider?.business_managed}
+                              onCheckedChange={(checked) => {
+                                // Quick toggle service active status
+                                handleQuickToggleService(businessService.id, checked);
+                              }}
+                            />
+                            {isProvider && !isOwner && !isDispatcher && provider?.business_managed && (
+                              <span className="text-xs text-foreground/50">Read-only</span>
+                            )}
+                          </div>
                         </div>
 
                         <div className="space-y-2 mb-4">
