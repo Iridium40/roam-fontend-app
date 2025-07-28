@@ -5830,11 +5830,13 @@ export default function ProviderDashboard() {
                                     </div>
                                     <div className="flex items-center gap-1">
                                       <Clock className="w-4 h-4" />
-                                      {booking.service_time}
+                                      {booking.start_time}
                                     </div>
                                     <div className="flex items-center gap-1">
                                       <DeliveryIcon className="w-4 h-4" />
-                                      {booking.service_location || "TBD"}
+                                      {booking.delivery_type === 'business_location' ? 'Business Location' :
+                                       booking.delivery_type === 'customer_location' ? 'Customer Location' :
+                                       booking.delivery_type === 'virtual' ? 'Virtual' : 'TBD'}
                                     </div>
                                     {!isProvider || isOwner || isDispatcher ? (
                                       <div className="flex items-center gap-1">
