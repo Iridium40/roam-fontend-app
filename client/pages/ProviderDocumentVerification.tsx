@@ -39,13 +39,60 @@ interface DocumentState {
 
 export default function ProviderDocumentVerification() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [businessId, setBusinessId] = useState<string>("");
+  const [providerId, setProviderId] = useState<string>("");
   const [documents, setDocuments] = useState<DocumentState>({
     driversLicense: { file: null, uploaded: false },
     proofOfAddress: { file: null, uploaded: false },
     liabilityInsurance: { file: null, uploaded: false },
     licenses: [],
   });
+
+  // Get business and provider info from location state or fetch from database
+  useEffect(() => {
+    const locationState = location.state as any;
+    if (locationState?.businessId) {
+      setBusinessId(locationState.businessId);
+    }
+
+    // Fetch provider info if user is logged in
+    if (user?.id) {
+      fetchProviderInfo();
+    }
+  }, [user, location.state]);
+
+  const fetchProviderInfo = async () => {
+    if (!user?.id) return;
+
+    try {
+      const { data: provider, error } = await supabase
+        .from('providers')
+        .select('id, business_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) throw error;
+
+      if (provider) {
+        setProviderId(provider.id);
+        if (!businessId) {
+          setBusinessId(provider.business_id);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching provider info:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load provider information",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleFileUpload = (
     documentType: keyof Omit<DocumentState, "licenses">,
