@@ -1516,6 +1516,59 @@ export default function ProviderDashboard() {
     setServiceSuccess("");
   };
 
+  const handleQuickToggleService = async (serviceId: string, isActive: boolean) => {
+    if (!provider) return;
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${serviceId}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({ is_active: isActive }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update service: ${errorText}`);
+      }
+
+      // Update local state
+      setBusinessServices(prev =>
+        prev.map(service =>
+          service.id === serviceId
+            ? { ...service, is_active: isActive }
+            : service
+        )
+      );
+
+      toast({
+        title: isActive ? "Service Activated" : "Service Deactivated",
+        description: `Service has been ${isActive ? "activated" : "deactivated"} successfully.`,
+        variant: "default",
+      });
+
+    } catch (error: any) {
+      console.error("Error toggling service:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update service status",
+        variant: "destructive",
+      });
+
+      // Refresh services to restore correct state
+      fetchBusinessServices();
+    }
+  };
+
   const getDeliveryTypeLabel = (type: string) => {
     const labels = {
       business_location: "In-Studio/Business",
