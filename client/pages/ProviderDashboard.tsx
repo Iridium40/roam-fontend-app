@@ -56,18 +56,18 @@ const SERVICE_CATEGORIES = [
 ];
 
 const SERVICE_SUBCATEGORIES = [
-  { value: "hair_and_makup", label: "Hair & Makeup" },
-  { value: "spray_tan", label: "Spray Tan" },
-  { value: "esthetician", label: "Esthetician" },
-  { value: "massage_therapy", label: "Massage Therapy" },
-  { value: "iv_therapy", label: "IV Therapy" },
-  { value: "physical_therapy", label: "Physical Therapy" },
-  { value: "nurse_practitioner", label: "Nurse Practitioner" },
-  { value: "phycisian", label: "Physician" },
-  { value: "chiropractor", label: "Chiropractor" },
-  { value: "yoga_instructor", label: "Yoga Instructor" },
-  { value: "pilates_instructor", label: "Pilates Instructor" },
-  { value: "personal_trainer", label: "Personal Trainer" },
+  { value: "hair_and_makup", label: "Hair & Makeup", categories: ["beauty"] },
+  { value: "spray_tan", label: "Spray Tan", categories: ["beauty"] },
+  { value: "esthetician", label: "Esthetician", categories: ["beauty"] },
+  { value: "massage_therapy", label: "Massage Therapy", categories: ["therapy", "healthcare"] },
+  { value: "iv_therapy", label: "IV Therapy", categories: ["healthcare"] },
+  { value: "physical_therapy", label: "Physical Therapy", categories: ["therapy", "healthcare"] },
+  { value: "nurse_practitioner", label: "Nurse Practitioner", categories: ["healthcare"] },
+  { value: "phycisian", label: "Physician", categories: ["healthcare"] },
+  { value: "chiropractor", label: "Chiropractor", categories: ["therapy", "healthcare"] },
+  { value: "yoga_instructor", label: "Yoga Instructor", categories: ["fitness"] },
+  { value: "pilates_instructor", label: "Pilates Instructor", categories: ["fitness"] },
+  { value: "personal_trainer", label: "Personal Trainer", categories: ["fitness"] },
 ];
 
 export default function ProviderDashboard() {
@@ -3564,6 +3564,18 @@ export default function ProviderDashboard() {
                                       const updatedCategories = e.target.checked
                                         ? [...businessDetailsForm.service_categories, category.value]
                                         : businessDetailsForm.service_categories.filter(c => c !== category.value);
+
+                                      // If unchecking a category, remove all related subcategories
+                                      let updatedSubcategories = businessDetailsForm.service_subcategories;
+                                      if (!e.target.checked) {
+                                        const subcategoriesToRemove = SERVICE_SUBCATEGORIES
+                                          .filter(sub => sub.categories.includes(category.value))
+                                          .map(sub => sub.value);
+                                        updatedSubcategories = businessDetailsForm.service_subcategories
+                                          .filter(sub => !subcategoriesToRemove.includes(sub));
+                                        handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
+                                      }
+
                                       handleBusinessDetailsFormChange("service_categories", updatedCategories);
                                     }}
                                     disabled={businessDetailsSaving}
@@ -3578,32 +3590,45 @@ export default function ProviderDashboard() {
                           </div>
 
                           {/* Service Subcategories */}
-                          <div className="space-y-3">
-                            <Label className="text-base font-medium">Service Specializations</Label>
-                            <p className="text-sm text-foreground/60">Select the specific services and specializations your business provides</p>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                              {SERVICE_SUBCATEGORIES.map((subcategory) => (
-                                <div key={subcategory.value} className="flex items-center space-x-2">
-                                  <input
-                                    type="checkbox"
-                                    id={`subcategory-${subcategory.value}`}
-                                    checked={businessDetailsForm.service_subcategories.includes(subcategory.value)}
-                                    onChange={(e) => {
-                                      const updatedSubcategories = e.target.checked
-                                        ? [...businessDetailsForm.service_subcategories, subcategory.value]
-                                        : businessDetailsForm.service_subcategories.filter(s => s !== subcategory.value);
-                                      handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
-                                    }}
-                                    disabled={businessDetailsSaving}
-                                    className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
-                                  />
-                                  <Label htmlFor={`subcategory-${subcategory.value}`} className="text-sm font-normal cursor-pointer">
-                                    {subcategory.label}
-                                  </Label>
+                          {businessDetailsForm.service_categories.length > 0 && (
+                            <div className="space-y-3">
+                              <Label className="text-base font-medium">Service Specializations</Label>
+                              <p className="text-sm text-foreground/60">Select the specific services and specializations your business provides</p>
+                              {businessDetailsForm.service_categories.length === 0 ? (
+                                <p className="text-sm text-gray-500 italic">Please select service categories first to see available specializations</p>
+                              ) : (
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                  {SERVICE_SUBCATEGORIES
+                                    .filter(subcategory =>
+                                      subcategory.categories.some(cat =>
+                                        businessDetailsForm.service_categories.includes(cat)
+                                      )
+                                    )
+                                    .map((subcategory) => (
+                                      <div key={subcategory.value} className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          id={`subcategory-${subcategory.value}`}
+                                          checked={businessDetailsForm.service_subcategories.includes(subcategory.value)}
+                                          onChange={(e) => {
+                                            const updatedSubcategories = e.target.checked
+                                              ? [...businessDetailsForm.service_subcategories, subcategory.value]
+                                              : businessDetailsForm.service_subcategories.filter(s => s !== subcategory.value);
+                                            handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
+                                          }}
+                                          disabled={businessDetailsSaving}
+                                          className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
+                                        />
+                                        <Label htmlFor={`subcategory-${subcategory.value}`} className="text-sm font-normal cursor-pointer">
+                                          {subcategory.label}
+                                        </Label>
+                                      </div>
+                                    ))
+                                  }
                                 </div>
-                              ))}
+                              )}
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
 
