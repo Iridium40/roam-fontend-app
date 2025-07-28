@@ -3116,7 +3116,6 @@ export default function ProviderDashboard() {
           contact_email: businessData.contact_email || "",
           phone: businessData.phone || "",
           website_url: businessData.website_url || "",
-          years_in_business: businessData.years_in_business?.toString() || "",
           logo_url: businessData.logo_url || "",
           verification_status: businessData.verification_status || "",
           is_active: businessData.is_active !== false,
