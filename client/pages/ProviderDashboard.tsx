@@ -4584,25 +4584,7 @@ export default function ProviderDashboard() {
                             />
                           </div>
 
-                          <div className="space-y-2">
-                            <Label htmlFor="years_in_business">
-                              Years in Business
-                            </Label>
-                            <Input
-                              id="years_in_business"
-                              type="number"
-                              min="0"
-                              max="100"
-                              value={businessDetailsForm.years_in_business}
-                              onChange={(e) =>
-                                handleBusinessDetailsFormChange(
-                                  "years_in_business",
-                                  e.target.value,
-                                )
-                              }
-                              disabled={businessDetailsSaving}
-                            />
-                          </div>
+
 
                           <div className="space-y-2">
                             <Label htmlFor="verification_status">
