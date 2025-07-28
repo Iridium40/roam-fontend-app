@@ -2879,6 +2879,13 @@ export default function ProviderDashboard() {
     }
   }, [user]);
 
+  // Update filtered providers when location selection changes
+  useEffect(() => {
+    if ((isOwner || isDispatcher) && allProviders.length > 0) {
+      filterProvidersByLocation(allProviders, selectedLocationFilter);
+    }
+  }, [selectedLocationFilter, allProviders, isOwner, isDispatcher]);
+
   // Fetch locations when provider is available and locations tab is active
   useEffect(() => {
     if (
