@@ -5754,7 +5754,7 @@ export default function ProviderDashboard() {
                   <CardContent className="p-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-600">
-                        {calendarBookings.filter(b => b.status === 'confirmed').length}
+                        {calendarBookings.filter(b => b.booking_status === 'confirmed').length}
                       </div>
                       <div className="text-sm text-foreground/60">Confirmed</div>
                     </div>
@@ -5764,7 +5764,7 @@ export default function ProviderDashboard() {
                   <CardContent className="p-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-yellow-600">
-                        {calendarBookings.filter(b => b.status === 'pending').length}
+                        {calendarBookings.filter(b => b.booking_status === 'pending').length}
                       </div>
                       <div className="text-sm text-foreground/60">Pending</div>
                     </div>
@@ -5774,7 +5774,7 @@ export default function ProviderDashboard() {
                   <CardContent className="p-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-blue-600">
-                        {calendarBookings.filter(b => b.status === 'completed').length}
+                        {calendarBookings.filter(b => b.booking_status === 'completed').length}
                       </div>
                       <div className="text-sm text-foreground/60">Completed</div>
                     </div>
