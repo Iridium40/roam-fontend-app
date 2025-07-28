@@ -3699,6 +3699,54 @@ export default function ProviderDashboard() {
                 </div>
               </div>
 
+              {/* Location and Provider Filters for Owners/Dispatchers */}
+              {(isOwner || isDispatcher) && (
+                <div className="flex gap-4 items-center">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="location-filter" className="text-sm font-medium">
+                      Location:
+                    </Label>
+                    <Select value={selectedLocationFilter} onValueChange={handleLocationFilterChange}>
+                      <SelectTrigger className="w-48" id="location-filter">
+                        <SelectValue placeholder="Select location" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Locations</SelectItem>
+                        {locations.map((location) => (
+                          <SelectItem key={location.id} value={location.id}>
+                            {location.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="provider-filter" className="text-sm font-medium">
+                      Provider:
+                    </Label>
+                    <Select value={selectedProviderFilter} onValueChange={setSelectedProviderFilter}>
+                      <SelectTrigger className="w-48" id="provider-filter">
+                        <SelectValue placeholder="Select provider" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Providers</SelectItem>
+                        {filteredProviders.map((provider) => (
+                          <SelectItem key={provider.id} value={provider.id}>
+                            {provider.first_name} {provider.last_name}
+                            {provider.locations?.name && ` (${provider.locations.name})`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="text-sm text-foreground/60">
+                    Showing {getFilteredBookings().length} bookings
+                  </div>
+                </div>
+              )}
+
               {/* Only show sub-tabs for providers with provider role */}
               {provider?.provider_role === "provider" ? (
                 <Tabs
