@@ -2206,7 +2206,7 @@ export default function ProviderDashboard() {
 
       // Validate enum values against expected database enums
       const validCategories = ["beauty", "fitness", "therapy", "healthcare"];
-      const validSubcategories = ["hair_and_makup", "spray_tan", "esthetician", "massage_therapy", "iv_therapy", "physical_therapy", "nurse_practitioner", "phycisian", "chiropractor", "yoga_instructor", "pilates_instructor", "personal_trainer"];
+      const validSubcategories = ["hair_and_makeup", "spray_tan", "esthetician", "massage_therapy", "iv_therapy", "physical_therapy", "nurse_practitioner", "phycisian", "chiropractor", "yoga_instructor", "pilates_instructor", "personal_trainer"];
 
       if (updateData.service_categories) {
         const invalidCategories = updateData.service_categories.filter(cat => !validCategories.includes(cat));
