@@ -2712,10 +2712,116 @@ export default function ProviderDashboard() {
   };
 
   const getFilteredBookings = () => {
-    return filterBookingsByDate(
+    let filtered = filterBookingsByDate(
       bookings,
       activeBookingTab as "present" | "future" | "past",
     );
+
+    // For owners/dispatchers, filter by location and provider
+    if ((isOwner || isDispatcher) && selectedProviderFilter !== "all") {
+      filtered = filtered.filter(booking => booking.provider_id === selectedProviderFilter);
+    }
+
+    return filtered;
+  };
+
+  // Load all providers for owners/dispatchers
+  const loadAllProviders = async () => {
+    if (!isOwner && !isDispatcher) return;
+
+    try {
+      const { data: providers, error } = await supabase
+        .from('providers')
+        .select(`
+          id,
+          first_name,
+          last_name,
+          provider_role,
+          location_id,
+          is_active,
+          locations (
+            id,
+            name,
+            address_line1
+          )
+        `)
+        .eq('provider_role', 'provider')
+        .eq('is_active', true);
+
+      if (error) {
+        console.error('Error loading providers:', error);
+      } else {
+        setAllProviders(providers || []);
+        filterProvidersByLocation(providers || [], selectedLocationFilter);
+      }
+    } catch (error) {
+      console.error('Error loading providers:', error);
+    }
+  };
+
+  // Filter providers by selected location
+  const filterProvidersByLocation = (providers: any[], locationId: string) => {
+    if (locationId === "all") {
+      setFilteredProviders(providers);
+    } else {
+      const filtered = providers.filter(provider => provider.location_id === locationId);
+      setFilteredProviders(filtered);
+    }
+
+    // Reset provider selection if current selection is not available in filtered list
+    if (selectedProviderFilter !== "all") {
+      const isProviderInFiltered = filteredProviders.some(p => p.id === selectedProviderFilter);
+      if (!isProviderInFiltered) {
+        setSelectedProviderFilter("all");
+      }
+    }
+  };
+
+  // Handle location filter change
+  const handleLocationFilterChange = (locationId: string) => {
+    setSelectedLocationFilter(locationId);
+    filterProvidersByLocation(allProviders, locationId);
+  };
+
+  // Load bookings for all providers (for owners/dispatchers)
+  const loadAllBookings = async () => {
+    if (!isOwner && !isDispatcher) return;
+
+    try {
+      const { data: allBookings, error } = await supabase
+        .from('bookings')
+        .select(`
+          *,
+          services (
+            id,
+            name,
+            min_price
+          ),
+          customer_profiles (
+            id,
+            first_name,
+            last_name,
+            email,
+            image_url
+          ),
+          providers (
+            id,
+            first_name,
+            last_name,
+            location_id
+          )
+        `)
+        .order('booking_date', { ascending: false })
+        .limit(50);
+
+      if (error) {
+        console.error('Error loading all bookings:', error);
+      } else {
+        setBookings(allBookings || []);
+      }
+    } catch (error) {
+      console.error('Error loading all bookings:', error);
+    }
   };
 
   const loadServiceCategoriesAndSubcategories = async () => {
