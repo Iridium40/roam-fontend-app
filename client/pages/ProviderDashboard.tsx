@@ -2820,12 +2820,15 @@ export default function ProviderDashboard() {
         .limit(50);
 
       if (error) {
-        console.error('Error loading all bookings:', error);
+        console.error('Error loading all bookings:', JSON.stringify(error, null, 2));
+        console.error('Booking error details:', error.message || error.details || error);
       } else {
+        console.log('Loaded all bookings:', allBookings?.length || 0);
         setBookings(allBookings || []);
       }
     } catch (error) {
-      console.error('Error loading all bookings:', error);
+      console.error('Error loading all bookings (catch):', JSON.stringify(error, null, 2));
+      console.error('Booking error details (catch):', error instanceof Error ? error.message : error);
     }
   };
 
