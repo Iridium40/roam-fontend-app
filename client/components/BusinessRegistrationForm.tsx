@@ -313,23 +313,7 @@ export const BusinessRegistrationForm: React.FC<
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="years_in_business">Years in Business *</Label>
-                <Input
-                  id="years_in_business"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={formData.years_in_business}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "years_in_business",
-                      parseInt(e.target.value) || 0,
-                    )
-                  }
-                  required
-                />
-              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="website_url">Website (Optional)</Label>
                 <div className="relative">
