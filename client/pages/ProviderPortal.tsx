@@ -232,6 +232,7 @@ export default function ProviderPortal() {
         verification_status: "pending",
         background_check_status: "under_review",
         is_active: false, // Inactive until verified by admin
+        business_managed: true, // Default to true
       });
 
       // Create setup progress tracking
