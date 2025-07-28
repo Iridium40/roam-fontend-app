@@ -553,6 +553,91 @@ export default function ProviderDashboard() {
     if (profileError) setProfileError("");
   };
 
+  const handleNotificationSettingsChange = (field: string, value: string) => {
+    setNotificationSettings((prev) => ({ ...prev, [field]: value }));
+    // Clear success/error messages when user starts typing
+    if (notificationSettingsSuccess) setNotificationSettingsSuccess("");
+    if (notificationSettingsError) setNotificationSettingsError("");
+  };
+
+  const handleSaveNotificationSettings = async () => {
+    if (!provider) return;
+
+    setNotificationSettingsSaving(true);
+    setNotificationSettingsError("");
+    setNotificationSettingsSuccess("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Prepare update data
+      const updateData = {
+        notification_email: notificationSettings.notification_email?.trim() || null,
+        notification_phone: notificationSettings.notification_phone?.trim() || null,
+      };
+
+      // Email validation - only validate if email is provided and not empty
+      if (updateData.notification_email && updateData.notification_email.length > 0) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(updateData.notification_email)) {
+          throw new Error("Please enter a valid notification email address");
+        }
+      }
+
+      // Update provider using direct API
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${provider.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update notification settings: ${errorText}`);
+      }
+
+      // Update local provider state
+      setProvider({
+        ...provider,
+        ...updateData,
+      });
+
+      setNotificationSettingsSuccess("Notification settings updated successfully!");
+
+      toast({
+        title: "Settings Updated",
+        description: "Your notification preferences have been saved.",
+        variant: "default",
+      });
+    } catch (error: any) {
+      console.error("Notification settings save error:", error);
+      let errorMessage = "Failed to update notification settings";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      setNotificationSettingsError(errorMessage);
+      toast({
+        title: "Update Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setNotificationSettingsSaving(false);
+    }
+  };
+
   const handleSaveProfile = async () => {
     if (!provider) return;
 
@@ -5276,26 +5361,95 @@ export default function ProviderDashboard() {
                   <CardHeader>
                     <CardTitle>Notification Preferences</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
+                  <CardContent className="space-y-6">
+                    {/* Notification Contact Details */}
+                    <div className="space-y-4 pb-4 border-b">
                       <div>
-                        <Label>New Booking Alerts</Label>
-                        <p className="text-sm text-foreground/60">
-                          Get notified when customers book your services
+                        <h4 className="font-medium mb-2">Notification Contact Details</h4>
+                        <p className="text-sm text-foreground/60 mb-4">
+                          Specify dedicated contact details for receiving notifications and alerts
                         </p>
                       </div>
-                      <Switch
-                        defaultChecked
-                        className="data-[state=checked]:bg-roam-blue"
-                      />
+
+                      {notificationSettingsError && (
+                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                          {notificationSettingsError}
+                        </div>
+                      )}
+
+                      {notificationSettingsSuccess && (
+                        <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                          {notificationSettingsSuccess}
+                        </div>
+                      )}
+
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="notification_email">Notification Email</Label>
+                          <Input
+                            id="notification_email"
+                            type="email"
+                            value={notificationSettings.notification_email}
+                            onChange={(e) =>
+                              handleNotificationSettingsChange("notification_email", e.target.value)
+                            }
+                            placeholder="Enter email for notifications (optional)"
+                            disabled={notificationSettingsSaving}
+                          />
+                          <p className="text-xs text-foreground/60">
+                            If provided, notifications will be sent to this email instead of your main account email
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="notification_phone">Notification Phone</Label>
+                          <Input
+                            id="notification_phone"
+                            type="tel"
+                            value={notificationSettings.notification_phone}
+                            onChange={(e) =>
+                              handleNotificationSettingsChange("notification_phone", e.target.value)
+                            }
+                            placeholder="Enter phone for SMS notifications (optional)"
+                            disabled={notificationSettingsSaving}
+                          />
+                          <p className="text-xs text-foreground/60">
+                            If provided, SMS notifications will be sent to this number instead of your main phone number
+                          </p>
+                        </div>
+
+                        <Button
+                          onClick={handleSaveNotificationSettings}
+                          disabled={notificationSettingsSaving}
+                          className="bg-roam-blue hover:bg-roam-blue/90"
+                          size="sm"
+                        >
+                          {notificationSettingsSaving ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                              Saving...
+                            </>
+                          ) : (
+                            "Save Notification Settings"
+                          )}
+                        </Button>
+                      </div>
                     </div>
 
-                    {(isOwner || isDispatcher) && (
+                    {/* Notification Type Preferences */}
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium mb-2">Notification Types</h4>
+                        <p className="text-sm text-foreground/60 mb-4">
+                          Choose which types of notifications you want to receive
+                        </p>
+                      </div>
+
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label>Payment Notifications</Label>
+                          <Label>New Booking Alerts</Label>
                           <p className="text-sm text-foreground/60">
-                            Receive alerts for payments and payouts
+                            Get notified when customers book your services
                           </p>
                         </div>
                         <Switch
@@ -5303,16 +5457,31 @@ export default function ProviderDashboard() {
                           className="data-[state=checked]:bg-roam-blue"
                         />
                       </div>
-                    )}
 
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Marketing Updates</Label>
-                        <p className="text-sm text-foreground/60">
-                          Tips and updates to grow your business
-                        </p>
+                      {(isOwner || isDispatcher) && (
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Label>Payment Notifications</Label>
+                            <p className="text-sm text-foreground/60">
+                              Receive alerts for payments and payouts
+                            </p>
+                          </div>
+                          <Switch
+                            defaultChecked
+                            className="data-[state=checked]:bg-roam-blue"
+                          />
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label>Marketing Updates</Label>
+                          <p className="text-sm text-foreground/60">
+                            Tips and updates to grow your business
+                          </p>
+                        </div>
+                        <Switch className="data-[state=checked]:bg-roam-blue" />
                       </div>
-                      <Switch className="data-[state=checked]:bg-roam-blue" />
                     </div>
                   </CardContent>
                 </Card>
