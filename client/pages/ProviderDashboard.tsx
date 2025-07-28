@@ -1059,7 +1059,7 @@ export default function ProviderDashboard() {
         bio: providerForm.bio.trim() || null,
         date_of_birth: providerForm.date_of_birth || null,
         experience_years: providerForm.experience_years ? parseInt(providerForm.experience_years) : null,
-        location_id: providerForm.location_id || null,
+        location_id: providerForm.location_id && providerForm.location_id !== "none" ? providerForm.location_id : null,
         provider_role: providerForm.provider_role,
         business_managed: managementSettings.business_managed,
         is_active: true,
@@ -1182,7 +1182,7 @@ export default function ProviderDashboard() {
         is_active: providerManagementForm.is_active,
         provider_role: providerManagementForm.provider_role,
         business_managed: providerManagementForm.business_managed,
-        location_id: providerManagementForm.location_id || null,
+        location_id: providerManagementForm.location_id && providerManagementForm.location_id !== "none" ? providerManagementForm.location_id : null,
         verification_status: providerManagementForm.verification_status,
       };
 
