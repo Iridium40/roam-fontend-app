@@ -2083,8 +2083,44 @@ export default function ProviderDashboard() {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update service: ${errorText}`);
+        let errorText = "Unknown error";
+        let errorDetails = "";
+        try {
+          errorText = await response.text();
+          // Try to parse error details from response
+          try {
+            const errorJson = JSON.parse(errorText);
+            if (errorJson.message) {
+              errorDetails = errorJson.message;
+            } else if (errorJson.error) {
+              errorDetails = errorJson.error;
+            } else if (errorJson.hint) {
+              errorDetails = errorJson.hint;
+            } else if (errorJson.details) {
+              errorDetails = errorJson.details;
+            }
+          } catch (parseError) {
+            // errorText is not JSON, use as-is
+            errorDetails = errorText;
+          }
+        } catch (readError) {
+          console.warn("Could not read response text:", readError);
+          errorText = `HTTP ${response.status} - ${response.statusText}`;
+          errorDetails = errorText;
+        }
+
+        console.error("Service update failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          responseText: errorText,
+          errorDetails: errorDetails,
+          updateData: JSON.stringify(updateData, null, 2),
+          serviceId: editingService.id,
+        });
+
+        throw new Error(
+          `Failed to update service: HTTP ${response.status} - ${errorDetails}`,
+        );
       }
 
       // Update local state
@@ -4301,7 +4337,7 @@ export default function ProviderDashboard() {
                                 businessService.services?.service_subcategories
                                   ?.service_categories
                                   ?.service_category_type}{" "}
-                              ���{" "}
+                              ����{" "}
                               {
                                 businessService.services?.service_subcategories
                                   ?.name
@@ -7374,7 +7410,7 @@ export default function ProviderDashboard() {
                     ?.service_categories?.description ||
                     editingService.services?.service_subcategories
                       ?.service_categories?.service_category_type}{" "}
-                  →{" "}
+                  ���{" "}
                   {editingService.services?.service_subcategories
                     ?.description ||
                     editingService.services?.service_subcategories
