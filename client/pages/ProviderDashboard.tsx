@@ -240,6 +240,8 @@ export default function ProviderDashboard() {
     verification_status: "",
     is_active: true,
     setup_completed: false,
+    service_categories: [],
+    service_subcategories: [],
   });
   const [logoUploading, setLogoUploading] = useState(false);
   const [logoError, setLogoError] = useState("");
