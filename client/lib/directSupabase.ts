@@ -257,13 +257,30 @@ class DirectSupabaseAPI {
     }
 
     if (!response.ok) {
+      // Parse response text to get detailed error info
+      let errorDetails = responseText;
+      try {
+        const errorJson = JSON.parse(responseText);
+        if (errorJson.message) {
+          errorDetails = errorJson.message;
+        } else if (errorJson.error) {
+          errorDetails = errorJson.error;
+        } else if (errorJson.hint) {
+          errorDetails = errorJson.hint;
+        }
+      } catch (parseError) {
+        // responseText is not JSON, use as-is
+      }
+
       console.error("Business profile update failed:", {
         status: response.status,
         statusText: response.statusText,
         responseText: responseText,
-        updateData: updateData
+        errorDetails: errorDetails,
+        updateData: JSON.stringify(updateData, null, 2),
+        url: `${this.baseURL}/rest/v1/business_profiles?id=eq.${businessId}`
       });
-      throw new Error(`Failed to update business profile: ${responseText || `HTTP ${response.status} - ${response.statusText}`}`);
+      throw new Error(`Failed to update business profile: HTTP ${response.status} - ${errorDetails}`);
     }
     // Success case - responseText is empty due to Prefer: return=minimal
   }
