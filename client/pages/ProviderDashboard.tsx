@@ -1054,7 +1054,7 @@ export default function ProviderDashboard() {
               services(name, description)
             `)
             .in("provider_id", providerIds)
-            .order("service_date", { ascending: true });
+            .order("booking_date", { ascending: true });
 
           bookingsData = result.data;
           bookingsError = result.error;
