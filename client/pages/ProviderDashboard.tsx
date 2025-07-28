@@ -2210,7 +2210,10 @@ export default function ProviderDashboard() {
       };
 
       // Debug logging
-      console.log("Saving business details with data:", updateData);
+      console.log("Saving business details with data:", JSON.stringify(updateData, null, 2));
+      console.log("Business ID:", business.id);
+      console.log("Service categories type:", typeof updateData.service_categories, updateData.service_categories);
+      console.log("Service subcategories type:", typeof updateData.service_subcategories, updateData.service_subcategories);
 
       // Validate required fields
       if (!updateData.business_name) {
