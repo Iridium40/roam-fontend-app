@@ -3906,6 +3906,15 @@ export default function ProviderDashboard() {
                                     ? "Pending"
                                     : "Unverified"}
                               </Badge>
+                              <Badge
+                                className={
+                                  teamProvider.business_managed
+                                    ? "bg-blue-100 text-blue-800"
+                                    : "bg-purple-100 text-purple-800"
+                                }
+                              >
+                                {teamProvider.business_managed ? "Business Managed" : "Self Managed"}
+                              </Badge>
                               <Button variant="outline" size="sm">
                                 <Settings className="w-4 h-4 mr-2" />
                                 Manage
