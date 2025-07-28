@@ -6243,7 +6243,9 @@ export default function ProviderDashboard() {
                 <p className="text-sm text-foreground/60">
                   {
                     editingService.services?.service_subcategories
-                      ?.service_categories?.name
+                      ?.service_categories?.description ||
+                    editingService.services?.service_subcategories
+                      ?.service_categories?.service_category_type
                   }{" "}
                   → {editingService.services?.service_subcategories?.name}
                 </p>
