@@ -3202,16 +3202,16 @@ export default function ProviderDashboard() {
               {provider?.provider_role === "provider" ? (
                 <Tabs value={activeBookingTab} onValueChange={setActiveBookingTab} className="space-y-4">
                   <TabsList className="grid grid-cols-3 w-full max-w-md">
-                    <TabsTrigger value="today">Today</TabsTrigger>
+                    <TabsTrigger value="present">Present</TabsTrigger>
                     <TabsTrigger value="future">Future</TabsTrigger>
                     <TabsTrigger value="past">Past</TabsTrigger>
                   </TabsList>
 
-                  {["today", "future", "past"].map((tabValue) => (
+                  {["present", "future", "past"].map((tabValue) => (
                     <TabsContent key={tabValue} value={tabValue} className="space-y-4">
                       <div className="space-y-4">
-                        {filterBookingsByDate(bookings, tabValue as 'today' | 'future' | 'past').length > 0 ? (
-                          filterBookingsByDate(bookings, tabValue as 'today' | 'future' | 'past').map((booking) => {
+                        {filterBookingsByDate(bookings, tabValue as 'present' | 'future' | 'past').length > 0 ? (
+                          filterBookingsByDate(bookings, tabValue as 'present' | 'future' | 'past').map((booking) => {
                             const statusConfig = getStatusBadge(booking.booking_status);
                             const DeliveryIcon = getDeliveryIcon(
                               booking.delivery_type || "business_location",
