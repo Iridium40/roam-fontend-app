@@ -6036,11 +6036,32 @@ export default function ProviderDashboard() {
                                       <Clock className="w-4 h-4" />
                                       {booking.start_time}
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                      <DeliveryIcon className="w-4 h-4" />
-                                      {booking.delivery_type === 'business_location' ? 'Business Location' :
-                                       booking.delivery_type === 'customer_location' ? 'Customer Location' :
-                                       booking.delivery_type === 'virtual' ? 'Virtual' : 'TBD'}
+                                    <div className="flex items-start gap-1 min-w-0">
+                                      <DeliveryIcon className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                                      <div className="flex flex-col min-w-0">
+                                        {(() => {
+                                          const location = formatBookingLocation(booking);
+                                          if (typeof location === 'string') {
+                                            return <span className="text-sm">{location}</span>;
+                                          } else {
+                                            return (
+                                              <div className="min-w-0">
+                                                <span className="text-sm font-medium">{location.name}</span>
+                                                {location.address && (
+                                                  <span className="text-xs text-foreground/50 block truncate">
+                                                    {location.address}
+                                                  </span>
+                                                )}
+                                                {location.instructions && (
+                                                  <span className="text-xs text-blue-600 block truncate">
+                                                    📝 {location.instructions}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            );
+                                          }
+                                        })()}
+                                      </div>
                                     </div>
                                     {!isProvider || isOwner || isDispatcher ? (
                                       <div className="flex items-center gap-1">
