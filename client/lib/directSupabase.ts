@@ -284,9 +284,11 @@ class DirectSupabaseAPI {
         responseText: responseText,
         errorDetails: errorDetails,
         updateData: JSON.stringify(updateData, null, 2),
-        url: `${this.baseURL}/rest/v1/business_profiles?id=eq.${businessId}`
+        url: `${this.baseURL}/rest/v1/business_profiles?id=eq.${businessId}`,
       });
-      throw new Error(`Failed to update business profile: HTTP ${response.status} - ${errorDetails}`);
+      throw new Error(
+        `Failed to update business profile: HTTP ${response.status} - ${errorDetails}`,
+      );
     }
     // Success case - responseText is empty due to Prefer: return=minimal
   }

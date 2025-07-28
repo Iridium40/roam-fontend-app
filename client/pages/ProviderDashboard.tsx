@@ -2,7 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,17 +73,22 @@ interface ServiceSubcategory {
 }
 
 // Calendar Grid Component
-const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
-  bookings: any[],
-  viewType: 'week' | 'month',
-  currentDate: Date,
-  onDateChange: (date: Date) => void
+const CalendarGrid = ({
+  bookings,
+  viewType,
+  currentDate,
+  onDateChange,
+}: {
+  bookings: any[];
+  viewType: "week" | "month";
+  currentDate: Date;
+  onDateChange: (date: Date) => void;
 }) => {
   const today = new Date();
 
   // Generate calendar days
   const generateCalendarDays = () => {
-    if (viewType === 'week') {
+    if (viewType === "week") {
       // Generate current week
       const startOfWeek = new Date(currentDate);
       startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Start from Sunday
@@ -90,8 +100,16 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
       });
     } else {
       // Generate current month
-      const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      const firstDay = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1,
+      );
+      const lastDay = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0,
+      );
       const startDate = new Date(firstDay);
       startDate.setDate(firstDay.getDate() - firstDay.getDay()); // Start from Sunday of first week
 
@@ -115,9 +133,11 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
 
   // Get bookings for a specific date
   const getBookingsForDate = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    return bookings.filter(booking => {
-      const bookingDate = new Date(booking.booking_date).toISOString().split('T')[0];
+    const dateStr = date.toISOString().split("T")[0];
+    return bookings.filter((booking) => {
+      const bookingDate = new Date(booking.booking_date)
+        .toISOString()
+        .split("T")[0];
       return bookingDate === dateStr;
     });
   };
@@ -132,7 +152,7 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
 
   const navigatePrevious = () => {
     const newDate = new Date(currentDate);
-    if (viewType === 'week') {
+    if (viewType === "week") {
       newDate.setDate(currentDate.getDate() - 7);
     } else {
       newDate.setMonth(currentDate.getMonth() - 1);
@@ -142,7 +162,7 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
 
   const navigateNext = () => {
     const newDate = new Date(currentDate);
-    if (viewType === 'week') {
+    if (viewType === "week") {
       newDate.setDate(currentDate.getDate() + 7);
     } else {
       newDate.setMonth(currentDate.getMonth() + 1);
@@ -164,12 +184,16 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
 
         <div className="text-center">
           <h4 className="text-xl font-semibold">
-            {viewType === 'week'
+            {viewType === "week"
               ? `Week of ${calendarDays[0].toLocaleDateString()} - ${calendarDays[6].toLocaleDateString()}`
-              : `${currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
-            }
+              : `${currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}`}
           </h4>
-          <Button variant="ghost" size="sm" onClick={goToToday} className="mt-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={goToToday}
+            className="mt-1"
+          >
             Today
           </Button>
         </div>
@@ -180,10 +204,15 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
       </div>
 
       {/* Calendar Grid */}
-      <div className={`grid gap-2 ${viewType === 'week' ? 'grid-cols-7' : 'grid-cols-7'}`}>
+      <div
+        className={`grid gap-2 ${viewType === "week" ? "grid-cols-7" : "grid-cols-7"}`}
+      >
         {/* Day headers */}
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center font-semibold p-2 bg-muted rounded text-sm">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <div
+            key={day}
+            className="text-center font-semibold p-2 bg-muted rounded text-sm"
+          >
             {day}
           </div>
         ))}
@@ -199,14 +228,12 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
               key={index}
               className={`
                 min-h-24 p-2 border rounded-lg relative
-                ${isCurrentDay ? 'bg-roam-blue/10 border-roam-blue' : 'bg-background'}
-                ${!isCurrentMonthDay && viewType === 'month' ? 'opacity-30' : ''}
-                ${dayBookings.length > 0 ? 'border-green-300 bg-green-50' : ''}
+                ${isCurrentDay ? "bg-roam-blue/10 border-roam-blue" : "bg-background"}
+                ${!isCurrentMonthDay && viewType === "month" ? "opacity-30" : ""}
+                ${dayBookings.length > 0 ? "border-green-300 bg-green-50" : ""}
               `}
             >
-              <div className="font-medium text-sm mb-1">
-                {date.getDate()}
-              </div>
+              <div className="font-medium text-sm mb-1">{date.getDate()}</div>
 
               {/* Booking indicators */}
               <div className="space-y-1">
@@ -214,9 +241,9 @@ const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
                   <div
                     key={bookingIndex}
                     className="text-xs p-1 rounded bg-roam-blue/20 text-roam-blue truncate"
-                    title={`${booking.services?.name || 'Service'} - ${booking.start_time}`}
+                    title={`${booking.services?.name || "Service"} - ${booking.start_time}`}
                   >
-                    {booking.start_time} {booking.services?.name || 'Service'}
+                    {booking.start_time} {booking.services?.name || "Service"}
                   </div>
                 ))}
 
@@ -287,13 +314,19 @@ export default function ProviderDashboard() {
   const [businessAddons, setBusinessAddons] = useState<any[]>([]);
   const [servicesLoading, setServicesLoading] = useState(false);
   const [servicesError, setServicesError] = useState("");
-  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([]);
-  const [serviceSubcategories, setServiceSubcategories] = useState<ServiceSubcategory[]>([]);
+  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>(
+    [],
+  );
+  const [serviceSubcategories, setServiceSubcategories] = useState<
+    ServiceSubcategory[]
+  >([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
   const [activeBookingTab, setActiveBookingTab] = useState("present");
   const [showCalendarView, setShowCalendarView] = useState(false);
-  const [calendarViewType, setCalendarViewType] = useState<'week' | 'month'>('month');
+  const [calendarViewType, setCalendarViewType] = useState<"week" | "month">(
+    "month",
+  );
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
@@ -403,9 +436,12 @@ export default function ProviderDashboard() {
     notification_email: "",
     notification_phone: "",
   });
-  const [notificationSettingsSaving, setNotificationSettingsSaving] = useState(false);
-  const [notificationSettingsError, setNotificationSettingsError] = useState("");
-  const [notificationSettingsSuccess, setNotificationSettingsSuccess] = useState("");
+  const [notificationSettingsSaving, setNotificationSettingsSaving] =
+    useState(false);
+  const [notificationSettingsError, setNotificationSettingsError] =
+    useState("");
+  const [notificationSettingsSuccess, setNotificationSettingsSuccess] =
+    useState("");
 
   // Business hours editing state
   const [businessHoursForm, setBusinessHoursForm] = useState({
@@ -794,12 +830,17 @@ export default function ProviderDashboard() {
 
       // Prepare update data
       const updateData = {
-        notification_email: notificationSettings.notification_email?.trim() || null,
-        notification_phone: notificationSettings.notification_phone?.trim() || null,
+        notification_email:
+          notificationSettings.notification_email?.trim() || null,
+        notification_phone:
+          notificationSettings.notification_phone?.trim() || null,
       };
 
       // Email validation - only validate if email is provided and not empty
-      if (updateData.notification_email && updateData.notification_email.length > 0) {
+      if (
+        updateData.notification_email &&
+        updateData.notification_email.length > 0
+      ) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(updateData.notification_email)) {
           throw new Error("Please enter a valid notification email address");
@@ -832,7 +873,9 @@ export default function ProviderDashboard() {
         ...updateData,
       });
 
-      setNotificationSettingsSuccess("Notification settings updated successfully!");
+      setNotificationSettingsSuccess(
+        "Notification settings updated successfully!",
+      );
 
       toast({
         title: "Settings Updated",
@@ -1098,14 +1141,18 @@ export default function ProviderDashboard() {
       return;
     }
 
-    console.log("fetchTeamProviders: Starting fetch for business_id:", provider.business_id);
+    console.log(
+      "fetchTeamProviders: Starting fetch for business_id:",
+      provider.business_id,
+    );
     setProvidersLoading(true);
     setProvidersError("");
 
     try {
       const { data, error } = await supabase
         .from("providers")
-        .select(`
+        .select(
+          `
           *,
           business_locations (
             id,
@@ -1115,7 +1162,8 @@ export default function ProviderDashboard() {
             state,
             is_primary
           )
-        `)
+        `,
+        )
         .eq("business_id", provider.business_id)
         .order("created_at", { ascending: false });
 
@@ -1185,7 +1233,7 @@ export default function ProviderDashboard() {
         password: Math.random().toString(36).slice(-12), // Temporary password
         options: {
           emailRedirectTo: `${window.location.origin}/provider-portal`,
-        }
+        },
       });
 
       if (error) throw error;
@@ -1193,7 +1241,9 @@ export default function ProviderDashboard() {
       if (data.user) {
         setNewUserId(data.user.id);
         setOtpSent(true);
-        setAddProviderSuccess("Verification email sent! Please ask the provider to check their email and enter the OTP code.");
+        setAddProviderSuccess(
+          "Verification email sent! Please ask the provider to check their email and enter the OTP code.",
+        );
       }
     } catch (error: any) {
       console.error("Error creating user:", error);
@@ -1217,13 +1267,15 @@ export default function ProviderDashboard() {
       const { data, error } = await supabase.auth.verifyOtp({
         email: newUserForm.email,
         token: otpCode,
-        type: 'signup'
+        type: "signup",
       });
 
       if (error) throw error;
 
       setAddProviderStep(2);
-      setAddProviderSuccess("Email verified! Now complete the provider profile.");
+      setAddProviderSuccess(
+        "Email verified! Now complete the provider profile.",
+      );
     } catch (error: any) {
       console.error("Error verifying OTP:", error);
       setAddProviderError(error.message || "Invalid OTP code");
@@ -1234,13 +1286,19 @@ export default function ProviderDashboard() {
 
   // Step 2: Save provider profile and proceed to step 3
   const handleSaveProviderProfile = async () => {
-    if (!providerForm.first_name || !providerForm.last_name || !providerForm.email) {
+    if (
+      !providerForm.first_name ||
+      !providerForm.last_name ||
+      !providerForm.email
+    ) {
       setAddProviderError("Please fill in all required fields");
       return;
     }
 
     setAddProviderStep(3);
-    setAddProviderSuccess("Profile information saved! Now configure management settings.");
+    setAddProviderSuccess(
+      "Profile information saved! Now configure management settings.",
+    );
   };
 
   // Step 3: Complete provider creation
@@ -1266,8 +1324,13 @@ export default function ProviderDashboard() {
         phone: providerForm.phone.trim() || null,
         bio: providerForm.bio.trim() || null,
         date_of_birth: providerForm.date_of_birth || null,
-        experience_years: providerForm.experience_years ? parseInt(providerForm.experience_years) : null,
-        location_id: providerForm.location_id && providerForm.location_id !== "none" ? providerForm.location_id : null,
+        experience_years: providerForm.experience_years
+          ? parseInt(providerForm.experience_years)
+          : null,
+        location_id:
+          providerForm.location_id && providerForm.location_id !== "none"
+            ? providerForm.location_id
+            : null,
         provider_role: providerForm.provider_role,
         business_managed: managementSettings.business_managed,
         is_active: true,
@@ -1297,27 +1360,33 @@ export default function ProviderDashboard() {
       if (managementSettings.inherit_business_services) {
         try {
           // Get all business services
-          const { data: businessServices, error: servicesError } = await supabase
-            .from("business_services")
-            .select("*")
-            .eq("business_id", provider.business_id)
-            .eq("is_active", true);
+          const { data: businessServices, error: servicesError } =
+            await supabase
+              .from("business_services")
+              .select("*")
+              .eq("business_id", provider.business_id)
+              .eq("is_active", true);
 
           if (servicesError) {
             console.error("Error fetching business services:", servicesError);
           } else if (businessServices && businessServices.length > 0) {
             // Create provider_services records for each business service
-            const providerServicesData = businessServices.map(businessService => ({
-              provider_id: response.data?.[0]?.id, // Will need to get the created provider ID
-              service_id: businessService.service_id,
-              delivery_type: businessService.delivery_type,
-              custom_price: businessService.custom_price,
-              is_active: true, // Assigned by default
-              managed_by_business: managementSettings.business_managed,
-            }));
+            const providerServicesData = businessServices.map(
+              (businessService) => ({
+                provider_id: response.data?.[0]?.id, // Will need to get the created provider ID
+                service_id: businessService.service_id,
+                delivery_type: businessService.delivery_type,
+                custom_price: businessService.custom_price,
+                is_active: true, // Assigned by default
+                managed_by_business: managementSettings.business_managed,
+              }),
+            );
 
             // Note: This would require the provider ID from the response
-            console.log("Would create provider services:", providerServicesData);
+            console.log(
+              "Would create provider services:",
+              providerServicesData,
+            );
           }
 
           // Get all business addons if inheriting addons
@@ -1331,7 +1400,11 @@ export default function ProviderDashboard() {
             if (addonsError) {
               console.error("Error fetching business addons:", addonsError);
             } else if (businessAddons && businessAddons.length > 0) {
-              console.log("Would create provider addons for:", businessAddons.length, "addons");
+              console.log(
+                "Would create provider addons for:",
+                businessAddons.length,
+                "addons",
+              );
             }
           }
         } catch (error) {
@@ -1390,12 +1463,19 @@ export default function ProviderDashboard() {
         is_active: providerManagementForm.is_active,
         provider_role: providerManagementForm.provider_role,
         business_managed: providerManagementForm.business_managed,
-        location_id: providerManagementForm.location_id && providerManagementForm.location_id !== "none" ? providerManagementForm.location_id : null,
+        location_id:
+          providerManagementForm.location_id &&
+          providerManagementForm.location_id !== "none"
+            ? providerManagementForm.location_id
+            : null,
         verification_status: providerManagementForm.verification_status,
       };
 
       // Debug logging
-      console.log("Updating provider with data:", JSON.stringify(updateData, null, 2));
+      console.log(
+        "Updating provider with data:",
+        JSON.stringify(updateData, null, 2),
+      );
       console.log("Provider ID:", managingProvider.id);
 
       const response = await fetch(
@@ -1445,10 +1525,12 @@ export default function ProviderDashboard() {
           responseText: errorText,
           errorDetails: errorDetails,
           updateData: JSON.stringify(updateData, null, 2),
-          providerId: managingProvider.id
+          providerId: managingProvider.id,
         });
 
-        throw new Error(`Failed to update provider: HTTP ${response.status} - ${errorDetails}`);
+        throw new Error(
+          `Failed to update provider: HTTP ${response.status} - ${errorDetails}`,
+        );
       }
 
       setManageProviderSuccess("Provider settings updated successfully!");
@@ -1496,8 +1578,15 @@ export default function ProviderDashboard() {
       return;
     }
 
-    console.log("fetchCalendarBookings: Starting fetch for provider:", provider.id);
-    console.log("fetchCalendarBookings: User roles:", { isProvider, isOwner, isDispatcher });
+    console.log(
+      "fetchCalendarBookings: Starting fetch for provider:",
+      provider.id,
+    );
+    console.log("fetchCalendarBookings: User roles:", {
+      isProvider,
+      isOwner,
+      isDispatcher,
+    });
 
     setCalendarLoading(true);
     try {
@@ -1506,10 +1595,14 @@ export default function ProviderDashboard() {
 
       // For regular providers, only show their own bookings (matching main dashboard pattern)
       if (isProvider && !isOwner && !isDispatcher) {
-        console.log("fetchCalendarBookings: Filtering for provider only, provider_id:", provider.id);
+        console.log(
+          "fetchCalendarBookings: Filtering for provider only, provider_id:",
+          provider.id,
+        );
         const result = await supabase
           .from("bookings")
-          .select(`
+          .select(
+            `
             *,
             providers!inner(first_name, last_name),
             services(name, description),
@@ -1540,21 +1633,29 @@ export default function ProviderDashboard() {
               state,
               postal_code
             )
-          `)
+          `,
+          )
           .eq("provider_id", provider.id)
           .order("booking_date", { ascending: true });
 
         bookingsData = result.data;
         bookingsError = result.error;
       } else {
-        console.log("fetchCalendarBookings: Fetching business bookings for business_id:", provider.business_id);
+        console.log(
+          "fetchCalendarBookings: Fetching business bookings for business_id:",
+          provider.business_id,
+        );
         // For owners/dispatchers, show all business bookings (matching main dashboard pattern)
-        const { data: businessProviders, error: providersError } = await supabase
-          .from("providers")
-          .select("id")
-          .eq("business_id", provider.business_id);
+        const { data: businessProviders, error: providersError } =
+          await supabase
+            .from("providers")
+            .select("id")
+            .eq("business_id", provider.business_id);
 
-        console.log("fetchCalendarBookings: Business providers query result:", { businessProviders, providersError });
+        console.log("fetchCalendarBookings: Business providers query result:", {
+          businessProviders,
+          providersError,
+        });
 
         if (providersError) {
           throw providersError;
@@ -1562,11 +1663,15 @@ export default function ProviderDashboard() {
 
         if (businessProviders && businessProviders.length > 0) {
           const providerIds = businessProviders.map((p) => p.id);
-          console.log("fetchCalendarBookings: Filtering by provider IDs:", providerIds);
+          console.log(
+            "fetchCalendarBookings: Filtering by provider IDs:",
+            providerIds,
+          );
 
           const result = await supabase
             .from("bookings")
-            .select(`
+            .select(
+              `
               *,
               providers!inner(first_name, last_name),
               services(name, description),
@@ -1597,7 +1702,8 @@ export default function ProviderDashboard() {
                 state,
                 postal_code
               )
-            `)
+            `,
+            )
             .in("provider_id", providerIds)
             .order("booking_date", { ascending: true });
 
@@ -1610,11 +1716,18 @@ export default function ProviderDashboard() {
         }
       }
 
-      console.log("fetchCalendarBookings: Final result:", { bookingsData, bookingsError });
+      console.log("fetchCalendarBookings: Final result:", {
+        bookingsData,
+        bookingsError,
+      });
 
       if (bookingsError) throw bookingsError;
 
-      console.log("fetchCalendarBookings: Successfully fetched", (bookingsData || []).length, "bookings");
+      console.log(
+        "fetchCalendarBookings: Successfully fetched",
+        (bookingsData || []).length,
+        "bookings",
+      );
       setCalendarBookings(bookingsData || []);
     } catch (error: any) {
       console.error("Error fetching calendar bookings:", error);
@@ -1624,7 +1737,7 @@ export default function ProviderDashboard() {
         errorMessage = error.message;
       } else if (error?.error) {
         errorMessage = error.error;
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
       } else if (error?.details) {
         errorMessage = error.details;
@@ -2007,16 +2120,21 @@ export default function ProviderDashboard() {
     setServiceSuccess("");
   };
 
-  const handleQuickToggleService = async (serviceId: string, isActive: boolean) => {
+  const handleQuickToggleService = async (
+    serviceId: string,
+    isActive: boolean,
+  ) => {
     if (!provider) return;
 
     // Check if provider can edit service assignments
-    const canEditServices = isOwner || isDispatcher || (isProvider && !provider.business_managed);
+    const canEditServices =
+      isOwner || isDispatcher || (isProvider && !provider.business_managed);
 
     if (!canEditServices) {
       toast({
         title: "Action Not Allowed",
-        description: "Service assignments are managed by the business and cannot be changed.",
+        description:
+          "Service assignments are managed by the business and cannot be changed.",
         variant: "destructive",
       });
       return;
@@ -2027,9 +2145,10 @@ export default function ProviderDashboard() {
 
       // For regular providers who can edit (business_managed = false),
       // update provider_services instead of business_services
-      const endpoint = (isProvider && !isOwner && !isDispatcher)
-        ? "provider_services"
-        : "business_services";
+      const endpoint =
+        isProvider && !isOwner && !isDispatcher
+          ? "provider_services"
+          : "business_services";
 
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/${endpoint}?id=eq.${serviceId}`,
@@ -2051,12 +2170,12 @@ export default function ProviderDashboard() {
       }
 
       // Update local state
-      setBusinessServices(prev =>
-        prev.map(service =>
+      setBusinessServices((prev) =>
+        prev.map((service) =>
           service.id === serviceId
             ? { ...service, is_active: isActive }
-            : service
-        )
+            : service,
+        ),
       );
 
       toast({
@@ -2064,7 +2183,6 @@ export default function ProviderDashboard() {
         description: `Service has been ${isActive ? "activated" : "deactivated"} successfully.`,
         variant: "default",
       });
-
     } catch (error: any) {
       console.error("Error toggling service:", error);
       toast({
@@ -2089,29 +2207,37 @@ export default function ProviderDashboard() {
   };
 
   const formatBookingLocation = (booking: any) => {
-    if (booking.delivery_type === 'virtual') {
-      return 'Virtual Session';
-    } else if (booking.delivery_type === 'customer_location' && booking.customer_locations) {
+    if (booking.delivery_type === "virtual") {
+      return "Virtual Session";
+    } else if (
+      booking.delivery_type === "customer_location" &&
+      booking.customer_locations
+    ) {
       const loc = booking.customer_locations;
-      const address = `${loc.street_address}${loc.unit_number ? ` ${loc.unit_number}` : ''}, ${loc.city}, ${loc.state} ${loc.zip_code}`;
+      const address = `${loc.street_address}${loc.unit_number ? ` ${loc.unit_number}` : ""}, ${loc.city}, ${loc.state} ${loc.zip_code}`;
       return {
-        name: loc.location_name || 'Customer Location',
+        name: loc.location_name || "Customer Location",
         address: address,
-        instructions: loc.access_instructions
+        instructions: loc.access_instructions,
       };
-    } else if (booking.delivery_type === 'business_location' && booking.business_locations) {
+    } else if (
+      booking.delivery_type === "business_location" &&
+      booking.business_locations
+    ) {
       const loc = booking.business_locations;
-      const address = `${loc.address_line1}${loc.address_line2 ? ` ${loc.address_line2}` : ''}, ${loc.city}, ${loc.state} ${loc.postal_code}`;
+      const address = `${loc.address_line1}${loc.address_line2 ? ` ${loc.address_line2}` : ""}, ${loc.city}, ${loc.state} ${loc.postal_code}`;
       return {
-        name: loc.location_name || 'Business Location',
+        name: loc.location_name || "Business Location",
         address: address,
-        instructions: null
+        instructions: null,
       };
     } else {
       // Fallback for when location data is not available
-      return booking.delivery_type === 'customer_location' ? 'Customer Location' :
-             booking.delivery_type === 'business_location' ? 'Business Location' :
-             'Location TBD';
+      return booking.delivery_type === "customer_location"
+        ? "Customer Location"
+        : booking.delivery_type === "business_location"
+          ? "Business Location"
+          : "Location TBD";
     }
   };
 
@@ -2411,34 +2537,66 @@ export default function ProviderDashboard() {
         website_url: businessDetailsForm.website_url?.trim() || "",
         logo_url: businessDetailsForm.logo_url?.trim() || null,
         is_active: businessDetailsForm.is_active,
-        service_categories: Array.isArray(businessDetailsForm.service_categories) && businessDetailsForm.service_categories.length > 0
-          ? businessDetailsForm.service_categories.filter(cat => typeof cat === 'string' && cat.trim().length > 0)
-          : [],
-        service_subcategories: Array.isArray(businessDetailsForm.service_subcategories) && businessDetailsForm.service_subcategories.length > 0
-          ? businessDetailsForm.service_subcategories.filter(sub => typeof sub === 'string' && sub.trim().length > 0)
-          : [],
+        service_categories:
+          Array.isArray(businessDetailsForm.service_categories) &&
+          businessDetailsForm.service_categories.length > 0
+            ? businessDetailsForm.service_categories.filter(
+                (cat) => typeof cat === "string" && cat.trim().length > 0,
+              )
+            : [],
+        service_subcategories:
+          Array.isArray(businessDetailsForm.service_subcategories) &&
+          businessDetailsForm.service_subcategories.length > 0
+            ? businessDetailsForm.service_subcategories.filter(
+                (sub) => typeof sub === "string" && sub.trim().length > 0,
+              )
+            : [],
       };
 
       // Validate enum values against expected database enums
       const validCategories = ["beauty", "fitness", "therapy", "healthcare"];
-      const validSubcategories = ["hair_and_makeup", "spray_tan", "esthetician", "massage_therapy", "iv_therapy", "physical_therapy", "nurse_practitioner", "phycisian", "chiropractor", "yoga_instructor", "pilates_instructor", "personal_trainer"];
+      const validSubcategories = [
+        "hair_and_makeup",
+        "spray_tan",
+        "esthetician",
+        "massage_therapy",
+        "iv_therapy",
+        "physical_therapy",
+        "nurse_practitioner",
+        "phycisian",
+        "chiropractor",
+        "yoga_instructor",
+        "pilates_instructor",
+        "personal_trainer",
+      ];
 
       if (updateData.service_categories) {
-        const invalidCategories = updateData.service_categories.filter(cat => !validCategories.includes(cat));
+        const invalidCategories = updateData.service_categories.filter(
+          (cat) => !validCategories.includes(cat),
+        );
         if (invalidCategories.length > 0) {
-          throw new Error(`Invalid service categories: ${invalidCategories.join(', ')}`);
+          throw new Error(
+            `Invalid service categories: ${invalidCategories.join(", ")}`,
+          );
         }
       }
 
       if (updateData.service_subcategories) {
-        const invalidSubcategories = updateData.service_subcategories.filter(sub => !validSubcategories.includes(sub));
+        const invalidSubcategories = updateData.service_subcategories.filter(
+          (sub) => !validSubcategories.includes(sub),
+        );
         if (invalidSubcategories.length > 0) {
-          throw new Error(`Invalid service subcategories: ${invalidSubcategories.join(', ')}`);
+          throw new Error(
+            `Invalid service subcategories: ${invalidSubcategories.join(", ")}`,
+          );
         }
       }
 
       // Debug logging
-      console.log("Saving business details with data:", JSON.stringify(updateData, null, 2));
+      console.log(
+        "Saving business details with data:",
+        JSON.stringify(updateData, null, 2),
+      );
       console.log("Business ID:", business.id);
       console.log("Service categories:", updateData.service_categories);
       console.log("Service subcategories:", updateData.service_subcategories);
@@ -2461,7 +2619,9 @@ export default function ProviderDashboard() {
 
         if (!emailRegex.test(cleanEmail)) {
           console.error("Email validation failed for:", cleanEmail);
-          throw new Error(`Please enter a valid contact email address: "${cleanEmail}"`);
+          throw new Error(
+            `Please enter a valid contact email address: "${cleanEmail}"`,
+          );
         }
       } else {
         // If email is empty, set it to null to avoid database issues
@@ -2499,32 +2659,49 @@ export default function ProviderDashboard() {
   };
 
   // Helper functions to filter bookings by date and status
-  const filterBookingsByDate = (bookings: any[], filterType: 'present' | 'future' | 'past') => {
+  const filterBookingsByDate = (
+    bookings: any[],
+    filterType: "present" | "future" | "past",
+  ) => {
     const today = new Date();
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+    const endOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      23,
+      59,
+      59,
+    );
 
-    return bookings.filter(booking => {
+    return bookings.filter((booking) => {
       const bookingDate = new Date(booking.booking_date);
       const status = booking.booking_status?.toLowerCase();
 
       switch (filterType) {
-        case 'present':
+        case "present":
           // Present = all bookings with date of today OR in the past with status NOT cancelled or completed
           if (bookingDate >= startOfToday && bookingDate <= endOfToday) {
             // Today's bookings regardless of status
             return true;
           } else if (bookingDate < startOfToday) {
             // Past bookings that are NOT cancelled or completed
-            return status !== 'cancelled' && status !== 'completed';
+            return status !== "cancelled" && status !== "completed";
           }
           return false;
-        case 'future':
+        case "future":
           // Future = all bookings with date of tomorrow and beyond (today's date +1)
           return bookingDate > endOfToday;
-        case 'past':
+        case "past":
           // Past = bookings before today that are completed or cancelled
-          return bookingDate < startOfToday && (status === 'completed' || status === 'cancelled');
+          return (
+            bookingDate < startOfToday &&
+            (status === "completed" || status === "cancelled")
+          );
         default:
           return true;
       }
@@ -2532,7 +2709,10 @@ export default function ProviderDashboard() {
   };
 
   const getFilteredBookings = () => {
-    return filterBookingsByDate(bookings, activeBookingTab as 'present' | 'future' | 'past');
+    return filterBookingsByDate(
+      bookings,
+      activeBookingTab as "present" | "future" | "past",
+    );
   };
 
   const loadServiceCategoriesAndSubcategories = async () => {
@@ -2540,33 +2720,38 @@ export default function ProviderDashboard() {
     try {
       // Load service categories
       const { data: categories, error: categoriesError } = await supabase
-        .from('service_categories')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
+        .from("service_categories")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
 
       if (categoriesError) {
-        console.error('Error loading service categories:', categoriesError);
+        console.error("Error loading service categories:", categoriesError);
       } else {
         setServiceCategories(categories || []);
       }
 
       // Load service subcategories with category info
       const { data: subcategories, error: subcategoriesError } = await supabase
-        .from('service_subcategories')
-        .select(`
+        .from("service_subcategories")
+        .select(
+          `
           *,
           category:service_categories(*)
-        `)
-        .eq('is_active', true);
+        `,
+        )
+        .eq("is_active", true);
 
       if (subcategoriesError) {
-        console.error('Error loading service subcategories:', subcategoriesError);
+        console.error(
+          "Error loading service subcategories:",
+          subcategoriesError,
+        );
       } else {
         setServiceSubcategories(subcategories || []);
       }
     } catch (error) {
-      console.error('Error loading categories and subcategories:', error);
+      console.error("Error loading categories and subcategories:", error);
     } finally {
       setCategoriesLoading(false);
     }
@@ -3222,7 +3407,9 @@ export default function ProviderDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className={`grid grid-cols-1 md:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6 max-lg:flex max-sm:hidden`}>
+          <div
+            className={`grid grid-cols-1 md:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6 max-lg:flex max-sm:hidden`}
+          >
             {(isOwner || isDispatcher) && (
               <Card>
                 <CardContent className="p-6">
@@ -3300,7 +3487,9 @@ export default function ProviderDashboard() {
             onValueChange={setActiveTab}
             className="space-y-6"
           >
-            <TabsList className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? 'grid-cols-4' : 'grid-cols-9'} lg:w-auto lg:inline-grid`}>
+            <TabsList
+              className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-4" : "grid-cols-9"} lg:w-auto lg:inline-grid`}
+            >
               <TabsTrigger
                 value="bookings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -3372,7 +3561,12 @@ export default function ProviderDashboard() {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Bookings</h2>
                 <div className="flex gap-2">
-                  <Select value={calendarViewType} onValueChange={(value: 'week' | 'month') => setCalendarViewType(value)}>
+                  <Select
+                    value={calendarViewType}
+                    onValueChange={(value: "week" | "month") =>
+                      setCalendarViewType(value)
+                    }
+                  >
                     <SelectTrigger className="w-32">
                       <SelectValue />
                     </SelectTrigger>
@@ -3393,7 +3587,11 @@ export default function ProviderDashboard() {
 
               {/* Only show sub-tabs for providers with provider role */}
               {provider?.provider_role === "provider" ? (
-                <Tabs value={activeBookingTab} onValueChange={setActiveBookingTab} className="space-y-4">
+                <Tabs
+                  value={activeBookingTab}
+                  onValueChange={setActiveBookingTab}
+                  className="space-y-4"
+                >
                   <TabsList className="grid grid-cols-3 w-full max-w-md">
                     <TabsTrigger value="present">Present</TabsTrigger>
                     <TabsTrigger value="future">Future</TabsTrigger>
@@ -3401,11 +3599,23 @@ export default function ProviderDashboard() {
                   </TabsList>
 
                   {["present", "future", "past"].map((tabValue) => (
-                    <TabsContent key={tabValue} value={tabValue} className="space-y-4">
+                    <TabsContent
+                      key={tabValue}
+                      value={tabValue}
+                      className="space-y-4"
+                    >
                       <div className="space-y-4">
-                        {filterBookingsByDate(bookings, tabValue as 'present' | 'future' | 'past').length > 0 ? (
-                          filterBookingsByDate(bookings, tabValue as 'present' | 'future' | 'past').map((booking) => {
-                            const statusConfig = getStatusBadge(booking.booking_status);
+                        {filterBookingsByDate(
+                          bookings,
+                          tabValue as "present" | "future" | "past",
+                        ).length > 0 ? (
+                          filterBookingsByDate(
+                            bookings,
+                            tabValue as "present" | "future" | "past",
+                          ).map((booking) => {
+                            const statusConfig = getStatusBadge(
+                              booking.booking_status,
+                            );
                             const DeliveryIcon = getDeliveryIcon(
                               booking.delivery_type || "business_location",
                             );
@@ -3426,28 +3636,41 @@ export default function ProviderDashboard() {
                                           {booking.services?.name || "Service"}
                                         </h3>
                                         <div className="flex items-center gap-2 mb-2">
-                                          {booking.customer_profiles?.image_url ? (
+                                          {booking.customer_profiles
+                                            ?.image_url ? (
                                             <img
-                                              src={booking.customer_profiles.image_url}
+                                              src={
+                                                booking.customer_profiles
+                                                  .image_url
+                                              }
                                               alt="Customer"
                                               className="w-6 h-6 rounded-full object-cover"
                                             />
                                           ) : (
                                             <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
                                               <span className="text-xs text-gray-600">
-                                                {booking.customer_profiles?.first_name?.charAt(0) ||
-                                                 booking.guest_name?.charAt(0) || "C"}
+                                                {booking.customer_profiles?.first_name?.charAt(
+                                                  0,
+                                                ) ||
+                                                  booking.guest_name?.charAt(
+                                                    0,
+                                                  ) ||
+                                                  "C"}
                                               </span>
                                             </div>
                                           )}
                                           <p className="text-sm text-foreground/60">
-                                            {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+                                            {booking.customer_profiles
+                                              ?.first_name &&
+                                            booking.customer_profiles?.last_name
                                               ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
-                                              : booking.guest_name || "Customer"}
+                                              : booking.guest_name ||
+                                                "Customer"}
                                           </p>
                                           {booking.customer_profiles?.email && (
                                             <span className="text-xs text-foreground/40">
-                                              • {booking.customer_profiles.email}
+                                              •{" "}
+                                              {booking.customer_profiles.email}
                                             </span>
                                           )}
                                         </div>
@@ -3466,13 +3689,24 @@ export default function ProviderDashboard() {
                                             <DeliveryIcon className="w-4 h-4 mt-0.5" />
                                             <div className="flex flex-col">
                                               {(() => {
-                                                const location = formatBookingLocation(booking);
-                                                if (typeof location === 'string') {
-                                                  return <span className="text-sm">{location}</span>;
+                                                const location =
+                                                  formatBookingLocation(
+                                                    booking,
+                                                  );
+                                                if (
+                                                  typeof location === "string"
+                                                ) {
+                                                  return (
+                                                    <span className="text-sm">
+                                                      {location}
+                                                    </span>
+                                                  );
                                                 } else {
                                                   return (
                                                     <div>
-                                                      <span className="text-sm font-medium">{location.name}</span>
+                                                      <span className="text-sm font-medium">
+                                                        {location.name}
+                                                      </span>
                                                       {location.address && (
                                                         <span className="text-xs text-foreground/50 block max-w-48 truncate">
                                                           {location.address}
@@ -3525,7 +3759,8 @@ export default function ProviderDashboard() {
                             <p className="text-sm">
                               {tabValue === "present" && "No current bookings"}
                               {tabValue === "future" && "No upcoming bookings"}
-                              {tabValue === "past" && "No completed or cancelled bookings"}
+                              {tabValue === "past" &&
+                                "No completed or cancelled bookings"}
                             </p>
                           </div>
                         )}
@@ -3537,7 +3772,9 @@ export default function ProviderDashboard() {
                 <div className="space-y-4">
                   {bookings.length > 0 ? (
                     bookings.map((booking) => {
-                      const statusConfig = getStatusBadge(booking.booking_status);
+                      const statusConfig = getStatusBadge(
+                        booking.booking_status,
+                      );
                       const DeliveryIcon = getDeliveryIcon(
                         booking.delivery_type || "business_location",
                       );
@@ -3560,20 +3797,26 @@ export default function ProviderDashboard() {
                                   <div className="flex items-center gap-2 mb-2">
                                     {booking.customer_profiles?.image_url ? (
                                       <img
-                                        src={booking.customer_profiles.image_url}
+                                        src={
+                                          booking.customer_profiles.image_url
+                                        }
                                         alt="Customer"
                                         className="w-6 h-6 rounded-full object-cover"
                                       />
                                     ) : (
                                       <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
                                         <span className="text-xs text-gray-600">
-                                          {booking.customer_profiles?.first_name?.charAt(0) ||
-                                           booking.guest_name?.charAt(0) || "C"}
+                                          {booking.customer_profiles?.first_name?.charAt(
+                                            0,
+                                          ) ||
+                                            booking.guest_name?.charAt(0) ||
+                                            "C"}
                                         </span>
                                       </div>
                                     )}
                                     <p className="text-sm text-foreground/60">
-                                      {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+                                      {booking.customer_profiles?.first_name &&
+                                      booking.customer_profiles?.last_name
                                         ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
                                         : booking.guest_name || "Customer"}
                                     </p>
@@ -3598,13 +3841,20 @@ export default function ProviderDashboard() {
                                       <DeliveryIcon className="w-4 h-4 mt-0.5" />
                                       <div className="flex flex-col">
                                         {(() => {
-                                          const location = formatBookingLocation(booking);
-                                          if (typeof location === 'string') {
-                                            return <span className="text-sm">{location}</span>;
+                                          const location =
+                                            formatBookingLocation(booking);
+                                          if (typeof location === "string") {
+                                            return (
+                                              <span className="text-sm">
+                                                {location}
+                                              </span>
+                                            );
                                           } else {
                                             return (
                                               <div>
-                                                <span className="text-sm font-medium">{location.name}</span>
+                                                <span className="text-sm font-medium">
+                                                  {location.name}
+                                                </span>
                                                 {location.address && (
                                                   <span className="text-xs text-foreground/50 block max-w-48 truncate">
                                                     {location.address}
@@ -3664,7 +3914,10 @@ export default function ProviderDashboard() {
               {showCalendarView && (
                 <div className="mt-6 p-4 border rounded-lg bg-card">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Calendar View - {calendarViewType === 'week' ? 'Week' : 'Month'}</h3>
+                    <h3 className="text-lg font-semibold">
+                      Calendar View -{" "}
+                      {calendarViewType === "week" ? "Week" : "Month"}
+                    </h3>
                     <Button
                       variant="outline"
                       size="sm"
@@ -3710,12 +3963,18 @@ export default function ProviderDashboard() {
 
               {/* Service Management Info for Providers */}
               {isProvider && !isOwner && !isDispatcher && (
-                <Card className={`border-l-4 ${provider?.business_managed ? 'border-l-blue-500 bg-blue-50' : 'border-l-purple-500 bg-purple-50'}`}>
+                <Card
+                  className={`border-l-4 ${provider?.business_managed ? "border-l-blue-500 bg-blue-50" : "border-l-purple-500 bg-purple-50"}`}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        provider?.business_managed ? 'bg-blue-100' : 'bg-purple-100'
-                      }`}>
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          provider?.business_managed
+                            ? "bg-blue-100"
+                            : "bg-purple-100"
+                        }`}
+                      >
                         {provider?.business_managed ? (
                           <Building className="w-4 h-4 text-blue-600" />
                         ) : (
@@ -3723,14 +3982,19 @@ export default function ProviderDashboard() {
                         )}
                       </div>
                       <div className="flex-1">
-                        <h3 className={`font-semibold ${provider?.business_managed ? 'text-blue-900' : 'text-purple-900'}`}>
-                          {provider?.business_managed ? 'Business Managed Services' : 'Self Managed Services'}
-                        </h3>
-                        <p className={`text-sm ${provider?.business_managed ? 'text-blue-700' : 'text-purple-700'}`}>
+                        <h3
+                          className={`font-semibold ${provider?.business_managed ? "text-blue-900" : "text-purple-900"}`}
+                        >
                           {provider?.business_managed
-                            ? 'Your services are managed by the business. You can view your assigned services but cannot change assignments or pricing.'
-                            : 'You can activate or deactivate your service assignments. Pricing is set by the business and cannot be changed.'
-                          }
+                            ? "Business Managed Services"
+                            : "Self Managed Services"}
+                        </h3>
+                        <p
+                          className={`text-sm ${provider?.business_managed ? "text-blue-700" : "text-purple-700"}`}
+                        >
+                          {provider?.business_managed
+                            ? "Your services are managed by the business. You can view your assigned services but cannot change assignments or pricing."
+                            : "You can activate or deactivate your service assignments. Pricing is set by the business and cannot be changed."}
                         </p>
                       </div>
                     </div>
@@ -3769,12 +4033,11 @@ export default function ProviderDashboard() {
                               {businessService.services?.name}
                             </h3>
                             <p className="text-sm text-foreground/60">
-                              {
+                              {businessService.services?.service_subcategories
+                                ?.service_categories?.description ||
                                 businessService.services?.service_subcategories
-                                  ?.service_categories?.description ||
-                                businessService.services?.service_subcategories
-                                  ?.service_categories?.service_category_type
-                              }{" "}
+                                  ?.service_categories
+                                  ?.service_category_type}{" "}
                               ���{" "}
                               {
                                 businessService.services?.service_subcategories
@@ -3791,15 +4054,28 @@ export default function ProviderDashboard() {
                             <Switch
                               checked={businessService.is_active !== false}
                               className="data-[state=checked]:bg-roam-blue"
-                              disabled={isProvider && !isOwner && !isDispatcher && provider?.business_managed}
+                              disabled={
+                                isProvider &&
+                                !isOwner &&
+                                !isDispatcher &&
+                                provider?.business_managed
+                              }
                               onCheckedChange={(checked) => {
                                 // Quick toggle service active status
-                                handleQuickToggleService(businessService.id, checked);
+                                handleQuickToggleService(
+                                  businessService.id,
+                                  checked,
+                                );
                               }}
                             />
-                            {isProvider && !isOwner && !isDispatcher && provider?.business_managed && (
-                              <span className="text-xs text-foreground/50">Read-only</span>
-                            )}
+                            {isProvider &&
+                              !isOwner &&
+                              !isDispatcher &&
+                              provider?.business_managed && (
+                                <span className="text-xs text-foreground/50">
+                                  Read-only
+                                </span>
+                              )}
                           </div>
                         </div>
 
@@ -3839,7 +4115,7 @@ export default function ProviderDashboard() {
                           </div>
                         </div>
 
-                        {(isOwner || isDispatcher) ? (
+                        {isOwner || isDispatcher ? (
                           <Button
                             variant="outline"
                             size="sm"
@@ -4039,38 +4315,80 @@ export default function ProviderDashboard() {
                         <div className="space-y-6">
                           {/* Service Categories */}
                           <div className="space-y-3">
-                            <Label className="text-base font-medium">Business Service Categories</Label>
-                            <p className="text-sm text-foreground/60">Select the main categories of services your business offers</p>
+                            <Label className="text-base font-medium">
+                              Business Service Categories
+                            </Label>
+                            <p className="text-sm text-foreground/60">
+                              Select the main categories of services your
+                              business offers
+                            </p>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                               {serviceCategories.map((category) => (
-                                <div key={category.id} className="flex items-center space-x-2">
+                                <div
+                                  key={category.id}
+                                  className="flex items-center space-x-2"
+                                >
                                   <input
                                     type="checkbox"
                                     id={`category-${category.service_category_type}`}
-                                    checked={businessDetailsForm.service_categories.includes(category.service_category_type)}
+                                    checked={businessDetailsForm.service_categories.includes(
+                                      category.service_category_type,
+                                    )}
                                     onChange={(e) => {
                                       const updatedCategories = e.target.checked
-                                        ? [...businessDetailsForm.service_categories, category.service_category_type]
-                                        : businessDetailsForm.service_categories.filter(c => c !== category.service_category_type);
+                                        ? [
+                                            ...businessDetailsForm.service_categories,
+                                            category.service_category_type,
+                                          ]
+                                        : businessDetailsForm.service_categories.filter(
+                                            (c) =>
+                                              c !==
+                                              category.service_category_type,
+                                          );
 
                                       // If unchecking a category, remove all related subcategories
-                                      let updatedSubcategories = businessDetailsForm.service_subcategories;
+                                      let updatedSubcategories =
+                                        businessDetailsForm.service_subcategories;
                                       if (!e.target.checked) {
-                                        const subcategoriesToRemove = serviceSubcategories
-                                          .filter(sub => sub.category_id === category.id)
-                                          .map(sub => sub.service_subcategory_type);
-                                        updatedSubcategories = businessDetailsForm.service_subcategories
-                                          .filter(sub => !subcategoriesToRemove.includes(sub));
-                                        handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
+                                        const subcategoriesToRemove =
+                                          serviceSubcategories
+                                            .filter(
+                                              (sub) =>
+                                                sub.category_id === category.id,
+                                            )
+                                            .map(
+                                              (sub) =>
+                                                sub.service_subcategory_type,
+                                            );
+                                        updatedSubcategories =
+                                          businessDetailsForm.service_subcategories.filter(
+                                            (sub) =>
+                                              !subcategoriesToRemove.includes(
+                                                sub,
+                                              ),
+                                          );
+                                        handleBusinessDetailsFormChange(
+                                          "service_subcategories",
+                                          updatedSubcategories,
+                                        );
                                       }
 
-                                      handleBusinessDetailsFormChange("service_categories", updatedCategories);
+                                      handleBusinessDetailsFormChange(
+                                        "service_categories",
+                                        updatedCategories,
+                                      );
                                     }}
-                                    disabled={businessDetailsSaving || categoriesLoading}
+                                    disabled={
+                                      businessDetailsSaving || categoriesLoading
+                                    }
                                     className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
                                   />
-                                  <Label htmlFor={`category-${category.service_category_type}`} className="text-sm font-normal cursor-pointer">
-                                    {category.description || category.service_category_type}
+                                  <Label
+                                    htmlFor={`category-${category.service_category_type}`}
+                                    className="text-sm font-normal cursor-pointer"
+                                  >
+                                    {category.description ||
+                                      category.service_category_type}
                                   </Label>
                                 </div>
                               ))}
@@ -4078,43 +4396,82 @@ export default function ProviderDashboard() {
                           </div>
 
                           {/* Service Subcategories */}
-                          {businessDetailsForm.service_categories.length > 0 && (
+                          {businessDetailsForm.service_categories.length >
+                            0 && (
                             <div className="space-y-3">
-                              <Label className="text-base font-medium">Service Specializations</Label>
-                              <p className="text-sm text-foreground/60">Select the specific services and specializations your business provides</p>
-                              {businessDetailsForm.service_categories.length === 0 ? (
-                                <p className="text-sm text-gray-500 italic">Please select service categories first to see available specializations</p>
+                              <Label className="text-base font-medium">
+                                Service Specializations
+                              </Label>
+                              <p className="text-sm text-foreground/60">
+                                Select the specific services and specializations
+                                your business provides
+                              </p>
+                              {businessDetailsForm.service_categories.length ===
+                              0 ? (
+                                <p className="text-sm text-gray-500 italic">
+                                  Please select service categories first to see
+                                  available specializations
+                                </p>
                               ) : (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                   {serviceSubcategories
-                                    .filter(subcategory => {
+                                    .filter((subcategory) => {
                                       // Find the selected categories and check if this subcategory belongs to any of them
-                                      const selectedCategoryIds = serviceCategories
-                                        .filter(cat => businessDetailsForm.service_categories.includes(cat.service_category_type))
-                                        .map(cat => cat.id);
-                                      return selectedCategoryIds.includes(subcategory.category_id);
+                                      const selectedCategoryIds =
+                                        serviceCategories
+                                          .filter((cat) =>
+                                            businessDetailsForm.service_categories.includes(
+                                              cat.service_category_type,
+                                            ),
+                                          )
+                                          .map((cat) => cat.id);
+                                      return selectedCategoryIds.includes(
+                                        subcategory.category_id,
+                                      );
                                     })
                                     .map((subcategory) => (
-                                      <div key={subcategory.id} className="flex items-center space-x-2">
+                                      <div
+                                        key={subcategory.id}
+                                        className="flex items-center space-x-2"
+                                      >
                                         <input
                                           type="checkbox"
                                           id={`subcategory-${subcategory.service_subcategory_type}`}
-                                          checked={businessDetailsForm.service_subcategories.includes(subcategory.service_subcategory_type)}
+                                          checked={businessDetailsForm.service_subcategories.includes(
+                                            subcategory.service_subcategory_type,
+                                          )}
                                           onChange={(e) => {
-                                            const updatedSubcategories = e.target.checked
-                                              ? [...businessDetailsForm.service_subcategories, subcategory.service_subcategory_type]
-                                              : businessDetailsForm.service_subcategories.filter(s => s !== subcategory.service_subcategory_type);
-                                            handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
+                                            const updatedSubcategories = e
+                                              .target.checked
+                                              ? [
+                                                  ...businessDetailsForm.service_subcategories,
+                                                  subcategory.service_subcategory_type,
+                                                ]
+                                              : businessDetailsForm.service_subcategories.filter(
+                                                  (s) =>
+                                                    s !==
+                                                    subcategory.service_subcategory_type,
+                                                );
+                                            handleBusinessDetailsFormChange(
+                                              "service_subcategories",
+                                              updatedSubcategories,
+                                            );
                                           }}
-                                          disabled={businessDetailsSaving || categoriesLoading}
+                                          disabled={
+                                            businessDetailsSaving ||
+                                            categoriesLoading
+                                          }
                                           className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
                                         />
-                                        <Label htmlFor={`subcategory-${subcategory.service_subcategory_type}`} className="text-sm font-normal cursor-pointer">
-                                          {subcategory.description || subcategory.service_subcategory_type}
+                                        <Label
+                                          htmlFor={`subcategory-${subcategory.service_subcategory_type}`}
+                                          className="text-sm font-normal cursor-pointer"
+                                        >
+                                          {subcategory.description ||
+                                            subcategory.service_subcategory_type}
                                         </Label>
                                       </div>
-                                    ))
-                                  }
+                                    ))}
                                 </div>
                               )}
                             </div>
@@ -4737,7 +5094,6 @@ export default function ProviderDashboard() {
                           Manage Roles & Permissions
                         </Link>
                       </Button>
-
                     </CardContent>
                   </Card>
                 </div>
@@ -4786,35 +5142,48 @@ export default function ProviderDashboard() {
                                   />
                                 ) : (
                                   <span className="text-white font-semibold">
-                                    {teamProvider.first_name?.charAt(0)}{teamProvider.last_name?.charAt(0)}
+                                    {teamProvider.first_name?.charAt(0)}
+                                    {teamProvider.last_name?.charAt(0)}
                                   </span>
                                 )}
                               </div>
                               <div>
                                 <h3 className="font-semibold">
-                                  {teamProvider.first_name} {teamProvider.last_name}
+                                  {teamProvider.first_name}{" "}
+                                  {teamProvider.last_name}
                                 </h3>
                                 <p className="text-sm text-foreground/60">
                                   {teamProvider.email}
                                 </p>
                                 <div className="flex items-center gap-4 text-sm text-foreground/60 mt-1">
                                   <span className="capitalize">
-                                    {teamProvider.provider_role || 'Provider'}
+                                    {teamProvider.provider_role || "Provider"}
                                   </span>
                                   {teamProvider.business_locations ? (
                                     <div className="flex items-center gap-1">
                                       <MapPin className="w-3 h-3" />
                                       <span>
-                                        {teamProvider.business_locations.location_name}
-                                        {teamProvider.business_locations.is_primary && (
-                                          <Badge variant="secondary" className="ml-1 text-xs">Primary</Badge>
+                                        {
+                                          teamProvider.business_locations
+                                            .location_name
+                                        }
+                                        {teamProvider.business_locations
+                                          .is_primary && (
+                                          <Badge
+                                            variant="secondary"
+                                            className="ml-1 text-xs"
+                                          >
+                                            Primary
+                                          </Badge>
                                         )}
                                       </span>
                                     </div>
                                   ) : (
                                     <div className="flex items-center gap-1">
                                       <MapPin className="w-3 h-3" />
-                                      <span className="text-foreground/40">No location assigned</span>
+                                      <span className="text-foreground/40">
+                                        No location assigned
+                                      </span>
                                     </div>
                                   )}
                                 </div>
@@ -4832,16 +5201,19 @@ export default function ProviderDashboard() {
                               </Badge>
                               <Badge
                                 className={
-                                  teamProvider.verification_status === "verified"
+                                  teamProvider.verification_status ===
+                                  "verified"
                                     ? "bg-green-100 text-green-800"
-                                    : teamProvider.verification_status === "pending"
+                                    : teamProvider.verification_status ===
+                                        "pending"
                                       ? "bg-yellow-100 text-yellow-800"
                                       : "bg-red-100 text-red-800"
                                 }
                               >
                                 {teamProvider.verification_status === "verified"
                                   ? "Verified"
-                                  : teamProvider.verification_status === "pending"
+                                  : teamProvider.verification_status ===
+                                      "pending"
                                     ? "Pending"
                                     : "Unverified"}
                               </Badge>
@@ -4852,12 +5224,16 @@ export default function ProviderDashboard() {
                                     : "bg-purple-100 text-purple-800"
                                 }
                               >
-                                {teamProvider.business_managed ? "Business Managed" : "Self Managed"}
+                                {teamProvider.business_managed
+                                  ? "Business Managed"
+                                  : "Self Managed"}
                               </Badge>
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handleManageProvider(teamProvider)}
+                                onClick={() =>
+                                  handleManageProvider(teamProvider)
+                                }
                               >
                                 <Settings className="w-4 h-4 mr-2" />
                                 Manage
@@ -4865,15 +5241,14 @@ export default function ProviderDashboard() {
                             </div>
                           </div>
                         ))}
-
-
                       </div>
                     ) : (
                       <div className="text-center py-8 text-foreground/60">
                         <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p className="text-lg mb-2">No team members found</p>
                         <p className="text-sm mb-4">
-                          Start building your team by inviting providers to join your business
+                          Start building your team by inviting providers to join
+                          your business
                         </p>
                         <Button
                           className="bg-roam-blue hover:bg-roam-blue/90"
@@ -5582,11 +5957,17 @@ export default function ProviderDashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-blue-600">S</span>
+                            <span className="text-xs font-bold text-blue-600">
+                              S
+                            </span>
                           </div>
                           <div>
-                            <p className="text-sm font-medium">Stripe Connect</p>
-                            <p className="text-xs text-foreground/60">acct_****4532</p>
+                            <p className="text-sm font-medium">
+                              Stripe Connect
+                            </p>
+                            <p className="text-xs text-foreground/60">
+                              acct_****4532
+                            </p>
                           </div>
                         </div>
                         <Badge variant="secondary">Connected</Badge>
@@ -5594,18 +5975,24 @@ export default function ProviderDashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-green-600">P</span>
+                            <span className="text-xs font-bold text-green-600">
+                              P
+                            </span>
                           </div>
                           <div>
                             <p className="text-sm font-medium">Plaid Link</p>
-                            <p className="text-xs text-foreground/60">Bank verification</p>
+                            <p className="text-xs text-foreground/60">
+                              Bank verification
+                            </p>
                           </div>
                         </div>
                         <Badge variant="outline">Verified</Badge>
                       </div>
                       <div className="pt-2 border-t">
                         <div className="flex justify-between items-center text-sm">
-                          <span className="text-foreground/60">Transfer Speed</span>
+                          <span className="text-foreground/60">
+                            Transfer Speed
+                          </span>
                           <span className="font-medium">Instant</span>
                         </div>
                       </div>
@@ -5650,7 +6037,9 @@ export default function ProviderDashboard() {
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="legal_business_name">Legal Business Name *</Label>
+                            <Label htmlFor="legal_business_name">
+                              Legal Business Name *
+                            </Label>
                             <Input
                               id="legal_business_name"
                               placeholder="Business legal name for tax purposes"
@@ -5675,30 +6064,46 @@ export default function ProviderDashboard() {
                                 <SelectValue placeholder="Select ID type" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="EIN">EIN (Employer Identification Number)</SelectItem>
-                                <SelectItem value="SSN">SSN (Social Security Number)</SelectItem>
+                                <SelectItem value="EIN">
+                                  EIN (Employer Identification Number)
+                                </SelectItem>
+                                <SelectItem value="SSN">
+                                  SSN (Social Security Number)
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="business_entity_type">Business Entity Type *</Label>
+                            <Label htmlFor="business_entity_type">
+                              Business Entity Type *
+                            </Label>
                             <Select>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select entity type" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="sole_proprietorship">Sole Proprietorship</SelectItem>
-                                <SelectItem value="partnership">Partnership</SelectItem>
+                                <SelectItem value="sole_proprietorship">
+                                  Sole Proprietorship
+                                </SelectItem>
+                                <SelectItem value="partnership">
+                                  Partnership
+                                </SelectItem>
                                 <SelectItem value="llc">LLC</SelectItem>
-                                <SelectItem value="corporation">Corporation</SelectItem>
-                                <SelectItem value="non_profit">Non-Profit</SelectItem>
+                                <SelectItem value="corporation">
+                                  Corporation
+                                </SelectItem>
+                                <SelectItem value="non_profit">
+                                  Non-Profit
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="tax_contact_name">Tax Contact Name *</Label>
+                          <Label htmlFor="tax_contact_name">
+                            Tax Contact Name *
+                          </Label>
                           <Input
                             id="tax_contact_name"
                             placeholder="Primary contact for tax matters"
@@ -5708,7 +6113,9 @@ export default function ProviderDashboard() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="tax_contact_email">Tax Contact Email *</Label>
+                            <Label htmlFor="tax_contact_email">
+                              Tax Contact Email *
+                            </Label>
                             <Input
                               id="tax_contact_email"
                               type="email"
@@ -5717,7 +6124,9 @@ export default function ProviderDashboard() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="tax_contact_phone">Tax Contact Phone</Label>
+                            <Label htmlFor="tax_contact_phone">
+                              Tax Contact Phone
+                            </Label>
                             <Input
                               id="tax_contact_phone"
                               type="tel"
@@ -5728,10 +6137,7 @@ export default function ProviderDashboard() {
                         </div>
 
                         <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            disabled={taxInfoSaving}
-                          >
+                          <Button variant="outline" disabled={taxInfoSaving}>
                             Cancel
                           </Button>
                           <Button
@@ -5759,7 +6165,9 @@ export default function ProviderDashboard() {
                     <CardContent>
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <Label htmlFor="tax_address_line1">Address Line 1 *</Label>
+                          <Label htmlFor="tax_address_line1">
+                            Address Line 1 *
+                          </Label>
                           <Input
                             id="tax_address_line1"
                             placeholder="Street address"
@@ -5767,7 +6175,9 @@ export default function ProviderDashboard() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="tax_address_line2">Address Line 2</Label>
+                          <Label htmlFor="tax_address_line2">
+                            Address Line 2
+                          </Label>
                           <Input
                             id="tax_address_line2"
                             placeholder="Apt, suite, etc."
@@ -5824,27 +6234,41 @@ export default function ProviderDashboard() {
                     <CardContent>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">Registration Status</span>
+                          <span className="text-sm text-foreground/60">
+                            Registration Status
+                          </span>
                           <Badge className="bg-green-100 text-green-800">
                             Registered
                           </Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">Stripe Tax ID</span>
-                          <span className="text-sm font-medium">txr_****xyz123</span>
+                          <span className="text-sm text-foreground/60">
+                            Stripe Tax ID
+                          </span>
+                          <span className="text-sm font-medium">
+                            txr_****xyz123
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">Registration Date</span>
-                          <span className="text-sm font-medium">Jan 15, 2024</span>
+                          <span className="text-sm text-foreground/60">
+                            Registration Date
+                          </span>
+                          <span className="text-sm font-medium">
+                            Jan 15, 2024
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">W-9 Status</span>
+                          <span className="text-sm text-foreground/60">
+                            W-9 Status
+                          </span>
                           <Badge className="bg-green-100 text-green-800">
                             Received
                           </Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">Tax Setup</span>
+                          <span className="text-sm text-foreground/60">
+                            Tax Setup
+                          </span>
                           <Badge className="bg-green-100 text-green-800">
                             Complete
                           </Badge>
@@ -5863,34 +6287,47 @@ export default function ProviderDashboard() {
                     <CardContent>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">2024 Earnings</span>
-                          <span className="text-xl font-semibold text-roam-blue">$47,325</span>
+                          <span className="text-sm text-foreground/60">
+                            2024 Earnings
+                          </span>
+                          <span className="text-xl font-semibold text-roam-blue">
+                            $47,325
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">1099 Threshold</span>
-                          <span className="text-sm font-medium">$600 (Met)</span>
+                          <span className="text-sm text-foreground/60">
+                            1099 Threshold
+                          </span>
+                          <span className="text-sm font-medium">
+                            $600 (Met)
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">Threshold Reached</span>
-                          <span className="text-sm font-medium">Feb 12, 2024</span>
+                          <span className="text-sm text-foreground/60">
+                            Threshold Reached
+                          </span>
+                          <span className="text-sm font-medium">
+                            Feb 12, 2024
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">1099 Status</span>
+                          <span className="text-sm text-foreground/60">
+                            1099 Status
+                          </span>
                           <Badge className="bg-yellow-100 text-yellow-800">
                             Will Generate
                           </Badge>
                         </div>
                         <div className="pt-2 border-t">
                           <p className="text-xs text-foreground/60">
-                            1099-NEC forms will be generated and sent by January 31st of the following year.
+                            1099-NEC forms will be generated and sent by January
+                            31st of the following year.
                           </p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
-
-
               </div>
 
               {/* Recent Transactions */}
@@ -6102,9 +6539,12 @@ export default function ProviderDashboard() {
                     {/* Notification Contact Details */}
                     <div className="space-y-4 pb-4 border-b">
                       <div>
-                        <h4 className="font-medium mb-2">Notification Contact Details</h4>
+                        <h4 className="font-medium mb-2">
+                          Notification Contact Details
+                        </h4>
                         <p className="text-sm text-foreground/60 mb-4">
-                          Specify dedicated contact details for receiving notifications and alerts
+                          Specify dedicated contact details for receiving
+                          notifications and alerts
                         </p>
                       </div>
 
@@ -6122,36 +6562,48 @@ export default function ProviderDashboard() {
 
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <Label htmlFor="notification_email">Notification Email</Label>
+                          <Label htmlFor="notification_email">
+                            Notification Email
+                          </Label>
                           <Input
                             id="notification_email"
                             type="email"
                             value={notificationSettings.notification_email}
                             onChange={(e) =>
-                              handleNotificationSettingsChange("notification_email", e.target.value)
+                              handleNotificationSettingsChange(
+                                "notification_email",
+                                e.target.value,
+                              )
                             }
                             placeholder="Enter email for notifications (optional)"
                             disabled={notificationSettingsSaving}
                           />
                           <p className="text-xs text-foreground/60">
-                            If provided, notifications will be sent to this email instead of your main account email
+                            If provided, notifications will be sent to this
+                            email instead of your main account email
                           </p>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="notification_phone">Notification Phone</Label>
+                          <Label htmlFor="notification_phone">
+                            Notification Phone
+                          </Label>
                           <Input
                             id="notification_phone"
                             type="tel"
                             value={notificationSettings.notification_phone}
                             onChange={(e) =>
-                              handleNotificationSettingsChange("notification_phone", e.target.value)
+                              handleNotificationSettingsChange(
+                                "notification_phone",
+                                e.target.value,
+                              )
                             }
                             placeholder="Enter phone for SMS notifications (optional)"
                             disabled={notificationSettingsSaving}
                           />
                           <p className="text-xs text-foreground/60">
-                            If provided, SMS notifications will be sent to this number instead of your main phone number
+                            If provided, SMS notifications will be sent to this
+                            number instead of your main phone number
                           </p>
                         </div>
 
@@ -6178,7 +6630,8 @@ export default function ProviderDashboard() {
                       <div>
                         <h4 className="font-medium mb-2">Notification Types</h4>
                         <p className="text-sm text-foreground/60 mb-4">
-                          Choose which types of notifications you want to receive
+                          Choose which types of notifications you want to
+                          receive
                         </p>
                       </div>
 
@@ -6673,14 +7126,15 @@ export default function ProviderDashboard() {
                   {editingService.services?.name}
                 </h3>
                 <p className="text-sm text-foreground/60">
-                  {
+                  {editingService.services?.service_subcategories
+                    ?.service_categories?.description ||
                     editingService.services?.service_subcategories
-                      ?.service_categories?.description ||
+                      ?.service_categories?.service_category_type}{" "}
+                  →{" "}
+                  {editingService.services?.service_subcategories
+                    ?.description ||
                     editingService.services?.service_subcategories
-                      ?.service_categories?.service_category_type
-                  }{" "}
-                  → {editingService.services?.service_subcategories?.description ||
-                      editingService.services?.service_subcategories?.service_subcategory_type}
+                      ?.service_subcategory_type}
                 </p>
               </div>
 
@@ -6832,14 +7286,15 @@ export default function ProviderDashboard() {
                           <div className="flex flex-col">
                             <span className="font-medium">{service.name}</span>
                             <span className="text-xs text-foreground/60">
-                              {
+                              {service.service_subcategories?.service_categories
+                                ?.description ||
                                 service.service_subcategories
-                                  ?.service_categories?.description ||
+                                  ?.service_categories
+                                  ?.service_category_type}{" "}
+                              →{" "}
+                              {service.service_subcategories?.description ||
                                 service.service_subcategories
-                                  ?.service_categories?.service_category_type
-                              }{" "}
-                              → {service.service_subcategories?.description ||
-                                  service.service_subcategories?.service_subcategory_type}
+                                  ?.service_subcategory_type}
                             </span>
                           </div>
                         </SelectItem>
@@ -7002,7 +7457,9 @@ export default function ProviderDashboard() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-roam-blue" />
-              {isProvider && !isOwner && !isDispatcher ? "My Calendar" : "Business Calendar"}
+              {isProvider && !isOwner && !isDispatcher
+                ? "My Calendar"
+                : "Business Calendar"}
             </DialogTitle>
           </DialogHeader>
 
@@ -7021,7 +7478,9 @@ export default function ProviderDashboard() {
                       <div className="text-2xl font-bold text-roam-blue">
                         {calendarBookings.length}
                       </div>
-                      <div className="text-sm text-foreground/60">Total Bookings</div>
+                      <div className="text-sm text-foreground/60">
+                        Total Bookings
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -7029,9 +7488,15 @@ export default function ProviderDashboard() {
                   <CardContent className="p-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-600">
-                        {calendarBookings.filter(b => b.booking_status === 'confirmed').length}
+                        {
+                          calendarBookings.filter(
+                            (b) => b.booking_status === "confirmed",
+                          ).length
+                        }
                       </div>
-                      <div className="text-sm text-foreground/60">Confirmed</div>
+                      <div className="text-sm text-foreground/60">
+                        Confirmed
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -7039,7 +7504,11 @@ export default function ProviderDashboard() {
                   <CardContent className="p-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-yellow-600">
-                        {calendarBookings.filter(b => b.booking_status === 'pending').length}
+                        {
+                          calendarBookings.filter(
+                            (b) => b.booking_status === "pending",
+                          ).length
+                        }
                       </div>
                       <div className="text-sm text-foreground/60">Pending</div>
                     </div>
@@ -7049,9 +7518,15 @@ export default function ProviderDashboard() {
                   <CardContent className="p-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-blue-600">
-                        {calendarBookings.filter(b => b.booking_status === 'completed').length}
+                        {
+                          calendarBookings.filter(
+                            (b) => b.booking_status === "completed",
+                          ).length
+                        }
                       </div>
-                      <div className="text-sm text-foreground/60">Completed</div>
+                      <div className="text-sm text-foreground/60">
+                        Completed
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -7059,12 +7534,18 @@ export default function ProviderDashboard() {
 
               {/* Bookings List */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Upcoming & Recent Bookings</h3>
+                <h3 className="text-lg font-semibold">
+                  Upcoming & Recent Bookings
+                </h3>
                 {calendarBookings.length > 0 ? (
                   <div className="space-y-3">
                     {calendarBookings.map((booking) => {
-                      const statusConfig = getStatusBadge(booking.booking_status);
-                      const DeliveryIcon = getDeliveryIcon(booking.delivery_type || "business_location");
+                      const statusConfig = getStatusBadge(
+                        booking.booking_status,
+                      );
+                      const DeliveryIcon = getDeliveryIcon(
+                        booking.delivery_type || "business_location",
+                      );
                       const bookingDate = new Date(booking.booking_date);
                       const isUpcoming = bookingDate >= new Date();
 
@@ -7072,25 +7553,33 @@ export default function ProviderDashboard() {
                         <Card
                           key={booking.id}
                           className={`hover:shadow-md transition-shadow ${
-                            isUpcoming ? 'border-l-4 border-l-roam-blue' : ''
+                            isUpcoming ? "border-l-4 border-l-roam-blue" : ""
                           }`}
                         >
                           <CardContent className="p-4">
                             <div className="flex items-start justify-between">
                               <div className="flex items-start gap-4">
-                                <div className={`w-3 h-3 rounded-full mt-2 ${
-                                  booking.booking_status === 'confirmed' ? 'bg-green-500' :
-                                  booking.booking_status === 'pending' ? 'bg-yellow-500' :
-                                  booking.booking_status === 'completed' ? 'bg-blue-500' :
-                                  'bg-gray-500'
-                                }`}></div>
+                                <div
+                                  className={`w-3 h-3 rounded-full mt-2 ${
+                                    booking.booking_status === "confirmed"
+                                      ? "bg-green-500"
+                                      : booking.booking_status === "pending"
+                                        ? "bg-yellow-500"
+                                        : booking.booking_status === "completed"
+                                          ? "bg-blue-500"
+                                          : "bg-gray-500"
+                                  }`}
+                                ></div>
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-1">
                                     <h4 className="font-semibold">
                                       {booking.services?.name || "Service"}
                                     </h4>
                                     {isUpcoming && (
-                                      <Badge variant="secondary" className="text-xs">
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                      >
                                         Upcoming
                                       </Badge>
                                     )}
@@ -7098,30 +7587,42 @@ export default function ProviderDashboard() {
                                   <div className="flex items-center gap-2 mb-2">
                                     {booking.customer_profiles?.image_url ? (
                                       <img
-                                        src={booking.customer_profiles.image_url}
+                                        src={
+                                          booking.customer_profiles.image_url
+                                        }
                                         alt="Customer"
                                         className="w-8 h-8 rounded-full object-cover"
                                       />
                                     ) : (
                                       <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                                         <span className="text-sm text-gray-600 font-medium">
-                                          {booking.customer_profiles?.first_name?.charAt(0) ||
-                                           booking.guest_name?.charAt(0) || "C"}
+                                          {booking.customer_profiles?.first_name?.charAt(
+                                            0,
+                                          ) ||
+                                            booking.guest_name?.charAt(0) ||
+                                            "C"}
                                         </span>
                                       </div>
                                     )}
                                     <div>
                                       <p className="text-sm font-medium text-foreground/80">
-                                        {booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+                                        {booking.customer_profiles
+                                          ?.first_name &&
+                                        booking.customer_profiles?.last_name
                                           ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
-                                          : booking.guest_name || "Unknown Customer"}
+                                          : booking.guest_name ||
+                                            "Unknown Customer"}
                                       </p>
                                       <div className="flex items-center gap-2 text-xs text-foreground/60">
                                         {booking.customer_profiles?.email && (
-                                          <span>{booking.customer_profiles.email}</span>
+                                          <span>
+                                            {booking.customer_profiles.email}
+                                          </span>
                                         )}
                                         {booking.customer_profiles?.phone && (
-                                          <span>• {booking.customer_profiles.phone}</span>
+                                          <span>
+                                            • {booking.customer_profiles.phone}
+                                          </span>
                                         )}
                                       </div>
                                     </div>
@@ -7139,13 +7640,20 @@ export default function ProviderDashboard() {
                                       <DeliveryIcon className="w-4 h-4 mt-0.5 flex-shrink-0" />
                                       <div className="flex flex-col min-w-0">
                                         {(() => {
-                                          const location = formatBookingLocation(booking);
-                                          if (typeof location === 'string') {
-                                            return <span className="text-sm">{location}</span>;
+                                          const location =
+                                            formatBookingLocation(booking);
+                                          if (typeof location === "string") {
+                                            return (
+                                              <span className="text-sm">
+                                                {location}
+                                              </span>
+                                            );
                                           } else {
                                             return (
                                               <div className="min-w-0">
-                                                <span className="text-sm font-medium">{location.name}</span>
+                                                <span className="text-sm font-medium">
+                                                  {location.name}
+                                                </span>
                                                 {location.address && (
                                                   <span className="text-xs text-foreground/50 block truncate">
                                                     {location.address}
@@ -7165,7 +7673,8 @@ export default function ProviderDashboard() {
                                     {!isProvider || isOwner || isDispatcher ? (
                                       <div className="flex items-center gap-1">
                                         <Users className="w-4 h-4" />
-                                        {booking.providers?.first_name} {booking.providers?.last_name}
+                                        {booking.providers?.first_name}{" "}
+                                        {booking.providers?.last_name}
                                       </div>
                                     ) : null}
                                   </div>
@@ -7192,8 +7701,7 @@ export default function ProviderDashboard() {
                     <p className="text-sm">
                       {isProvider && !isOwner && !isDispatcher
                         ? "You don't have any bookings yet"
-                        : "No bookings found for this business"
-                      }
+                        : "No bookings found for this business"}
                     </p>
                   </div>
                 )}
@@ -7202,21 +7710,17 @@ export default function ProviderDashboard() {
               {/* Calendar Note */}
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <p className="text-sm text-blue-700">
-                  <strong>Calendar View:</strong> {
-                    isProvider && !isOwner && !isDispatcher
-                      ? "This shows only your personal bookings and appointments."
-                      : "This shows all bookings for your business across all providers."
-                  }
+                  <strong>Calendar View:</strong>{" "}
+                  {isProvider && !isOwner && !isDispatcher
+                    ? "This shows only your personal bookings and appointments."
+                    : "This shows all bookings for your business across all providers."}
                 </p>
               </div>
             </div>
           )}
 
           <div className="flex justify-end pt-4 border-t">
-            <Button
-              variant="outline"
-              onClick={() => setShowCalendar(false)}
-            >
+            <Button variant="outline" onClick={() => setShowCalendar(false)}>
               Close
             </Button>
           </div>
@@ -7249,38 +7753,59 @@ export default function ProviderDashboard() {
           {addProviderStep === 1 && (
             <div className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Step 1: Create User Account</h3>
+                <h3 className="text-lg font-semibold">
+                  Step 1: Create User Account
+                </h3>
                 <p className="text-sm text-foreground/60">
-                  Create a new user account for the provider. They will receive a verification email.
+                  Create a new user account for the provider. They will receive
+                  a verification email.
                 </p>
 
                 {!otpSent ? (
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="provider_email">Provider Email Address *</Label>
+                      <Label htmlFor="provider_email">
+                        Provider Email Address *
+                      </Label>
                       <Input
                         id="provider_email"
                         type="email"
                         value={newUserForm.email}
-                        onChange={(e) => setNewUserForm(prev => ({ ...prev, email: e.target.value }))}
+                        onChange={(e) =>
+                          setNewUserForm((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
                         placeholder="provider@example.com"
                         disabled={addProviderLoading}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="confirm_email">Confirm Email Address *</Label>
+                      <Label htmlFor="confirm_email">
+                        Confirm Email Address *
+                      </Label>
                       <Input
                         id="confirm_email"
                         type="email"
                         value={newUserForm.confirmEmail}
-                        onChange={(e) => setNewUserForm(prev => ({ ...prev, confirmEmail: e.target.value }))}
+                        onChange={(e) =>
+                          setNewUserForm((prev) => ({
+                            ...prev,
+                            confirmEmail: e.target.value,
+                          }))
+                        }
                         placeholder="provider@example.com"
                         disabled={addProviderLoading}
                       />
                     </div>
                     <Button
                       onClick={handleCreateUserAndSendOTP}
-                      disabled={addProviderLoading || !newUserForm.email || newUserForm.email !== newUserForm.confirmEmail}
+                      disabled={
+                        addProviderLoading ||
+                        !newUserForm.email ||
+                        newUserForm.email !== newUserForm.confirmEmail
+                      }
                       className="w-full bg-roam-blue hover:bg-roam-blue/90"
                     >
                       {addProviderLoading && (
@@ -7294,11 +7819,15 @@ export default function ProviderDashboard() {
                     <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <div className="flex items-center gap-2 mb-2">
                         <Mail className="w-5 h-5 text-blue-600" />
-                        <span className="font-medium text-blue-900">Verification Email Sent</span>
+                        <span className="font-medium text-blue-900">
+                          Verification Email Sent
+                        </span>
                       </div>
                       <p className="text-sm text-blue-700">
-                        A verification email has been sent to <strong>{newUserForm.email}</strong>.
-                        Please ask the provider to check their email and enter the OTP code below.
+                        A verification email has been sent to{" "}
+                        <strong>{newUserForm.email}</strong>. Please ask the
+                        provider to check their email and enter the OTP code
+                        below.
                       </p>
                     </div>
                     <div className="space-y-2">
@@ -7341,7 +7870,9 @@ export default function ProviderDashboard() {
           {addProviderStep === 2 && (
             <div className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Step 2: Provider Profile</h3>
+                <h3 className="text-lg font-semibold">
+                  Step 2: Provider Profile
+                </h3>
                 <p className="text-sm text-foreground/60">
                   Complete the provider's profile information.
                 </p>
@@ -7352,7 +7883,12 @@ export default function ProviderDashboard() {
                     <Input
                       id="first_name"
                       value={providerForm.first_name}
-                      onChange={(e) => setProviderForm(prev => ({ ...prev, first_name: e.target.value }))}
+                      onChange={(e) =>
+                        setProviderForm((prev) => ({
+                          ...prev,
+                          first_name: e.target.value,
+                        }))
+                      }
                       disabled={addProviderLoading}
                     />
                   </div>
@@ -7361,7 +7897,12 @@ export default function ProviderDashboard() {
                     <Input
                       id="last_name"
                       value={providerForm.last_name}
-                      onChange={(e) => setProviderForm(prev => ({ ...prev, last_name: e.target.value }))}
+                      onChange={(e) =>
+                        setProviderForm((prev) => ({
+                          ...prev,
+                          last_name: e.target.value,
+                        }))
+                      }
                       disabled={addProviderLoading}
                     />
                   </div>
@@ -7374,7 +7915,12 @@ export default function ProviderDashboard() {
                       id="provider_phone"
                       type="tel"
                       value={providerForm.phone}
-                      onChange={(e) => setProviderForm(prev => ({ ...prev, phone: e.target.value }))}
+                      onChange={(e) =>
+                        setProviderForm((prev) => ({
+                          ...prev,
+                          phone: e.target.value,
+                        }))
+                      }
                       placeholder="(XXX) XXX-XXXX"
                       disabled={addProviderLoading}
                     />
@@ -7383,7 +7929,12 @@ export default function ProviderDashboard() {
                     <Label htmlFor="provider_role">Provider Role</Label>
                     <Select
                       value={providerForm.provider_role}
-                      onValueChange={(value) => setProviderForm(prev => ({ ...prev, provider_role: value }))}
+                      onValueChange={(value) =>
+                        setProviderForm((prev) => ({
+                          ...prev,
+                          provider_role: value,
+                        }))
+                      }
                       disabled={addProviderLoading}
                     >
                       <SelectTrigger>
@@ -7405,19 +7956,31 @@ export default function ProviderDashboard() {
                       id="date_of_birth"
                       type="date"
                       value={providerForm.date_of_birth}
-                      onChange={(e) => setProviderForm(prev => ({ ...prev, date_of_birth: e.target.value }))}
+                      onChange={(e) =>
+                        setProviderForm((prev) => ({
+                          ...prev,
+                          date_of_birth: e.target.value,
+                        }))
+                      }
                       disabled={addProviderLoading}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="experience_years">Years of Experience</Label>
+                    <Label htmlFor="experience_years">
+                      Years of Experience
+                    </Label>
                     <Input
                       id="experience_years"
                       type="number"
                       min="0"
                       max="50"
                       value={providerForm.experience_years}
-                      onChange={(e) => setProviderForm(prev => ({ ...prev, experience_years: e.target.value }))}
+                      onChange={(e) =>
+                        setProviderForm((prev) => ({
+                          ...prev,
+                          experience_years: e.target.value,
+                        }))
+                      }
                       disabled={addProviderLoading}
                     />
                   </div>
@@ -7427,7 +7990,12 @@ export default function ProviderDashboard() {
                   <Label htmlFor="provider_location">Assigned Location</Label>
                   <Select
                     value={providerForm.location_id}
-                    onValueChange={(value) => setProviderForm(prev => ({ ...prev, location_id: value }))}
+                    onValueChange={(value) =>
+                      setProviderForm((prev) => ({
+                        ...prev,
+                        location_id: value,
+                      }))
+                    }
                     disabled={addProviderLoading}
                   >
                     <SelectTrigger>
@@ -7437,7 +8005,8 @@ export default function ProviderDashboard() {
                       <SelectItem value="none">No location assigned</SelectItem>
                       {locations.map((location) => (
                         <SelectItem key={location.id} value={location.id}>
-                          {location.location_name} {location.is_primary && "(Primary)"}
+                          {location.location_name}{" "}
+                          {location.is_primary && "(Primary)"}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -7449,7 +8018,12 @@ export default function ProviderDashboard() {
                   <Textarea
                     id="bio"
                     value={providerForm.bio}
-                    onChange={(e) => setProviderForm(prev => ({ ...prev, bio: e.target.value }))}
+                    onChange={(e) =>
+                      setProviderForm((prev) => ({
+                        ...prev,
+                        bio: e.target.value,
+                      }))
+                    }
                     rows={3}
                     placeholder="Brief description of the provider's background and expertise..."
                     disabled={addProviderLoading}
@@ -7466,7 +8040,11 @@ export default function ProviderDashboard() {
                   </Button>
                   <Button
                     onClick={handleSaveProviderProfile}
-                    disabled={addProviderLoading || !providerForm.first_name || !providerForm.last_name}
+                    disabled={
+                      addProviderLoading ||
+                      !providerForm.first_name ||
+                      !providerForm.last_name
+                    }
                     className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
                   >
                     Continue
@@ -7480,31 +8058,37 @@ export default function ProviderDashboard() {
           {addProviderStep === 3 && (
             <div className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Step 3: Management Settings</h3>
+                <h3 className="text-lg font-semibold">
+                  Step 3: Management Settings
+                </h3>
                 <p className="text-sm text-foreground/60">
-                  Configure how this provider will be managed and what services they inherit.
+                  Configure how this provider will be managed and what services
+                  they inherit.
                 </p>
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">Provider Management</CardTitle>
+                    <CardTitle className="text-base">
+                      Provider Management
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <Label>Managed by Business</Label>
                         <p className="text-sm text-foreground/60">
-                          Business controls this provider's services and settings
+                          Business controls this provider's services and
+                          settings
                         </p>
                       </div>
                       <Switch
                         checked={managementSettings.business_managed}
                         onCheckedChange={(checked) =>
-                          setManagementSettings(prev => ({
+                          setManagementSettings((prev) => ({
                             ...prev,
                             business_managed: checked,
                             inherit_business_services: checked,
-                            inherit_business_addons: checked
+                            inherit_business_addons: checked,
                           }))
                         }
                         className="data-[state=checked]:bg-roam-blue"
@@ -7521,9 +8105,14 @@ export default function ProviderDashboard() {
                             </p>
                           </div>
                           <Switch
-                            checked={managementSettings.inherit_business_services}
+                            checked={
+                              managementSettings.inherit_business_services
+                            }
                             onCheckedChange={(checked) =>
-                              setManagementSettings(prev => ({ ...prev, inherit_business_services: checked }))
+                              setManagementSettings((prev) => ({
+                                ...prev,
+                                inherit_business_services: checked,
+                              }))
                             }
                             className="data-[state=checked]:bg-roam-blue"
                           />
@@ -7539,7 +8128,10 @@ export default function ProviderDashboard() {
                           <Switch
                             checked={managementSettings.inherit_business_addons}
                             onCheckedChange={(checked) =>
-                              setManagementSettings(prev => ({ ...prev, inherit_business_addons: checked }))
+                              setManagementSettings((prev) => ({
+                                ...prev,
+                                inherit_business_addons: checked,
+                              }))
                             }
                             className="data-[state=checked]:bg-roam-blue"
                           />
@@ -7550,8 +8142,10 @@ export default function ProviderDashboard() {
                     {!managementSettings.business_managed && (
                       <div className="p-3 bg-yellow-50 border border-yellow-200 rounded">
                         <p className="text-sm text-yellow-800">
-                          <strong>Self-Managed Provider:</strong> This provider will have full control over their services and settings.
-                          They can still choose to inherit business services and later modify them.
+                          <strong>Self-Managed Provider:</strong> This provider
+                          will have full control over their services and
+                          settings. They can still choose to inherit business
+                          services and later modify them.
                         </p>
                       </div>
                     )}
@@ -7570,23 +8164,33 @@ export default function ProviderDashboard() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-foreground/60">Name:</span>
-                        <span>{providerForm.first_name} {providerForm.last_name}</span>
+                        <span>
+                          {providerForm.first_name} {providerForm.last_name}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-foreground/60">Role:</span>
-                        <span className="capitalize">{providerForm.provider_role}</span>
+                        <span className="capitalize">
+                          {providerForm.provider_role}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-foreground/60">Location:</span>
                         <span>
                           {providerForm.location_id
-                            ? locations.find(l => l.id === providerForm.location_id)?.location_name || "Unknown"
+                            ? locations.find(
+                                (l) => l.id === providerForm.location_id,
+                              )?.location_name || "Unknown"
                             : "No location assigned"}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-foreground/60">Management:</span>
-                        <span>{managementSettings.business_managed ? "Business Managed" : "Self Managed"}</span>
+                        <span>
+                          {managementSettings.business_managed
+                            ? "Business Managed"
+                            : "Self Managed"}
+                        </span>
                       </div>
                     </div>
                   </CardContent>
@@ -7632,7 +8236,8 @@ export default function ProviderDashboard() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              Manage Provider - {managingProvider?.first_name} {managingProvider?.last_name}
+              Manage Provider - {managingProvider?.first_name}{" "}
+              {managingProvider?.last_name}
             </DialogTitle>
           </DialogHeader>
 
@@ -7652,7 +8257,9 @@ export default function ProviderDashboard() {
             {/* Provider Info Display */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Provider Information</CardTitle>
+                <CardTitle className="text-base">
+                  Provider Information
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 text-sm">
@@ -7666,11 +8273,21 @@ export default function ProviderDashboard() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-foreground/60">Created:</span>
-                    <span>{managingProvider?.created_at ? new Date(managingProvider.created_at).toLocaleDateString() : "Unknown"}</span>
+                    <span>
+                      {managingProvider?.created_at
+                        ? new Date(
+                            managingProvider.created_at,
+                          ).toLocaleDateString()
+                        : "Unknown"}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-foreground/60">Experience:</span>
-                    <span>{managingProvider?.experience_years ? `${managingProvider.experience_years} years` : "Not specified"}</span>
+                    <span>
+                      {managingProvider?.experience_years
+                        ? `${managingProvider.experience_years} years`
+                        : "Not specified"}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -7688,7 +8305,12 @@ export default function ProviderDashboard() {
                     <Label htmlFor="provider_role">Provider Role</Label>
                     <Select
                       value={providerManagementForm.provider_role}
-                      onValueChange={(value) => handleProviderManagementFormChange("provider_role", value)}
+                      onValueChange={(value) =>
+                        handleProviderManagementFormChange(
+                          "provider_role",
+                          value,
+                        )
+                      }
                       disabled={manageProviderLoading}
                     >
                       <SelectTrigger>
@@ -7703,10 +8325,17 @@ export default function ProviderDashboard() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="verification_status">Verification Status</Label>
+                    <Label htmlFor="verification_status">
+                      Verification Status
+                    </Label>
                     <Select
                       value={providerManagementForm.verification_status}
-                      onValueChange={(value) => handleProviderManagementFormChange("verification_status", value)}
+                      onValueChange={(value) =>
+                        handleProviderManagementFormChange(
+                          "verification_status",
+                          value,
+                        )
+                      }
                       disabled={manageProviderLoading}
                     >
                       <SelectTrigger>
@@ -7727,7 +8356,9 @@ export default function ProviderDashboard() {
                   <Label htmlFor="location_assignment">Assigned Location</Label>
                   <Select
                     value={providerManagementForm.location_id}
-                    onValueChange={(value) => handleProviderManagementFormChange("location_id", value)}
+                    onValueChange={(value) =>
+                      handleProviderManagementFormChange("location_id", value)
+                    }
                     disabled={manageProviderLoading}
                   >
                     <SelectTrigger>
@@ -7737,7 +8368,8 @@ export default function ProviderDashboard() {
                       <SelectItem value="none">No location assigned</SelectItem>
                       {locations.map((location) => (
                         <SelectItem key={location.id} value={location.id}>
-                          {location.location_name} {location.is_primary && "(Primary)"}
+                          {location.location_name}{" "}
+                          {location.is_primary && "(Primary)"}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -7755,7 +8387,9 @@ export default function ProviderDashboard() {
                     </div>
                     <Switch
                       checked={providerManagementForm.is_active}
-                      onCheckedChange={(checked) => handleProviderManagementFormChange("is_active", checked)}
+                      onCheckedChange={(checked) =>
+                        handleProviderManagementFormChange("is_active", checked)
+                      }
                       disabled={manageProviderLoading}
                       className="data-[state=checked]:bg-roam-blue"
                     />
@@ -7770,7 +8404,12 @@ export default function ProviderDashboard() {
                     </div>
                     <Switch
                       checked={providerManagementForm.business_managed}
-                      onCheckedChange={(checked) => handleProviderManagementFormChange("business_managed", checked)}
+                      onCheckedChange={(checked) =>
+                        handleProviderManagementFormChange(
+                          "business_managed",
+                          checked,
+                        )
+                      }
                       disabled={manageProviderLoading}
                       className="data-[state=checked]:bg-roam-blue"
                     />
