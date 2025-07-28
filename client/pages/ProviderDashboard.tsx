@@ -3536,6 +3536,70 @@ export default function ProviderDashboard() {
                         </div>
                       </div>
 
+                      {/* Service Categories */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          Service Categories
+                        </h3>
+                        <div className="space-y-6">
+                          {/* Service Categories */}
+                          <div className="space-y-3">
+                            <Label className="text-base font-medium">Business Service Categories</Label>
+                            <p className="text-sm text-foreground/60">Select the main categories of services your business offers</p>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                              {SERVICE_CATEGORIES.map((category) => (
+                                <div key={category.value} className="flex items-center space-x-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`category-${category.value}`}
+                                    checked={businessDetailsForm.service_categories.includes(category.value)}
+                                    onChange={(e) => {
+                                      const updatedCategories = e.target.checked
+                                        ? [...businessDetailsForm.service_categories, category.value]
+                                        : businessDetailsForm.service_categories.filter(c => c !== category.value);
+                                      handleBusinessDetailsFormChange("service_categories", updatedCategories);
+                                    }}
+                                    disabled={businessDetailsSaving}
+                                    className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
+                                  />
+                                  <Label htmlFor={`category-${category.value}`} className="text-sm font-normal cursor-pointer">
+                                    {category.label}
+                                  </Label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Service Subcategories */}
+                          <div className="space-y-3">
+                            <Label className="text-base font-medium">Service Specializations</Label>
+                            <p className="text-sm text-foreground/60">Select the specific services and specializations your business provides</p>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                              {SERVICE_SUBCATEGORIES.map((subcategory) => (
+                                <div key={subcategory.value} className="flex items-center space-x-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`subcategory-${subcategory.value}`}
+                                    checked={businessDetailsForm.service_subcategories.includes(subcategory.value)}
+                                    onChange={(e) => {
+                                      const updatedSubcategories = e.target.checked
+                                        ? [...businessDetailsForm.service_subcategories, subcategory.value]
+                                        : businessDetailsForm.service_subcategories.filter(s => s !== subcategory.value);
+                                      handleBusinessDetailsFormChange("service_subcategories", updatedSubcategories);
+                                    }}
+                                    disabled={businessDetailsSaving}
+                                    className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
+                                  />
+                                  <Label htmlFor={`subcategory-${subcategory.value}`} className="text-sm font-normal cursor-pointer">
+                                    {subcategory.label}
+                                  </Label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                       {/* Contact Information */}
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold border-b pb-2">
