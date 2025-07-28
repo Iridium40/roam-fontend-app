@@ -1037,9 +1037,23 @@ export default function ProviderDashboard() {
       setCalendarBookings(data || []);
     } catch (error: any) {
       console.error("Error fetching calendar bookings:", error);
+
+      let errorMessage = "Failed to load calendar bookings";
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error) {
+        errorMessage = error.error;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      }
+
+      console.error("Calendar bookings error details:", errorMessage);
+
       toast({
         title: "Error",
-        description: "Failed to load calendar bookings",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
