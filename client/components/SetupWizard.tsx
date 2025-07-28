@@ -163,7 +163,6 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({
       if (data) {
         setBusiness(data);
         setBusinessData({
-          business_description: data.business_description || "",
           website_url: data.website_url || "",
           business_hours: data.business_hours || businessData.business_hours,
           social_media: data.social_media || businessData.social_media,
