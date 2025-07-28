@@ -2524,11 +2524,13 @@ export default function ProviderDashboard() {
                   subcategory_id,
                   service_subcategories (
                     id,
-                    name,
+                    service_subcategory_type,
+                    description,
                     category_id,
                     service_categories (
                       id,
-                      name
+                      service_category_type,
+                      description
                     )
                   )
                 )
