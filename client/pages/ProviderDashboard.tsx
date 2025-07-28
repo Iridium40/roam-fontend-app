@@ -2380,7 +2380,7 @@ export default function ProviderDashboard() {
             onValueChange={setActiveTab}
             className="space-y-6"
           >
-            <TabsList className="grid w-full grid-cols-9 lg:w-auto lg:inline-grid">
+            <TabsList className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? 'grid-cols-4' : 'grid-cols-9'} lg:w-auto lg:inline-grid`}>
               <TabsTrigger
                 value="bookings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -2423,18 +2423,22 @@ export default function ProviderDashboard() {
               >
                 Profile
               </TabsTrigger>
-              <TabsTrigger
-                value="analytics"
-                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-              >
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger
-                value="financial"
-                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-              >
-                Financial
-              </TabsTrigger>
+              {(isOwner || isDispatcher) && (
+                <TabsTrigger
+                  value="analytics"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
+                  Analytics
+                </TabsTrigger>
+              )}
+              {(isOwner || isDispatcher) && (
+                <TabsTrigger
+                  value="financial"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
+                  Financial
+                </TabsTrigger>
+              )}
               <TabsTrigger
                 value="settings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
