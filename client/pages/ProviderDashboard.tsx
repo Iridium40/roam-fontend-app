@@ -2201,9 +2201,16 @@ export default function ProviderDashboard() {
           : null,
         logo_url: businessDetailsForm.logo_url?.trim() || null,
         is_active: businessDetailsForm.is_active,
-        service_categories: businessDetailsForm.service_categories,
-        service_subcategories: businessDetailsForm.service_subcategories,
+        service_categories: businessDetailsForm.service_categories && businessDetailsForm.service_categories.length > 0
+          ? businessDetailsForm.service_categories
+          : null,
+        service_subcategories: businessDetailsForm.service_subcategories && businessDetailsForm.service_subcategories.length > 0
+          ? businessDetailsForm.service_subcategories
+          : null,
       };
+
+      // Debug logging
+      console.log("Saving business details with data:", updateData);
 
       // Validate required fields
       if (!updateData.business_name) {
