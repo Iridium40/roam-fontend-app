@@ -127,6 +127,11 @@ export default function ProviderDashboard() {
   const [providersLoading, setProvidersLoading] = useState(false);
   const [providersError, setProvidersError] = useState("");
 
+  // Calendar Modal state
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [calendarBookings, setCalendarBookings] = useState([]);
+  const [calendarLoading, setCalendarLoading] = useState(false);
+
   // Add Provider Modal state
   const [addProviderModal, setAddProviderModal] = useState(false);
   const [addProviderStep, setAddProviderStep] = useState(1);
@@ -2601,7 +2606,7 @@ export default function ProviderDashboard() {
                                 businessService.services?.service_subcategories
                                   ?.service_categories?.name
                               }{" "}
-                              ���{" "}
+                              �����{" "}
                               {
                                 businessService.services?.service_subcategories
                                   ?.name
