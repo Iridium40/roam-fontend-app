@@ -2727,7 +2727,12 @@ export default function ProviderDashboard() {
 
   // Load all providers for owners/dispatchers
   const loadAllProviders = async () => {
-    if (!isOwner && !isDispatcher) return;
+    if (!isOwner && !isDispatcher) {
+      console.log('Not loading providers - user is not owner or dispatcher');
+      return;
+    }
+
+    console.log('Loading providers for owner/dispatcher...');
 
     try {
       const { data: providers, error } = await supabase
