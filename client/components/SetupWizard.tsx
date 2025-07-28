@@ -734,7 +734,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return businessData.business_description.trim().length > 0;
+        return true; // No required fields for this step now
       case 2:
         return (
           locationData.address_line1 &&
