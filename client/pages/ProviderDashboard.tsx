@@ -2766,11 +2766,27 @@ export default function ProviderDashboard() {
                                     <Clock className="w-4 h-4" />
                                     {booking.start_time}
                                   </div>
-                                  <div className="flex items-center gap-1">
-                                    <DeliveryIcon className="w-4 h-4" />
-                                    {booking.delivery_type === 'business_location' ? 'Business Location' :
-                                     booking.delivery_type === 'customer_location' ? 'Customer Location' :
-                                     booking.delivery_type === 'virtual' ? 'Virtual' : 'TBD'}
+                                  <div className="flex items-start gap-1">
+                                    <DeliveryIcon className="w-4 h-4 mt-0.5" />
+                                    <div className="flex flex-col">
+                                      {(() => {
+                                        const location = formatBookingLocation(booking);
+                                        if (typeof location === 'string') {
+                                          return <span className="text-sm">{location}</span>;
+                                        } else {
+                                          return (
+                                            <div>
+                                              <span className="text-sm font-medium">{location.name}</span>
+                                              {location.address && (
+                                                <span className="text-xs text-foreground/50 block max-w-48 truncate">
+                                                  {location.address}
+                                                </span>
+                                              )}
+                                            </div>
+                                          );
+                                        }
+                                      })()}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
