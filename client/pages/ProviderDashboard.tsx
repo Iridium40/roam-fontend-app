@@ -4813,18 +4813,20 @@ export default function ProviderDashboard() {
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Payment Notifications</Label>
-                        <p className="text-sm text-foreground/60">
-                          Receive alerts for payments and payouts
-                        </p>
+                    {(isOwner || isDispatcher) && (
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label>Payment Notifications</Label>
+                          <p className="text-sm text-foreground/60">
+                            Receive alerts for payments and payouts
+                          </p>
+                        </div>
+                        <Switch
+                          defaultChecked
+                          className="data-[state=checked]:bg-roam-blue"
+                        />
                       </div>
-                      <Switch
-                        defaultChecked
-                        className="data-[state=checked]:bg-roam-blue"
-                      />
-                    </div>
+                    )}
 
                     <div className="flex items-center justify-between">
                       <div>
