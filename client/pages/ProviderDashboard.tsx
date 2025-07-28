@@ -2761,16 +2761,18 @@ export default function ProviderDashboard() {
 
   // Filter providers by selected location
   const filterProvidersByLocation = (providers: any[], locationId: string) => {
+    let filtered;
     if (locationId === "all") {
-      setFilteredProviders(providers);
+      filtered = providers;
     } else {
-      const filtered = providers.filter(provider => provider.location_id === locationId);
-      setFilteredProviders(filtered);
+      filtered = providers.filter(provider => provider.location_id === locationId);
     }
+
+    setFilteredProviders(filtered);
 
     // Reset provider selection if current selection is not available in filtered list
     if (selectedProviderFilter !== "all") {
-      const isProviderInFiltered = filteredProviders.some(p => p.id === selectedProviderFilter);
+      const isProviderInFiltered = filtered.some(p => p.id === selectedProviderFilter);
       if (!isProviderInFiltered) {
         setSelectedProviderFilter("all");
       }
