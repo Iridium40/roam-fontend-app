@@ -68,9 +68,13 @@ interface ServiceSubcategory {
 }
 
 // Calendar Grid Component
-const CalendarGrid = ({ bookings, viewType }: { bookings: any[], viewType: 'week' | 'month' }) => {
+const CalendarGrid = ({ bookings, viewType, currentDate, onDateChange }: {
+  bookings: any[],
+  viewType: 'week' | 'month',
+  currentDate: Date,
+  onDateChange: (date: Date) => void
+}) => {
   const today = new Date();
-  const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
   // Generate calendar days
   const generateCalendarDays = () => {
