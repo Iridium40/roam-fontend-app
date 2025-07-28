@@ -1231,13 +1231,41 @@ export default function ProviderDashboard() {
 
       if (!response.ok) {
         let errorText = "Unknown error";
+        let errorDetails = "";
         try {
           errorText = await response.text();
+          // Try to parse error details from response
+          try {
+            const errorJson = JSON.parse(errorText);
+            if (errorJson.message) {
+              errorDetails = errorJson.message;
+            } else if (errorJson.error) {
+              errorDetails = errorJson.error;
+            } else if (errorJson.hint) {
+              errorDetails = errorJson.hint;
+            } else if (errorJson.details) {
+              errorDetails = errorJson.details;
+            }
+          } catch (parseError) {
+            // errorText is not JSON, use as-is
+            errorDetails = errorText;
+          }
         } catch (readError) {
           console.warn("Could not read response text:", readError);
           errorText = `HTTP ${response.status} - ${response.statusText}`;
+          errorDetails = errorText;
         }
-        throw new Error(`Failed to update provider: ${errorText}`);
+
+        console.error("Provider update failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          responseText: errorText,
+          errorDetails: errorDetails,
+          updateData: JSON.stringify(updateData, null, 2),
+          providerId: managingProvider.id
+        });
+
+        throw new Error(`Failed to update provider: HTTP ${response.status} - ${errorDetails}`);
       }
 
       setManageProviderSuccess("Provider settings updated successfully!");
