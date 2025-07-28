@@ -2735,6 +2735,7 @@ export default function ProviderDashboard() {
     console.log('Loading providers for owner/dispatcher...');
 
     try {
+      // First, load providers without location join
       const { data: providers, error } = await supabase
         .from('providers')
         .select(`
@@ -2743,15 +2744,48 @@ export default function ProviderDashboard() {
           last_name,
           provider_role,
           location_id,
-          is_active,
-          business_locations!location_id (
-            id,
-            name,
-            address_line1
-          )
+          is_active
         `)
         .eq('provider_role', 'provider')
         .eq('is_active', true);
+
+      if (error) {
+        console.error('Error loading providers:', JSON.stringify(error, null, 2));
+        console.error('Error details:', error.message || error.details || error);
+        return;
+      }
+
+      // If providers loaded successfully, try to enrich with location data
+      let enrichedProviders = providers || [];
+
+      if (providers && providers.length > 0) {
+        // Get unique location IDs
+        const locationIds = [...new Set(providers.map(p => p.location_id).filter(Boolean))];
+
+        if (locationIds.length > 0) {
+          // Load location data separately
+          const { data: locationData, error: locationError } = await supabase
+            .from('business_locations')
+            .select('id, name, address_line1')
+            .in('id', locationIds);
+
+          if (!locationError && locationData) {
+            // Merge location data with providers
+            enrichedProviders = providers.map(provider => ({
+              ...provider,
+              business_locations: locationData.find(loc => loc.id === provider.location_id) || null
+            }));
+          } else {
+            console.warn('Could not load location data:', locationError);
+            // Use providers without location data
+            enrichedProviders = providers;
+          }
+        }
+      }
+
+      console.log('Loaded providers:', enrichedProviders?.length || 0);
+      setAllProviders(enrichedProviders || []);
+      filterProvidersByLocation(enrichedProviders || [], selectedLocationFilter);
 
       if (error) {
         console.error('Error loading providers:', JSON.stringify(error, null, 2));
