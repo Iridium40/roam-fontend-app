@@ -3777,7 +3777,7 @@ export default function ProviderDashboard() {
                         {filteredProviders.map((provider) => (
                           <SelectItem key={provider.id} value={provider.id}>
                             {provider.first_name} {provider.last_name}
-                            {provider.locations?.name && ` (${provider.locations.name})`}
+                            {provider.business_locations?.name && ` (${provider.business_locations.name})`}
                           </SelectItem>
                         ))}
                       </SelectContent>
