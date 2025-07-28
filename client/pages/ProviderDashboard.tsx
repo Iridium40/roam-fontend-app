@@ -2838,7 +2838,6 @@ export default function ProviderDashboard() {
         setBusinessDetailsForm({
           business_name: businessData.business_name || "",
           business_type: businessData.business_type || "",
-          business_description: businessData.business_description || "",
           contact_email: businessData.contact_email || "",
           phone: businessData.phone || "",
           website_url: businessData.website_url || "",
