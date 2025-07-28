@@ -6505,7 +6505,7 @@ export default function ProviderDashboard() {
                       </div>
                     )}
 
-                    {!managementSettings.managed_by_business && (
+                    {!managementSettings.business_managed && (
                       <div className="p-3 bg-yellow-50 border border-yellow-200 rounded">
                         <p className="text-sm text-yellow-800">
                           <strong>Self-Managed Provider:</strong> This provider will have full control over their services and settings.
