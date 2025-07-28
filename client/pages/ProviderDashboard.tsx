@@ -5788,9 +5788,9 @@ export default function ProviderDashboard() {
                 {calendarBookings.length > 0 ? (
                   <div className="space-y-3">
                     {calendarBookings.map((booking) => {
-                      const statusConfig = getStatusBadge(booking.status);
-                      const DeliveryIcon = getDeliveryIcon(booking.delivery_type || "mobile");
-                      const bookingDate = new Date(booking.service_date);
+                      const statusConfig = getStatusBadge(booking.booking_status);
+                      const DeliveryIcon = getDeliveryIcon(booking.delivery_type || "business_location");
+                      const bookingDate = new Date(booking.booking_date);
                       const isUpcoming = bookingDate >= new Date();
 
                       return (
