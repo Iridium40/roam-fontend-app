@@ -2201,6 +2201,8 @@ export default function ProviderDashboard() {
           : null,
         logo_url: businessDetailsForm.logo_url?.trim() || null,
         is_active: businessDetailsForm.is_active,
+        service_categories: businessDetailsForm.service_categories,
+        service_subcategories: businessDetailsForm.service_subcategories,
       };
 
       // Validate required fields
