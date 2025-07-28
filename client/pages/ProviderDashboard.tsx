@@ -1046,8 +1046,12 @@ export default function ProviderDashboard() {
 
       console.log("fetchCalendarBookings: Executing final query");
       const { data, error } = await bookingsQuery;
+
+      console.log("fetchCalendarBookings: Query result:", { data, error });
+
       if (error) throw error;
 
+      console.log("fetchCalendarBookings: Successfully fetched", (data || []).length, "bookings");
       setCalendarBookings(data || []);
     } catch (error: any) {
       console.error("Error fetching calendar bookings:", error);
