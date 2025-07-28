@@ -6469,7 +6469,7 @@ export default function ProviderDashboard() {
                       />
                     </div>
 
-                    {managementSettings.managed_by_business && (
+                    {managementSettings.business_managed && (
                       <div className="space-y-4 pl-4 border-l-2 border-roam-blue/20">
                         <div className="flex items-center justify-between">
                           <div>
