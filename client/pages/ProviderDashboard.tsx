@@ -2209,11 +2209,29 @@ export default function ProviderDashboard() {
           : null,
       };
 
+      // Validate enum values against expected database enums
+      const validCategories = ["beauty", "fitness", "therapy", "healthcare"];
+      const validSubcategories = ["hair_and_makup", "spray_tan", "esthetician", "massage_therapy", "iv_therapy", "physical_therapy", "nurse_practitioner", "phycisian", "chiropractor", "yoga_instructor", "pilates_instructor", "personal_trainer"];
+
+      if (updateData.service_categories) {
+        const invalidCategories = updateData.service_categories.filter(cat => !validCategories.includes(cat));
+        if (invalidCategories.length > 0) {
+          throw new Error(`Invalid service categories: ${invalidCategories.join(', ')}`);
+        }
+      }
+
+      if (updateData.service_subcategories) {
+        const invalidSubcategories = updateData.service_subcategories.filter(sub => !validSubcategories.includes(sub));
+        if (invalidSubcategories.length > 0) {
+          throw new Error(`Invalid service subcategories: ${invalidSubcategories.join(', ')}`);
+        }
+      }
+
       // Debug logging
       console.log("Saving business details with data:", JSON.stringify(updateData, null, 2));
       console.log("Business ID:", business.id);
-      console.log("Service categories type:", typeof updateData.service_categories, updateData.service_categories);
-      console.log("Service subcategories type:", typeof updateData.service_subcategories, updateData.service_subcategories);
+      console.log("Service categories:", updateData.service_categories);
+      console.log("Service subcategories:", updateData.service_subcategories);
 
       // Validate required fields
       if (!updateData.business_name) {
