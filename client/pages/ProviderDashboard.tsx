@@ -3341,7 +3341,9 @@ export default function ProviderDashboard() {
                             <p className="text-sm text-foreground/60">
                               {
                                 businessService.services?.service_subcategories
-                                  ?.service_categories?.name
+                                  ?.service_categories?.description ||
+                                businessService.services?.service_subcategories
+                                  ?.service_categories?.service_category_type
                               }{" "}
                               ���{" "}
                               {
