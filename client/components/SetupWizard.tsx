@@ -364,21 +364,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({
                 Complete Your Business Profile
               </h3>
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="description">Business Description *</Label>
-                  <Textarea
-                    id="description"
-                    value={businessData.business_description}
-                    onChange={(e) =>
-                      setBusinessData({
-                        ...businessData,
-                        business_description: e.target.value,
-                      })
-                    }
-                    placeholder="Describe your business and services..."
-                    rows={4}
-                  />
-                </div>
+
 
                 <div className="space-y-2">
                   <Label htmlFor="website">Website URL</Label>
