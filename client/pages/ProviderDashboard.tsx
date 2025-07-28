@@ -482,7 +482,6 @@ export default function ProviderDashboard() {
     contact_email: "",
     phone: "",
     website_url: "",
-    years_in_business: "",
     logo_url: "",
     verification_status: "",
     is_active: true,
