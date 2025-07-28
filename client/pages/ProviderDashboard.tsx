@@ -2348,6 +2348,8 @@ export default function ProviderDashboard() {
           verification_status: businessData.verification_status || "",
           is_active: businessData.is_active !== false,
           setup_completed: businessData.setup_completed || false,
+          service_categories: businessData.service_categories || [],
+          service_subcategories: businessData.service_subcategories || [],
         });
 
         // Parse and set business hours if available
