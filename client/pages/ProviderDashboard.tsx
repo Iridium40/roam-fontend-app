@@ -5804,9 +5804,9 @@ export default function ProviderDashboard() {
                             <div className="flex items-start justify-between">
                               <div className="flex items-start gap-4">
                                 <div className={`w-3 h-3 rounded-full mt-2 ${
-                                  booking.status === 'confirmed' ? 'bg-green-500' :
-                                  booking.status === 'pending' ? 'bg-yellow-500' :
-                                  booking.status === 'completed' ? 'bg-blue-500' :
+                                  booking.booking_status === 'confirmed' ? 'bg-green-500' :
+                                  booking.booking_status === 'pending' ? 'bg-yellow-500' :
+                                  booking.booking_status === 'completed' ? 'bg-blue-500' :
                                   'bg-gray-500'
                                 }`}></div>
                                 <div className="flex-1">
