@@ -2304,25 +2304,27 @@ export default function ProviderDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-foreground/60">
-                      Monthly Earnings
-                    </p>
-                    <p className="text-2xl font-bold text-roam-blue">
-                      ${stats.monthlyEarnings.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-green-600">
-                      +12% from last month
-                    </p>
+          <div className={`grid grid-cols-1 md:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-6`}>
+            {(isOwner || isDispatcher) && (
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-foreground/60">
+                        Monthly Earnings
+                      </p>
+                      <p className="text-2xl font-bold text-roam-blue">
+                        ${stats.monthlyEarnings.toLocaleString()}
+                      </p>
+                      <p className="text-xs text-green-600">
+                        +12% from last month
+                      </p>
+                    </div>
+                    <DollarSign className="w-8 h-8 text-roam-blue" />
                   </div>
-                  <DollarSign className="w-8 h-8 text-roam-blue" />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             <Card>
               <CardContent className="p-6">
