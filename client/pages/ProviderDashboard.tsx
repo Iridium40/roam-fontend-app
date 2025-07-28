@@ -4285,24 +4285,7 @@ export default function ProviderDashboard() {
                           </div>
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="business_description">
-                            Business Description
-                          </Label>
-                          <Textarea
-                            id="business_description"
-                            value={businessDetailsForm.business_description}
-                            onChange={(e) =>
-                              handleBusinessDetailsFormChange(
-                                "business_description",
-                                e.target.value,
-                              )
-                            }
-                            rows={3}
-                            placeholder="Describe your business, services, and what makes you unique..."
-                            disabled={businessDetailsSaving}
-                          />
-                        </div>
+
                       </div>
 
                       {/* Service Categories */}
