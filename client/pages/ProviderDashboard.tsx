@@ -6456,11 +6456,11 @@ export default function ProviderDashboard() {
                         </p>
                       </div>
                       <Switch
-                        checked={managementSettings.managed_by_business}
+                        checked={managementSettings.business_managed}
                         onCheckedChange={(checked) =>
                           setManagementSettings(prev => ({
                             ...prev,
-                            managed_by_business: checked,
+                            business_managed: checked,
                             inherit_business_services: checked,
                             inherit_business_addons: checked
                           }))
