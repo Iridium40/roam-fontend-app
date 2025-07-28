@@ -210,6 +210,119 @@ export default function ProviderDocumentVerification() {
     }));
   };
 
+  // Main submission function
+  const handleSubmitDocuments = async () => {
+    if (!businessId || !providerId) {
+      toast({
+        title: "Error",
+        description: "Missing business or provider information",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate required documents
+    const requiredDocs = ['driversLicense', 'proofOfAddress', 'liabilityInsurance'] as const;
+    const missingDocs = requiredDocs.filter(docType => !documents[docType].file);
+
+    if (missingDocs.length > 0) {
+      toast({
+        title: "Missing Documents",
+        description: "Please upload all required documents before submitting",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    setIsSubmitting(true);
+
+    try {
+      const uploadPromises: Promise<void>[] = [];
+
+      // Upload Driver's License
+      if (documents.driversLicense.file) {
+        uploadPromises.push(
+          uploadToStorage(documents.driversLicense.file, `provider-dl/${businessId}`)
+            .then(fileUrl => saveDocumentRecord(
+              'drivers_license',
+              documents.driversLicense.file!.name,
+              fileUrl,
+              documents.driversLicense.file!.size
+            ))
+        );
+      }
+
+      // Upload Proof of Address
+      if (documents.proofOfAddress.file) {
+        uploadPromises.push(
+          uploadToStorage(documents.proofOfAddress.file, `provider-poa/${businessId}`)
+            .then(fileUrl => saveDocumentRecord(
+              'proof_of_address',
+              documents.proofOfAddress.file!.name,
+              fileUrl,
+              documents.proofOfAddress.file!.size
+            ))
+        );
+      }
+
+      // Upload Liability Insurance
+      if (documents.liabilityInsurance.file) {
+        uploadPromises.push(
+          uploadToStorage(documents.liabilityInsurance.file, `provider-li/${businessId}`)
+            .then(fileUrl => saveDocumentRecord(
+              'liability_insurance',
+              documents.liabilityInsurance.file!.name,
+              fileUrl,
+              documents.liabilityInsurance.file!.size
+            ))
+        );
+      }
+
+      // Upload Professional Licenses & Certificates
+      documents.licenses.forEach((license, index) => {
+        if (license.file) {
+          uploadPromises.push(
+            uploadToStorage(license.file, `provider-plc/${businessId}`)
+              .then(fileUrl => saveDocumentRecord(
+                'professional_license',
+                license.file!.name,
+                fileUrl,
+                license.file!.size
+              ))
+          );
+        }
+      });
+
+      // Wait for all uploads to complete
+      await Promise.all(uploadPromises);
+
+      toast({
+        title: "Documents Uploaded",
+        description: "All documents have been uploaded successfully and are pending verification",
+        variant: "default",
+      });
+
+      // Navigate to next step or dashboard
+      navigate('/provider-dashboard', {
+        state: {
+          message: "Documents uploaded successfully! Your documents are now under review.",
+        },
+      });
+
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+      toast({
+        title: "Upload Failed",
+        description: "Failed to upload documents. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      setIsSubmitting(false);
+    }
+  };
+
   const allRequiredDocumentsUploaded = () => {
     return (
       documents.driversLicense.uploaded &&
