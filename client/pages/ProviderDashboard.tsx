@@ -2754,31 +2754,8 @@ export default function ProviderDashboard() {
         .eq('is_active', true);
 
       if (error) {
-        console.error('Error loading providers with locations:', JSON.stringify(error, null, 2));
+        console.error('Error loading providers:', JSON.stringify(error, null, 2));
         console.error('Error details:', error.message || error.details || error);
-
-        // Fallback: try loading providers without locations join
-        console.log('Trying fallback query without locations...');
-        const { data: fallbackProviders, error: fallbackError } = await supabase
-          .from('providers')
-          .select(`
-            id,
-            first_name,
-            last_name,
-            provider_role,
-            location_id,
-            is_active
-          `)
-          .eq('provider_role', 'provider')
-          .eq('is_active', true);
-
-        if (fallbackError) {
-          console.error('Fallback query also failed:', JSON.stringify(fallbackError, null, 2));
-        } else {
-          console.log('Fallback query successful, loaded providers:', fallbackProviders?.length || 0);
-          setAllProviders(fallbackProviders || []);
-          filterProvidersByLocation(fallbackProviders || [], selectedLocationFilter);
-        }
       } else {
         console.log('Loaded providers:', providers?.length || 0);
         setAllProviders(providers || []);
