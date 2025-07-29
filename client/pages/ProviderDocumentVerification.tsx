@@ -502,6 +502,8 @@ export default function ProviderDocumentVerification() {
           uploadToStorage(
             documents.driversLicense.file,
             `provider-dl/${businessId}`,
+            providerId,
+            businessId,
           )
             .then((fileUrl) =>
               saveDocumentRecord(
