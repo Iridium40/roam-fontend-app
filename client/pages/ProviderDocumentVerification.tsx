@@ -256,9 +256,7 @@ export default function ProviderDocumentVerification() {
           return result.publicUrl;
         } catch (directAPIError) {
           console.error("Direct API upload also failed:", directAPIError);
-          throw new Error(
-            `Upload failed with both methods: ${error.message}`,
-          );
+          throw new Error(`Upload failed with both methods: ${error.message}`);
         }
       }
 
