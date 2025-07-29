@@ -45,6 +45,8 @@ export default function Index() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedDelivery, setSelectedDelivery] = useState("all");
   const [currentServiceSlide, setCurrentServiceSlide] = useState(0);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
   const serviceCategories = [
     {
