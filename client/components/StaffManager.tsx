@@ -403,7 +403,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({
           </p>
         </div>
 
-        {isOwner && (
+        {(isOwner || isDispatcher) && (
           <div className="flex gap-2">
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
