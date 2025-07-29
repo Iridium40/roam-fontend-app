@@ -177,16 +177,7 @@ export default function ProviderProfile() {
   };
 
   const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `${provider.name} - ${provider.title}`,
-        text: `Book ${provider.name} for professional massage therapy services`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert("Profile link copied to clipboard!");
-    }
+    setShowShareModal(true);
   };
 
   return (
