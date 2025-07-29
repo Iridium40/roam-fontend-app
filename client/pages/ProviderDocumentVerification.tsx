@@ -419,11 +419,11 @@ export default function ProviderDocumentVerification() {
     }
 
     if (!businessId) {
-      console.error("Business ID is missing:", {
+      console.error("Business ID is missing:", JSON.stringify({
         businessId,
         providerId,
         userId: user?.id,
-      });
+      }));
       toast({
         title: "Error",
         description:
