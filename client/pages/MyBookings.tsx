@@ -229,6 +229,38 @@ export default function MyBookings() {
     });
   };
 
+  // Show loading state
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-roam-blue mx-auto mb-4" />
+          <p className="text-lg font-semibold">Loading your bookings...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Error Loading Bookings</h2>
+          <p className="text-foreground/70 mb-6">{error}</p>
+          <Button
+            onClick={() => window.location.reload()}
+            className="bg-roam-blue hover:bg-roam-blue/90"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
       {/* Navigation */}
