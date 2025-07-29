@@ -32,7 +32,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   const [success, setSuccess] = useState<string | null>(null);
 
   // Update activeTab when defaultTab prop changes
-  React.useEffect(() => {
+  useEffect(() => {
     setActiveTab(defaultTab);
   }, [defaultTab]);
 
