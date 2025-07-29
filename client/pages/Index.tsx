@@ -845,6 +845,14 @@ export default function Index() {
                             View Profile
                           </Link>
                         </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                          onClick={() => handleProviderShare(provider)}
+                        >
+                          <QrCode className="w-4 h-4" />
+                        </Button>
                       </div>
                     </div>
                   </div>
