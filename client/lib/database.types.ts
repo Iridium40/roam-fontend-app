@@ -681,6 +681,111 @@ export type Database = {
           created_at?: string;
         };
       };
+      // Customer accounts
+      customers: {
+        Row: {
+          id: string;
+          user_id: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+          date_of_birth: string | null;
+          profile_image_url: string | null;
+          stripe_customer_id: string | null;
+          total_bookings: number;
+          total_spent: number;
+          loyalty_points: number;
+          preferred_communication: CustomerCommunicationPreference;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+          date_of_birth?: string | null;
+          profile_image_url?: string | null;
+          stripe_customer_id?: string | null;
+          total_bookings?: number;
+          total_spent?: number;
+          loyalty_points?: number;
+          preferred_communication?: CustomerCommunicationPreference;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          first_name?: string;
+          last_name?: string;
+          email?: string;
+          phone?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+          date_of_birth?: string | null;
+          profile_image_url?: string | null;
+          stripe_customer_id?: string | null;
+          total_bookings?: number;
+          total_spent?: number;
+          loyalty_points?: number;
+          preferred_communication?: CustomerCommunicationPreference;
+        };
+      };
+      // Customer addresses
+      customer_addresses: {
+        Row: {
+          id: string;
+          customer_id: string;
+          address_line1: string;
+          address_line2: string | null;
+          city: string;
+          state: string;
+          postal_code: string;
+          country: string;
+          latitude: number | null;
+          longitude: number | null;
+          is_default: boolean;
+          address_type: CustomerAddressType;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          customer_id: string;
+          address_line1: string;
+          address_line2?: string | null;
+          city: string;
+          state: string;
+          postal_code: string;
+          country: string;
+          latitude?: number | null;
+          longitude?: number | null;
+          is_default?: boolean;
+          address_type?: CustomerAddressType;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          customer_id?: string;
+          address_line1?: string;
+          address_line2?: string | null;
+          city?: string;
+          state?: string;
+          postal_code?: string;
+          country?: string;
+          latitude?: number | null;
+          longitude?: number | null;
+          is_default?: boolean;
+          address_type?: CustomerAddressType;
+          created_at?: string;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
