@@ -4522,7 +4522,7 @@ export default function ProviderDashboard() {
             </TabsContent>
 
             {/* Business Tab */}
-            {isOwner && (
+            {(isOwner || isDispatcher) && (
               <TabsContent value="business" className="space-y-6">
                 <h2 className="text-2xl font-bold">Business Management</h2>
 
