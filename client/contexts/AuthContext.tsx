@@ -40,12 +40,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Check if we have stored session data
         const storedUser = localStorage.getItem("roam_user");
-        if (storedUser) {
-          console.log("AuthContext: Found stored user session");
+        const storedToken = localStorage.getItem("roam_access_token");
+
+        if (storedUser && storedToken) {
+          console.log("AuthContext: Found stored user session and token");
           const userData = JSON.parse(storedUser);
+
+          // Restore the access token to the directSupabaseAPI
+          const { directSupabaseAPI } = await import("@/lib/directSupabase");
+          directSupabaseAPI.currentAccessToken = storedToken;
+
           setUser(userData);
           setLoading(false);
           return;
+        } else if (storedUser && !storedToken) {
+          console.log("AuthContext: Found stored user but no token, clearing stored data");
+          localStorage.removeItem("roam_user");
         }
 
         // If no stored session, try to get current session from Supabase
