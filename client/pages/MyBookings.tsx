@@ -302,7 +302,10 @@ export default function MyBookings() {
               My <span className="text-roam-blue">Bookings</span>
             </h1>
             <p className="text-lg text-foreground/70 mb-8">
-              Manage your appointments and view your booking history.
+              {userType === "customer"
+                ? "Manage your service appointments and view your booking history."
+                : "Manage your appointments and view your booking history."
+              }
             </p>
 
             {/* Active Service Alert */}
