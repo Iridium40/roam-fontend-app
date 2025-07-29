@@ -1,10 +1,22 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import type { AuthUser, ProviderRole } from "@/lib/database.types";
+import type { AuthUser, AuthCustomer, ProviderRole } from "@/lib/database.types";
+
+type UserType = "provider" | "customer";
 
 interface AuthContextType {
   user: AuthUser | null;
+  customer: AuthCustomer | null;
+  userType: UserType | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
+  signInCustomer: (email: string, password: string) => Promise<void>;
+  signUpCustomer: (customerData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    phone?: string;
+  }) => Promise<void>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
   hasRole: (roles: ProviderRole[]) => boolean;
@@ -12,6 +24,8 @@ interface AuthContextType {
   isOwner: boolean;
   isDispatcher: boolean;
   isProvider: boolean;
+  isCustomer: boolean;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
