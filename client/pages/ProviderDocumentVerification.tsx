@@ -236,7 +236,7 @@ export default function ProviderDocumentVerification() {
         }
 
         const result = await directSupabaseAPI.uploadFile(
-          "roam-provider-documents",
+          "roam-file-storage",
           filePath,
           file,
         );
