@@ -371,23 +371,12 @@ export default function Index() {
             <div className="flex items-center space-x-4">
               {isCustomer ? (
                 <>
-                  <span className="text-sm text-foreground/60">
-                    Welcome, {customer?.first_name}!
-                  </span>
-                  <Button
-                    variant="outline"
-                    onClick={handleMyBookings}
-                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                  >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    My Bookings
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={signOut}
-                    className="text-foreground/60 hover:text-foreground"
-                  >
-                    Sign Out
+                  <CustomerAvatarDropdown />
+                  <Button asChild variant="outline" className="border-gray-300">
+                    <Link to="/provider-portal">
+                      <Users className="w-4 h-4 mr-2" />
+                      Provider Portal
+                    </Link>
                   </Button>
                 </>
               ) : (
@@ -413,14 +402,14 @@ export default function Index() {
                   >
                     Sign Up
                   </Button>
+                  <Button asChild variant="outline" className="border-gray-300">
+                    <Link to="/provider-portal">
+                      <Users className="w-4 h-4 mr-2" />
+                      Provider Portal
+                    </Link>
+                  </Button>
                 </>
               )}
-              <Button asChild variant="outline" className="border-gray-300">
-                <Link to="/provider-portal">
-                  <Users className="w-4 h-4 mr-2" />
-                  Provider Portal
-                </Link>
-              </Button>
             </div>
           </div>
         </div>
