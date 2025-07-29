@@ -55,10 +55,13 @@ export default function ProviderDocumentVerification() {
   // Get business and provider info from location state or fetch from database
   useEffect(() => {
     const locationState = location.state as any;
-    console.log('Location state:', locationState);
+    console.log("Location state:", locationState);
 
     if (locationState?.businessId) {
-      console.log('Setting businessId from location state:', locationState.businessId);
+      console.log(
+        "Setting businessId from location state:",
+        locationState.businessId,
+      );
       setBusinessId(locationState.businessId);
     }
 
@@ -66,7 +69,7 @@ export default function ProviderDocumentVerification() {
     const initializeUserInfo = async () => {
       // Method 1: User from auth context
       if (user?.id) {
-        console.log('Using user ID from auth context:', user.id);
+        console.log("Using user ID from auth context:", user.id);
         fetchProviderInfo();
         return;
       }
@@ -76,19 +79,22 @@ export default function ProviderDocumentVerification() {
         const { directSupabaseAPI } = await import("@/lib/directSupabase");
         const session = await directSupabaseAPI.getSession();
         if (session?.user?.id) {
-          console.log('Found user ID from session:', session.user.id);
+          console.log("Found user ID from session:", session.user.id);
           // Temporarily set a user object so fetchProviderInfo can work
           const tempUser = { id: session.user.id, email: session.user.email };
           await fetchProviderInfoWithUserId(tempUser.id);
           return;
         }
       } catch (error) {
-        console.log('Could not get session:', error);
+        console.log("Could not get session:", error);
       }
 
       // Method 3: If we have businessId, try to find providers for that business
       if (locationState?.businessId) {
-        console.log('Trying to find provider by businessId:', locationState.businessId);
+        console.log(
+          "Trying to find provider by businessId:",
+          locationState.businessId,
+        );
         await fetchProviderByBusinessId(locationState.businessId);
       }
     };
@@ -98,31 +104,31 @@ export default function ProviderDocumentVerification() {
 
   const fetchProviderInfo = async () => {
     if (!user?.id) {
-      console.log('No user ID available');
+      console.log("No user ID available");
       return;
     }
     await fetchProviderInfoWithUserId(user.id);
   };
 
   const fetchProviderInfoWithUserId = async (userId: string) => {
-    console.log('Fetching provider info for user:', userId);
+    console.log("Fetching provider info for user:", userId);
 
     try {
       // First, let's check if any providers exist for this user
       const { data: allProviders, error: allError } = await supabase
-        .from('providers')
-        .select('id, business_id, user_id, first_name, last_name, email')
-        .eq('user_id', userId);
+        .from("providers")
+        .select("id, business_id, user_id, first_name, last_name, email")
+        .eq("user_id", userId);
 
-      console.log('All providers for user:', { allProviders, allError });
+      console.log("All providers for user:", { allProviders, allError });
 
       if (allError) {
-        console.error('Error querying all providers:', allError);
+        console.error("Error querying all providers:", allError);
         throw allError;
       }
 
       if (!allProviders || allProviders.length === 0) {
-        console.log('No providers found for user, retrying in 2 seconds...');
+        console.log("No providers found for user, retrying in 2 seconds...");
         setTimeout(() => {
           fetchProviderInfoWithUserId(userId);
         }, 2000);
@@ -131,14 +137,18 @@ export default function ProviderDocumentVerification() {
 
       // Get the first provider (should be only one typically)
       const provider = allProviders[0];
-      console.log('Setting providerId:', provider.id, 'businessId:', provider.business_id);
+      console.log(
+        "Setting providerId:",
+        provider.id,
+        "businessId:",
+        provider.business_id,
+      );
       setProviderId(provider.id);
       if (!businessId) {
         setBusinessId(provider.business_id);
       }
-
     } catch (error) {
-      console.error('Error fetching provider info:', error);
+      console.error("Error fetching provider info:", error);
       // Don't show toast error during onboarding as this might be expected
       if (!location.state?.businessId) {
         toast({
@@ -151,49 +161,55 @@ export default function ProviderDocumentVerification() {
   };
 
   const fetchProviderByBusinessId = async (businessIdToSearch: string) => {
-    console.log('Fetching providers for businessId:', businessIdToSearch);
+    console.log("Fetching providers for businessId:", businessIdToSearch);
 
     try {
       const { data: businessProviders, error } = await supabase
-        .from('providers')
-        .select('id, business_id, user_id, first_name, last_name, email')
-        .eq('business_id', businessIdToSearch)
-        .order('created_at', { ascending: false })
+        .from("providers")
+        .select("id, business_id, user_id, first_name, last_name, email")
+        .eq("business_id", businessIdToSearch)
+        .order("created_at", { ascending: false })
         .limit(5);
 
-      console.log('Providers for business:', { businessProviders, error });
+      console.log("Providers for business:", { businessProviders, error });
 
       if (error) {
-        console.error('Error querying providers by business:', error);
+        console.error("Error querying providers by business:", error);
         return;
       }
 
       if (businessProviders && businessProviders.length > 0) {
         // For onboarding, we'll use the most recently created provider (likely the owner)
         const provider = businessProviders[0];
-        console.log('Setting providerId from business lookup:', provider.id);
+        console.log("Setting providerId from business lookup:", provider.id);
         setProviderId(provider.id);
         setBusinessId(businessIdToSearch);
       } else {
-        console.log('No providers found for business, will retry...');
+        console.log("No providers found for business, will retry...");
         setTimeout(() => {
           fetchProviderByBusinessId(businessIdToSearch);
         }, 2000);
       }
-
     } catch (error) {
-      console.error('Error fetching providers by business:', error);
+      console.error("Error fetching providers by business:", error);
     }
   };
 
   // Upload file to Supabase storage
-  const uploadToStorage = async (file: File, folderPath: string): Promise<string> => {
+  const uploadToStorage = async (
+    file: File,
+    folderPath: string,
+  ): Promise<string> => {
     try {
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `${folderPath}/${fileName}`;
 
-      console.log('Uploading file:', { fileName, filePath, fileSize: file.size });
+      console.log("Uploading file:", {
+        fileName,
+        filePath,
+        fileSize: file.size,
+      });
 
       // Try to use direct API for upload to bypass RLS issues
       try {
@@ -204,41 +220,51 @@ export default function ProviderDocumentVerification() {
           const session = await supabase.auth.getSession();
           if (session.data.session?.access_token) {
             // Set the access token in the direct API
-            directSupabaseAPI.currentAccessToken = session.data.session.access_token;
-            console.log('Set access token for direct API upload');
+            directSupabaseAPI.currentAccessToken =
+              session.data.session.access_token;
+            console.log("Set access token for direct API upload");
           }
         } catch (sessionError) {
-          console.log('Could not get session for direct API:', sessionError);
+          console.log("Could not get session for direct API:", sessionError);
         }
 
-        const result = await directSupabaseAPI.uploadFile('roam-provider-documents', filePath, file);
-        console.log('Direct API upload successful:', result);
+        const result = await directSupabaseAPI.uploadFile(
+          "roam-provider-documents",
+          filePath,
+          file,
+        );
+        console.log("Direct API upload successful:", result);
         return result.publicUrl;
       } catch (directAPIError) {
-        console.log('Direct API upload failed, trying standard client:', directAPIError);
+        console.log(
+          "Direct API upload failed, trying standard client:",
+          directAPIError,
+        );
 
         // Fallback to standard Supabase client
         const { data, error } = await supabase.storage
-          .from('roam-provider-documents')
+          .from("roam-provider-documents")
           .upload(filePath, file);
 
         if (error) {
-          console.error('Storage upload error:', error);
+          console.error("Storage upload error:", error);
           throw new Error(`Upload failed: ${error.message}`);
         }
 
-        console.log('Standard upload successful:', data);
+        console.log("Standard upload successful:", data);
 
         // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('roam-provider-documents')
+        const {
+          data: { publicUrl },
+        } = supabase.storage
+          .from("roam-provider-documents")
           .getPublicUrl(filePath);
 
-        console.log('Generated public URL:', publicUrl);
+        console.log("Generated public URL:", publicUrl);
         return publicUrl;
       }
     } catch (error) {
-      console.error('uploadToStorage error:', error);
+      console.error("uploadToStorage error:", error);
       throw error;
     }
   };
@@ -249,37 +275,35 @@ export default function ProviderDocumentVerification() {
     documentName: string,
     fileUrl: string,
     fileSizeBytes: number,
-    expiryDate?: string
+    expiryDate?: string,
   ) => {
     try {
-      console.log('Saving document record:', {
+      console.log("Saving document record:", {
         provider_id: providerId,
         document_type: documentType,
         document_name: documentName,
         file_url: fileUrl,
-        file_size_bytes: fileSizeBytes
+        file_size_bytes: fileSizeBytes,
       });
 
-      const { error } = await supabase
-        .from('provider_documents')
-        .insert({
-          provider_id: providerId,
-          document_type: documentType,
-          document_name: documentName,
-          file_url: fileUrl,
-          file_size_bytes: fileSizeBytes,
-          verification_status: 'pending',
-          expiry_date: expiryDate || null,
-        });
+      const { error } = await supabase.from("provider_documents").insert({
+        provider_id: providerId,
+        document_type: documentType,
+        document_name: documentName,
+        file_url: fileUrl,
+        file_size_bytes: fileSizeBytes,
+        verification_status: "pending",
+        expiry_date: expiryDate || null,
+      });
 
       if (error) {
-        console.error('Database insert error:', error);
+        console.error("Database insert error:", error);
         throw new Error(`Database save failed: ${error.message}`);
       }
 
-      console.log('Document record saved successfully');
+      console.log("Document record saved successfully");
     } catch (error) {
-      console.error('saveDocumentRecord error:', error);
+      console.error("saveDocumentRecord error:", error);
       throw error;
     }
   };
@@ -355,41 +379,52 @@ export default function ProviderDocumentVerification() {
 
   // Main submission function
   const handleSubmitDocuments = async () => {
-    console.log('Submitting documents with:', { businessId, providerId, userId: user?.id });
+    console.log("Submitting documents with:", {
+      businessId,
+      providerId,
+      userId: user?.id,
+    });
 
     // Debug: Let's check what business and provider records exist
     if (user?.id) {
       try {
         // Check business profiles
         const { data: businesses, error: businessError } = await supabase
-          .from('business_profiles')
-          .select('id, business_name')
+          .from("business_profiles")
+          .select("id, business_name")
           .limit(10);
-        console.log('Available businesses:', { businesses, businessError });
+        console.log("Available businesses:", { businesses, businessError });
 
         // Check providers
         const { data: providers, error: providerError } = await supabase
-          .from('providers')
-          .select('id, user_id, business_id, first_name, last_name')
-          .eq('user_id', user.id);
-        console.log('Providers for current user:', { providers, providerError });
+          .from("providers")
+          .select("id, user_id, business_id, first_name, last_name")
+          .eq("user_id", user.id);
+        console.log("Providers for current user:", {
+          providers,
+          providerError,
+        });
 
         // If we have a specific businessId, check providers for that business
         if (businessId) {
-          const { data: businessProviders, error: businessProviderError } = await supabase
-            .from('providers')
-            .select('id, user_id, business_id, first_name, last_name')
-            .eq('business_id', businessId);
-          console.log('Providers for businessId', businessId, ':', { businessProviders, businessProviderError });
+          const { data: businessProviders, error: businessProviderError } =
+            await supabase
+              .from("providers")
+              .select("id, user_id, business_id, first_name, last_name")
+              .eq("business_id", businessId);
+          console.log("Providers for businessId", businessId, ":", {
+            businessProviders,
+            businessProviderError,
+          });
         }
       } catch (debugError) {
-        console.error('Debug query error:', debugError);
+        console.error("Debug query error:", debugError);
       }
     }
 
     // If we have businessId but no providerId, try to fetch provider info one more time
     if (businessId && !providerId && user?.id) {
-      console.log('Missing providerId, attempting to fetch...');
+      console.log("Missing providerId, attempting to fetch...");
       await fetchProviderInfo();
 
       // Check again after fetch attempt
@@ -397,49 +432,71 @@ export default function ProviderDocumentVerification() {
         // Try to find provider with businessId as fallback
         try {
           const { data: providers, error } = await supabase
-            .from('providers')
-            .select('id, user_id, business_id')
-            .eq('business_id', businessId)
-            .eq('user_id', user.id);
+            .from("providers")
+            .select("id, user_id, business_id")
+            .eq("business_id", businessId)
+            .eq("user_id", user.id);
 
-          console.log('Fallback provider search result:', { providers, error });
+          console.log("Fallback provider search result:", { providers, error });
 
           if (providers && providers.length > 0) {
             const provider = providers[0];
             setProviderId(provider.id);
-            console.log('Found providerId using businessId fallback:', provider.id);
+            console.log(
+              "Found providerId using businessId fallback:",
+              provider.id,
+            );
           }
         } catch (error) {
-          console.error('Error finding provider by businessId:', error);
+          console.error("Error finding provider by businessId:", error);
         }
       }
     }
 
     if (!businessId) {
-      console.error('Business ID is missing:', { businessId, providerId, userId: user?.id });
+      console.error("Business ID is missing:", {
+        businessId,
+        providerId,
+        userId: user?.id,
+      });
       toast({
         title: "Error",
-        description: "Business information is missing. Please try refreshing the page.",
+        description:
+          "Business information is missing. Please try refreshing the page.",
         variant: "destructive",
       });
       return;
     }
 
     if (!providerId) {
-      console.error('Provider ID is missing:', { businessId, providerId, userId: user?.id });
+      console.error("Provider ID is missing:", {
+        businessId,
+        providerId,
+        userId: user?.id,
+      });
       toast({
         title: "Error",
-        description: "Provider information is missing. Please try refreshing the page or contact support.",
+        description:
+          "Provider information is missing. Please try refreshing the page or contact support.",
         variant: "destructive",
       });
       return;
     }
 
-    console.log('Starting document upload with valid IDs:', { businessId, providerId });
+    console.log("Starting document upload with valid IDs:", {
+      businessId,
+      providerId,
+    });
 
     // Validate required documents
-    const requiredDocs = ['driversLicense', 'proofOfAddress', 'liabilityInsurance'] as const;
-    const missingDocs = requiredDocs.filter(docType => !documents[docType].file);
+    const requiredDocs = [
+      "driversLicense",
+      "proofOfAddress",
+      "liabilityInsurance",
+    ] as const;
+    const missingDocs = requiredDocs.filter(
+      (docType) => !documents[docType].file,
+    );
 
     if (missingDocs.length > 0) {
       toast({
@@ -459,51 +516,72 @@ export default function ProviderDocumentVerification() {
       // Upload Driver's License
       if (documents.driversLicense.file) {
         uploadPromises.push(
-          uploadToStorage(documents.driversLicense.file, `provider-dl/${businessId}`)
-            .then(fileUrl => saveDocumentRecord(
-              'drivers_license',
-              documents.driversLicense.file!.name,
-              fileUrl,
-              documents.driversLicense.file!.size
-            ))
-            .catch(error => {
-              console.error('Driver\'s License upload failed:', error);
-              throw new Error(`Driver's License upload failed: ${error.message}`);
-            })
+          uploadToStorage(
+            documents.driversLicense.file,
+            `provider-dl/${businessId}`,
+          )
+            .then((fileUrl) =>
+              saveDocumentRecord(
+                "drivers_license",
+                documents.driversLicense.file!.name,
+                fileUrl,
+                documents.driversLicense.file!.size,
+              ),
+            )
+            .catch((error) => {
+              console.error("Driver's License upload failed:", error);
+              throw new Error(
+                `Driver's License upload failed: ${error.message}`,
+              );
+            }),
         );
       }
 
       // Upload Proof of Address
       if (documents.proofOfAddress.file) {
         uploadPromises.push(
-          uploadToStorage(documents.proofOfAddress.file, `provider-poa/${businessId}`)
-            .then(fileUrl => saveDocumentRecord(
-              'proof_of_address',
-              documents.proofOfAddress.file!.name,
-              fileUrl,
-              documents.proofOfAddress.file!.size
-            ))
-            .catch(error => {
-              console.error('Proof of Address upload failed:', error);
-              throw new Error(`Proof of Address upload failed: ${error.message}`);
-            })
+          uploadToStorage(
+            documents.proofOfAddress.file,
+            `provider-poa/${businessId}`,
+          )
+            .then((fileUrl) =>
+              saveDocumentRecord(
+                "proof_of_address",
+                documents.proofOfAddress.file!.name,
+                fileUrl,
+                documents.proofOfAddress.file!.size,
+              ),
+            )
+            .catch((error) => {
+              console.error("Proof of Address upload failed:", error);
+              throw new Error(
+                `Proof of Address upload failed: ${error.message}`,
+              );
+            }),
         );
       }
 
       // Upload Liability Insurance
       if (documents.liabilityInsurance.file) {
         uploadPromises.push(
-          uploadToStorage(documents.liabilityInsurance.file, `provider-li/${businessId}`)
-            .then(fileUrl => saveDocumentRecord(
-              'liability_insurance',
-              documents.liabilityInsurance.file!.name,
-              fileUrl,
-              documents.liabilityInsurance.file!.size
-            ))
-            .catch(error => {
-              console.error('Liability Insurance upload failed:', error);
-              throw new Error(`Liability Insurance upload failed: ${error.message}`);
-            })
+          uploadToStorage(
+            documents.liabilityInsurance.file,
+            `provider-li/${businessId}`,
+          )
+            .then((fileUrl) =>
+              saveDocumentRecord(
+                "liability_insurance",
+                documents.liabilityInsurance.file!.name,
+                fileUrl,
+                documents.liabilityInsurance.file!.size,
+              ),
+            )
+            .catch((error) => {
+              console.error("Liability Insurance upload failed:", error);
+              throw new Error(
+                `Liability Insurance upload failed: ${error.message}`,
+              );
+            }),
         );
       }
 
@@ -512,16 +590,23 @@ export default function ProviderDocumentVerification() {
         if (license.file) {
           uploadPromises.push(
             uploadToStorage(license.file, `provider-plc/${businessId}`)
-              .then(fileUrl => saveDocumentRecord(
-                'professional_license',
-                license.file!.name,
-                fileUrl,
-                license.file!.size
-              ))
-              .catch(error => {
-                console.error(`Professional License ${index + 1} upload failed:`, error);
-                throw new Error(`Professional License ${index + 1} upload failed: ${error.message}`);
-              })
+              .then((fileUrl) =>
+                saveDocumentRecord(
+                  "professional_license",
+                  license.file!.name,
+                  fileUrl,
+                  license.file!.size,
+                ),
+              )
+              .catch((error) => {
+                console.error(
+                  `Professional License ${index + 1} upload failed:`,
+                  error,
+                );
+                throw new Error(
+                  `Professional License ${index + 1} upload failed: ${error.message}`,
+                );
+              }),
           );
         }
       });
@@ -531,32 +616,37 @@ export default function ProviderDocumentVerification() {
 
       toast({
         title: "Documents Uploaded",
-        description: "All documents have been uploaded successfully and are pending verification",
+        description:
+          "All documents have been uploaded successfully and are pending verification",
         variant: "default",
       });
 
       // Navigate to next step or dashboard
-      navigate('/provider-dashboard', {
+      navigate("/provider-dashboard", {
         state: {
-          message: "Documents uploaded successfully! Your documents are now under review.",
+          message:
+            "Documents uploaded successfully! Your documents are now under review.",
         },
       });
-
     } catch (error) {
-      console.error('Error uploading documents:', error);
+      console.error("Error uploading documents:", error);
 
       // Extract meaningful error message
       let errorMessage = "Failed to upload documents. Please try again.";
       if (error instanceof Error) {
         errorMessage = error.message;
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
-      } else if (error && typeof error === 'object') {
+      } else if (error && typeof error === "object") {
         // Try to extract error message from object
-        errorMessage = error.message || error.error || error.description || JSON.stringify(error);
+        errorMessage =
+          error.message ||
+          error.error ||
+          error.description ||
+          JSON.stringify(error);
       }
 
-      console.error('Detailed error message:', errorMessage);
+      console.error("Detailed error message:", errorMessage);
 
       toast({
         title: "Upload Failed",
@@ -650,13 +740,13 @@ export default function ProviderDocumentVerification() {
             </p>
 
             {/* Debug Info in Development */}
-            {process.env.NODE_ENV === 'development' && (
+            {process.env.NODE_ENV === "development" && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg text-left">
                 <h3 className="font-semibold text-sm mb-2">Debug Info:</h3>
                 <div className="text-xs space-y-1">
-                  <div>User ID: {user?.id || 'Not available'}</div>
-                  <div>Business ID: {businessId || 'Not set'}</div>
-                  <div>Provider ID: {providerId || 'Not set'}</div>
+                  <div>User ID: {user?.id || "Not available"}</div>
+                  <div>Business ID: {businessId || "Not set"}</div>
+                  <div>Provider ID: {providerId || "Not set"}</div>
                   <div>Location State: {JSON.stringify(location.state)}</div>
                 </div>
               </div>
@@ -901,7 +991,9 @@ export default function ProviderDocumentVerification() {
 
             <Button
               onClick={handleSubmit}
-              disabled={!allRequiredDocumentsUploaded() || isSubmitting || uploading}
+              disabled={
+                !allRequiredDocumentsUploaded() || isSubmitting || uploading
+              }
               className="bg-roam-blue hover:bg-roam-blue/90"
               size="lg"
             >
