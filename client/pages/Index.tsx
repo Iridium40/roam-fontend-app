@@ -39,6 +39,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { CustomerAuthModal } from "@/components/CustomerAuthModal";
 
 export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
