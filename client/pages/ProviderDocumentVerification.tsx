@@ -496,6 +496,19 @@ export default function ProviderDocumentVerification() {
               qualifications. All documents will be securely reviewed within
               24-48 hours.
             </p>
+
+            {/* Debug Info in Development */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mt-4 p-4 bg-gray-100 rounded-lg text-left">
+                <h3 className="font-semibold text-sm mb-2">Debug Info:</h3>
+                <div className="text-xs space-y-1">
+                  <div>User ID: {user?.id || 'Not available'}</div>
+                  <div>Business ID: {businessId || 'Not set'}</div>
+                  <div>Provider ID: {providerId || 'Not set'}</div>
+                  <div>Location State: {JSON.stringify(location.state)}</div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Progress Indicator */}
