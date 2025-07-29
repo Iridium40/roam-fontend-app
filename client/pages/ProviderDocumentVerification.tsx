@@ -507,8 +507,8 @@ export default function ProviderDocumentVerification() {
     }
 
     console.log("Starting document upload with valid IDs:", {
-      businessId,
-      providerId,
+      currentBusinessId,
+      currentProviderId,
     });
 
     // Validate required documents
