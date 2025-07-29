@@ -220,12 +220,21 @@ export default function ProviderDocumentVerification() {
         body: formData,
       });
 
+      // Read response body only once
+      const responseText = await response.text();
+
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Server upload failed: ${errorText}`);
+        throw new Error(`Server upload failed: ${responseText}`);
       }
 
-      const result = await response.json();
+      // Parse the response text as JSON
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        throw new Error(`Invalid response format: ${responseText}`);
+      }
+
       console.log("Server-side upload successful:", result);
       return result.publicUrl;
     } catch (error) {
