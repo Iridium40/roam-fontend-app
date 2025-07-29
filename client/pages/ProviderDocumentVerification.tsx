@@ -228,7 +228,7 @@ export default function ProviderDocumentVerification() {
         .upload(filePath, file);
 
       if (error) {
-        console.error("Storage upload error:", error);
+        console.error("Storage upload error:", JSON.stringify(error));
         // If it's an RLS error, provide a helpful message
         if (
           error.message?.includes("policy") ||
