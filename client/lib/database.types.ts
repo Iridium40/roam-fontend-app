@@ -966,3 +966,6 @@ export type BusinessSetupProgress =
 export type Service = Database["public"]["Tables"]["services"]["Row"];
 export type ServiceAddon =
   Database["public"]["Tables"]["service_addons"]["Row"];
+export type Customer = Database["public"]["Tables"]["customers"]["Row"];
+export type CustomerAddress =
+  Database["public"]["Tables"]["customer_addresses"]["Row"];
