@@ -1042,6 +1042,13 @@ export default function Index() {
           pageUrl={`${window.location.origin}/provider/${selectedProvider.id}`}
         />
       )}
+
+      {/* Customer Authentication Modal */}
+      <CustomerAuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultTab={authModalTab}
+      />
     </div>
   );
 }
