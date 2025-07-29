@@ -559,7 +559,7 @@ export default function ProviderDocumentVerification() {
         uploadPromises.push(
           uploadToStorage(
             documents.proofOfAddress.file,
-            `provider-poa/${businessId}`,
+            `provider-documents/${businessId}/poa`,
           )
             .then((fileUrl) =>
               saveDocumentRecord(
