@@ -3682,7 +3682,7 @@ export default function ProviderDashboard() {
           <div
             className={`grid grid-cols-1 md:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? "lg:grid-cols-3" : isDispatcher ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6 max-lg:flex max-sm:hidden`}
           >
-            {(isOwner || isDispatcher) && (
+            {isOwner && (
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
