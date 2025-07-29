@@ -472,10 +472,12 @@ export default function ProviderDocumentVerification() {
       }
     }
 
-    if (!businessId) {
+    if (!currentBusinessId) {
       console.error("Business ID is missing:", JSON.stringify({
-        businessId,
-        providerId,
+        currentBusinessId,
+        currentProviderId,
+        originalBusinessId: businessId,
+        originalProviderId: providerId,
         userId: user?.id,
       }));
       toast({
@@ -487,10 +489,12 @@ export default function ProviderDocumentVerification() {
       return;
     }
 
-    if (!providerId) {
+    if (!currentProviderId) {
       console.error("Provider ID is missing:", JSON.stringify({
-        businessId,
-        providerId,
+        currentBusinessId,
+        currentProviderId,
+        originalBusinessId: businessId,
+        originalProviderId: providerId,
         userId: user?.id,
       }));
       toast({
