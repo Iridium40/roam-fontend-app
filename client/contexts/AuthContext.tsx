@@ -88,10 +88,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           return;
         } else if ((storedUser || storedCustomer) && (!storedToken || !storedUserType)) {
           console.log("AuthContext: Found incomplete stored session, clearing data");
-          localStorage.removeItem("roam_user");
-          localStorage.removeItem("roam_customer");
-          localStorage.removeItem("roam_access_token");
-          localStorage.removeItem("roam_user_type");
+          clearStoredData();
         }
 
         // If no stored session, try to get current session from Supabase
