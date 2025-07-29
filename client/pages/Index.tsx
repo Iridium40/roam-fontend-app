@@ -30,6 +30,8 @@ import {
   Smartphone,
   Building,
   Video,
+  QrCode,
+  Share2,
   ChevronLeft,
   TrendingUp,
   Tag,
