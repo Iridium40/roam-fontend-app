@@ -58,6 +58,26 @@ export default function Index() {
     setShareModalOpen(true);
   };
 
+  const handleSignIn = () => {
+    setAuthModalTab("signin");
+    setAuthModalOpen(true);
+  };
+
+  const handleSignUp = () => {
+    setAuthModalTab("signup");
+    setAuthModalOpen(true);
+  };
+
+  const handleMyBookings = () => {
+    if (isCustomer) {
+      // Navigate to my bookings
+      window.location.href = "/my-bookings";
+    } else {
+      // Show sign in modal
+      handleSignIn();
+    }
+  };
+
   const serviceCategories = [
     {
       id: "beauty",
