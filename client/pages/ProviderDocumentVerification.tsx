@@ -195,7 +195,7 @@ export default function ProviderDocumentVerification() {
     }
   };
 
-  // Upload file using server-side endpoint to bypass RLS issues
+  // Upload file directly to Supabase storage
   const uploadToStorage = async (
     file: File,
     folderPath: string,
@@ -203,7 +203,7 @@ export default function ProviderDocumentVerification() {
     currentBusinessId: string,
   ): Promise<string> => {
     try {
-      console.log("Uploading file via server-side endpoint:", {
+      console.log("Uploading file directly to Supabase:", {
         fileName: file.name,
         folderPath,
         fileSize: file.size,
@@ -216,45 +216,33 @@ export default function ProviderDocumentVerification() {
         throw new Error(`Missing required IDs - providerId: ${currentProviderId}, businessId: ${currentBusinessId}`);
       }
 
-      // Create FormData for the upload
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folderPath', folderPath);
-      formData.append('providerId', currentProviderId);
-      formData.append('businessId', currentBusinessId);
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${folderPath}/${fileName}`;
 
-      // Add unique identifier to avoid conflicts
-      const uploadId = Math.random().toString(36).substring(2);
-      formData.append('uploadId', uploadId);
+      // Try upload to roam-file-storage bucket (which has policies)
+      const { data, error } = await supabase.storage
+        .from("roam-file-storage")
+        .upload(filePath, file);
 
-      // Upload via Netlify function
-      const response = await fetch('/.netlify/functions/upload-document', {
-        method: 'POST',
-        body: formData,
-      });
-
-      // Read response body as text once
-      let responseText;
-      try {
-        responseText = await response.text();
-      } catch (readError) {
-        throw new Error(`Failed to read response: ${readError.message}`);
+      if (error) {
+        console.error("Storage upload error:", error);
+        // If it's an RLS error, provide a helpful message
+        if (error.message?.includes('policy') || error.message?.includes('RLS')) {
+          throw new Error(`Upload blocked by security policy. This usually happens during account setup. Please contact support if this persists.`);
+        }
+        throw new Error(`Upload failed: ${error.message}`);
       }
 
-      if (!response.ok) {
-        throw new Error(`Server upload failed (${response.status}): ${responseText}`);
-      }
+      console.log("Upload successful:", data);
 
-      // Parse the response text as JSON
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        throw new Error(`Invalid JSON response: ${responseText}`);
-      }
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("roam-file-storage")
+        .getPublicUrl(filePath);
 
-      console.log("Server-side upload successful:", result);
-      return result.publicUrl;
+      console.log("Generated public URL:", publicUrl);
+      return publicUrl;
     } catch (error) {
       console.error("uploadToStorage error:", error);
       throw error;
