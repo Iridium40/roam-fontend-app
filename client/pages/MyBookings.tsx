@@ -31,10 +31,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 
 export default function MyBookings() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, customer, userType, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const currentUser = user || customer;
   // Fetch bookings data on component mount
   useEffect(() => {
     const fetchBookings = async () => {
