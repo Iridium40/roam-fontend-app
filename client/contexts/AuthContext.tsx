@@ -44,6 +44,8 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [customer, setCustomer] = useState<AuthCustomer | null>(null);
+  const [userType, setUserType] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
