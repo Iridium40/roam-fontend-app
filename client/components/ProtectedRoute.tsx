@@ -149,25 +149,33 @@ export const RoleBasedRedirect: React.FC = () => {
     );
   }
 
-  if (!user) {
+  if (!user && !customer) {
     return <Navigate to="/provider-portal" replace />;
   }
 
-  // Redirect based on role
-  const getDefaultRoute = (role: ProviderRole): string => {
-    switch (role) {
-      case "owner":
-        return "/owner/dashboard";
-      case "dispatcher":
-        return "/dispatcher/dashboard";
-      case "provider":
-        return "/provider/dashboard";
-      default:
-        return "/provider-portal";
+  // Redirect based on user type and role
+  const getDefaultRoute = (): string => {
+    if (userType === "customer") {
+      return "/"; // Customers go to home page
     }
+
+    if (user) {
+      switch (user.provider_role) {
+        case "owner":
+          return "/owner/dashboard";
+        case "dispatcher":
+          return "/dispatcher/dashboard";
+        case "provider":
+          return "/provider/dashboard";
+        default:
+          return "/provider-portal";
+      }
+    }
+
+    return "/provider-portal";
   };
 
-  const defaultRoute = getDefaultRoute(user.provider_role);
+  const defaultRoute = getDefaultRoute();
   const redirectTo = location.state?.from?.pathname || defaultRoute;
 
   return <Navigate to={redirectTo} replace />;
