@@ -405,33 +405,69 @@ export default function ProviderDocumentVerification() {
       }
     }
 
-    // If we have businessId but no providerId, try to fetch provider info one more time
-    if (businessId && !providerId && user?.id) {
-      console.log("Missing providerId, attempting to fetch...");
-      await fetchProviderInfo();
+    // Try multiple approaches to get missing IDs
+    let currentBusinessId = businessId;
+    let currentProviderId = providerId;
 
-      // Check again after fetch attempt
-      if (!providerId) {
-        // Try to find provider with businessId as fallback
+    // If we're missing either ID, try to fetch them
+    if (!currentBusinessId || !currentProviderId) {
+      console.log("Missing IDs, attempting comprehensive lookup...");
+
+      // Try to get from location state first
+      const locationState = location.state as any;
+      if (locationState?.businessId && !currentBusinessId) {
+        currentBusinessId = locationState.businessId;
+        setBusinessId(currentBusinessId);
+        console.log("Got businessId from location state:", currentBusinessId);
+      }
+
+      // Try to fetch provider info
+      if (user?.id) {
         try {
           const { data: providers, error } = await supabase
             .from("providers")
-            .select("id, user_id, business_id")
-            .eq("business_id", businessId)
-            .eq("user_id", user.id);
+            .select("id, business_id, user_id")
+            .eq("user_id", user.id)
+            .limit(1);
 
-          console.log("Fallback provider search result:", { providers, error });
+          console.log("Provider lookup result:", { providers, error });
 
           if (providers && providers.length > 0) {
             const provider = providers[0];
-            setProviderId(provider.id);
-            console.log(
-              "Found providerId using businessId fallback:",
-              provider.id,
-            );
+            if (!currentProviderId) {
+              currentProviderId = provider.id;
+              setProviderId(currentProviderId);
+              console.log("Got providerId from user lookup:", currentProviderId);
+            }
+            if (!currentBusinessId) {
+              currentBusinessId = provider.business_id;
+              setBusinessId(currentBusinessId);
+              console.log("Got businessId from user lookup:", currentBusinessId);
+            }
           }
         } catch (error) {
-          console.error("Error finding provider by businessId:", error);
+          console.error("Error in provider lookup:", error);
+        }
+      }
+
+      // Final fallback: try to find any provider for the business
+      if (currentBusinessId && !currentProviderId) {
+        try {
+          const { data: businessProviders, error } = await supabase
+            .from("providers")
+            .select("id, business_id")
+            .eq("business_id", currentBusinessId)
+            .limit(1);
+
+          console.log("Business provider lookup:", { businessProviders, error });
+
+          if (businessProviders && businessProviders.length > 0) {
+            currentProviderId = businessProviders[0].id;
+            setProviderId(currentProviderId);
+            console.log("Got providerId from business lookup:", currentProviderId);
+          }
+        } catch (error) {
+          console.error("Error in business provider lookup:", error);
         }
       }
     }
