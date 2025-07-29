@@ -223,25 +223,40 @@ export default function ProviderDocumentVerification() {
       formData.append('providerId', currentProviderId);
       formData.append('businessId', currentBusinessId);
 
+      // Add unique identifier to avoid conflicts
+      const uploadId = Math.random().toString(36).substring(2);
+      formData.append('uploadId', uploadId);
+
       // Upload via Netlify function
       const response = await fetch('/.netlify/functions/upload-document', {
         method: 'POST',
         body: formData,
       });
 
-      // Read response body only once
-      const responseText = await response.text();
+      // Clone response to avoid body stream issues
+      const responseClone = response.clone();
 
       if (!response.ok) {
-        throw new Error(`Server upload failed: ${responseText}`);
+        let errorText;
+        try {
+          errorText = await responseClone.text();
+        } catch (readError) {
+          errorText = `HTTP ${response.status} - ${response.statusText}`;
+        }
+        throw new Error(`Server upload failed: ${errorText}`);
       }
 
-      // Parse the response text as JSON
+      // Parse the response as JSON
       let result;
       try {
-        result = JSON.parse(responseText);
+        result = await response.json();
       } catch (parseError) {
-        throw new Error(`Invalid response format: ${responseText}`);
+        try {
+          const fallbackText = await responseClone.text();
+          throw new Error(`Invalid response format: ${fallbackText}`);
+        } catch (fallbackError) {
+          throw new Error(`Response parsing failed: ${parseError.message}`);
+        }
       }
 
       console.log("Server-side upload successful:", result);
