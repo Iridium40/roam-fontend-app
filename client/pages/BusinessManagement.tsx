@@ -69,7 +69,7 @@ export default function BusinessManagement() {
         .eq("user_id", user.id)
         .single();
 
-      if (!provider || provider.provider_role !== "owner") {
+      if (!provider || (provider.provider_role !== "owner" && provider.provider_role !== "dispatcher")) {
         navigate("/provider-dashboard");
         return;
       }
