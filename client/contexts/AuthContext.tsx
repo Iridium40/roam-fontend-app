@@ -56,23 +56,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Check if we have stored session data
         const storedUser = localStorage.getItem("roam_user");
+        const storedCustomer = localStorage.getItem("roam_customer");
         const storedToken = localStorage.getItem("roam_access_token");
+        const storedUserType = localStorage.getItem("roam_user_type") as UserType | null;
 
-        if (storedUser && storedToken) {
-          console.log("AuthContext: Found stored user session and token");
-          const userData = JSON.parse(storedUser);
+        if ((storedUser || storedCustomer) && storedToken && storedUserType) {
+          console.log("AuthContext: Found stored session and token");
 
           // Restore the access token to the directSupabaseAPI
           const { directSupabaseAPI } = await import("@/lib/directSupabase");
           directSupabaseAPI.currentAccessToken = storedToken;
 
-          setUser(userData);
+          if (storedUserType === "provider" && storedUser) {
+            const userData = JSON.parse(storedUser);
+            setUser(userData);
+            setUserType("provider");
+          } else if (storedUserType === "customer" && storedCustomer) {
+            const customerData = JSON.parse(storedCustomer);
+            setCustomer(customerData);
+            setUserType("customer");
+          }
+
           setLoading(false);
           return;
-        } else if (storedUser && !storedToken) {
-          console.log("AuthContext: Found stored user but no token, clearing stored data");
+        } else if ((storedUser || storedCustomer) && (!storedToken || !storedUserType)) {
+          console.log("AuthContext: Found incomplete stored session, clearing data");
           localStorage.removeItem("roam_user");
+          localStorage.removeItem("roam_customer");
           localStorage.removeItem("roam_access_token");
+          localStorage.removeItem("roam_user_type");
         }
 
         // If no stored session, try to get current session from Supabase
