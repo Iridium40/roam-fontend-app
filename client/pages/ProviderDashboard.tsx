@@ -2360,7 +2360,7 @@ export default function ProviderDashboard() {
 
       setAvailableServices(available);
     } catch (error: any) {
-      console.error("Error fetching available services:", error);
+      console.error("Error fetching available services:", JSON.stringify(error));
       setServiceError(`Failed to load available services: ${error.message}`);
     } finally {
       setAvailableServicesLoading(false);
