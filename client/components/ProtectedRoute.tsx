@@ -44,8 +44,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={customerRedirect} state={{ from: location }} replace />;
   }
 
-  // Check role permissions
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user.provider_role)) {
+  // Check role permissions (only for provider routes)
+  if (allowedRoles.length > 0 && userType === "provider" && user && !allowedRoles.includes(user.provider_role)) {
     return (
       fallback || (
         <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
