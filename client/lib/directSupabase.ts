@@ -336,6 +336,118 @@ class DirectSupabaseAPI {
     }
     // Success case - responseText is empty due to Prefer: return=minimal
   }
+
+  // Customer authentication methods
+  async signUpWithPassword(
+    email: string,
+    password: string,
+  ): Promise<AuthResponse> {
+    const response = await fetch(
+      `${this.baseURL}/auth/v1/signup`,
+      {
+        method: "POST",
+        headers: this.getHeaders(),
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      },
+    );
+
+    let responseText = "";
+    try {
+      responseText = await response.text();
+    } catch (readError) {
+      console.warn("Could not read response text:", readError);
+      responseText = `HTTP ${response.status} - ${response.statusText}`;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Registration failed: ${responseText}`);
+    }
+
+    let authData: AuthResponse;
+    try {
+      authData = JSON.parse(responseText);
+    } catch (parseError) {
+      throw new Error(`Invalid response format: ${responseText}`);
+    }
+
+    this.accessToken = authData.access_token;
+    return authData;
+  }
+
+  async getCustomerByUserId(userId: string): Promise<CustomerRecord | null> {
+    const response = await fetch(
+      `${this.baseURL}/rest/v1/customers?user_id=eq.${userId}&is_active=eq.true&select=id,user_id,first_name,last_name,email,phone,is_active`,
+      {
+        headers: this.getHeaders(true),
+      },
+    );
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Customer lookup failed: ${responseText}`);
+    }
+
+    let customers: CustomerRecord[];
+    try {
+      customers = JSON.parse(responseText);
+    } catch (parseError) {
+      throw new Error(`Invalid response format: ${responseText}`);
+    }
+
+    return customers.length > 0 ? customers[0] : null;
+  }
+
+  async createCustomerProfile(customerData: {
+    user_id: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone: string | null;
+  }): Promise<CustomerRecord> {
+    const response = await fetch(
+      `${this.baseURL}/rest/v1/customers`,
+      {
+        method: "POST",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          ...customerData,
+          is_active: true,
+          total_bookings: 0,
+          total_spent: 0,
+          loyalty_points: 0,
+          preferred_communication: "email",
+        }),
+      },
+    );
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Customer profile creation failed: ${responseText}`);
+    }
+
+    let customers: CustomerRecord[];
+    try {
+      customers = JSON.parse(responseText);
+    } catch (parseError) {
+      throw new Error(`Invalid response format: ${responseText}`);
+    }
+
+    if (customers.length === 0) {
+      throw new Error("No customer profile returned after creation");
+    }
+
+    return customers[0];
+  }
 }
 
 export const directSupabaseAPI = new DirectSupabaseAPI();
