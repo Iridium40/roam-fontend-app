@@ -126,6 +126,43 @@ const App = () => (
               }
             />
 
+            {/* Customer-specific routes */}
+            <Route
+              path="/customer/bookings"
+              element={
+                <ProtectedRoute>
+                  <MyBookings />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/customer/profile"
+              element={
+                <ProtectedRoute>
+                  <CustomerProfile />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/customer/settings"
+              element={
+                <ProtectedRoute>
+                  <CustomerSettings />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/customer/transactions"
+              element={
+                <ProtectedRoute>
+                  <CustomerTransactions />
+                </ProtectedRoute>
+              }
+            />
+
             <Route
               path="/provider-onboarding"
               element={
