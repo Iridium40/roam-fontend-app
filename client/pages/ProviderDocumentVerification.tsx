@@ -528,6 +528,8 @@ export default function ProviderDocumentVerification() {
           uploadToStorage(
             documents.proofOfAddress.file,
             `provider-poa/${businessId}`,
+            providerId,
+            businessId,
           )
             .then((fileUrl) =>
               saveDocumentRecord(
