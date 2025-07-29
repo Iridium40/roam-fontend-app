@@ -586,6 +586,15 @@ export default function ProviderProfile() {
           serviceArea: provider.serviceArea
         }}
       />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        providerName={provider.name}
+        providerTitle={provider.title}
+        pageUrl={window.location.href}
+      />
     </div>
   );
 }
