@@ -32,6 +32,7 @@ export default function ProviderProfile() {
   const { providerId } = useParams();
   const [selectedService, setSelectedService] = useState<any | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Mock provider data - in real app would fetch based on providerId
   const provider = {
