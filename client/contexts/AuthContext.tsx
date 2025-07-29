@@ -48,6 +48,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userType, setUserType] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const clearStoredData = () => {
+    localStorage.removeItem("roam_user");
+    localStorage.removeItem("roam_customer");
+    localStorage.removeItem("roam_access_token");
+    localStorage.removeItem("roam_user_type");
+  };
+
   useEffect(() => {
     // Try to restore session from localStorage first
     const initializeAuth = async () => {
