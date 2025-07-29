@@ -275,7 +275,7 @@ export default function ProviderDocumentVerification() {
       const {
         data: { publicUrl },
       } = supabase.storage
-        .from("roam-provider-documents")
+        .from("roam-file-storage")
         .getPublicUrl(filePath);
 
       console.log("Generated public URL:", publicUrl);
