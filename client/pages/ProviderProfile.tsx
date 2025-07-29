@@ -26,6 +26,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import BookingModal from "@/components/BookingModal";
+import ShareModal from "@/components/ShareModal";
 
 export default function ProviderProfile() {
   const { providerId } = useParams();
