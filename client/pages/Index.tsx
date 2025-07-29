@@ -970,6 +970,17 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Share Modal */}
+      {selectedProvider && (
+        <ShareModal
+          isOpen={shareModalOpen}
+          onClose={() => setShareModalOpen(false)}
+          providerName={selectedProvider.name}
+          providerTitle={selectedProvider.specialty}
+          pageUrl={`${window.location.origin}/provider/${selectedProvider.id}`}
+        />
+      )}
     </div>
   );
 }
