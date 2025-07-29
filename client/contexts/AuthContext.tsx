@@ -151,6 +151,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.warn("SignOut error:", error);
     } finally {
       setUser(null);
+      localStorage.removeItem('roam_user');
     }
   };
 
