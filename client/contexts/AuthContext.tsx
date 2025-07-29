@@ -158,6 +158,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setUser(userData);
       localStorage.setItem("roam_user", JSON.stringify(userData));
+      localStorage.setItem("roam_access_token", authData.access_token);
 
       console.log(
         "AuthContext signIn: User state updated and persisted successfully",
