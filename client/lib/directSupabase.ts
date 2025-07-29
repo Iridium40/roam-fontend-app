@@ -373,7 +373,11 @@ class DirectSupabaseAPI {
       throw new Error(`Invalid response format: ${responseText}`);
     }
 
-    this.accessToken = authData.access_token;
+    // Only set access token if one is provided (may not be present with email confirmation)
+    if (authData.access_token) {
+      this.accessToken = authData.access_token;
+    }
+
     return authData;
   }
 
