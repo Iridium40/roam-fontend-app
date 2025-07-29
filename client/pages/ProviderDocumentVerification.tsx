@@ -62,10 +62,38 @@ export default function ProviderDocumentVerification() {
       setBusinessId(locationState.businessId);
     }
 
-    // Fetch provider info if user is logged in
-    if (user?.id) {
-      fetchProviderInfo();
-    }
+    // Try multiple ways to get user ID for onboarding flow
+    const initializeUserInfo = async () => {
+      // Method 1: User from auth context
+      if (user?.id) {
+        console.log('Using user ID from auth context:', user.id);
+        fetchProviderInfo();
+        return;
+      }
+
+      // Method 2: Try to get session from direct API
+      try {
+        const { directSupabaseAPI } = await import("@/lib/directSupabase");
+        const session = await directSupabaseAPI.getSession();
+        if (session?.user?.id) {
+          console.log('Found user ID from session:', session.user.id);
+          // Temporarily set a user object so fetchProviderInfo can work
+          const tempUser = { id: session.user.id, email: session.user.email };
+          await fetchProviderInfoWithUserId(tempUser.id);
+          return;
+        }
+      } catch (error) {
+        console.log('Could not get session:', error);
+      }
+
+      // Method 3: If we have businessId, try to find providers for that business
+      if (locationState?.businessId) {
+        console.log('Trying to find provider by businessId:', locationState.businessId);
+        await fetchProviderByBusinessId(locationState.businessId);
+      }
+    };
+
+    initializeUserInfo();
   }, [user, location.state]);
 
   const fetchProviderInfo = async () => {
