@@ -18,8 +18,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   redirectTo = "/provider-portal",
   fallback = null,
 }) => {
-  const { user, loading } = useAuth();
+  const { user, customer, userType, loading } = useAuth();
   const location = useLocation();
+
+  const isAuthenticated = !!(user || customer);
 
   // Show loading state
   if (loading) {
