@@ -873,6 +873,15 @@ export interface AuthUser {
   last_name: string;
 }
 
+export interface AuthCustomer {
+  id: string;
+  email: string;
+  customer_id: string;
+  first_name: string;
+  last_name: string;
+  phone: string | null;
+}
+
 export interface BusinessRegistration {
   // Business Information
   business_name: string;
