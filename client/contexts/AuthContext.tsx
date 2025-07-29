@@ -283,9 +283,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         customerData.password,
       );
 
-      if (!authData.user) {
-        console.error("AuthContext signUpCustomer: No user returned");
-        throw new Error("Registration failed - no user returned");
+      console.log("AuthContext signUpCustomer: Sign up response:", authData);
+
+      // Supabase sign up may not return user immediately if email confirmation is required
+      if (!authData.user && !authData.session) {
+        console.log("AuthContext signUpCustomer: Email confirmation required");
+        // This is normal for Supabase with email confirmation enabled
+        return; // Exit gracefully - user needs to confirm email
       }
 
       console.log("AuthContext signUpCustomer: Auth user created successfully");
