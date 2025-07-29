@@ -18,6 +18,7 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
+  Loader2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -26,8 +27,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
 
 export default function MyBookings() {
+  const { user, loading: authLoading } = useAuth();
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const bookings = [
     {
       id: "B001",
