@@ -229,8 +229,9 @@ const getPermissions = (role: ProviderRole): string[] => {
     case "dispatcher":
       return [
         ...basePermissions,
-        "view_business_profile",
-        "view_services_pricing",
+        "manage_business_profile",
+        "manage_services_pricing",
+        "manage_staff",
         "view_all_bookings",
         "manage_all_bookings",
         "reassign_bookings",
@@ -239,6 +240,10 @@ const getPermissions = (role: ProviderRole): string[] => {
         "send_all_messages",
         "manage_all_calendars",
         "send_all_notifications",
+        "manage_integrations",
+        "view_analytics",
+        "manage_subscription",
+        "manage_locations",
       ];
 
     case "provider":
