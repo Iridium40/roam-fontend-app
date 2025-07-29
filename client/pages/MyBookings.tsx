@@ -40,7 +40,7 @@ export default function MyBookings() {
   // Fetch bookings data on component mount
   useEffect(() => {
     const fetchBookings = async () => {
-      if (!user) return;
+      if (!currentUser) return;
 
       try {
         setLoading(true);
