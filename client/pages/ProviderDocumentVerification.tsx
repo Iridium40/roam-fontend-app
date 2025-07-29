@@ -198,6 +198,19 @@ export default function ProviderDocumentVerification() {
       // Try to use direct API for upload to bypass RLS issues
       try {
         const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+        // Try to get the current session and set the access token
+        try {
+          const session = await supabase.auth.getSession();
+          if (session.data.session?.access_token) {
+            // Set the access token in the direct API
+            directSupabaseAPI.currentAccessToken = session.data.session.access_token;
+            console.log('Set access token for direct API upload');
+          }
+        } catch (sessionError) {
+          console.log('Could not get session for direct API:', sessionError);
+        }
+
         const result = await directSupabaseAPI.uploadFile('roam-provider-documents', filePath, file);
         console.log('Direct API upload successful:', result);
         return result.publicUrl;
