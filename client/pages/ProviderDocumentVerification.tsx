@@ -222,36 +222,45 @@ export default function ProviderDocumentVerification() {
         sessionError,
       });
 
-      // Try standard Supabase client first (simpler approach)
-      console.log("Attempting standard Supabase upload...");
-      const { data, error } = await supabase.storage
-        .from("roam-provider-documents")
-        .upload(filePath, file);
+      // Try direct API first for better authentication handling
+      try {
+        console.log("Trying direct API upload...");
+        const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      if (error) {
-        console.error("Standard upload error:", {
-          error,
-          errorMessage: error.message,
-          errorDetails: error,
-        });
-
-        // Try direct API as fallback
-        try {
-          console.log("Trying direct API upload as fallback...");
-          const { directSupabaseAPI } = await import("@/lib/directSupabase");
+        // Set access token if we have a session
+        if (session?.access_token) {
           directSupabaseAPI.currentAccessToken = session.access_token;
-
-          const result = await directSupabaseAPI.uploadFile(
-            "roam-provider-documents",
-            filePath,
-            file,
-          );
-          console.log("Direct API upload successful:", result);
-          return result.publicUrl;
-        } catch (directAPIError) {
-          console.error("Direct API upload also failed:", directAPIError);
-          throw new Error(`Upload failed with both methods: ${error.message}`);
+          console.log("Using session access token for direct API");
+        } else {
+          console.log("No session found, using anon key for direct API");
         }
+
+        const result = await directSupabaseAPI.uploadFile(
+          "roam-provider-documents",
+          filePath,
+          file,
+        );
+        console.log("Direct API upload successful:", result);
+        return result.publicUrl;
+      } catch (directAPIError) {
+        console.log("Direct API upload failed, trying standard client:", directAPIError);
+
+        // Fallback to standard Supabase client
+        console.log("Attempting standard Supabase upload...");
+        const { data, error } = await supabase.storage
+          .from("roam-provider-documents")
+          .upload(filePath, file);
+
+        if (error) {
+          console.error("Standard upload error:", {
+            error,
+            errorMessage: error.message,
+            errorDetails: error,
+          });
+          throw new Error(`Upload failed: ${error.message}`);
+        }
+
+        console.log("Standard upload successful:", data);
       }
 
       console.log("Standard upload successful:", data);
