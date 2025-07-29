@@ -33,10 +33,58 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Skip Supabase client session check since it hangs
-    // Authentication will be handled through direct API in signIn method
-    console.log("AuthContext: Initializing without session check");
-    setLoading(false);
+    // Try to restore session from localStorage first
+    const initializeAuth = async () => {
+      try {
+        console.log("AuthContext: Initializing with session restoration...");
+
+        // Check if we have stored session data
+        const storedUser = localStorage.getItem('roam_user');
+        if (storedUser) {
+          console.log("AuthContext: Found stored user session");
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          setLoading(false);
+          return;
+        }
+
+        // If no stored session, try to get current session from Supabase
+        const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+        try {
+          const session = await directSupabaseAPI.getSession();
+          if (session?.user) {
+            console.log("AuthContext: Found active Supabase session, fetching provider...");
+
+            const provider = await directSupabaseAPI.getProviderByUserId(session.user.id);
+            if (provider) {
+              const userData = {
+                id: session.user.id,
+                email: provider.email,
+                provider_id: provider.id,
+                business_id: provider.business_id,
+                location_id: provider.location_id,
+                provider_role: provider.provider_role,
+                first_name: provider.first_name,
+                last_name: provider.last_name,
+              };
+
+              setUser(userData);
+              localStorage.setItem('roam_user', JSON.stringify(userData));
+              console.log("AuthContext: Session restored successfully");
+            }
+          }
+        } catch (sessionError) {
+          console.log("AuthContext: No active session or error fetching session:", sessionError);
+        }
+      } catch (error) {
+        console.error("AuthContext: Error during initialization:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   const signIn = async (email: string, password: string) => {
