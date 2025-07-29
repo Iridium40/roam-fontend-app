@@ -235,10 +235,47 @@ export default function ProviderDocumentVerification() {
 
   // Main submission function
   const handleSubmitDocuments = async () => {
-    if (!businessId || !providerId) {
+    console.log('Submitting documents with:', { businessId, providerId, userId: user?.id });
+
+    // If we have businessId but no providerId, try to fetch provider info one more time
+    if (businessId && !providerId && user?.id) {
+      console.log('Missing providerId, attempting to fetch...');
+      await fetchProviderInfo();
+
+      // Check again after fetch attempt
+      if (!providerId) {
+        // Try to find provider with businessId as fallback
+        try {
+          const { data: provider, error } = await supabase
+            .from('providers')
+            .select('id')
+            .eq('business_id', businessId)
+            .eq('user_id', user.id)
+            .single();
+
+          if (provider) {
+            setProviderId(provider.id);
+            console.log('Found providerId using businessId:', provider.id);
+          }
+        } catch (error) {
+          console.error('Error finding provider by businessId:', error);
+        }
+      }
+    }
+
+    if (!businessId) {
       toast({
         title: "Error",
-        description: "Missing business or provider information",
+        description: "Business information is missing. Please try refreshing the page.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!providerId) {
+      toast({
+        title: "Error",
+        description: "Provider information is missing. Please try refreshing the page or contact support.",
         variant: "destructive",
       });
       return;
