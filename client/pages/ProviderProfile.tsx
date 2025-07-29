@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
+import BookingModal from "@/components/BookingModal";
 
 export default function ProviderProfile() {
   const { providerId } = useParams();
