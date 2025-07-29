@@ -111,7 +111,17 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
         handleClose();
       }, 1500);
     } catch (err: any) {
-      setError(err.message || "Sign in failed. Please try again.");
+      console.error("Sign in error:", err);
+      // Provide more user-friendly error messages
+      let errorMessage = "Sign in failed. Please try again.";
+      if (err.message?.includes("Invalid login credentials")) {
+        errorMessage = "Invalid email or password. Please check your credentials.";
+      } else if (err.message?.includes("Email not confirmed")) {
+        errorMessage = "Please check your email and confirm your account before signing in.";
+      } else if (err.message?.includes("Customer account not found")) {
+        errorMessage = "Account not found. Please sign up first.";
+      }
+      setError(errorMessage);
     }
   };
 
