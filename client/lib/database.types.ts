@@ -821,6 +821,8 @@ export type Database = {
         | "cancelled";
       tip_status: "none" | "requested" | "paid" | "declined";
       calendar_type: "google" | "outlook" | "apple";
+      customer_communication_preference: "email" | "sms" | "push" | "all";
+      customer_address_type: "home" | "work" | "other";
     };
     CompositeTypes: {
       [_ in never]: never;
