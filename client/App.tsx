@@ -27,6 +27,9 @@ import ProviderOnboarding from "./pages/ProviderOnboarding";
 import ProviderProfile from "./pages/ProviderProfile";
 import ProviderDocumentVerification from "./pages/ProviderDocumentVerification";
 import BusinessManagement from "./pages/BusinessManagement";
+import CustomerProfile from "./pages/CustomerProfile";
+import CustomerSettings from "./pages/CustomerSettings";
+import CustomerTransactions from "./pages/CustomerTransactions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
