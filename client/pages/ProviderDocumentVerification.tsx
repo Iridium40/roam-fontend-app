@@ -554,6 +554,8 @@ export default function ProviderDocumentVerification() {
           uploadToStorage(
             documents.liabilityInsurance.file,
             `provider-li/${businessId}`,
+            providerId,
+            businessId,
           )
             .then((fileUrl) =>
               saveDocumentRecord(
