@@ -38,8 +38,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Redirect if not authenticated
-  if (!user) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
+  if (!isAuthenticated) {
+    // For customer routes, redirect to home page instead of provider portal
+    const customerRedirect = location.pathname === "/my-bookings" ? "/" : redirectTo;
+    return <Navigate to={customerRedirect} state={{ from: location }} replace />;
   }
 
   // Check role permissions
