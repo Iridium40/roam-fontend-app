@@ -43,12 +43,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { CustomerAuthModal } from "@/components/CustomerAuthModal";
 
 export default function Index() {
+  const { customer, isCustomer, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedDelivery, setSelectedDelivery] = useState("all");
   const [currentServiceSlide, setCurrentServiceSlide] = useState(0);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<"signin" | "signup">("signin");
 
   const handleProviderShare = (provider: any) => {
     setSelectedProvider(provider);
