@@ -2513,11 +2513,11 @@ export default function ProviderDashboard() {
             min_price,
             duration_minutes,
             subcategory_id,
-            service_subcategories (
+            service_subcategories!subcategory_id (
               id,
               name,
               category_id,
-              service_categories (
+              service_categories!category_id (
                 id,
                 name
               )
