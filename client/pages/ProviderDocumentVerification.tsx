@@ -473,9 +473,23 @@ export default function ProviderDocumentVerification() {
 
     } catch (error) {
       console.error('Error uploading documents:', error);
+
+      // Extract meaningful error message
+      let errorMessage = "Failed to upload documents. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object') {
+        // Try to extract error message from object
+        errorMessage = error.message || error.error || error.description || JSON.stringify(error);
+      }
+
+      console.error('Detailed error message:', errorMessage);
+
       toast({
         title: "Upload Failed",
-        description: "Failed to upload documents. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
