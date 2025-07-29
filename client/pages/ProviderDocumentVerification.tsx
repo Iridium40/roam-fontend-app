@@ -101,15 +101,18 @@ export default function ProviderDocumentVerification() {
       console.log('No user ID available');
       return;
     }
+    await fetchProviderInfoWithUserId(user.id);
+  };
 
-    console.log('Fetching provider info for user:', user.id);
+  const fetchProviderInfoWithUserId = async (userId: string) => {
+    console.log('Fetching provider info for user:', userId);
 
     try {
       // First, let's check if any providers exist for this user
       const { data: allProviders, error: allError } = await supabase
         .from('providers')
         .select('id, business_id, user_id, first_name, last_name, email')
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
 
       console.log('All providers for user:', { allProviders, allError });
 
@@ -121,7 +124,7 @@ export default function ProviderDocumentVerification() {
       if (!allProviders || allProviders.length === 0) {
         console.log('No providers found for user, retrying in 2 seconds...');
         setTimeout(() => {
-          fetchProviderInfo();
+          fetchProviderInfoWithUserId(userId);
         }, 2000);
         return;
       }
@@ -144,6 +147,42 @@ export default function ProviderDocumentVerification() {
           variant: "destructive",
         });
       }
+    }
+  };
+
+  const fetchProviderByBusinessId = async (businessIdToSearch: string) => {
+    console.log('Fetching providers for businessId:', businessIdToSearch);
+
+    try {
+      const { data: businessProviders, error } = await supabase
+        .from('providers')
+        .select('id, business_id, user_id, first_name, last_name, email')
+        .eq('business_id', businessIdToSearch)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      console.log('Providers for business:', { businessProviders, error });
+
+      if (error) {
+        console.error('Error querying providers by business:', error);
+        return;
+      }
+
+      if (businessProviders && businessProviders.length > 0) {
+        // For onboarding, we'll use the most recently created provider (likely the owner)
+        const provider = businessProviders[0];
+        console.log('Setting providerId from business lookup:', provider.id);
+        setProviderId(provider.id);
+        setBusinessId(businessIdToSearch);
+      } else {
+        console.log('No providers found for business, will retry...');
+        setTimeout(() => {
+          fetchProviderByBusinessId(businessIdToSearch);
+        }, 2000);
+      }
+
+    } catch (error) {
+      console.error('Error fetching providers by business:', error);
     }
   };
 
