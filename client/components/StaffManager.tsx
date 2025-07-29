@@ -587,7 +587,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({
       </div>
 
       {/* Quick Invite */}
-      {isOwner && (
+      {(isOwner || isDispatcher) && (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Quick Invite</CardTitle>
