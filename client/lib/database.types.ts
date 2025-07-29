@@ -858,6 +858,8 @@ export type BookingStatus =
   | "cancelled";
 export type TipStatus = "none" | "requested" | "paid" | "declined";
 export type CalendarType = "google" | "outlook" | "apple";
+export type CustomerCommunicationPreference = "email" | "sms" | "push" | "all";
+export type CustomerAddressType = "home" | "work" | "other";
 
 // Enhanced interfaces
 export interface AuthUser {
