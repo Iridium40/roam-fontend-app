@@ -180,6 +180,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setUser(null);
       localStorage.removeItem("roam_user");
+      localStorage.removeItem("roam_access_token");
     }
   };
 
