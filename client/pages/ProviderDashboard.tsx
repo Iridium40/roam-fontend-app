@@ -3812,7 +3812,7 @@ export default function ProviderDashboard() {
                   Analytics
                 </TabsTrigger>
               )}
-              {(isOwner || isDispatcher) && (
+              {isOwner && (
                 <TabsTrigger
                   value="financial"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
