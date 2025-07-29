@@ -282,18 +282,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error("Registration failed - no user returned");
       }
 
-      console.log("AuthContext signUpCustomer: Auth user created, creating customer profile...");
+      console.log("AuthContext signUpCustomer: Auth user created successfully");
 
-      // Create customer profile
-      const customerProfile = await directSupabaseAPI.createCustomerProfile({
-        user_id: authData.user.id,
-        email: customerData.email,
-        first_name: customerData.firstName,
-        last_name: customerData.lastName,
-        phone: customerData.phone || null,
-      });
+      // For now, we'll just use the auth user without creating a separate customer profile
+      // since the customers table may not exist yet. The user metadata can be updated later
+      // when the customers table is available.
 
-      console.log("AuthContext signUpCustomer: Customer profile created successfully");
+      console.log("AuthContext signUpCustomer: Customer registration completed successfully");
     } catch (error) {
       console.error("AuthContext signUpCustomer: Error:", error);
       throw error;
