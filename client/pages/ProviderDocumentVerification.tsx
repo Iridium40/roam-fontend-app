@@ -593,9 +593,9 @@ export default function ProviderDocumentVerification() {
         uploadPromises.push(
           uploadToStorage(
             documents.liabilityInsurance.file,
-            `provider-li/${businessId}`,
-            providerId,
-            businessId,
+            `provider-li/${currentBusinessId}`,
+            currentProviderId,
+            currentBusinessId,
           )
             .then((fileUrl) =>
               saveDocumentRecord(
