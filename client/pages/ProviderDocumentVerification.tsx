@@ -531,114 +531,105 @@ export default function ProviderDocumentVerification() {
     setIsSubmitting(true);
 
     try {
-      const uploadPromises: Promise<void>[] = [];
+      // Upload documents sequentially to avoid concurrency issues
+      console.log("Starting sequential document uploads...");
 
       // Upload Driver's License
       if (documents.driversLicense.file) {
-        uploadPromises.push(
-          uploadToStorage(
+        console.log("Uploading Driver's License...");
+        try {
+          const fileUrl = await uploadToStorage(
             documents.driversLicense.file,
             `provider-dl/${currentBusinessId}`,
             currentProviderId,
             currentBusinessId,
-          )
-            .then((fileUrl) =>
-              saveDocumentRecord(
-                "drivers_license",
-                documents.driversLicense.file!.name,
-                fileUrl,
-                documents.driversLicense.file!.size,
-              ),
-            )
-            .catch((error) => {
-              console.error("Driver's License upload failed:", error);
-              throw new Error(
-                `Driver's License upload failed: ${error.message}`,
-              );
-            }),
-        );
+          );
+          await saveDocumentRecord(
+            "drivers_license",
+            documents.driversLicense.file.name,
+            fileUrl,
+            documents.driversLicense.file.size,
+          );
+          console.log("Driver's License uploaded successfully");
+        } catch (error) {
+          console.error("Driver's License upload failed:", error);
+          throw new Error(`Driver's License upload failed: ${error.message}`);
+        }
       }
 
       // Upload Proof of Address
       if (documents.proofOfAddress.file) {
-        uploadPromises.push(
-          uploadToStorage(
+        console.log("Uploading Proof of Address...");
+        try {
+          const fileUrl = await uploadToStorage(
             documents.proofOfAddress.file,
             `provider-poa/${currentBusinessId}`,
             currentProviderId,
             currentBusinessId,
-          )
-            .then((fileUrl) =>
-              saveDocumentRecord(
-                "proof_of_address",
-                documents.proofOfAddress.file!.name,
-                fileUrl,
-                documents.proofOfAddress.file!.size,
-              ),
-            )
-            .catch((error) => {
-              console.error("Proof of Address upload failed:", error);
-              throw new Error(
-                `Proof of Address upload failed: ${error.message}`,
-              );
-            }),
-        );
+          );
+          await saveDocumentRecord(
+            "proof_of_address",
+            documents.proofOfAddress.file.name,
+            fileUrl,
+            documents.proofOfAddress.file.size,
+          );
+          console.log("Proof of Address uploaded successfully");
+        } catch (error) {
+          console.error("Proof of Address upload failed:", error);
+          throw new Error(`Proof of Address upload failed: ${error.message}`);
+        }
       }
 
       // Upload Liability Insurance
       if (documents.liabilityInsurance.file) {
-        uploadPromises.push(
-          uploadToStorage(
+        console.log("Uploading Liability Insurance...");
+        try {
+          const fileUrl = await uploadToStorage(
             documents.liabilityInsurance.file,
             `provider-li/${currentBusinessId}`,
             currentProviderId,
             currentBusinessId,
-          )
-            .then((fileUrl) =>
-              saveDocumentRecord(
-                "liability_insurance",
-                documents.liabilityInsurance.file!.name,
-                fileUrl,
-                documents.liabilityInsurance.file!.size,
-              ),
-            )
-            .catch((error) => {
-              console.error("Liability Insurance upload failed:", error);
-              throw new Error(
-                `Liability Insurance upload failed: ${error.message}`,
-              );
-            }),
-        );
+          );
+          await saveDocumentRecord(
+            "liability_insurance",
+            documents.liabilityInsurance.file.name,
+            fileUrl,
+            documents.liabilityInsurance.file.size,
+          );
+          console.log("Liability Insurance uploaded successfully");
+        } catch (error) {
+          console.error("Liability Insurance upload failed:", error);
+          throw new Error(`Liability Insurance upload failed: ${error.message}`);
+        }
       }
 
       // Upload Professional Licenses & Certificates
-      documents.licenses.forEach((license, index) => {
+      for (let index = 0; index < documents.licenses.length; index++) {
+        const license = documents.licenses[index];
         if (license.file) {
-          uploadPromises.push(
-            uploadToStorage(license.file, `provider-plc/${currentBusinessId}`, currentProviderId, currentBusinessId)
-              .then((fileUrl) =>
-                saveDocumentRecord(
-                  "professional_license",
-                  license.file!.name,
-                  fileUrl,
-                  license.file!.size,
-                ),
-              )
-              .catch((error) => {
-                console.error(
-                  `Professional License ${index + 1} upload failed:`,
-                  error,
-                );
-                throw new Error(
-                  `Professional License ${index + 1} upload failed: ${error.message}`,
-                );
-              }),
-          );
+          console.log(`Uploading Professional License ${index + 1}...`);
+          try {
+            const fileUrl = await uploadToStorage(
+              license.file,
+              `provider-plc/${currentBusinessId}`,
+              currentProviderId,
+              currentBusinessId,
+            );
+            await saveDocumentRecord(
+              "professional_license",
+              license.file.name,
+              fileUrl,
+              license.file.size,
+            );
+            console.log(`Professional License ${index + 1} uploaded successfully`);
+          } catch (error) {
+            console.error(`Professional License ${index + 1} upload failed:`, error);
+            throw new Error(`Professional License ${index + 1} upload failed: ${error.message}`);
+          }
         }
-      });
+      }
 
-      // Wait for all uploads to complete
-      await Promise.all(uploadPromises);
+      console.log("All documents uploaded successfully");
 
       toast({
         title: "Documents Uploaded",
