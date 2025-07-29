@@ -55,7 +55,10 @@ export default function ProviderDocumentVerification() {
   // Get business and provider info from location state or fetch from database
   useEffect(() => {
     const locationState = location.state as any;
+    console.log('Location state:', locationState);
+
     if (locationState?.businessId) {
+      console.log('Setting businessId from location state:', locationState.businessId);
       setBusinessId(locationState.businessId);
     }
 
@@ -66,7 +69,12 @@ export default function ProviderDocumentVerification() {
   }, [user, location.state]);
 
   const fetchProviderInfo = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.log('No user ID available');
+      return;
+    }
+
+    console.log('Fetching provider info for user:', user.id);
 
     try {
       const { data: provider, error } = await supabase
@@ -75,9 +83,22 @@ export default function ProviderDocumentVerification() {
         .eq('user_id', user.id)
         .single();
 
-      if (error) throw error;
+      console.log('Provider query result:', { provider, error });
+
+      if (error) {
+        // If no provider found, this might be during onboarding - let's try to wait a bit and retry
+        if (error.code === 'PGRST116') { // No rows returned
+          console.log('No provider found, retrying in 2 seconds...');
+          setTimeout(() => {
+            fetchProviderInfo();
+          }, 2000);
+          return;
+        }
+        throw error;
+      }
 
       if (provider) {
+        console.log('Setting providerId:', provider.id, 'businessId:', provider.business_id);
         setProviderId(provider.id);
         if (!businessId) {
           setBusinessId(provider.business_id);
@@ -85,11 +106,14 @@ export default function ProviderDocumentVerification() {
       }
     } catch (error) {
       console.error('Error fetching provider info:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load provider information",
-        variant: "destructive",
-      });
+      // Don't show toast error during onboarding as this might be expected
+      if (!location.state?.businessId) {
+        toast({
+          title: "Error",
+          description: "Failed to load provider information",
+          variant: "destructive",
+        });
+      }
     }
   };
 
