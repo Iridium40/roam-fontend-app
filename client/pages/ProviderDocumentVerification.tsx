@@ -583,7 +583,7 @@ export default function ProviderDocumentVerification() {
         uploadPromises.push(
           uploadToStorage(
             documents.liabilityInsurance.file,
-            `provider-li/${businessId}`,
+            `provider-documents/${businessId}/li`,
           )
             .then((fileUrl) =>
               saveDocumentRecord(
