@@ -158,7 +158,7 @@ export default function MyBookings() {
     };
 
     fetchBookings();
-  }, [user]);
+  }, [currentUser]);
 
   const getStatusConfig = (status: string) => {
     const configs = {
