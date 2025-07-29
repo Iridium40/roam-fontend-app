@@ -48,6 +48,11 @@ export default function Index() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
+  const handleProviderShare = (provider: any) => {
+    setSelectedProvider(provider);
+    setShareModalOpen(true);
+  };
+
   const serviceCategories = [
     {
       id: "beauty",
