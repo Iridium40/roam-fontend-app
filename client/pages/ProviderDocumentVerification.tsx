@@ -257,6 +257,12 @@ export default function ProviderDocumentVerification() {
             errorMessage: error.message,
             errorDetails: error,
           });
+
+          // Check if it's an RLS policy error
+          if (error.message?.includes('row-level security policy') || error.message?.includes('RLS')) {
+            throw new Error(`Storage access denied. Please contact support to enable document uploads. (RLS Policy Error)`);
+          }
+
           throw new Error(`Upload failed: ${error.message}`);
         }
 
