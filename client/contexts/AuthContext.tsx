@@ -120,7 +120,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log("AuthContext signIn: Provider found:", provider);
 
-      setUser({
+      const userData = {
         id: authData.user.id,
         email: provider.email,
         provider_id: provider.id,
@@ -129,9 +129,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         provider_role: provider.provider_role,
         first_name: provider.first_name,
         last_name: provider.last_name,
-      });
+      };
 
-      console.log("AuthContext signIn: User state updated successfully");
+      setUser(userData);
+      localStorage.setItem('roam_user', JSON.stringify(userData));
+
+      console.log("AuthContext signIn: User state updated and persisted successfully");
     } catch (error) {
       console.error("AuthContext signIn: Error:", error);
       throw error;
