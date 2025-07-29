@@ -959,15 +959,13 @@ export default function Index() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              asChild
               size="lg"
               variant="secondary"
               className="bg-white text-roam-blue hover:bg-white/90 text-lg px-8 py-6"
+              onClick={handleMyBookings}
             >
-              <Link to="/my-bookings">
-                <Calendar className="w-5 h-5 mr-2" />
-                View My Bookings
-              </Link>
+              <Calendar className="w-5 h-5 mr-2" />
+              {isCustomer ? "View My Bookings" : "Sign In to Book"}
             </Button>
             <Button
               asChild
