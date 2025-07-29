@@ -159,6 +159,10 @@ class DirectSupabaseAPI {
     return this.accessToken;
   }
 
+  set currentAccessToken(token: string | null) {
+    this.accessToken = token;
+  }
+
   // Storage operations using direct API
   async uploadFile(
     bucket: string,
