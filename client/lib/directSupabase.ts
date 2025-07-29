@@ -28,6 +28,17 @@ interface ProviderRecord {
   [key: string]: any;
 }
 
+interface CustomerRecord {
+  id: string;
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
+  is_active: boolean;
+  [key: string]: any;
+}
+
 class DirectSupabaseAPI {
   private baseURL: string;
   private apiKey: string;
