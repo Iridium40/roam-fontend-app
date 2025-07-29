@@ -82,8 +82,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // Check specific permissions
-  if (requiredPermissions.length > 0) {
+  // Check specific permissions (only for provider routes)
+  if (requiredPermissions.length > 0 && userType === "provider") {
     const { hasPermission } = useAuth();
     const hasRequiredPermissions = requiredPermissions.every((permission) =>
       hasPermission(permission),
