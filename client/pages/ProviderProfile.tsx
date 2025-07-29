@@ -22,6 +22,7 @@ import {
   CheckCircle,
   Camera,
   ChevronRight,
+  QrCode,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
