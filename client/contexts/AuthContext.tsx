@@ -123,11 +123,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               console.log("AuthContext: Provider session restored successfully");
             } else {
               console.log("AuthContext: Provider not found, clearing stored session");
-              this.clearStoredData();
+              clearStoredData();
             }
           } else {
             console.log("AuthContext: No active session, clearing stored data if any");
-            this.clearStoredData();
+            clearStoredData();
           }
         } catch (sessionError) {
           console.log(
@@ -135,7 +135,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             sessionError,
           );
           // Clear potentially corrupted stored data
-          this.clearStoredData();
+          clearStoredData();
         }
       } catch (error) {
         console.error("AuthContext: Error during initialization:", error);
