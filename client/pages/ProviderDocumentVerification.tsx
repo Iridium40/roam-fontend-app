@@ -248,7 +248,7 @@ export default function ProviderDocumentVerification() {
         // Fallback to standard Supabase client
         console.log("Attempting standard Supabase upload...");
         const { data, error } = await supabase.storage
-          .from("roam-provider-documents")
+          .from("roam-file-storage")
           .upload(filePath, file);
 
         if (error) {
