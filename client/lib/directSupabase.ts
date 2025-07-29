@@ -137,6 +137,24 @@ class DirectSupabaseAPI {
     return null;
   }
 
+  async getSession(): Promise<{ user: { id: string; email: string } } | null> {
+    try {
+      const response = await fetch(`${this.baseURL}/auth/v1/user`, {
+        headers: this.getHeaders(true),
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const user = await response.json();
+      return { user };
+    } catch (error) {
+      console.log("Get session error:", error);
+      return null;
+    }
+  }
+
   get currentAccessToken(): string | null {
     return this.accessToken;
   }
