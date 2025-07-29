@@ -535,7 +535,7 @@ export default function ProviderDocumentVerification() {
         uploadPromises.push(
           uploadToStorage(
             documents.driversLicense.file,
-            `provider-documents/${businessId}/dl`,
+            `avatar-provider-user/documents-dl`,
           )
             .then((fileUrl) =>
               saveDocumentRecord(
