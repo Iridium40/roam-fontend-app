@@ -3774,7 +3774,7 @@ export default function ProviderDashboard() {
               >
                 Services
               </TabsTrigger>
-              {isOwner && (
+              {(isOwner || isDispatcher) && (
                 <TabsTrigger
                   value="business"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -4583,6 +4583,8 @@ export default function ProviderDashboard() {
                               title="Business type cannot be changed"
                             />
                           </div>
+
+
 
                           <div className="space-y-2">
                             <Label htmlFor="verification_status">
