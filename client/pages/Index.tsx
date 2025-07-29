@@ -368,17 +368,53 @@ export default function Index() {
               />
             </div>
             <div className="flex items-center space-x-4">
-              <Button
-                asChild
-                variant="outline"
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-              >
-                <Link to="/my-bookings">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  My Bookings
-                </Link>
-              </Button>
-              <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
+              {isCustomer ? (
+                <>
+                  <span className="text-sm text-foreground/60">
+                    Welcome, {customer?.first_name}!
+                  </span>
+                  <Button
+                    variant="outline"
+                    onClick={handleMyBookings}
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    My Bookings
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={signOut}
+                    className="text-foreground/60 hover:text-foreground"
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={handleMyBookings}
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    My Bookings
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleSignIn}
+                    className="text-foreground hover:text-roam-blue"
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    onClick={handleSignUp}
+                    className="bg-roam-blue hover:bg-roam-blue/90"
+                  >
+                    Sign Up
+                  </Button>
+                </>
+              )}
+              <Button asChild variant="outline" className="border-gray-300">
                 <Link to="/provider-portal">
                   <Users className="w-4 h-4 mr-2" />
                   Provider Portal
