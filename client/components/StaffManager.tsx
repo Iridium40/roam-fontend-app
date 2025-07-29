@@ -759,7 +759,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({
                       </div>
                     )}
 
-                    {isOwner && member.id !== user?.provider_id && (
+                    {(isOwner || isDispatcher) && member.id !== user?.provider_id && (
                       <div className="mt-3 pt-3 border-t flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Switch
