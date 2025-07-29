@@ -199,20 +199,29 @@ export default function ProviderDocumentVerification() {
   const uploadToStorage = async (
     file: File,
     folderPath: string,
+    currentProviderId: string,
+    currentBusinessId: string,
   ): Promise<string> => {
     try {
       console.log("Uploading file via server-side endpoint:", {
         fileName: file.name,
         folderPath,
         fileSize: file.size,
+        providerId: currentProviderId,
+        businessId: currentBusinessId,
       });
+
+      // Validate required parameters
+      if (!currentProviderId || !currentBusinessId) {
+        throw new Error(`Missing required IDs - providerId: ${currentProviderId}, businessId: ${currentBusinessId}`);
+      }
 
       // Create FormData for the upload
       const formData = new FormData();
       formData.append('file', file);
       formData.append('folderPath', folderPath);
-      formData.append('providerId', providerId);
-      formData.append('businessId', businessId);
+      formData.append('providerId', currentProviderId);
+      formData.append('businessId', currentBusinessId);
 
       // Upload via Netlify function
       const response = await fetch('/.netlify/functions/upload-document', {
