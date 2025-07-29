@@ -3804,7 +3804,7 @@ export default function ProviderDashboard() {
               >
                 Profile
               </TabsTrigger>
-              {(isOwner || isDispatcher) && (
+              {isOwner && (
                 <TabsTrigger
                   value="analytics"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
