@@ -131,7 +131,7 @@ export const StaffManager: React.FC<StaffManagerProps> = ({
   businessId,
   locations,
 }) => {
-  const { user, isOwner } = useAuth();
+  const { user, isOwner, isDispatcher } = useAuth();
   const [staff, setStaff] = useState<StaffMemberWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
