@@ -35,103 +35,128 @@ export default function MyBookings() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const bookings = [
-    {
-      id: "B001",
-      status: "confirmed",
-      service: "Deep Tissue Massage",
-      provider: {
-        name: "Sarah Johnson",
-        rating: 4.9,
-        phone: "(305) 555-0123",
-        image: "/api/placeholder/60/60",
-      },
-      date: "2024-01-15",
-      time: "2:00 PM",
-      duration: "90 minutes",
-      deliveryType: "mobile",
-      location: "Your Home - 123 Ocean Dr, Miami, FL",
-      price: "$120",
-      notes: "Please bring your own massage table",
-      bookingDate: "2024-01-10",
-    },
-    {
-      id: "B002",
-      status: "in_progress",
-      service: "Personal Training Session",
-      provider: {
-        name: "Michael Chen",
-        rating: 5.0,
-        phone: "(407) 555-0456",
-        image: "/api/placeholder/60/60",
-      },
-      date: "2024-01-12",
-      time: "6:00 AM",
-      duration: "60 minutes",
-      deliveryType: "mobile",
-      location: "Your Home - 456 Park Ave, Orlando, FL",
-      price: "$80",
-      notes: "HIIT workout focus",
-      bookingDate: "2024-01-05",
-    },
-    {
-      id: "B003",
-      status: "pending",
-      service: "Hair Cut & Color",
-      provider: {
-        name: "Emily Rodriguez",
-        rating: 4.8,
-        phone: "(813) 555-0789",
-        image: "/api/placeholder/60/60",
-      },
-      date: "2024-01-20",
-      time: "10:00 AM",
-      duration: "3 hours",
-      deliveryType: "business",
-      location: "Beauty Studio - 789 Main St, Tampa, FL",
-      price: "$185",
-      notes: "Consultation for new color",
-      bookingDate: "2024-01-08",
-    },
-    {
-      id: "B004",
-      status: "completed",
-      service: "Telehealth Consultation",
-      provider: {
-        name: "Dr. Amanda White",
-        rating: 4.9,
-        phone: "(904) 555-0321",
-        image: "/api/placeholder/60/60",
-      },
-      date: "2024-01-05",
-      time: "3:00 PM",
-      duration: "30 minutes",
-      deliveryType: "virtual",
-      location: "Video Call",
-      price: "$125",
-      notes: "Annual wellness check",
-      bookingDate: "2024-01-02",
-    },
-    {
-      id: "B005",
-      status: "cancelled",
-      service: "Yoga Session",
-      provider: {
-        name: "Jessica Park",
-        rating: 4.7,
-        phone: "(561) 555-0654",
-        image: "/api/placeholder/60/60",
-      },
-      date: "2024-01-08",
-      time: "7:00 AM",
-      duration: "75 minutes",
-      deliveryType: "mobile",
-      location: "Your Home - 321 Beach Rd, West Palm Beach, FL",
-      price: "$90",
-      notes: "Cancelled due to weather",
-      bookingDate: "2024-01-03",
-    },
-  ];
+  // Fetch bookings data on component mount
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // For now, we'll use the static data but with proper loading state
+        // In the future, this would call the actual API
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+
+        const staticBookings = [
+          {
+            id: "B001",
+            status: "confirmed",
+            service: "Deep Tissue Massage",
+            provider: {
+              name: "Sarah Johnson",
+              rating: 4.9,
+              phone: "(305) 555-0123",
+              image: "/api/placeholder/60/60",
+            },
+            date: "2024-01-15",
+            time: "2:00 PM",
+            duration: "90 minutes",
+            deliveryType: "mobile",
+            location: "Your Home - 123 Ocean Dr, Miami, FL",
+            price: "$120",
+            notes: "Please bring your own massage table",
+            bookingDate: "2024-01-10",
+          },
+          {
+            id: "B002",
+            status: "in_progress",
+            service: "Personal Training Session",
+            provider: {
+              name: "Michael Chen",
+              rating: 5.0,
+              phone: "(407) 555-0456",
+              image: "/api/placeholder/60/60",
+            },
+            date: "2024-01-12",
+            time: "6:00 AM",
+            duration: "60 minutes",
+            deliveryType: "mobile",
+            location: "Your Home - 456 Park Ave, Orlando, FL",
+            price: "$80",
+            notes: "HIIT workout focus",
+            bookingDate: "2024-01-05",
+          },
+          {
+            id: "B003",
+            status: "pending",
+            service: "Hair Cut & Color",
+            provider: {
+              name: "Emily Rodriguez",
+              rating: 4.8,
+              phone: "(813) 555-0789",
+              image: "/api/placeholder/60/60",
+            },
+            date: "2024-01-20",
+            time: "10:00 AM",
+            duration: "3 hours",
+            deliveryType: "business",
+            location: "Beauty Studio - 789 Main St, Tampa, FL",
+            price: "$185",
+            notes: "Consultation for new color",
+            bookingDate: "2024-01-08",
+          },
+          {
+            id: "B004",
+            status: "completed",
+            service: "Telehealth Consultation",
+            provider: {
+              name: "Dr. Amanda White",
+              rating: 4.9,
+              phone: "(904) 555-0321",
+              image: "/api/placeholder/60/60",
+            },
+            date: "2024-01-05",
+            time: "3:00 PM",
+            duration: "30 minutes",
+            deliveryType: "virtual",
+            location: "Video Call",
+            price: "$125",
+            notes: "Annual wellness check",
+            bookingDate: "2024-01-02",
+          },
+          {
+            id: "B005",
+            status: "cancelled",
+            service: "Yoga Session",
+            provider: {
+              name: "Jessica Park",
+              rating: 4.7,
+              phone: "(561) 555-0654",
+              image: "/api/placeholder/60/60",
+            },
+            date: "2024-01-08",
+            time: "7:00 AM",
+            duration: "75 minutes",
+            deliveryType: "mobile",
+            location: "Your Home - 321 Beach Rd, West Palm Beach, FL",
+            price: "$90",
+            notes: "Cancelled due to weather",
+            bookingDate: "2024-01-03",
+          },
+        ];
+
+        setBookings(staticBookings);
+      } catch (err) {
+        console.error("Error fetching bookings:", err);
+        setError("Failed to load bookings. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, [user]);
 
   const getStatusConfig = (status: string) => {
     const configs = {
