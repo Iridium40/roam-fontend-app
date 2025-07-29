@@ -392,6 +392,7 @@ export default function ProviderDocumentVerification() {
     }
 
     if (!businessId) {
+      console.error('Business ID is missing:', { businessId, providerId, userId: user?.id });
       toast({
         title: "Error",
         description: "Business information is missing. Please try refreshing the page.",
@@ -401,6 +402,7 @@ export default function ProviderDocumentVerification() {
     }
 
     if (!providerId) {
+      console.error('Provider ID is missing:', { businessId, providerId, userId: user?.id });
       toast({
         title: "Error",
         description: "Provider information is missing. Please try refreshing the page or contact support.",
@@ -408,6 +410,8 @@ export default function ProviderDocumentVerification() {
       });
       return;
     }
+
+    console.log('Starting document upload with valid IDs:', { businessId, providerId });
 
     // Validate required documents
     const requiredDocs = ['driversLicense', 'proofOfAddress', 'liabilityInsurance'] as const;
