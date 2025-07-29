@@ -580,6 +580,19 @@ export default function ProviderProfile() {
           </div>
         </div>
       </section>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        service={selectedService}
+        provider={{
+          id: provider.id,
+          name: provider.name,
+          businessAddress: provider.businessAddress,
+          serviceArea: provider.serviceArea
+        }}
+      />
     </div>
   );
 }
