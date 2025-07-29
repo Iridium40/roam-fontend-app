@@ -141,19 +141,23 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
         lastName: signUpData.lastName,
         phone: signUpData.phone,
       });
-      setSuccess("Account created successfully! You can now sign in.");
+
+      // Check if this was successful registration that requires email confirmation
+      setSuccess("Account created successfully! Please check your email to confirm your account, then sign in.");
       setActiveTab("signin");
       setSignInData({ email: signUpData.email, password: "" });
     } catch (err: any) {
       console.error("Sign up error:", err);
       // Provide more user-friendly error messages
       let errorMessage = "Sign up failed. Please try again.";
-      if (err.message?.includes("already registered")) {
+      if (err.message?.includes("already registered") || err.message?.includes("already been registered")) {
         errorMessage = "An account with this email already exists. Please sign in instead.";
       } else if (err.message?.includes("password")) {
         errorMessage = "Password must be at least 8 characters long.";
       } else if (err.message?.includes("email")) {
         errorMessage = "Please enter a valid email address.";
+      } else if (err.message?.includes("Registration failed")) {
+        errorMessage = "Please check your email to confirm your account, then try signing in.";
       }
       setError(errorMessage);
     }
