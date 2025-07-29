@@ -2327,11 +2327,18 @@ export default function ProviderDashboard() {
         .from("services")
         .select(
           `
-          *,
-          service_subcategories (
+          id,
+          name,
+          description,
+          base_price,
+          duration_minutes,
+          is_active,
+          subcategory_id,
+          service_subcategories!subcategory_id (
             id,
             name,
-            service_categories (
+            category_id,
+            service_categories!category_id (
               id,
               name
             )
