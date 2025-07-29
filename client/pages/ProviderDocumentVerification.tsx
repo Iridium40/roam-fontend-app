@@ -211,7 +211,7 @@ export default function ProviderDocumentVerification() {
         fileSize: file.size,
       });
 
-      // First, let's check authentication status
+      // Check authentication status (but don't fail during onboarding)
       const {
         data: { session },
         error: sessionError,
@@ -221,12 +221,6 @@ export default function ProviderDocumentVerification() {
         userId: session?.user?.id,
         sessionError,
       });
-
-      if (!session?.user?.id) {
-        throw new Error(
-          "Authentication required for document upload. Please sign in again.",
-        );
-      }
 
       // Try standard Supabase client first (simpler approach)
       console.log("Attempting standard Supabase upload...");
