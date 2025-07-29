@@ -188,24 +188,35 @@ export default function ProviderDocumentVerification() {
 
   // Upload file to Supabase storage
   const uploadToStorage = async (file: File, folderPath: string): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `${folderPath}/${fileName}`;
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${folderPath}/${fileName}`;
 
-    const { data, error } = await supabase.storage
-      .from('roam-provider-documents')
-      .upload(filePath, file);
+      console.log('Uploading file:', { fileName, filePath, fileSize: file.size });
 
-    if (error) {
+      const { data, error } = await supabase.storage
+        .from('roam-provider-documents')
+        .upload(filePath, file);
+
+      if (error) {
+        console.error('Storage upload error:', error);
+        throw new Error(`Upload failed: ${error.message}`);
+      }
+
+      console.log('Upload successful:', data);
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('roam-provider-documents')
+        .getPublicUrl(filePath);
+
+      console.log('Generated public URL:', publicUrl);
+      return publicUrl;
+    } catch (error) {
+      console.error('uploadToStorage error:', error);
       throw error;
     }
-
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('roam-provider-documents')
-      .getPublicUrl(filePath);
-
-    return publicUrl;
   };
 
   // Save document record to database
@@ -216,19 +227,35 @@ export default function ProviderDocumentVerification() {
     fileSizeBytes: number,
     expiryDate?: string
   ) => {
-    const { error } = await supabase
-      .from('provider_documents')
-      .insert({
+    try {
+      console.log('Saving document record:', {
         provider_id: providerId,
         document_type: documentType,
         document_name: documentName,
         file_url: fileUrl,
-        file_size_bytes: fileSizeBytes,
-        verification_status: 'pending',
-        expiry_date: expiryDate || null,
+        file_size_bytes: fileSizeBytes
       });
 
-    if (error) {
+      const { error } = await supabase
+        .from('provider_documents')
+        .insert({
+          provider_id: providerId,
+          document_type: documentType,
+          document_name: documentName,
+          file_url: fileUrl,
+          file_size_bytes: fileSizeBytes,
+          verification_status: 'pending',
+          expiry_date: expiryDate || null,
+        });
+
+      if (error) {
+        console.error('Database insert error:', error);
+        throw new Error(`Database save failed: ${error.message}`);
+      }
+
+      console.log('Document record saved successfully');
+    } catch (error) {
+      console.error('saveDocumentRecord error:', error);
       throw error;
     }
   };
