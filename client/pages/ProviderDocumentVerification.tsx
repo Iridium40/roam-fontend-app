@@ -211,58 +211,68 @@ export default function ProviderDocumentVerification() {
         fileSize: file.size,
       });
 
-      // Try to use direct API for upload to bypass RLS issues
-      try {
-        const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      // First, let's check authentication status
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+      console.log("Auth session check:", {
+        hasSession: !!session,
+        userId: session?.user?.id,
+        sessionError,
+      });
 
-        // Try to get the current session and set the access token
-        try {
-          const session = await supabase.auth.getSession();
-          if (session.data.session?.access_token) {
-            // Set the access token in the direct API
-            directSupabaseAPI.currentAccessToken =
-              session.data.session.access_token;
-            console.log("Set access token for direct API upload");
-          }
-        } catch (sessionError) {
-          console.log("Could not get session for direct API:", sessionError);
-        }
-
-        const result = await directSupabaseAPI.uploadFile(
-          "roam-provider-documents",
-          filePath,
-          file,
+      if (!session?.user?.id) {
+        throw new Error(
+          "Authentication required for document upload. Please sign in again.",
         );
-        console.log("Direct API upload successful:", result);
-        return result.publicUrl;
-      } catch (directAPIError) {
-        console.log(
-          "Direct API upload failed, trying standard client:",
-          directAPIError,
-        );
-
-        // Fallback to standard Supabase client
-        const { data, error } = await supabase.storage
-          .from("roam-provider-documents")
-          .upload(filePath, file);
-
-        if (error) {
-          console.error("Storage upload error:", error);
-          throw new Error(`Upload failed: ${error.message}`);
-        }
-
-        console.log("Standard upload successful:", data);
-
-        // Get public URL
-        const {
-          data: { publicUrl },
-        } = supabase.storage
-          .from("roam-provider-documents")
-          .getPublicUrl(filePath);
-
-        console.log("Generated public URL:", publicUrl);
-        return publicUrl;
       }
+
+      // Try standard Supabase client first (simpler approach)
+      console.log("Attempting standard Supabase upload...");
+      const { data, error } = await supabase.storage
+        .from("roam-provider-documents")
+        .upload(filePath, file);
+
+      if (error) {
+        console.error("Standard upload error:", {
+          error,
+          errorMessage: error.message,
+          errorDetails: error,
+        });
+
+        // Try direct API as fallback
+        try {
+          console.log("Trying direct API upload as fallback...");
+          const { directSupabaseAPI } = await import("@/lib/directSupabase");
+          directSupabaseAPI.currentAccessToken = session.access_token;
+
+          const result = await directSupabaseAPI.uploadFile(
+            "roam-provider-documents",
+            filePath,
+            file,
+          );
+          console.log("Direct API upload successful:", result);
+          return result.publicUrl;
+        } catch (directAPIError) {
+          console.error("Direct API upload also failed:", directAPIError);
+          throw new Error(
+            `Upload failed with both methods: ${error.message}`,
+          );
+        }
+      }
+
+      console.log("Standard upload successful:", data);
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage
+        .from("roam-provider-documents")
+        .getPublicUrl(filePath);
+
+      console.log("Generated public URL:", publicUrl);
+      return publicUrl;
     } catch (error) {
       console.error("uploadToStorage error:", error);
       throw error;
