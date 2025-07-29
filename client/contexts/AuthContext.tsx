@@ -56,6 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else if (storedUser && !storedToken) {
           console.log("AuthContext: Found stored user but no token, clearing stored data");
           localStorage.removeItem("roam_user");
+          localStorage.removeItem("roam_access_token");
         }
 
         // If no stored session, try to get current session from Supabase
