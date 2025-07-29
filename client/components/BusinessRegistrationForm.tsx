@@ -107,10 +107,7 @@ export const BusinessRegistrationForm: React.FC<
   const validateStep = (step: number): boolean => {
     switch (step) {
       case 1:
-        return !!(
-          formData.business_name &&
-          formData.business_type
-        );
+        return !!(formData.business_name && formData.business_type);
       case 2:
         return !!(
           formData.owner_first_name &&

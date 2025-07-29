@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log("AuthContext: Initializing with session restoration...");
 
         // Check if we have stored session data
-        const storedUser = localStorage.getItem('roam_user');
+        const storedUser = localStorage.getItem("roam_user");
         if (storedUser) {
           console.log("AuthContext: Found stored user session");
           const userData = JSON.parse(storedUser);
@@ -54,9 +54,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
           const session = await directSupabaseAPI.getSession();
           if (session?.user) {
-            console.log("AuthContext: Found active Supabase session, fetching provider...");
+            console.log(
+              "AuthContext: Found active Supabase session, fetching provider...",
+            );
 
-            const provider = await directSupabaseAPI.getProviderByUserId(session.user.id);
+            const provider = await directSupabaseAPI.getProviderByUserId(
+              session.user.id,
+            );
             if (provider) {
               const userData = {
                 id: session.user.id,
@@ -70,12 +74,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               };
 
               setUser(userData);
-              localStorage.setItem('roam_user', JSON.stringify(userData));
+              localStorage.setItem("roam_user", JSON.stringify(userData));
               console.log("AuthContext: Session restored successfully");
             }
           }
         } catch (sessionError) {
-          console.log("AuthContext: No active session or error fetching session:", sessionError);
+          console.log(
+            "AuthContext: No active session or error fetching session:",
+            sessionError,
+          );
         }
       } catch (error) {
         console.error("AuthContext: Error during initialization:", error);
@@ -132,9 +139,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };
 
       setUser(userData);
-      localStorage.setItem('roam_user', JSON.stringify(userData));
+      localStorage.setItem("roam_user", JSON.stringify(userData));
 
-      console.log("AuthContext signIn: User state updated and persisted successfully");
+      console.log(
+        "AuthContext signIn: User state updated and persisted successfully",
+      );
     } catch (error) {
       console.error("AuthContext signIn: Error:", error);
       throw error;
@@ -151,7 +160,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.warn("SignOut error:", error);
     } finally {
       setUser(null);
-      localStorage.removeItem('roam_user');
+      localStorage.removeItem("roam_user");
     }
   };
 

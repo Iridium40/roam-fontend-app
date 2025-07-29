@@ -4584,8 +4584,6 @@ export default function ProviderDashboard() {
                             />
                           </div>
 
-
-
                           <div className="space-y-2">
                             <Label htmlFor="verification_status">
                               Verification Status
