@@ -385,7 +385,13 @@ class DirectSupabaseAPI {
       },
     );
 
-    const responseText = await response.text();
+    let responseText = "";
+    try {
+      responseText = await response.text();
+    } catch (readError) {
+      console.warn("Could not read response text:", readError);
+      responseText = `HTTP ${response.status} - ${response.statusText}`;
+    }
 
     if (!response.ok) {
       throw new Error(`Customer lookup failed: ${responseText}`);
