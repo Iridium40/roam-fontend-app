@@ -68,7 +68,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const storedUserType = localStorage.getItem("roam_user_type") as UserType | null;
 
         if ((storedUser || storedCustomer) && storedToken && storedUserType) {
-          console.log("AuthContext: Found stored session and token");
+          console.log("AuthContext: Found stored session and token", {
+            hasUser: !!storedUser,
+            hasCustomer: !!storedCustomer,
+            userType: storedUserType
+          });
 
           // Restore the access token to the directSupabaseAPI
           const { directSupabaseAPI } = await import("@/lib/directSupabase");
@@ -78,10 +82,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const userData = JSON.parse(storedUser);
             setUser(userData);
             setUserType("provider");
+            console.log("AuthContext: Provider session restored", userData);
           } else if (storedUserType === "customer" && storedCustomer) {
             const customerData = JSON.parse(storedCustomer);
             setCustomer(customerData);
             setUserType("customer");
+            console.log("AuthContext: Customer session restored", customerData);
           }
 
           setLoading(false);
