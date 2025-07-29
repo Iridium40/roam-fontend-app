@@ -213,7 +213,9 @@ export default function ProviderDocumentVerification() {
 
       // Validate required parameters
       if (!currentProviderId || !currentBusinessId) {
-        throw new Error(`Missing required IDs - providerId: ${currentProviderId}, businessId: ${currentBusinessId}`);
+        throw new Error(
+          `Missing required IDs - providerId: ${currentProviderId}, businessId: ${currentBusinessId}`,
+        );
       }
 
       const fileExt = file.name.split(".").pop();
@@ -228,8 +230,13 @@ export default function ProviderDocumentVerification() {
       if (error) {
         console.error("Storage upload error:", error);
         // If it's an RLS error, provide a helpful message
-        if (error.message?.includes('policy') || error.message?.includes('RLS')) {
-          throw new Error(`Upload blocked by security policy. This usually happens during account setup. Please contact support if this persists.`);
+        if (
+          error.message?.includes("policy") ||
+          error.message?.includes("RLS")
+        ) {
+          throw new Error(
+            `Upload blocked by security policy. This usually happens during account setup. Please contact support if this persists.`,
+          );
         }
         throw new Error(`Upload failed: ${error.message}`);
       }
@@ -237,9 +244,9 @@ export default function ProviderDocumentVerification() {
       console.log("Upload successful:", data);
 
       // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from("roam-file-storage")
-        .getPublicUrl(filePath);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
 
       console.log("Generated public URL:", publicUrl);
       return publicUrl;
@@ -434,12 +441,18 @@ export default function ProviderDocumentVerification() {
             if (!currentProviderId) {
               currentProviderId = provider.id;
               setProviderId(currentProviderId);
-              console.log("Got providerId from user lookup:", currentProviderId);
+              console.log(
+                "Got providerId from user lookup:",
+                currentProviderId,
+              );
             }
             if (!currentBusinessId) {
               currentBusinessId = provider.business_id;
               setBusinessId(currentBusinessId);
-              console.log("Got businessId from user lookup:", currentBusinessId);
+              console.log(
+                "Got businessId from user lookup:",
+                currentBusinessId,
+              );
             }
           }
         } catch (error) {
@@ -456,12 +469,18 @@ export default function ProviderDocumentVerification() {
             .eq("business_id", currentBusinessId)
             .limit(1);
 
-          console.log("Business provider lookup:", { businessProviders, error });
+          console.log("Business provider lookup:", {
+            businessProviders,
+            error,
+          });
 
           if (businessProviders && businessProviders.length > 0) {
             currentProviderId = businessProviders[0].id;
             setProviderId(currentProviderId);
-            console.log("Got providerId from business lookup:", currentProviderId);
+            console.log(
+              "Got providerId from business lookup:",
+              currentProviderId,
+            );
           }
         } catch (error) {
           console.error("Error in business provider lookup:", error);
@@ -470,13 +489,16 @@ export default function ProviderDocumentVerification() {
     }
 
     if (!currentBusinessId) {
-      console.error("Business ID is missing:", JSON.stringify({
-        currentBusinessId,
-        currentProviderId,
-        originalBusinessId: businessId,
-        originalProviderId: providerId,
-        userId: user?.id,
-      }));
+      console.error(
+        "Business ID is missing:",
+        JSON.stringify({
+          currentBusinessId,
+          currentProviderId,
+          originalBusinessId: businessId,
+          originalProviderId: providerId,
+          userId: user?.id,
+        }),
+      );
       toast({
         title: "Error",
         description:
@@ -487,13 +509,16 @@ export default function ProviderDocumentVerification() {
     }
 
     if (!currentProviderId) {
-      console.error("Provider ID is missing:", JSON.stringify({
-        currentBusinessId,
-        currentProviderId,
-        originalBusinessId: businessId,
-        originalProviderId: providerId,
-        userId: user?.id,
-      }));
+      console.error(
+        "Provider ID is missing:",
+        JSON.stringify({
+          currentBusinessId,
+          currentProviderId,
+          originalBusinessId: businessId,
+          originalProviderId: providerId,
+          userId: user?.id,
+        }),
+      );
       toast({
         title: "Error",
         description:
@@ -599,7 +624,9 @@ export default function ProviderDocumentVerification() {
           console.log("Liability Insurance uploaded successfully");
         } catch (error) {
           console.error("Liability Insurance upload failed:", error);
-          throw new Error(`Liability Insurance upload failed: ${error.message}`);
+          throw new Error(
+            `Liability Insurance upload failed: ${error.message}`,
+          );
         }
       }
 
@@ -621,10 +648,17 @@ export default function ProviderDocumentVerification() {
               fileUrl,
               license.file.size,
             );
-            console.log(`Professional License ${index + 1} uploaded successfully`);
+            console.log(
+              `Professional License ${index + 1} uploaded successfully`,
+            );
           } catch (error) {
-            console.error(`Professional License ${index + 1} upload failed:`, error);
-            throw new Error(`Professional License ${index + 1} upload failed: ${error.message}`);
+            console.error(
+              `Professional License ${index + 1} upload failed:`,
+              error,
+            );
+            throw new Error(
+              `Professional License ${index + 1} upload failed: ${error.message}`,
+            );
           }
         }
       }
