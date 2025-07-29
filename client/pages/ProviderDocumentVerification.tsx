@@ -195,91 +195,39 @@ export default function ProviderDocumentVerification() {
     }
   };
 
-  // Upload file to Supabase storage
+  // Upload file using server-side endpoint to bypass RLS issues
   const uploadToStorage = async (
     file: File,
     folderPath: string,
   ): Promise<string> => {
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${folderPath}/${fileName}`;
-
-      console.log("Uploading file:", {
-        fileName,
-        filePath,
+      console.log("Uploading file via server-side endpoint:", {
+        fileName: file.name,
+        folderPath,
         fileSize: file.size,
       });
 
-      // Check authentication status (but don't fail during onboarding)
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-      console.log("Auth session check:", {
-        hasSession: !!session,
-        userId: session?.user?.id,
-        sessionError,
+      // Create FormData for the upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folderPath', folderPath);
+      formData.append('providerId', providerId);
+      formData.append('businessId', businessId);
+
+      // Upload via Netlify function
+      const response = await fetch('/.netlify/functions/upload-document', {
+        method: 'POST',
+        body: formData,
       });
 
-      // Try direct API first for better authentication handling
-      try {
-        console.log("Trying direct API upload...");
-        const { directSupabaseAPI } = await import("@/lib/directSupabase");
-
-        // Set access token if we have a session
-        if (session?.access_token) {
-          directSupabaseAPI.currentAccessToken = session.access_token;
-          console.log("Using session access token for direct API");
-        } else {
-          console.log("No session found, using anon key for direct API");
-        }
-
-        const result = await directSupabaseAPI.uploadFile(
-          "roam-file-storage",
-          filePath,
-          file,
-        );
-        console.log("Direct API upload successful:", result);
-        return result.publicUrl;
-      } catch (directAPIError) {
-        console.log("Direct API upload failed, trying standard client:", directAPIError);
-
-        // Fallback to standard Supabase client
-        console.log("Attempting standard Supabase upload...");
-        const { data, error } = await supabase.storage
-          .from("roam-file-storage")
-          .upload(filePath, file);
-
-        if (error) {
-          console.error("Standard upload error:", {
-            error,
-            errorMessage: error.message,
-            errorDetails: error,
-          });
-
-          // Check if it's an RLS policy error
-          if (error.message?.includes('row-level security policy') || error.message?.includes('RLS')) {
-            throw new Error(`Storage access denied. Please contact support to enable document uploads. (RLS Policy Error)`);
-          }
-
-          throw new Error(`Upload failed: ${error.message}`);
-        }
-
-        console.log("Standard upload successful:", data);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server upload failed: ${errorText}`);
       }
 
-      console.log("Standard upload successful:", data);
-
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage
-        .from("roam-file-storage")
-        .getPublicUrl(filePath);
-
-      console.log("Generated public URL:", publicUrl);
-      return publicUrl;
+      const result = await response.json();
+      console.log("Server-side upload successful:", result);
+      return result.publicUrl;
     } catch (error) {
       console.error("uploadToStorage error:", error);
       throw error;
