@@ -169,7 +169,8 @@ export default function ProviderProfile() {
   };
 
   const handleBookService = (serviceId: number) => {
-    setSelectedService(serviceId.toString());
+    const service = services.find(s => s.id === serviceId);
+    setSelectedService(service || null);
     setShowBookingModal(true);
   };
 
