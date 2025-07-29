@@ -233,30 +233,24 @@ export default function ProviderDocumentVerification() {
         body: formData,
       });
 
-      // Clone response to avoid body stream issues
-      const responseClone = response.clone();
-
-      if (!response.ok) {
-        let errorText;
-        try {
-          errorText = await responseClone.text();
-        } catch (readError) {
-          errorText = `HTTP ${response.status} - ${response.statusText}`;
-        }
-        throw new Error(`Server upload failed: ${errorText}`);
+      // Read response body as text once
+      let responseText;
+      try {
+        responseText = await response.text();
+      } catch (readError) {
+        throw new Error(`Failed to read response: ${readError.message}`);
       }
 
-      // Parse the response as JSON
+      if (!response.ok) {
+        throw new Error(`Server upload failed (${response.status}): ${responseText}`);
+      }
+
+      // Parse the response text as JSON
       let result;
       try {
-        result = await response.json();
+        result = JSON.parse(responseText);
       } catch (parseError) {
-        try {
-          const fallbackText = await responseClone.text();
-          throw new Error(`Invalid response format: ${fallbackText}`);
-        } catch (fallbackError) {
-          throw new Error(`Response parsing failed: ${parseError.message}`);
-        }
+        throw new Error(`Invalid JSON response: ${responseText}`);
       }
 
       console.log("Server-side upload successful:", result);
