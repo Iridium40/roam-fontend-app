@@ -31,6 +31,11 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  // Update activeTab when defaultTab prop changes
+  React.useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
   // Sign in form state
   const [signInData, setSignInData] = useState({
     email: "",
