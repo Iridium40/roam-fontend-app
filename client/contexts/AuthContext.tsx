@@ -76,13 +76,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               setUser(userData);
               localStorage.setItem("roam_user", JSON.stringify(userData));
               console.log("AuthContext: Session restored successfully");
+            } else {
+              console.log("AuthContext: Provider not found, clearing stored session");
+              localStorage.removeItem("roam_user");
             }
+          } else {
+            console.log("AuthContext: No active session, clearing stored data if any");
+            localStorage.removeItem("roam_user");
           }
         } catch (sessionError) {
           console.log(
-            "AuthContext: No active session or error fetching session:",
+            "AuthContext: Error during session restoration:",
             sessionError,
           );
+          // Clear potentially corrupted stored data
+          localStorage.removeItem("roam_user");
         }
       } catch (error) {
         console.error("AuthContext: Error during initialization:", error);
