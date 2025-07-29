@@ -208,6 +208,108 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signInCustomer = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      console.log("AuthContext signInCustomer: Starting authentication...");
+
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const authData = await directSupabaseAPI.signInWithPassword(
+        email,
+        password,
+      );
+
+      if (!authData.user) {
+        console.error("AuthContext signInCustomer: No user returned");
+        throw new Error("Authentication failed - no user returned");
+      }
+
+      console.log("AuthContext signInCustomer: Auth successful, fetching customer profile...");
+
+      // Use direct API for customer lookup
+      const customerRecord = await directSupabaseAPI.getCustomerByUserId(
+        authData.user.id,
+      );
+
+      if (!customerRecord) {
+        console.error("AuthContext signInCustomer: No customer found");
+        await directSupabaseAPI.signOut();
+        throw new Error("Customer account not found or inactive");
+      }
+
+      console.log("AuthContext signInCustomer: Customer found:", customerRecord);
+
+      const customerData = {
+        id: authData.user.id,
+        email: customerRecord.email,
+        customer_id: customerRecord.id,
+        first_name: customerRecord.first_name,
+        last_name: customerRecord.last_name,
+        phone: customerRecord.phone,
+      };
+
+      setCustomer(customerData);
+      setUserType("customer");
+      localStorage.setItem("roam_customer", JSON.stringify(customerData));
+      localStorage.setItem("roam_access_token", authData.access_token);
+      localStorage.setItem("roam_user_type", "customer");
+
+      console.log(
+        "AuthContext signInCustomer: Customer state updated and persisted successfully",
+      );
+    } catch (error) {
+      console.error("AuthContext signInCustomer: Error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signUpCustomer = async (customerData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    phone?: string;
+  }) => {
+    setLoading(true);
+    try {
+      console.log("AuthContext signUpCustomer: Starting registration...");
+
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Create auth user first
+      const authData = await directSupabaseAPI.signUpWithPassword(
+        customerData.email,
+        customerData.password,
+      );
+
+      if (!authData.user) {
+        console.error("AuthContext signUpCustomer: No user returned");
+        throw new Error("Registration failed - no user returned");
+      }
+
+      console.log("AuthContext signUpCustomer: Auth user created, creating customer profile...");
+
+      // Create customer profile
+      const customerProfile = await directSupabaseAPI.createCustomerProfile({
+        user_id: authData.user.id,
+        email: customerData.email,
+        first_name: customerData.firstName,
+        last_name: customerData.lastName,
+        phone: customerData.phone || null,
+      });
+
+      console.log("AuthContext signUpCustomer: Customer profile created successfully");
+    } catch (error) {
+      console.error("AuthContext signUpCustomer: Error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
@@ -216,8 +318,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.warn("SignOut error:", error);
     } finally {
       setUser(null);
-      localStorage.removeItem("roam_user");
-      localStorage.removeItem("roam_access_token");
+      setCustomer(null);
+      setUserType(null);
+      clearStoredData();
     }
   };
 
