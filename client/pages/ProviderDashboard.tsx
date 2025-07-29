@@ -6091,6 +6091,7 @@ export default function ProviderDashboard() {
             </TabsContent>
 
             {/* Analytics Tab */}
+            {isOwner && (
             <TabsContent value="analytics" className="space-y-6">
               <h2 className="text-2xl font-bold">Business Analytics</h2>
 
@@ -6152,8 +6153,10 @@ export default function ProviderDashboard() {
                 </Card>
               </div>
             </TabsContent>
+            )}
 
             {/* Financial Tab */}
+            {isOwner && (
             <TabsContent value="financial" className="space-y-6">
               <h2 className="text-2xl font-bold">Financial Management</h2>
 
@@ -6821,6 +6824,7 @@ export default function ProviderDashboard() {
                 </Card>
               </div>
             </TabsContent>
+            )}
 
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
