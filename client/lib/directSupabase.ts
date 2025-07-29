@@ -3,16 +3,17 @@ const SUPABASE_URL = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
 
 interface AuthResponse {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-  expires_at: number;
-  refresh_token: string;
-  user: {
+  access_token?: string;
+  token_type?: string;
+  expires_in?: number;
+  expires_at?: number;
+  refresh_token?: string;
+  user?: {
     id: string;
     email: string;
     [key: string]: any;
   };
+  session?: any; // May be present in some responses
 }
 
 interface ProviderRecord {
