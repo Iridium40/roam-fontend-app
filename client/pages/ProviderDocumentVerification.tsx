@@ -77,33 +77,35 @@ export default function ProviderDocumentVerification() {
     console.log('Fetching provider info for user:', user.id);
 
     try {
-      const { data: provider, error } = await supabase
+      // First, let's check if any providers exist for this user
+      const { data: allProviders, error: allError } = await supabase
         .from('providers')
-        .select('id, business_id')
-        .eq('user_id', user.id)
-        .single();
+        .select('id, business_id, user_id, first_name, last_name, email')
+        .eq('user_id', user.id);
 
-      console.log('Provider query result:', { provider, error });
+      console.log('All providers for user:', { allProviders, allError });
 
-      if (error) {
-        // If no provider found, this might be during onboarding - let's try to wait a bit and retry
-        if (error.code === 'PGRST116') { // No rows returned
-          console.log('No provider found, retrying in 2 seconds...');
-          setTimeout(() => {
-            fetchProviderInfo();
-          }, 2000);
-          return;
-        }
-        throw error;
+      if (allError) {
+        console.error('Error querying all providers:', allError);
+        throw allError;
       }
 
-      if (provider) {
-        console.log('Setting providerId:', provider.id, 'businessId:', provider.business_id);
-        setProviderId(provider.id);
-        if (!businessId) {
-          setBusinessId(provider.business_id);
-        }
+      if (!allProviders || allProviders.length === 0) {
+        console.log('No providers found for user, retrying in 2 seconds...');
+        setTimeout(() => {
+          fetchProviderInfo();
+        }, 2000);
+        return;
       }
+
+      // Get the first provider (should be only one typically)
+      const provider = allProviders[0];
+      console.log('Setting providerId:', provider.id, 'businessId:', provider.business_id);
+      setProviderId(provider.id);
+      if (!businessId) {
+        setBusinessId(provider.business_id);
+      }
+
     } catch (error) {
       console.error('Error fetching provider info:', error);
       // Don't show toast error during onboarding as this might be expected
@@ -237,6 +239,36 @@ export default function ProviderDocumentVerification() {
   const handleSubmitDocuments = async () => {
     console.log('Submitting documents with:', { businessId, providerId, userId: user?.id });
 
+    // Debug: Let's check what business and provider records exist
+    if (user?.id) {
+      try {
+        // Check business profiles
+        const { data: businesses, error: businessError } = await supabase
+          .from('business_profiles')
+          .select('id, business_name')
+          .limit(10);
+        console.log('Available businesses:', { businesses, businessError });
+
+        // Check providers
+        const { data: providers, error: providerError } = await supabase
+          .from('providers')
+          .select('id, user_id, business_id, first_name, last_name')
+          .eq('user_id', user.id);
+        console.log('Providers for current user:', { providers, providerError });
+
+        // If we have a specific businessId, check providers for that business
+        if (businessId) {
+          const { data: businessProviders, error: businessProviderError } = await supabase
+            .from('providers')
+            .select('id, user_id, business_id, first_name, last_name')
+            .eq('business_id', businessId);
+          console.log('Providers for businessId', businessId, ':', { businessProviders, businessProviderError });
+        }
+      } catch (debugError) {
+        console.error('Debug query error:', debugError);
+      }
+    }
+
     // If we have businessId but no providerId, try to fetch provider info one more time
     if (businessId && !providerId && user?.id) {
       console.log('Missing providerId, attempting to fetch...');
@@ -246,16 +278,18 @@ export default function ProviderDocumentVerification() {
       if (!providerId) {
         // Try to find provider with businessId as fallback
         try {
-          const { data: provider, error } = await supabase
+          const { data: providers, error } = await supabase
             .from('providers')
-            .select('id')
+            .select('id, user_id, business_id')
             .eq('business_id', businessId)
-            .eq('user_id', user.id)
-            .single();
+            .eq('user_id', user.id);
 
-          if (provider) {
+          console.log('Fallback provider search result:', { providers, error });
+
+          if (providers && providers.length > 0) {
+            const provider = providers[0];
             setProviderId(provider.id);
-            console.log('Found providerId using businessId:', provider.id);
+            console.log('Found providerId using businessId fallback:', provider.id);
           }
         } catch (error) {
           console.error('Error finding provider by businessId:', error);
