@@ -133,7 +133,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
 // Role-based redirect component
 export const RoleBasedRedirect: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, customer, userType, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
