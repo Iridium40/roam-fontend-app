@@ -442,6 +442,10 @@ export default function ProviderDocumentVerification() {
               fileUrl,
               documents.driversLicense.file!.size
             ))
+            .catch(error => {
+              console.error('Driver\'s License upload failed:', error);
+              throw new Error(`Driver's License upload failed: ${error.message}`);
+            })
         );
       }
 
@@ -455,6 +459,10 @@ export default function ProviderDocumentVerification() {
               fileUrl,
               documents.proofOfAddress.file!.size
             ))
+            .catch(error => {
+              console.error('Proof of Address upload failed:', error);
+              throw new Error(`Proof of Address upload failed: ${error.message}`);
+            })
         );
       }
 
@@ -468,6 +476,10 @@ export default function ProviderDocumentVerification() {
               fileUrl,
               documents.liabilityInsurance.file!.size
             ))
+            .catch(error => {
+              console.error('Liability Insurance upload failed:', error);
+              throw new Error(`Liability Insurance upload failed: ${error.message}`);
+            })
         );
       }
 
@@ -482,6 +494,10 @@ export default function ProviderDocumentVerification() {
                 fileUrl,
                 license.file!.size
               ))
+              .catch(error => {
+                console.error(`Professional License ${index + 1} upload failed:`, error);
+                throw new Error(`Professional License ${index + 1} upload failed: ${error.message}`);
+              })
           );
         }
       });
