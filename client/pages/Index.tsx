@@ -41,6 +41,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CustomerAuthModal } from "@/components/CustomerAuthModal";
+import { CustomerAvatarDropdown } from "@/components/CustomerAvatarDropdown";
 
 export default function Index() {
   const { customer, isCustomer, signOut } = useAuth();
