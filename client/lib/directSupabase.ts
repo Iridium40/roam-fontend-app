@@ -139,11 +139,20 @@ class DirectSupabaseAPI {
 
   async getSession(): Promise<{ user: { id: string; email: string } } | null> {
     try {
+      // Check if we have a valid access token
+      if (!this.accessToken) {
+        console.log("No access token available for session check");
+        return null;
+      }
+
       const response = await fetch(`${this.baseURL}/auth/v1/user`, {
         headers: this.getHeaders(true),
       });
 
       if (!response.ok) {
+        console.log("Session check failed:", response.status, response.statusText);
+        // Clear invalid token
+        this.accessToken = null;
         return null;
       }
 
@@ -151,6 +160,8 @@ class DirectSupabaseAPI {
       return { user };
     } catch (error) {
       console.log("Get session error:", error);
+      // Clear potentially invalid token
+      this.accessToken = null;
       return null;
     }
   }
