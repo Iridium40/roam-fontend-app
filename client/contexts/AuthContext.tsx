@@ -344,11 +344,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isOwner = user?.provider_role === "owner";
   const isDispatcher = user?.provider_role === "dispatcher";
   const isProvider = user?.provider_role === "provider";
+  const isCustomer = userType === "customer";
+  const isAuthenticated = !!(user || customer);
 
   const value: AuthContextType = {
     user,
+    customer,
+    userType,
     loading,
     signIn,
+    signInCustomer,
+    signUpCustomer,
     signOut,
     refreshUser,
     hasRole,
@@ -356,6 +362,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isOwner,
     isDispatcher,
     isProvider,
+    isCustomer,
+    isAuthenticated,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
