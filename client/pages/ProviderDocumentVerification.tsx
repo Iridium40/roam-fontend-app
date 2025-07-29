@@ -554,7 +554,7 @@ export default function ProviderDocumentVerification() {
       documents.licenses.forEach((license, index) => {
         if (license.file) {
           uploadPromises.push(
-            uploadToStorage(license.file, `avatar-provider-user/documents-plc`)
+            uploadToStorage(license.file, `provider-plc/${businessId}`)
               .then((fileUrl) =>
                 saveDocumentRecord(
                   "professional_license",
