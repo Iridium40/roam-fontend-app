@@ -559,6 +559,13 @@ class DirectSupabaseAPI {
     });
 
     if (!response.ok) {
+      // Handle authentication errors specifically
+      if (response.status === 401) {
+        console.error("DirectSupabase updateCustomerProfile: Authentication failed");
+        this.accessToken = null; // Clear invalid token
+        throw new Error("Authentication failed. Please sign in again.");
+      }
+
       // If update fails, try to create the record
       if (response.status === 404 || responseText.includes("0 rows") || responseText.includes('relation "customer_profiles" does not exist')) {
         console.log("Customer profile table or record not found, creating new record...");
