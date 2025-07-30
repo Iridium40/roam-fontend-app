@@ -5155,8 +5155,9 @@ export default function ProviderDashboard() {
               )}
             </TabsContent>
 
-            {/* Services & Add-Ons Tab */}
-            <TabsContent value="services-addons" className="space-y-6">
+            {/* Services & Add-Ons Tab - Owner Only */}
+            {isOwner && (
+              <TabsContent value="services-addons" className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold">Business Services & Add-Ons</h2>
@@ -5364,6 +5365,7 @@ export default function ProviderDashboard() {
                 </div>
               )}
             </TabsContent>
+            )}
 
             {/* Add-ons Tab */}
             <TabsContent value="addons" className="space-y-6">
