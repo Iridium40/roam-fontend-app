@@ -2106,9 +2106,9 @@ export default function ProviderDashboard() {
         throw new Error("Invalid service ID - cannot update service");
       }
 
-      // Check if the service exists first
+      // Check if the service exists and get its current structure
       const checkResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}&select=id`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}&select=*`,
         {
           method: "GET",
           headers: {
@@ -2120,9 +2120,10 @@ export default function ProviderDashboard() {
       );
 
       const checkResult = await checkResponse.json();
-      console.log("Service existence check:", {
+      console.log("Service existence and structure check:", {
         status: checkResponse.status,
         result: checkResult,
+        serviceStructure: checkResult?.[0] ? Object.keys(checkResult[0]) : 'No service found',
       });
 
       if (!checkResponse.ok || !checkResult || checkResult.length === 0) {
@@ -2130,6 +2131,34 @@ export default function ProviderDashboard() {
           `Service with ID ${editingService.id} not found or inaccessible`,
         );
       }
+
+      const currentService = checkResult[0];
+      console.log("Current service data from database:", currentService);
+
+      // Try different field name variations that might be in the actual schema
+      const possibleUpdateVariations = [
+        // Original data
+        updateData,
+        // Alternative field names that might be in the schema
+        {
+          delivery_type: updateData.delivery_type,
+          price: updateData.custom_price,
+          active: updateData.is_active,
+        },
+        {
+          delivery_method: updateData.delivery_type,
+          custom_price: updateData.custom_price,
+          is_active: updateData.is_active,
+        },
+        {
+          delivery_type: updateData.delivery_type,
+          override_price: updateData.custom_price,
+          is_active: updateData.is_active,
+        }
+      ];
+
+      let updateSuccess = false;
+      let lastError = null;
 
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
