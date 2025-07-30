@@ -553,11 +553,17 @@ class DirectSupabaseAPI {
     if (!testResponse.ok) {
       // If we can't access the table at all, there's a fundamental issue
       if (testText.includes('relation "customer_profiles" does not exist')) {
-        throw new Error("The customer_profiles table does not exist in the database. Please contact support.");
+        throw new Error(
+          "The customer_profiles table does not exist in the database. Please contact support.",
+        );
       } else if (testText.includes("permission denied")) {
-        throw new Error("Access denied to customer_profiles table. Please contact support.");
+        throw new Error(
+          "Access denied to customer_profiles table. Please contact support.",
+        );
       } else {
-        console.warn("Table access test failed, but continuing with record check...");
+        console.warn(
+          "Table access test failed, but continuing with record check...",
+        );
       }
     }
 
@@ -588,9 +594,15 @@ class DirectSupabaseAPI {
       try {
         const records = JSON.parse(checkText);
         recordExists = Array.isArray(records) && records.length > 0;
-        console.log("DirectSupabase updateCustomerProfile: Record exists:", recordExists);
+        console.log(
+          "DirectSupabase updateCustomerProfile: Record exists:",
+          recordExists,
+        );
       } catch (parseError) {
-        console.log("DirectSupabase updateCustomerProfile: Check parse error:", parseError);
+        console.log(
+          "DirectSupabase updateCustomerProfile: Check parse error:",
+          parseError,
+        );
       }
     }
 
@@ -599,10 +611,13 @@ class DirectSupabaseAPI {
     let authMethod = "anon";
 
     const tryOperation = async (useUserToken = false) => {
-      const authToken = useUserToken && this.accessToken ? this.accessToken : this.apiKey;
+      const authToken =
+        useUserToken && this.accessToken ? this.accessToken : this.apiKey;
       const authHeader = `Bearer ${authToken}`;
 
-      console.log(`DirectSupabase updateCustomerProfile: Trying with ${useUserToken ? 'user token' : 'anon key'}`);
+      console.log(
+        `DirectSupabase updateCustomerProfile: Trying with ${useUserToken ? "user token" : "anon key"}`,
+      );
 
       if (recordExists) {
         // Update existing record
@@ -627,29 +642,26 @@ class DirectSupabaseAPI {
         console.log(
           "DirectSupabase updateCustomerProfile: Creating new record...",
         );
-        return await fetch(
-          `${this.baseURL}/rest/v1/customer_profiles`,
-          {
-            method: "POST",
-            headers: {
-              apikey: this.apiKey,
-              Authorization: authHeader,
-              "Content-Type": "application/json",
-              Prefer: "return=minimal",
-            },
-            body: JSON.stringify({
-              user_id: customerId,
-              ...updateData,
-              is_active: true,
-              email_notifications: true,
-              sms_notifications: true,
-              push_notifications: true,
-              marketing_emails: false,
-              email_verified: false,
-              phone_verified: false,
-            }),
+        return await fetch(`${this.baseURL}/rest/v1/customer_profiles`, {
+          method: "POST",
+          headers: {
+            apikey: this.apiKey,
+            Authorization: authHeader,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
           },
-        );
+          body: JSON.stringify({
+            user_id: customerId,
+            ...updateData,
+            is_active: true,
+            email_notifications: true,
+            sms_notifications: true,
+            push_notifications: true,
+            marketing_emails: false,
+            email_verified: false,
+            phone_verified: false,
+          }),
+        });
       }
     };
 
@@ -660,11 +672,15 @@ class DirectSupabaseAPI {
     if (!response.ok && (response.status === 401 || response.status === 403)) {
       const responseText = await response.text();
       if (this.accessToken) {
-        console.log("DirectSupabase updateCustomerProfile: Anon key failed, trying with user token...");
+        console.log(
+          "DirectSupabase updateCustomerProfile: Anon key failed, trying with user token...",
+        );
         authMethod = "user";
         response = await tryOperation(true);
       } else {
-        console.log("DirectSupabase updateCustomerProfile: No user token available for fallback");
+        console.log(
+          "DirectSupabase updateCustomerProfile: No user token available for fallback",
+        );
       }
     }
 
@@ -698,16 +714,25 @@ class DirectSupabaseAPI {
       }
 
       // Handle table not found errors
-      if (responseText.includes('relation "customer_profiles" does not exist')) {
-        console.error("DirectSupabase updateCustomerProfile: customer_profiles table does not exist");
+      if (
+        responseText.includes('relation "customer_profiles" does not exist')
+      ) {
+        console.error(
+          "DirectSupabase updateCustomerProfile: customer_profiles table does not exist",
+        );
         throw new Error(
           "Customer profiles table does not exist in the database. Please contact support.",
         );
       }
 
       // Check for permission errors
-      if (responseText.includes("permission denied") || responseText.includes("RLS")) {
-        console.error("DirectSupabase updateCustomerProfile: Permission denied or RLS policy issue");
+      if (
+        responseText.includes("permission denied") ||
+        responseText.includes("RLS")
+      ) {
+        console.error(
+          "DirectSupabase updateCustomerProfile: Permission denied or RLS policy issue",
+        );
         throw new Error(
           "Permission denied: Unable to access customer profiles. Please contact support.",
         );
@@ -715,19 +740,24 @@ class DirectSupabaseAPI {
 
       // Handle other errors with detailed information
       const operation = recordExists ? "update" : "create";
-      console.error(`DirectSupabase updateCustomerProfile: Failed to ${operation} record`, {
-        status: response.status,
-        responseText,
-        updateData,
-        customerId,
-      });
+      console.error(
+        `DirectSupabase updateCustomerProfile: Failed to ${operation} record`,
+        {
+          status: response.status,
+          responseText,
+          updateData,
+          customerId,
+        },
+      );
 
       throw new Error(
         `Failed to ${operation} customer profile: HTTP ${response.status} - ${responseText}`,
       );
     } else {
       const operation = recordExists ? "updated" : "created";
-      console.log(`DirectSupabase updateCustomerProfile: Record ${operation} successfully`);
+      console.log(
+        `DirectSupabase updateCustomerProfile: Record ${operation} successfully`,
+      );
     }
   }
 

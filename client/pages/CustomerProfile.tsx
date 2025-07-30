@@ -60,7 +60,7 @@ export default function CustomerProfile() {
             Authorization: `Bearer ${import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -79,7 +79,9 @@ export default function CustomerProfile() {
             imageUrl: profile.image_url || customer.image_url || "",
           });
         } else {
-          console.log("CustomerProfile: No profile data found, using customer data");
+          console.log(
+            "CustomerProfile: No profile data found, using customer data",
+          );
           // Use customer data as fallback
           setProfileData({
             firstName: customer.first_name || "",
@@ -92,7 +94,9 @@ export default function CustomerProfile() {
           });
         }
       } else {
-        console.log("CustomerProfile: Failed to load profile data, using customer data");
+        console.log(
+          "CustomerProfile: Failed to load profile data, using customer data",
+        );
         // Use customer data as fallback
         setProfileData({
           firstName: customer.first_name || "",
@@ -197,7 +201,9 @@ export default function CustomerProfile() {
         imageUrl: profileData.imageUrl,
       });
 
-      console.log("CustomerProfile: Profile saved successfully, reloading data...");
+      console.log(
+        "CustomerProfile: Profile saved successfully, reloading data...",
+      );
 
       // Reload the profile data to ensure UI shows the latest saved data
       await loadCustomerProfile();
