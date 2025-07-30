@@ -5397,6 +5397,13 @@ export default function ProviderDashboard() {
                           <Switch
                             checked={businessAddon.is_available}
                             className="data-[state=checked]:bg-roam-blue"
+                            onCheckedChange={(checked) => {
+                              handleToggleBusinessAddon(
+                                businessAddon.addon_id,
+                                checked,
+                                businessAddon.custom_price
+                              );
+                            }}
                           />
                         </div>
                         <p className="text-xs text-foreground/50 mb-2">
