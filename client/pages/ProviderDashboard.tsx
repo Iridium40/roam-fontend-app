@@ -3366,7 +3366,7 @@ export default function ProviderDashboard() {
     isActive: boolean,
     customPrice?: number,
   ) => {
-    if (!provider?.business_id || !isOwner) return;
+    if (!provider?.business_id || (!isOwner && !isDispatcher)) return;
 
     setBusinessServicesSaving(true);
     setBusinessServicesError("");
