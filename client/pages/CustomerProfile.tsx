@@ -227,12 +227,18 @@ export default function CustomerProfile() {
         errorMessage.includes("session has expired") ||
         errorMessage.includes("sign in again")
       ) {
-        alert(
-          "Your session has expired. Please sign in again to save your changes.",
-        );
+        toast({
+          title: "Session Expired",
+          description: "Your session has expired. Please sign in again to save your changes.",
+          variant: "destructive",
+        });
         // Optionally redirect to login or show login modal
       } else {
-        alert(`Failed to save profile: ${errorMessage}`);
+        toast({
+          title: "Update Failed",
+          description: `Failed to save profile: ${errorMessage}`,
+          variant: "destructive",
+        });
       }
     } finally {
       setSaving(false);
