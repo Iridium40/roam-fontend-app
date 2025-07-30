@@ -2108,18 +2108,37 @@ export default function ProviderDashboard() {
           errorDetails = errorText;
         }
 
-        console.error("Service update failed:", {
-          status: response.status,
-          statusText: response.statusText,
-          responseText: errorText,
-          errorDetails: errorDetails,
-          updateData: JSON.stringify(updateData, null, 2),
-          serviceId: editingService.id,
-        });
+        const debugInfo = {
+        status: response.status,
+        statusText: response.statusText,
+        responseText: errorText,
+        errorDetails: errorDetails,
+        updateData: updateData,
+        serviceId: editingService.id,
+        url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
+        headers: {
+          apikey: "***",
+          Authorization: directSupabaseAPI.currentAccessToken ? "Bearer [USER_TOKEN]" : "Bearer [ANON_KEY]",
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        }
+      };
 
-        throw new Error(
-          `Failed to update service: HTTP ${response.status} - ${errorDetails}`,
-        );
+      console.error("Service update failed:", debugInfo);
+
+      // Provide specific error message based on status code
+      let userFriendlyError = errorDetails || errorText;
+      if (response.status === 400) {
+        userFriendlyError = `Invalid request: ${errorDetails || 'Please check your input values'}`;
+      } else if (response.status === 401) {
+        userFriendlyError = "Authentication failed. Please refresh the page and try again.";
+      } else if (response.status === 403) {
+        userFriendlyError = "Permission denied. You may not have access to update this service.";
+      } else if (response.status === 404) {
+        userFriendlyError = "Service not found. It may have been deleted.";
+      }
+
+      throw new Error(userFriendlyError);
       }
 
       // Update local state
