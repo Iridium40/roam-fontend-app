@@ -354,13 +354,24 @@ export default function ProviderDashboard() {
     is_active: true,
   });
 
-  // Add-ons state
+  // Add-ons state (provider level)
   const [providerAddons, setProviderAddons] = useState<any[]>([]);
   const [availableAddons, setAvailableAddons] = useState<any[]>([]);
   const [addonsLoading, setAddonsLoading] = useState(false);
   const [addonsError, setAddonsError] = useState("");
   const [addonsSuccess, setAddonsSuccess] = useState("");
   const [addonsSaving, setAddonsSaving] = useState(false);
+
+  // Business Services & Add-ons state (business level)
+  const [allServices, setAllServices] = useState<any[]>([]);
+  const [allServiceAddons, setAllServiceAddons] = useState<any[]>([]);
+  const [businessServicesData, setBusinessServicesData] = useState<any[]>([]);
+  const [businessAddonsData, setBusinessAddonsData] = useState<any[]>([]);
+  const [serviceAddonEligibility, setServiceAddonEligibility] = useState<any[]>([]);
+  const [businessServicesLoading, setBusinessServicesLoading] = useState(false);
+  const [businessServicesError, setBusinessServicesError] = useState("");
+  const [businessServicesSuccess, setBusinessServicesSuccess] = useState("");
+  const [businessServicesSaving, setBusinessServicesSaving] = useState(false);
 
   // Tax Info state
   const [taxInfo, setTaxInfo] = useState(null);
