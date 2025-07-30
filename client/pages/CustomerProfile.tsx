@@ -32,6 +32,20 @@ export default function CustomerProfile() {
     bio: "",
   });
 
+  // Update profile data when customer data changes
+  useEffect(() => {
+    if (customer) {
+      setProfileData({
+        firstName: customer.first_name,
+        lastName: customer.last_name,
+        email: customer.email,
+        phone: customer.phone || "",
+        dateOfBirth: "",
+        bio: "",
+      });
+    }
+  }, [customer]);
+
   if (!customer) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
