@@ -3070,7 +3070,7 @@ export default function ProviderDashboard() {
 
   // Business Services & Add-ons Functions (Owner Only)
   const fetchBusinessServicesAndAddons = async () => {
-    if (!provider?.business_id || !isOwner) {
+    if (!provider?.business_id || (!isOwner && !isDispatcher)) {
       console.log(
         "fetchBusinessServicesAndAddons: No business_id available or not owner",
       );
