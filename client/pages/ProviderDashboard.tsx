@@ -3221,7 +3221,7 @@ export default function ProviderDashboard() {
     businessPrice?: number,
     deliveryType?: string,
   ) => {
-    if (!provider?.business_id || !isOwner) return;
+    if (!provider?.business_id || (!isOwner && !isDispatcher)) return;
 
     setBusinessServicesSaving(true);
     setBusinessServicesError("");
