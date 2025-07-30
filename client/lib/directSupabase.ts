@@ -622,6 +622,7 @@ class DirectSupabaseAPI {
       statusText: response.statusText,
       responseText,
       ok: response.ok,
+      operation: recordExists ? "UPDATE" : "CREATE",
     });
 
     if (!response.ok) {
@@ -634,23 +635,28 @@ class DirectSupabaseAPI {
         throw new Error("Authentication failed. Please sign in again.");
       }
 
-      // If update fails, try to create the record
-      if (
-        response.status === 404 ||
-        responseText.includes("0 rows") ||
-        responseText.includes('relation "customer_profiles" does not exist')
-      ) {
-        console.log(
-          "Customer profile table or record not found, creating new record...",
-        );
-        await this.createCustomerProfileRecord(customerId, updateData);
-      } else {
+      // Handle table not found errors
+      if (responseText.includes('relation "customer_profiles" does not exist')) {
         throw new Error(
-          `Customer profile update failed: HTTP ${response.status} - ${responseText}`,
+          "Customer profiles table does not exist in the database. Please contact support.",
         );
       }
+
+      // Handle other errors with detailed information
+      const operation = recordExists ? "update" : "create";
+      console.error(`DirectSupabase updateCustomerProfile: Failed to ${operation} record`, {
+        status: response.status,
+        responseText,
+        updateData,
+        customerId,
+      });
+
+      throw new Error(
+        `Failed to ${operation} customer profile: HTTP ${response.status} - ${responseText}`,
+      );
     } else {
-      console.log("DirectSupabase updateCustomerProfile: Update successful");
+      const operation = recordExists ? "updated" : "created";
+      console.log(`DirectSupabase updateCustomerProfile: Record ${operation} successfully`);
     }
   }
 
