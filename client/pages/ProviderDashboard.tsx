@@ -2156,10 +2156,17 @@ export default function ProviderDashboard() {
       console.error("Service save error:", error);
       let errorMessage = "Failed to update service";
 
-      if (error?.message) {
+      if (error?.message && typeof error.message === "string") {
         errorMessage = error.message;
       } else if (typeof error === "string") {
         errorMessage = error;
+      } else if (error && typeof error === "object") {
+        // Handle object errors by extracting useful information
+        if (error.toString && error.toString() !== "[object Object]") {
+          errorMessage = error.toString();
+        } else {
+          errorMessage = `Failed to update service: ${JSON.stringify(error)}`;
+        }
       }
 
       setServiceError(errorMessage);
