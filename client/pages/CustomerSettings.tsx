@@ -41,9 +41,7 @@ export default function CustomerSettings() {
     promotionalEmails: false,
     serviceUpdates: true,
     
-    // Privacy Settings
-    profileVisibility: "private",
-    dataSharing: false,
+
     
     // App Preferences (only dark mode is now managed by theme context)
     
@@ -294,50 +292,7 @@ export default function CustomerSettings() {
                 </CardContent>
               </Card>
 
-              {/* Privacy & Security */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="w-5 h-5" />
-                    Privacy & Security
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-2">
-                    <Label>Profile Visibility</Label>
-                    <Select
-                      value={settings.profileVisibility}
-                      onValueChange={(value) =>
-                        updateSetting("profileVisibility", value)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="private">Private</SelectItem>
-                        <SelectItem value="providers">Providers Only</SelectItem>
-                        <SelectItem value="public">Public</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Data Sharing</Label>
-                      <p className="text-sm text-foreground/60">
-                        Allow anonymized data sharing for service improvements
-                      </p>
-                    </div>
-                    <Switch
-                      checked={settings.dataSharing}
-                      onCheckedChange={(checked) =>
-                        updateSetting("dataSharing", checked)
-                      }
-                    />
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* App Preferences */}
               <Card>
