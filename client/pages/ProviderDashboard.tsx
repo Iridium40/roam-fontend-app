@@ -354,6 +354,14 @@ export default function ProviderDashboard() {
     is_active: true,
   });
 
+  // Add-ons state
+  const [providerAddons, setProviderAddons] = useState<any[]>([]);
+  const [availableAddons, setAvailableAddons] = useState<any[]>([]);
+  const [addonsLoading, setAddonsLoading] = useState(false);
+  const [addonsError, setAddonsError] = useState("");
+  const [addonsSuccess, setAddonsSuccess] = useState("");
+  const [addonsSaving, setAddonsSaving] = useState(false);
+
   // Tax Info state
   const [taxInfo, setTaxInfo] = useState(null);
   const [taxInfoLoading, setTaxInfoLoading] = useState(false);
