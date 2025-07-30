@@ -4040,7 +4040,7 @@ export default function ProviderDashboard() {
             className="space-y-6"
           >
             <TabsList
-              className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-4" : "grid-cols-9"} lg:w-auto lg:inline-grid`}
+              className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-5" : "grid-cols-10"} lg:w-auto lg:inline-grid`}
             >
               <TabsTrigger
                 value="bookings"
@@ -4053,6 +4053,12 @@ export default function ProviderDashboard() {
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
               >
                 Services
+              </TabsTrigger>
+              <TabsTrigger
+                value="addons"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
+                Add-ons
               </TabsTrigger>
               {(isOwner || isDispatcher) && (
                 <TabsTrigger
