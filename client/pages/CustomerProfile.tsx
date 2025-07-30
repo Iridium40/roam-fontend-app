@@ -253,13 +253,21 @@ export default function CustomerProfile() {
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      alert("Please select an image file");
+      toast({
+        title: "Invalid File Type",
+        description: "Please select an image file.",
+        variant: "destructive",
+      });
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert("File size must be less than 5MB");
+      toast({
+        title: "File Too Large",
+        description: "File size must be less than 5MB.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -267,10 +275,19 @@ export default function CustomerProfile() {
     try {
       const imageUrl = await uploadCustomerAvatar(file);
       setProfileData((prev) => ({ ...prev, imageUrl }));
+      toast({
+        title: "Avatar Updated",
+        description: "Your profile picture has been successfully updated.",
+        variant: "default",
+      });
       console.log("Avatar uploaded successfully");
     } catch (error) {
       console.error("Failed to upload avatar:", error);
-      alert("Failed to upload image. Please try again.");
+      toast({
+        title: "Upload Failed",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setUploading(false);
     }
