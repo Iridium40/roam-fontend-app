@@ -5528,7 +5528,7 @@ export default function ProviderDashboard() {
                               variant="outline"
                               size="sm"
                               className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                              onClick={() => handleEditService(businessService)}
+                              onClick={() => handleEditBusinessService(businessService)}
                             >
                               <Edit className="w-4 h-4 mr-2" />
                               Edit Service
