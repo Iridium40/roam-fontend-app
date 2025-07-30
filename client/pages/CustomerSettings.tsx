@@ -46,7 +46,6 @@ export default function CustomerSettings() {
     dataSharing: false,
     
     // App Preferences
-    darkMode: false,
     language: "en",
     currency: "USD",
     timezone: "America/New_York",
