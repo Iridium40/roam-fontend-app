@@ -444,6 +444,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInCustomer,
     signUpCustomer,
     updateCustomerProfile,
+    uploadCustomerAvatar,
     signOut,
     refreshUser,
     hasRole,
