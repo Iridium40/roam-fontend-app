@@ -3906,6 +3906,19 @@ export default function ProviderDashboard() {
     }
   }, [provider, activeTab]);
 
+  // Fetch business services and add-ons when provider is available and services-addons tab is active
+  useEffect(() => {
+    if (
+      provider?.business_id &&
+      activeTab === "services-addons" &&
+      allServices.length === 0 &&
+      !businessServicesLoading
+    ) {
+      console.log("Auto-fetching business services and add-ons for active tab");
+      fetchBusinessServicesAndAddons();
+    }
+  }, [provider, activeTab]);
+
   const fetchDashboardData = async () => {
     if (!user) return;
 
