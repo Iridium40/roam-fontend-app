@@ -577,6 +577,11 @@ class DirectSupabaseAPI {
       image_url?: string | null;
     },
   ): Promise<void> {
+    console.log("DirectSupabase createCustomerProfileRecord: Starting creation", {
+      customerId,
+      profileData
+    });
+
     const response = await fetch(`${this.baseURL}/rest/v1/customer_profiles`, {
       method: "POST",
       headers: {
