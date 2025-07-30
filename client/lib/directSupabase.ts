@@ -515,6 +515,13 @@ class DirectSupabaseAPI {
       image_url?: string | null;
     },
   ): Promise<void> {
+    console.log("DirectSupabase updateCustomerProfile: Starting update", {
+      customerId,
+      updateData,
+      url: `${this.baseURL}/rest/v1/customer_profiles?id=eq.${customerId}`,
+      hasAccessToken: !!this.accessToken
+    });
+
     // First try to update the customer_profiles table
     const response = await fetch(
       `${this.baseURL}/rest/v1/customer_profiles?id=eq.${customerId}`,
@@ -537,6 +544,13 @@ class DirectSupabaseAPI {
       console.warn("Could not read response text:", readError);
       responseText = `HTTP ${response.status} - ${response.statusText}`;
     }
+
+    console.log("DirectSupabase updateCustomerProfile: Response", {
+      status: response.status,
+      statusText: response.statusText,
+      responseText,
+      ok: response.ok
+    });
 
     if (!response.ok) {
       // If update fails, try to create the record
