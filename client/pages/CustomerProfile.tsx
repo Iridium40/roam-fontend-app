@@ -74,6 +74,7 @@ export default function CustomerProfile() {
         phone: profileData.phone,
         dateOfBirth: profileData.dateOfBirth,
         bio: profileData.bio,
+        imageUrl: profileData.imageUrl,
       });
 
       setIsEditing(false);
