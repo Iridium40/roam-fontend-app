@@ -1497,6 +1497,13 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      // Check if we have a valid access token
+      if (!directSupabaseAPI.currentAccessToken) {
+        console.warn("No access token available for provider update, using anon key");
+      } else {
+        console.log("Using access token for provider update");
+      }
+
       // Validate and prepare update data
       const updateData: any = {};
 
