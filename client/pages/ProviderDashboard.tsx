@@ -5328,6 +5328,54 @@ export default function ProviderDashboard() {
                 </div>
               )}
 
+              {/* Available Services to Add Section */}
+              {allServices.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold">Available Services</h3>
+                    <p className="text-sm text-foreground/60">
+                      Add services to your business offering
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {allServices
+                      .filter(service => !businessServices.some(bs => bs.service_id === service.id))
+                      .map((service) => (
+                      <Card key={service.id} className="p-4 border-dashed border-2 hover:border-roam-blue transition-colors">
+                        <div className="space-y-3">
+                          <div>
+                            <h4 className="font-medium">{service.name}</h4>
+                            <p className="text-sm text-foreground/60">
+                              {service.service_subcategories?.service_categories?.description ||
+                               service.service_subcategories?.service_categories?.service_category_type}{" "}
+                              — {service.service_subcategories?.name}
+                            </p>
+                            {service.description && (
+                              <p className="text-xs text-foreground/50 mt-1">
+                                {service.description}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <span>Base Price: ${service.base_price || "0"}</span>
+                            <span>{service.duration_minutes}min</span>
+                          </div>
+                          <Button
+                            size="sm"
+                            className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                            onClick={() => handleToggleBusinessService(service.id, true, service.base_price)}
+                            disabled={businessServicesSaving}
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add Service
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Available Add-ons Section */}
               {businessAddons.length > 0 && (
                 <div className="space-y-4">
