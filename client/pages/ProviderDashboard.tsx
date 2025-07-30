@@ -367,7 +367,9 @@ export default function ProviderDashboard() {
   const [allServiceAddons, setAllServiceAddons] = useState<any[]>([]);
   const [businessServicesData, setBusinessServicesData] = useState<any[]>([]);
   const [businessAddonsData, setBusinessAddonsData] = useState<any[]>([]);
-  const [serviceAddonEligibility, setServiceAddonEligibility] = useState<any[]>([]);
+  const [serviceAddonEligibility, setServiceAddonEligibility] = useState<any[]>(
+    [],
+  );
   const [businessServicesLoading, setBusinessServicesLoading] = useState(false);
   const [businessServicesError, setBusinessServicesError] = useState("");
   const [businessServicesSuccess, setBusinessServicesSuccess] = useState("");
@@ -2111,13 +2113,13 @@ export default function ProviderDashboard() {
 
       // Let's check the current service data structure first
       console.log("Current business services structure:", {
-        allServices: businessServices.map(s => ({
+        allServices: businessServices.map((s) => ({
           id: s.id,
           keys: Object.keys(s),
           delivery_type: s.delivery_type,
           custom_price: s.custom_price,
-          is_active: s.is_active
-        }))
+          is_active: s.is_active,
+        })),
       });
 
       // Validate that we have a valid service ID
@@ -2142,7 +2144,9 @@ export default function ProviderDashboard() {
       console.log("Service existence and structure check:", {
         status: checkResponse.status,
         result: checkResult,
-        serviceStructure: checkResult?.[0] ? Object.keys(checkResult[0]) : 'No service found',
+        serviceStructure: checkResult?.[0]
+          ? Object.keys(checkResult[0])
+          : "No service found",
       });
 
       if (!checkResponse.ok || !checkResult || checkResult.length === 0) {
@@ -2173,7 +2177,7 @@ export default function ProviderDashboard() {
           delivery_type: updateData.delivery_type,
           override_price: updateData.custom_price,
           is_active: updateData.is_active,
-        }
+        },
       ];
 
       let updateSuccess = false;
@@ -2201,14 +2205,17 @@ export default function ProviderDashboard() {
           );
 
           if (response.ok) {
-            console.log(`Success with attempt ${i + 1}! Correct schema:`, testData);
+            console.log(
+              `Success with attempt ${i + 1}! Correct schema:`,
+              testData,
+            );
             updateSuccess = true;
             break;
           } else {
             const errorText = await response.text();
             console.log(`Attempt ${i + 1} failed:`, {
               status: response.status,
-              error: errorText
+              error: errorText,
             });
             lastError = errorText;
           }
@@ -2220,7 +2227,9 @@ export default function ProviderDashboard() {
 
       // If all attempts failed, proceed with original error handling
       if (!updateSuccess) {
-        console.log("All schema variations failed. Using last response for error handling.");
+        console.log(
+          "All schema variations failed. Using last response for error handling.",
+        );
       }
 
       if (!updateSuccess && (!response || !response.ok)) {
@@ -2277,7 +2286,10 @@ export default function ProviderDashboard() {
           isEmpty: !errorText || errorText.trim() === "",
         };
 
-        console.error("Service update failed - Debug Info:", JSON.stringify(debugInfo, null, 2));
+        console.error(
+          "Service update failed - Debug Info:",
+          JSON.stringify(debugInfo, null, 2),
+        );
 
         // If error details are empty, provide more context
         if (!errorDetails || errorDetails.trim() === "") {
@@ -2374,7 +2386,7 @@ export default function ProviderDashboard() {
         errorType: typeof error,
         errorMessage: error?.message,
         errorString: String(error),
-        errorJSON: JSON.stringify(error, null, 2)
+        errorJSON: JSON.stringify(error, null, 2),
       });
 
       // Also log a simple string version to avoid [object Object]
@@ -2401,8 +2413,8 @@ export default function ProviderDashboard() {
             errorMessage = String(error.details);
           } else {
             // Last resort - extract any useful properties
-            const errorProps = Object.keys(error).filter(key =>
-              typeof error[key] === 'string' && error[key].length > 0
+            const errorProps = Object.keys(error).filter(
+              (key) => typeof error[key] === "string" && error[key].length > 0,
             );
             if (errorProps.length > 0) {
               errorMessage = `Failed to update service: ${error[errorProps[0]]}`;
@@ -2419,7 +2431,8 @@ export default function ProviderDashboard() {
 
       // Final safety check to ensure errorMessage is always a string
       if (typeof errorMessage !== "string") {
-        errorMessage = "Failed to update service: Error details could not be extracted";
+        errorMessage =
+          "Failed to update service: Error details could not be extracted";
       }
 
       console.log("Final error message to display:", errorMessage);
@@ -2927,7 +2940,7 @@ export default function ProviderDashboard() {
             Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       let availableAddonsData = [];
@@ -2944,7 +2957,7 @@ export default function ProviderDashboard() {
             Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       let providerAddonsData = [];
@@ -2972,7 +2985,9 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       // Check if provider already has this add-on
-      const existingAddon = providerAddons.find(pa => pa.addon_id === addonId);
+      const existingAddon = providerAddons.find(
+        (pa) => pa.addon_id === addonId,
+      );
 
       if (existingAddon) {
         // Update existing provider_addon
@@ -2987,7 +3002,7 @@ export default function ProviderDashboard() {
               Prefer: "return=minimal",
             },
             body: JSON.stringify({ is_active: isActive }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -2996,12 +3011,10 @@ export default function ProviderDashboard() {
         }
 
         // Update local state
-        setProviderAddons(prev =>
-          prev.map(pa =>
-            pa.id === existingAddon.id
-              ? { ...pa, is_active: isActive }
-              : pa
-          )
+        setProviderAddons((prev) =>
+          prev.map((pa) =>
+            pa.id === existingAddon.id ? { ...pa, is_active: isActive } : pa,
+          ),
         );
       } else if (isActive) {
         // Create new provider_addon
@@ -3020,7 +3033,7 @@ export default function ProviderDashboard() {
               addon_id: addonId,
               is_active: true,
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -3031,19 +3044,25 @@ export default function ProviderDashboard() {
         const newAddon = await response.json();
 
         // Add the service_addon details
-        const addonDetails = availableAddons.find(a => a.id === addonId);
+        const addonDetails = availableAddons.find((a) => a.id === addonId);
         const newAddonWithDetails = {
           ...newAddon[0],
-          service_addons: addonDetails
+          service_addons: addonDetails,
         };
 
-        setProviderAddons(prev => [...prev, newAddonWithDetails]);
+        setProviderAddons((prev) => [...prev, newAddonWithDetails]);
       }
 
-      setAddonsSuccess(isActive ? "Add-on enabled successfully!" : "Add-on disabled successfully!");
+      setAddonsSuccess(
+        isActive
+          ? "Add-on enabled successfully!"
+          : "Add-on disabled successfully!",
+      );
     } catch (error: any) {
       console.error("handleToggleAddon: Error:", error);
-      setAddonsError(`Failed to ${isActive ? 'enable' : 'disable'} add-on: ${error.message}`);
+      setAddonsError(
+        `Failed to ${isActive ? "enable" : "disable"} add-on: ${error.message}`,
+      );
     } finally {
       setAddonsSaving(false);
     }
@@ -3052,7 +3071,9 @@ export default function ProviderDashboard() {
   // Business Services & Add-ons Functions (Owner Only)
   const fetchBusinessServicesAndAddons = async () => {
     if (!provider?.business_id || !isOwner) {
-      console.log("fetchBusinessServicesAndAddons: No business_id available or not owner");
+      console.log(
+        "fetchBusinessServicesAndAddons: No business_id available or not owner",
+      );
       return;
     }
 
@@ -3062,7 +3083,10 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      console.log("Fetching business services and add-ons for business:", provider.business_id);
+      console.log(
+        "Fetching business services and add-ons for business:",
+        provider.business_id,
+      );
 
       // Fetch all available services that can be added
       const servicesResponse = await fetch(
@@ -3073,7 +3097,7 @@ export default function ProviderDashboard() {
             Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       // Fetch all available service add-ons
@@ -3085,7 +3109,7 @@ export default function ProviderDashboard() {
             Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       // Fetch business's current services with joined service details
@@ -3097,7 +3121,7 @@ export default function ProviderDashboard() {
             Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       // Fetch business's current add-ons with joined addon details
@@ -3109,7 +3133,7 @@ export default function ProviderDashboard() {
             Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       // Fetch service-addon eligibility mapping
@@ -3121,23 +3145,46 @@ export default function ProviderDashboard() {
             Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       // Process all responses
-      const servicesData = servicesResponse.ok ? await servicesResponse.json() : [];
+      const servicesData = servicesResponse.ok
+        ? await servicesResponse.json()
+        : [];
       const addonsData = addonsResponse.ok ? await addonsResponse.json() : [];
-      const businessServicesData = businessServicesResponse.ok ? await businessServicesResponse.json() : [];
-      const businessAddonsData = businessAddonsResponse.ok ? await businessAddonsResponse.json() : [];
-      const eligibilityData = eligibilityResponse.ok ? await eligibilityResponse.json() : [];
+      const businessServicesData = businessServicesResponse.ok
+        ? await businessServicesResponse.json()
+        : [];
+      const businessAddonsData = businessAddonsResponse.ok
+        ? await businessAddonsResponse.json()
+        : [];
+      const eligibilityData = eligibilityResponse.ok
+        ? await eligibilityResponse.json()
+        : [];
 
       // Log responses for debugging
       console.log("API Responses:", {
-        servicesResponse: { ok: servicesResponse.ok, status: servicesResponse.status },
-        addonsResponse: { ok: addonsResponse.ok, status: addonsResponse.status },
-        businessServicesResponse: { ok: businessServicesResponse.ok, status: businessServicesResponse.status },
-        businessAddonsResponse: { ok: businessAddonsResponse.ok, status: businessAddonsResponse.status },
-        eligibilityResponse: { ok: eligibilityResponse.ok, status: eligibilityResponse.status }
+        servicesResponse: {
+          ok: servicesResponse.ok,
+          status: servicesResponse.status,
+        },
+        addonsResponse: {
+          ok: addonsResponse.ok,
+          status: addonsResponse.status,
+        },
+        businessServicesResponse: {
+          ok: businessServicesResponse.ok,
+          status: businessServicesResponse.status,
+        },
+        businessAddonsResponse: {
+          ok: businessAddonsResponse.ok,
+          status: businessAddonsResponse.status,
+        },
+        eligibilityResponse: {
+          ok: eligibilityResponse.ok,
+          status: eligibilityResponse.status,
+        },
       });
 
       setAllServices(servicesData || []);
@@ -3153,21 +3200,27 @@ export default function ProviderDashboard() {
         addons: addonsData?.length || 0,
         businessServices: businessServicesData?.length || 0,
         businessAddons: businessAddonsData?.length || 0,
-        eligibility: eligibilityData?.length || 0
+        eligibility: eligibilityData?.length || 0,
       });
 
       setBusinessServicesSuccess("Services and add-ons loaded successfully!");
       setTimeout(() => setBusinessServicesSuccess(""), 3000);
-
     } catch (error: any) {
       console.error("fetchBusinessServicesAndAddons: Error:", error);
-      setBusinessServicesError(`Failed to load services and add-ons: ${error.message}`);
+      setBusinessServicesError(
+        `Failed to load services and add-ons: ${error.message}`,
+      );
     } finally {
       setBusinessServicesLoading(false);
     }
   };
 
-  const handleToggleBusinessService = async (serviceId: string, isActive: boolean, businessPrice?: number, deliveryType?: string) => {
+  const handleToggleBusinessService = async (
+    serviceId: string,
+    isActive: boolean,
+    businessPrice?: number,
+    deliveryType?: string,
+  ) => {
     if (!provider?.business_id || !isOwner) return;
 
     setBusinessServicesSaving(true);
@@ -3176,10 +3229,17 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      console.log("Toggle business service:", { serviceId, isActive, businessPrice, deliveryType });
+      console.log("Toggle business service:", {
+        serviceId,
+        isActive,
+        businessPrice,
+        deliveryType,
+      });
 
       // Check if business already has this service
-      const existingService = businessServicesData.find(bs => bs.service_id === serviceId);
+      const existingService = businessServicesData.find(
+        (bs) => bs.service_id === serviceId,
+      );
 
       if (existingService && !isActive) {
         // Remove service
@@ -3193,7 +3253,7 @@ export default function ProviderDashboard() {
               Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (!response.ok) {
@@ -3203,15 +3263,17 @@ export default function ProviderDashboard() {
         }
 
         // Update local state
-        setBusinessServicesData(prev => prev.filter(bs => bs.id !== existingService.id));
+        setBusinessServicesData((prev) =>
+          prev.filter((bs) => bs.id !== existingService.id),
+        );
 
         // Remove dependent add-ons
         await updateEligibleAddons();
-
       } else if (existingService && isActive) {
         // Update existing service
         const updateData: any = { is_active: isActive };
-        if (businessPrice !== undefined) updateData.business_price = businessPrice;
+        if (businessPrice !== undefined)
+          updateData.business_price = businessPrice;
         if (deliveryType) updateData.delivery_type = deliveryType;
 
         console.log("Updating service:", existingService.id, updateData);
@@ -3226,7 +3288,7 @@ export default function ProviderDashboard() {
               Prefer: "return=minimal",
             },
             body: JSON.stringify(updateData),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -3236,17 +3298,14 @@ export default function ProviderDashboard() {
         }
 
         // Update local state
-        setBusinessServicesData(prev =>
-          prev.map(bs =>
-            bs.id === existingService.id
-              ? { ...bs, ...updateData }
-              : bs
-          )
+        setBusinessServicesData((prev) =>
+          prev.map((bs) =>
+            bs.id === existingService.id ? { ...bs, ...updateData } : bs,
+          ),
         );
-
       } else if (isActive && businessPrice) {
         // Add new service
-        const service = allServices.find(s => s.id === serviceId);
+        const service = allServices.find((s) => s.id === serviceId);
         if (!service) throw new Error("Service not found");
 
         const newServiceData = {
@@ -3269,7 +3328,7 @@ export default function ProviderDashboard() {
               Prefer: "return=representation",
             },
             body: JSON.stringify(newServiceData),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -3281,22 +3340,32 @@ export default function ProviderDashboard() {
         const newService = await response.json();
         const newServiceWithDetails = {
           ...newService[0],
-          services: service
+          services: service,
         };
 
-        setBusinessServicesData(prev => [...prev, newServiceWithDetails]);
+        setBusinessServicesData((prev) => [...prev, newServiceWithDetails]);
       }
 
-      setBusinessServicesSuccess(isActive ? "Service added successfully!" : "Service removed successfully!");
+      setBusinessServicesSuccess(
+        isActive
+          ? "Service added successfully!"
+          : "Service removed successfully!",
+      );
     } catch (error: any) {
       console.error("handleToggleBusinessService: Error:", error);
-      setBusinessServicesError(`Failed to ${isActive ? 'add' : 'remove'} service: ${error.message}`);
+      setBusinessServicesError(
+        `Failed to ${isActive ? "add" : "remove"} service: ${error.message}`,
+      );
     } finally {
       setBusinessServicesSaving(false);
     }
   };
 
-  const handleToggleBusinessAddon = async (addonId: string, isActive: boolean, customPrice?: number) => {
+  const handleToggleBusinessAddon = async (
+    addonId: string,
+    isActive: boolean,
+    customPrice?: number,
+  ) => {
     if (!provider?.business_id || !isOwner) return;
 
     setBusinessServicesSaving(true);
@@ -3308,7 +3377,9 @@ export default function ProviderDashboard() {
       console.log("Toggle business addon:", { addonId, isActive, customPrice });
 
       // Check if business already has this add-on
-      const existingAddon = businessAddonsData.find(ba => ba.addon_id === addonId);
+      const existingAddon = businessAddonsData.find(
+        (ba) => ba.addon_id === addonId,
+      );
 
       if (existingAddon && !isActive) {
         // Remove add-on
@@ -3322,7 +3393,7 @@ export default function ProviderDashboard() {
               Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (!response.ok) {
@@ -3332,8 +3403,9 @@ export default function ProviderDashboard() {
         }
 
         // Update local state
-        setBusinessAddonsData(prev => prev.filter(ba => ba.id !== existingAddon.id));
-
+        setBusinessAddonsData((prev) =>
+          prev.filter((ba) => ba.id !== existingAddon.id),
+        );
       } else if (existingAddon && isActive) {
         // Update existing add-on
         const updateData: any = { is_available: isActive };
@@ -3351,7 +3423,7 @@ export default function ProviderDashboard() {
               Prefer: "return=minimal",
             },
             body: JSON.stringify(updateData),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -3361,17 +3433,14 @@ export default function ProviderDashboard() {
         }
 
         // Update local state
-        setBusinessAddonsData(prev =>
-          prev.map(ba =>
-            ba.id === existingAddon.id
-              ? { ...ba, ...updateData }
-              : ba
-          )
+        setBusinessAddonsData((prev) =>
+          prev.map((ba) =>
+            ba.id === existingAddon.id ? { ...ba, ...updateData } : ba,
+          ),
         );
-
       } else if (isActive) {
         // Add new add-on
-        const addon = allServiceAddons.find(a => a.id === addonId);
+        const addon = allServiceAddons.find((a) => a.id === addonId);
         if (!addon) throw new Error("Add-on not found");
 
         const newAddonData = {
@@ -3393,7 +3462,7 @@ export default function ProviderDashboard() {
               Prefer: "return=representation",
             },
             body: JSON.stringify(newAddonData),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -3405,16 +3474,22 @@ export default function ProviderDashboard() {
         const newAddon = await response.json();
         const newAddonWithDetails = {
           ...newAddon[0],
-          service_addons: addon
+          service_addons: addon,
         };
 
-        setBusinessAddonsData(prev => [...prev, newAddonWithDetails]);
+        setBusinessAddonsData((prev) => [...prev, newAddonWithDetails]);
       }
 
-      setBusinessServicesSuccess(isActive ? "Add-on added successfully!" : "Add-on removed successfully!");
+      setBusinessServicesSuccess(
+        isActive
+          ? "Add-on added successfully!"
+          : "Add-on removed successfully!",
+      );
     } catch (error: any) {
       console.error("handleToggleBusinessAddon: Error:", error);
-      setBusinessServicesError(`Failed to ${isActive ? 'add' : 'remove'} add-on: ${error.message}`);
+      setBusinessServicesError(
+        `Failed to ${isActive ? "add" : "remove"} add-on: ${error.message}`,
+      );
     } finally {
       setBusinessServicesSaving(false);
     }
@@ -3422,10 +3497,14 @@ export default function ProviderDashboard() {
 
   const updateEligibleAddons = async () => {
     // Remove any business add-ons that are no longer eligible
-    const assignedServiceIds = businessServicesData.map(bs => bs.service_id);
-    const ineligibleAddons = businessAddonsData.filter(ba => {
-      const eligibility = serviceAddonEligibility.find(e => e.addon_id === ba.addon_id);
-      return eligibility && !assignedServiceIds.includes(eligibility.service_id);
+    const assignedServiceIds = businessServicesData.map((bs) => bs.service_id);
+    const ineligibleAddons = businessAddonsData.filter((ba) => {
+      const eligibility = serviceAddonEligibility.find(
+        (e) => e.addon_id === ba.addon_id,
+      );
+      return (
+        eligibility && !assignedServiceIds.includes(eligibility.service_id)
+      );
     });
 
     for (const addon of ineligibleAddons) {
@@ -3435,15 +3514,19 @@ export default function ProviderDashboard() {
 
   const getEligibleAddonsForService = (serviceId: string) => {
     const eligibleAddonIds = serviceAddonEligibility
-      .filter(e => e.service_id === serviceId)
-      .map(e => e.addon_id);
+      .filter((e) => e.service_id === serviceId)
+      .map((e) => e.addon_id);
 
-    return allServiceAddons.filter(addon => eligibleAddonIds.includes(addon.id));
+    return allServiceAddons.filter((addon) =>
+      eligibleAddonIds.includes(addon.id),
+    );
   };
 
   const isAddonEligible = (addonId: string) => {
-    const assignedServiceIds = businessServicesData.map(bs => bs.service_id);
-    const eligibility = serviceAddonEligibility.find(e => e.addon_id === addonId);
+    const assignedServiceIds = businessServicesData.map((bs) => bs.service_id);
+    const eligibility = serviceAddonEligibility.find(
+      (e) => e.addon_id === addonId,
+    );
     return eligibility && assignedServiceIds.includes(eligibility.service_id);
   };
 
@@ -5163,316 +5246,365 @@ export default function ProviderDashboard() {
             {/* Services & Add-Ons Tab - Owner Only */}
             {isOwner && (
               <TabsContent value="services-addons" className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold">Business Services & Add-Ons</h2>
-                  <p className="text-foreground/60">
-                    Manage the services and add-ons your business offers to customers
-                  </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold">
+                      Business Services & Add-Ons
+                    </h2>
+                    <p className="text-foreground/60">
+                      Manage the services and add-ons your business offers to
+                      customers
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => fetchBusinessServicesAndAddons()}
+                    disabled={businessServicesLoading}
+                    variant="outline"
+                  >
+                    {businessServicesLoading ? "Loading..." : "Refresh"}
+                  </Button>
                 </div>
-                <Button
-                  onClick={() => fetchBusinessServicesAndAddons()}
-                  disabled={businessServicesLoading}
-                  variant="outline"
-                >
-                  {businessServicesLoading ? "Loading..." : "Refresh"}
-                </Button>
-              </div>
 
-              {businessServicesError && (
-                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                  {typeof businessServicesError === 'string' ? businessServicesError : 'An error occurred while loading services and add-ons'}
-                </div>
-              )}
+                {businessServicesError && (
+                  <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                    {typeof businessServicesError === "string"
+                      ? businessServicesError
+                      : "An error occurred while loading services and add-ons"}
+                  </div>
+                )}
 
-              {businessServicesSuccess && (
-                <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
-                  {businessServicesSuccess}
-                </div>
-              )}
+                {businessServicesSuccess && (
+                  <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                    {businessServicesSuccess}
+                  </div>
+                )}
 
-              {serviceSuccess && (
-                <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
-                  {serviceSuccess}
-                </div>
-              )}
+                {serviceSuccess && (
+                  <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                    {serviceSuccess}
+                  </div>
+                )}
 
-              {servicesLoading ? (
-                <div className="text-center py-8">
-                  <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p>Loading services...</p>
-                </div>
-              ) : businessServices.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {businessServices.map((businessService) => (
-                    <Card
-                      key={businessService.id}
-                      className="hover:shadow-md transition-shadow"
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h3 className="font-semibold">
-                              {businessService.services?.name}
-                            </h3>
-                            <p className="text-sm text-foreground/60">
-                              {businessService.services?.service_subcategories
-                                ?.service_categories?.description ||
-                                businessService.services?.service_subcategories
-                                  ?.service_categories
-                                  ?.service_category_type}{" "}
-                              ����{" "}
-                              {
-                                businessService.services?.service_subcategories
-                                  ?.service_subcategory_type
-                              }
-                            </p>
-                            {businessService.services?.description && (
-                              <p className="text-xs text-foreground/50 mt-1">
-                                {businessService.services.description}
+                {servicesLoading ? (
+                  <div className="text-center py-8">
+                    <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p>Loading services...</p>
+                  </div>
+                ) : businessServices.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {businessServices.map((businessService) => (
+                      <Card
+                        key={businessService.id}
+                        className="hover:shadow-md transition-shadow"
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div>
+                              <h3 className="font-semibold">
+                                {businessService.services?.name}
+                              </h3>
+                              <p className="text-sm text-foreground/60">
+                                {businessService.services?.service_subcategories
+                                  ?.service_categories?.description ||
+                                  businessService.services
+                                    ?.service_subcategories?.service_categories
+                                    ?.service_category_type}{" "}
+                                ����{" "}
+                                {
+                                  businessService.services
+                                    ?.service_subcategories
+                                    ?.service_subcategory_type
+                                }
                               </p>
-                            )}
-                          </div>
-                          <div className="flex flex-col items-end gap-1">
-                            <Switch
-                              checked={businessService.is_active !== false}
-                              className="data-[state=checked]:bg-roam-blue"
-                              disabled={
-                                isProvider &&
+                              {businessService.services?.description && (
+                                <p className="text-xs text-foreground/50 mt-1">
+                                  {businessService.services.description}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              <Switch
+                                checked={businessService.is_active !== false}
+                                className="data-[state=checked]:bg-roam-blue"
+                                disabled={
+                                  isProvider &&
+                                  !isOwner &&
+                                  !isDispatcher &&
+                                  provider?.business_managed
+                                }
+                                onCheckedChange={(checked) => {
+                                  // Toggle business service active status
+                                  handleToggleBusinessService(
+                                    businessService.service_id,
+                                    checked,
+                                    businessService.business_price,
+                                    businessService.delivery_type,
+                                  );
+                                }}
+                              />
+                              {isProvider &&
                                 !isOwner &&
                                 !isDispatcher &&
-                                provider?.business_managed
-                              }
+                                provider?.business_managed && (
+                                  <span className="text-xs text-foreground/50">
+                                    Read-only
+                                  </span>
+                                )}
+                            </div>
+                          </div>
+
+                          <div className="space-y-2 mb-4">
+                            <div className="flex justify-between text-sm">
+                              <span>Duration:</span>
+                              <span className="font-medium">
+                                {businessService.duration ||
+                                  (businessService.services?.duration_minutes
+                                    ? `${businessService.services.duration_minutes} mins`
+                                    : "N/A")}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span>Price:</span>
+                              <span className="font-medium text-roam-blue">
+                                $
+                                {businessService.custom_price ||
+                                  businessService.services?.min_price ||
+                                  "0"}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span>Delivery:</span>
+                              <span className="font-medium">
+                                {getDeliveryTypeLabel(
+                                  businessService.delivery_type ||
+                                    "business_location",
+                                )}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span>Bookings:</span>
+                              <span className="font-medium">
+                                {businessService.booking_count || 0} this month
+                              </span>
+                            </div>
+                          </div>
+
+                          {isOwner || isDispatcher ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                              onClick={() => handleEditService(businessService)}
+                            >
+                              <Edit className="w-4 h-4 mr-2" />
+                              Edit Service
+                            </Button>
+                          ) : (
+                            <div className="text-center py-2">
+                              <span className="text-xs text-foreground/60">
+                                {provider?.business_managed
+                                  ? "Service managed by business"
+                                  : "Toggle above to activate/deactivate"}
+                              </span>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-foreground/60">
+                    <Star className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg mb-2">No services added yet</p>
+                    <p className="text-sm">
+                      Add your first service to start accepting bookings
+                    </p>
+                  </div>
+                )}
+
+                {/* Current Business Add-ons Section */}
+                {businessAddons.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold">Current Add-ons</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {businessAddons.map((businessAddon) => (
+                        <Card key={businessAddon.id} className="p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h4 className="font-medium">
+                                {businessAddon.service_addons?.name}
+                              </h4>
+                              <p className="text-sm text-foreground/60">
+                                {businessAddon.service_addons?.addon_type}
+                              </p>
+                            </div>
+                            <Switch
+                              checked={businessAddon.is_available}
+                              className="data-[state=checked]:bg-roam-blue"
                               onCheckedChange={(checked) => {
-                                // Toggle business service active status
-                                handleToggleBusinessService(
-                                  businessService.service_id,
+                                handleToggleBusinessAddon(
+                                  businessAddon.addon_id,
                                   checked,
-                                  businessService.business_price,
-                                  businessService.delivery_type
+                                  businessAddon.custom_price,
                                 );
                               }}
                             />
-                            {isProvider &&
-                              !isOwner &&
-                              !isDispatcher &&
-                              provider?.business_managed && (
-                                <span className="text-xs text-foreground/50">
-                                  Read-only
-                                </span>
-                              )}
                           </div>
-                        </div>
-
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between text-sm">
-                            <span>Duration:</span>
-                            <span className="font-medium">
-                              {businessService.duration ||
-                                (businessService.services?.duration_minutes
-                                  ? `${businessService.services.duration_minutes} mins`
-                                  : "N/A")}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm">
+                          <p className="text-xs text-foreground/50 mb-2">
+                            {businessAddon.service_addons?.description}
+                          </p>
+                          <div className="flex justify-between items-center text-sm">
                             <span>Price:</span>
                             <span className="font-medium text-roam-blue">
                               $
-                              {businessService.custom_price ||
-                                businessService.services?.min_price ||
+                              {businessAddon.custom_price ||
+                                businessAddon.service_addons?.default_price ||
                                 "0"}
                             </span>
                           </div>
-                          <div className="flex justify-between text-sm">
-                            <span>Delivery:</span>
-                            <span className="font-medium">
-                              {getDeliveryTypeLabel(
-                                businessService.delivery_type ||
-                                  "business_location",
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span>Bookings:</span>
-                            <span className="font-medium">
-                              {businessService.booking_count || 0} this month
-                            </span>
-                          </div>
-                        </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                        {isOwner || isDispatcher ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                            onClick={() => handleEditService(businessService)}
+                {/* Available Services to Add Section */}
+                {allServices.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-semibold">
+                        Available Services
+                      </h3>
+                      <p className="text-sm text-foreground/60">
+                        Add services to your business offering
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {allServices
+                        .filter(
+                          (service) =>
+                            !businessServices.some(
+                              (bs) => bs.service_id === service.id,
+                            ),
+                        )
+                        .map((service) => (
+                          <Card
+                            key={service.id}
+                            className="p-4 border-dashed border-2 hover:border-roam-blue transition-colors"
                           >
-                            <Edit className="w-4 h-4 mr-2" />
-                            Edit Service
-                          </Button>
-                        ) : (
-                          <div className="text-center py-2">
-                            <span className="text-xs text-foreground/60">
-                              {provider?.business_managed
-                                ? "Service managed by business"
-                                : "Toggle above to activate/deactivate"}
-                            </span>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-foreground/60">
-                  <Star className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg mb-2">No services added yet</p>
-                  <p className="text-sm">
-                    Add your first service to start accepting bookings
-                  </p>
-                </div>
-              )}
-
-              {/* Current Business Add-ons Section */}
-              {businessAddons.length > 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Current Add-ons</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {businessAddons.map((businessAddon) => (
-                      <Card key={businessAddon.id} className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h4 className="font-medium">
-                              {businessAddon.service_addons?.name}
-                            </h4>
-                            <p className="text-sm text-foreground/60">
-                              {businessAddon.service_addons?.addon_type}
-                            </p>
-                          </div>
-                          <Switch
-                            checked={businessAddon.is_available}
-                            className="data-[state=checked]:bg-roam-blue"
-                            onCheckedChange={(checked) => {
-                              handleToggleBusinessAddon(
-                                businessAddon.addon_id,
-                                checked,
-                                businessAddon.custom_price
-                              );
-                            }}
-                          />
-                        </div>
-                        <p className="text-xs text-foreground/50 mb-2">
-                          {businessAddon.service_addons?.description}
-                        </p>
-                        <div className="flex justify-between items-center text-sm">
-                          <span>Price:</span>
-                          <span className="font-medium text-roam-blue">
-                            $
-                            {businessAddon.custom_price ||
-                              businessAddon.service_addons?.default_price ||
-                              "0"}
-                          </span>
-                        </div>
-                      </Card>
-                    ))}
+                            <div className="space-y-3">
+                              <div>
+                                <h4 className="font-medium">{service.name}</h4>
+                                <p className="text-sm text-foreground/60">
+                                  {service.service_subcategories
+                                    ?.service_categories?.description ||
+                                    service.service_subcategories
+                                      ?.service_categories
+                                      ?.service_category_type}{" "}
+                                  —{" "}
+                                  {
+                                    service.service_subcategories
+                                      ?.service_subcategory_type
+                                  }
+                                </p>
+                                {service.description && (
+                                  <p className="text-xs text-foreground/50 mt-1">
+                                    {service.description}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex justify-between items-center text-sm">
+                                <span>
+                                  Min Price: ${service.min_price || "0"}
+                                </span>
+                                <span>{service.duration_minutes}min</span>
+                              </div>
+                              <Button
+                                size="sm"
+                                className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                                onClick={() =>
+                                  handleToggleBusinessService(
+                                    service.id,
+                                    true,
+                                    service.min_price,
+                                  )
+                                }
+                                disabled={businessServicesSaving}
+                              >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Add Service
+                              </Button>
+                            </div>
+                          </Card>
+                        ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Available Services to Add Section */}
-              {allServices.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold">Available Services</h3>
-                    <p className="text-sm text-foreground/60">
-                      Add services to your business offering
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {allServices
-                      .filter(service => !businessServices.some(bs => bs.service_id === service.id))
-                      .map((service) => (
-                      <Card key={service.id} className="p-4 border-dashed border-2 hover:border-roam-blue transition-colors">
-                        <div className="space-y-3">
-                          <div>
-                            <h4 className="font-medium">{service.name}</h4>
-                            <p className="text-sm text-foreground/60">
-                              {service.service_subcategories?.service_categories?.description ||
-                               service.service_subcategories?.service_categories?.service_category_type}{" "}
-                              — {service.service_subcategories?.service_subcategory_type}
-                            </p>
-                            {service.description && (
-                              <p className="text-xs text-foreground/50 mt-1">
-                                {service.description}
-                              </p>
-                            )}
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span>Min Price: ${service.min_price || "0"}</span>
-                            <span>{service.duration_minutes}min</span>
-                          </div>
-                          <Button
-                            size="sm"
-                            className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                            onClick={() => handleToggleBusinessService(service.id, true, service.min_price)}
-                            disabled={businessServicesSaving}
+                {/* Available Add-ons to Add Section */}
+                {allServiceAddons.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-semibold">
+                        Available Add-ons
+                      </h3>
+                      <p className="text-sm text-foreground/60">
+                        Add add-ons to your business offering
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {allServiceAddons
+                        .filter(
+                          (addon) =>
+                            !businessAddons.some(
+                              (ba) => ba.addon_id === addon.id,
+                            ),
+                        )
+                        .map((addon) => (
+                          <Card
+                            key={addon.id}
+                            className="p-4 border-dashed border-2 hover:border-roam-blue transition-colors"
                           >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Service
-                          </Button>
-                        </div>
-                      </Card>
-                    ))}
+                            <div className="space-y-3">
+                              <div>
+                                <h4 className="font-medium">{addon.name}</h4>
+                                <p className="text-sm text-foreground/60">
+                                  {addon.addon_type}
+                                </p>
+                                {addon.description && (
+                                  <p className="text-xs text-foreground/50 mt-1">
+                                    {addon.description}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex justify-between items-center text-sm">
+                                <span>
+                                  Default Price: ${addon.default_price || "0"}
+                                </span>
+                                {addon.is_percentage && <span>% based</span>}
+                              </div>
+                              <Button
+                                size="sm"
+                                className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                                onClick={() =>
+                                  handleToggleBusinessAddon(
+                                    addon.id,
+                                    true,
+                                    addon.default_price,
+                                  )
+                                }
+                                disabled={businessServicesSaving}
+                              >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Add Add-on
+                              </Button>
+                            </div>
+                          </Card>
+                        ))}
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Available Add-ons to Add Section */}
-              {allServiceAddons.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold">Available Add-ons</h3>
-                    <p className="text-sm text-foreground/60">
-                      Add add-ons to your business offering
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {allServiceAddons
-                      .filter(addon => !businessAddons.some(ba => ba.addon_id === addon.id))
-                      .map((addon) => (
-                      <Card key={addon.id} className="p-4 border-dashed border-2 hover:border-roam-blue transition-colors">
-                        <div className="space-y-3">
-                          <div>
-                            <h4 className="font-medium">{addon.name}</h4>
-                            <p className="text-sm text-foreground/60">
-                              {addon.addon_type}
-                            </p>
-                            {addon.description && (
-                              <p className="text-xs text-foreground/50 mt-1">
-                                {addon.description}
-                              </p>
-                            )}
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span>Default Price: ${addon.default_price || "0"}</span>
-                            {addon.is_percentage && <span>% based</span>}
-                          </div>
-                          <Button
-                            size="sm"
-                            className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                            onClick={() => handleToggleBusinessAddon(addon.id, true, addon.default_price)}
-                            disabled={businessServicesSaving}
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Add-on
-                          </Button>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </TabsContent>
+                )}
+              </TabsContent>
             )}
 
             {/* Add-ons Tab */}
@@ -5495,7 +5627,9 @@ export default function ProviderDashboard() {
 
               {addonsError && (
                 <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                  {typeof addonsError === 'string' ? addonsError : 'An error occurred while loading add-ons'}
+                  {typeof addonsError === "string"
+                    ? addonsError
+                    : "An error occurred while loading add-ons"}
                 </div>
               )}
 
@@ -5527,16 +5661,21 @@ export default function ProviderDashboard() {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-medium mb-2">No Add-ons Available</h3>
+                    <h3 className="text-lg font-medium mb-2">
+                      No Add-ons Available
+                    </h3>
                     <p className="text-foreground/60">
-                      There are currently no service add-ons available to enable.
+                      There are currently no service add-ons available to
+                      enable.
                     </p>
                   </CardContent>
                 </Card>
               ) : (
                 <div className="grid gap-6">
                   {availableAddons.map((addon) => {
-                    const providerAddon = providerAddons.find(pa => pa.addon_id === addon.id);
+                    const providerAddon = providerAddons.find(
+                      (pa) => pa.addon_id === addon.id,
+                    );
                     const isActive = providerAddon?.is_active || false;
                     const isEnabled = !!providerAddon;
 
@@ -5546,18 +5685,29 @@ export default function ProviderDashboard() {
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <div className="flex items-center gap-3 mb-2">
-                                <h3 className="text-lg font-semibold">{addon.name}</h3>
+                                <h3 className="text-lg font-semibold">
+                                  {addon.name}
+                                </h3>
                                 <div className="flex gap-2">
                                   {isEnabled && (
                                     <Badge
-                                      variant={isActive ? "default" : "secondary"}
-                                      className={isActive ? "bg-green-500 hover:bg-green-600" : ""}
+                                      variant={
+                                        isActive ? "default" : "secondary"
+                                      }
+                                      className={
+                                        isActive
+                                          ? "bg-green-500 hover:bg-green-600"
+                                          : ""
+                                      }
                                     >
                                       {isActive ? "Active" : "Inactive"}
                                     </Badge>
                                   )}
                                   {addon.is_premium && (
-                                    <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                                    <Badge
+                                      variant="secondary"
+                                      className="bg-purple-100 text-purple-700"
+                                    >
                                       Premium
                                     </Badge>
                                   )}
@@ -5565,32 +5715,50 @@ export default function ProviderDashboard() {
                               </div>
 
                               {addon.description && (
-                                <p className="text-foreground/70 mb-3">{addon.description}</p>
+                                <p className="text-foreground/70 mb-3">
+                                  {addon.description}
+                                </p>
                               )}
 
                               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                 {addon.base_price && (
                                   <div>
-                                    <span className="text-foreground/60">Base Price:</span>
-                                    <p className="font-medium">${addon.base_price}</p>
+                                    <span className="text-foreground/60">
+                                      Base Price:
+                                    </span>
+                                    <p className="font-medium">
+                                      ${addon.base_price}
+                                    </p>
                                   </div>
                                 )}
                                 {addon.duration_minutes && (
                                   <div>
-                                    <span className="text-foreground/60">Duration:</span>
-                                    <p className="font-medium">{addon.duration_minutes} min</p>
+                                    <span className="text-foreground/60">
+                                      Duration:
+                                    </span>
+                                    <p className="font-medium">
+                                      {addon.duration_minutes} min
+                                    </p>
                                   </div>
                                 )}
                                 {addon.category && (
                                   <div>
-                                    <span className="text-foreground/60">Category:</span>
-                                    <p className="font-medium capitalize">{addon.category.replace('_', ' ')}</p>
+                                    <span className="text-foreground/60">
+                                      Category:
+                                    </span>
+                                    <p className="font-medium capitalize">
+                                      {addon.category.replace("_", " ")}
+                                    </p>
                                   </div>
                                 )}
                                 {addon.addon_type && (
                                   <div>
-                                    <span className="text-foreground/60">Type:</span>
-                                    <p className="font-medium capitalize">{addon.addon_type.replace('_', ' ')}</p>
+                                    <span className="text-foreground/60">
+                                      Type:
+                                    </span>
+                                    <p className="font-medium capitalize">
+                                      {addon.addon_type.replace("_", " ")}
+                                    </p>
                                   </div>
                                 )}
                               </div>
@@ -5599,7 +5767,9 @@ export default function ProviderDashboard() {
                             <div className="flex flex-col gap-2 ml-4">
                               <Switch
                                 checked={isActive}
-                                onCheckedChange={(checked) => handleToggleAddon(addon.id, checked)}
+                                onCheckedChange={(checked) =>
+                                  handleToggleAddon(addon.id, checked)
+                                }
                                 disabled={addonsSaving}
                                 className="data-[state=checked]:bg-roam-blue"
                               />
@@ -8513,7 +8683,9 @@ export default function ProviderDashboard() {
             <div className="p-6 space-y-6">
               {serviceError && (
                 <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                  {typeof serviceError === 'string' ? serviceError : 'An error occurred while updating the service'}
+                  {typeof serviceError === "string"
+                    ? serviceError
+                    : "An error occurred while updating the service"}
                 </div>
               )}
 
@@ -8656,7 +8828,9 @@ export default function ProviderDashboard() {
             <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-140px)]">
               {serviceError && (
                 <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                  {typeof serviceError === 'string' ? serviceError : 'An error occurred while processing the service'}
+                  {typeof serviceError === "string"
+                    ? serviceError
+                    : "An error occurred while processing the service"}
                 </div>
               )}
 
