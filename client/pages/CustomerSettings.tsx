@@ -15,7 +15,6 @@ import {
   ArrowLeft,
   Settings,
   Bell,
-  Shield,
   CreditCard,
   Mail,
   MessageSquare,
