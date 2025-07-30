@@ -3156,6 +3156,9 @@ export default function ProviderDashboard() {
         eligibility: eligibilityData?.length || 0
       });
 
+      setBusinessServicesSuccess("Services and add-ons loaded successfully!");
+      setTimeout(() => setBusinessServicesSuccess(""), 3000);
+
     } catch (error: any) {
       console.error("fetchBusinessServicesAndAddons: Error:", error);
       setBusinessServicesError(`Failed to load services and add-ons: ${error.message}`);
