@@ -3066,7 +3066,7 @@ export default function ProviderDashboard() {
 
       // Fetch all available services that can be added
       const servicesResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/services?select=*&is_active=eq.true&order=name`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/services?select=id,name,description,base_price,duration_minutes,is_active,service_subcategories(id,name,service_categories(id,service_category_type,description))&is_active=eq.true&order=name`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
