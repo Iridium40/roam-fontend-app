@@ -5241,10 +5241,12 @@ export default function ProviderDashboard() {
                                 provider?.business_managed
                               }
                               onCheckedChange={(checked) => {
-                                // Quick toggle service active status
-                                handleQuickToggleService(
-                                  businessService.id,
+                                // Toggle business service active status
+                                handleToggleBusinessService(
+                                  businessService.service_id,
                                   checked,
+                                  businessService.business_price,
+                                  businessService.delivery_type
                                 );
                               }}
                             />
