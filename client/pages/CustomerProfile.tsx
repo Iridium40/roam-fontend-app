@@ -83,6 +83,21 @@ export default function CustomerProfile() {
         profileData: profileData,
       });
 
+      // Add validation
+      if (!customer?.customer_id) {
+        throw new Error("No customer ID found. Please sign in again.");
+      }
+
+      console.log("CustomerProfile: Calling updateCustomerProfile with:", {
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        email: profileData.email,
+        phone: profileData.phone,
+        dateOfBirth: profileData.dateOfBirth,
+        bio: profileData.bio,
+        imageUrl: profileData.imageUrl,
+      });
+
       await updateCustomerProfile({
         firstName: profileData.firstName,
         lastName: profileData.lastName,
@@ -94,7 +109,7 @@ export default function CustomerProfile() {
       });
 
       setIsEditing(false);
-      console.log("Profile saved successfully");
+      console.log("CustomerProfile: Profile saved successfully");
       alert("Profile updated successfully!"); // Temporary user feedback
     } catch (error) {
       console.error("Failed to save profile:", error);
