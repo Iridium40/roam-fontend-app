@@ -359,9 +359,9 @@ export default function CustomerSettings() {
                       </p>
                     </div>
                     <Switch
-                      checked={settings.darkMode}
+                      checked={isDark}
                       onCheckedChange={(checked) =>
-                        updateSetting("darkMode", checked)
+                        setTheme(checked ? "dark" : "light")
                       }
                     />
                   </div>
