@@ -403,6 +403,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signIn,
     signInCustomer,
     signUpCustomer,
+    updateCustomerProfile,
     signOut,
     refreshUser,
     hasRole,
