@@ -378,6 +378,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log("AuthContext updateCustomerProfile: Database update successful");
       } catch (dbError) {
         console.error("AuthContext updateCustomerProfile: Database update failed:", dbError);
+
+        // Handle authentication errors specifically
+        if (dbError.message && (dbError.message.includes("Authentication failed") || dbError.message.includes("401"))) {
+          console.log("AuthContext updateCustomerProfile: Authentication error detected, clearing session");
+          // Clear the invalid session
+          await signOut();
+          throw new Error("Your session has expired. Please sign in again to save your changes.");
+        }
+
         // Re-throw the error so the UI can show it to the user
         throw new Error(`Database update failed: ${dbError.message || dbError}`);
       }
