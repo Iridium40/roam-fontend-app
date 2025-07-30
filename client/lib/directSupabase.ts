@@ -519,8 +519,14 @@ class DirectSupabaseAPI {
       customerId,
       updateData,
       url: `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
-      hasAccessToken: !!this.accessToken
+      hasAccessToken: !!this.accessToken,
+      tokenLength: this.accessToken ? this.accessToken.length : 0
     });
+
+    // Validate we have an access token
+    if (!this.accessToken) {
+      throw new Error("No access token available. Please sign in again.");
+    }
 
     // First try to update the customer_profiles table using user_id
     const response = await fetch(
@@ -529,7 +535,7 @@ class DirectSupabaseAPI {
         method: "PATCH",
         headers: {
           apikey: this.apiKey,
-          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          Authorization: `Bearer ${this.accessToken}`,
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
