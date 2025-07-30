@@ -24,6 +24,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 export const CustomerAvatarDropdown: React.FC = () => {
   const { customer, signOut } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
 
   if (!customer) return null;
 
