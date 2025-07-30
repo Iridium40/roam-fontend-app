@@ -211,7 +211,13 @@ export default function CustomerProfile() {
       await loadCustomerProfile();
 
       setIsEditing(false);
-      alert("Profile updated successfully!"); // Temporary user feedback
+
+      // Show success toast
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been successfully updated.",
+        variant: "default",
+      });
     } catch (error) {
       console.error("Failed to save profile:", error);
       const errorMessage = error.message || error;
