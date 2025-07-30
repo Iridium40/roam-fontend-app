@@ -255,6 +255,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         first_name: nameParts[0] || "Customer",
         last_name: nameParts[1] || "",
         phone: null,
+        image_url: null,
       };
 
       setCustomer(customerData);
