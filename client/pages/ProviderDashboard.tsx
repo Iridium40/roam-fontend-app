@@ -2747,6 +2747,11 @@ export default function ProviderDashboard() {
     setServiceSuccess("");
   };
 
+  const clearAddonsMessages = () => {
+    setAddonsError("");
+    setAddonsSuccess("");
+  };
+
   const fetchBusinessServices = async () => {
     if (!provider) {
       console.log("fetchBusinessServices: No provider available");
