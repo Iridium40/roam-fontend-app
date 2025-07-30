@@ -65,7 +65,10 @@ export const CustomerAvatarDropdown: React.FC = () => {
         <div className="flex items-center justify-start gap-2 p-2">
           <Avatar className="h-12 w-12">
             <AvatarImage
-              src={`https://api.dicebear.com/7.x/initials/svg?seed=${customer.first_name}${customer.last_name}`}
+              src={
+                customer.image_url ||
+                `https://api.dicebear.com/7.x/initials/svg?seed=${customer.first_name}${customer.last_name}`
+              }
               alt={`${customer.first_name} ${customer.last_name}`}
             />
             <AvatarFallback className="bg-roam-blue text-white">
