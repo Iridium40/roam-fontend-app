@@ -325,6 +325,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     phone: string;
     dateOfBirth?: string;
     bio?: string;
+    imageUrl?: string;
   }) => {
     if (!customer) {
       throw new Error("No customer logged in");
