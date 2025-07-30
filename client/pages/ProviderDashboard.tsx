@@ -4972,6 +4972,147 @@ export default function ProviderDashboard() {
               )}
             </TabsContent>
 
+            {/* Add-ons Tab */}
+            <TabsContent value="addons" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold">Service Add-ons</h2>
+                  <p className="text-foreground/60">
+                    Manage additional services and extras you offer to clients
+                  </p>
+                </div>
+                <Button
+                  onClick={() => fetchProviderAddons()}
+                  disabled={addonsLoading}
+                  variant="outline"
+                >
+                  {addonsLoading ? "Loading..." : "Refresh"}
+                </Button>
+              </div>
+
+              {addonsError && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                  {typeof addonsError === 'string' ? addonsError : 'An error occurred while loading add-ons'}
+                </div>
+              )}
+
+              {addonsSuccess && (
+                <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                  {addonsSuccess}
+                </div>
+              )}
+
+              {addonsLoading ? (
+                <div className="flex justify-center p-8">
+                  <div className="w-6 h-6 border-2 border-roam-blue border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : availableAddons.length === 0 ? (
+                <Card>
+                  <CardContent className="text-center py-8">
+                    <div className="text-foreground/60 mb-4">
+                      <svg
+                        className="w-12 h-12 mx-auto mb-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-medium mb-2">No Add-ons Available</h3>
+                    <p className="text-foreground/60">
+                      There are currently no service add-ons available to enable.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid gap-6">
+                  {availableAddons.map((addon) => {
+                    const providerAddon = providerAddons.find(pa => pa.addon_id === addon.id);
+                    const isActive = providerAddon?.is_active || false;
+                    const isEnabled = !!providerAddon;
+
+                    return (
+                      <Card key={addon.id}>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className="text-lg font-semibold">{addon.name}</h3>
+                                <div className="flex gap-2">
+                                  {isEnabled && (
+                                    <Badge
+                                      variant={isActive ? "default" : "secondary"}
+                                      className={isActive ? "bg-green-500 hover:bg-green-600" : ""}
+                                    >
+                                      {isActive ? "Active" : "Inactive"}
+                                    </Badge>
+                                  )}
+                                  {addon.is_premium && (
+                                    <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                                      Premium
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+
+                              {addon.description && (
+                                <p className="text-foreground/70 mb-3">{addon.description}</p>
+                              )}
+
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                {addon.base_price && (
+                                  <div>
+                                    <span className="text-foreground/60">Base Price:</span>
+                                    <p className="font-medium">${addon.base_price}</p>
+                                  </div>
+                                )}
+                                {addon.duration_minutes && (
+                                  <div>
+                                    <span className="text-foreground/60">Duration:</span>
+                                    <p className="font-medium">{addon.duration_minutes} min</p>
+                                  </div>
+                                )}
+                                {addon.category && (
+                                  <div>
+                                    <span className="text-foreground/60">Category:</span>
+                                    <p className="font-medium capitalize">{addon.category.replace('_', ' ')}</p>
+                                  </div>
+                                )}
+                                {addon.addon_type && (
+                                  <div>
+                                    <span className="text-foreground/60">Type:</span>
+                                    <p className="font-medium capitalize">{addon.addon_type.replace('_', ' ')}</p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2 ml-4">
+                              <Switch
+                                checked={isActive}
+                                onCheckedChange={(checked) => handleToggleAddon(addon.id, checked)}
+                                disabled={addonsSaving}
+                                className="data-[state=checked]:bg-roam-blue"
+                              />
+                              <span className="text-xs text-foreground/60 text-center">
+                                {isActive ? "Enabled" : "Disabled"}
+                              </span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
+            </TabsContent>
+
             {/* Business Tab */}
             {(isOwner || isDispatcher) && (
               <TabsContent value="business" className="space-y-6">
