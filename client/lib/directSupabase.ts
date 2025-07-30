@@ -466,6 +466,45 @@ class DirectSupabaseAPI {
     return customers[0];
   }
 
+  async uploadCustomerAvatar(
+    customerId: string,
+    file: File,
+  ): Promise<{ path: string; publicUrl: string }> {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${customerId}-${Date.now()}.${fileExt}`;
+    const filePath = `avatar-customer-user/${fileName}`;
+
+    const formData = new FormData();
+    formData.append("", file);
+
+    const response = await fetch(
+      `${this.baseURL}/storage/v1/object/roam-file-storage/${filePath}`,
+      {
+        method: "POST",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+        },
+        body: formData,
+      },
+    );
+
+    // Read response text once and handle both success and error cases
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Avatar upload failed: ${responseText}`);
+    }
+
+    // Get public URL
+    const publicUrl = `${this.baseURL}/storage/v1/object/public/roam-file-storage/${filePath}`;
+
+    return {
+      path: filePath,
+      publicUrl,
+    };
+  }
+
   async updateCustomerProfile(
     customerId: string,
     updateData: {
@@ -475,6 +514,7 @@ class DirectSupabaseAPI {
       phone?: string | null;
       date_of_birth?: string | null;
       bio?: string | null;
+      image_url?: string | null;
     }
   ): Promise<void> {
     const response = await fetch(
