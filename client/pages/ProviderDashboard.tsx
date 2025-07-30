@@ -2050,22 +2050,34 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      // Validate delivery_type
+      const validDeliveryTypes = ["business_location", "service_location", "both"];
+      if (!validDeliveryTypes.includes(serviceForm.delivery_type)) {
+        throw new Error("Invalid delivery type selected");
+      }
+
+      // Validate and process custom_price
+      let customPrice = null;
+      if (serviceForm.custom_price && serviceForm.custom_price.trim() !== "") {
+        const parsedPrice = parseFloat(serviceForm.custom_price);
+        if (isNaN(parsedPrice) || parsedPrice < 0) {
+          throw new Error("Please enter a valid price (0 or greater)");
+        }
+        customPrice = parsedPrice;
+      }
+
+      // Validate is_active
+      if (typeof serviceForm.is_active !== "boolean") {
+        throw new Error("Invalid active status");
+      }
+
       const updateData = {
         delivery_type: serviceForm.delivery_type,
-        custom_price: serviceForm.custom_price
-          ? parseFloat(serviceForm.custom_price)
-          : null,
+        custom_price: customPrice,
         is_active: serviceForm.is_active,
       };
 
-      // Validate price if provided
-      if (
-        serviceForm.custom_price &&
-        (isNaN(parseFloat(serviceForm.custom_price)) ||
-          parseFloat(serviceForm.custom_price) < 0)
-      ) {
-        throw new Error("Please enter a valid price (0 or greater)");
-      }
+      console.log("Service update data being sent:", updateData);
 
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
