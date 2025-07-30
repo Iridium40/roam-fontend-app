@@ -3049,10 +3049,10 @@ export default function ProviderDashboard() {
     }
   };
 
-  // Business Services & Add-ons Functions
+  // Business Services & Add-ons Functions (Owner Only)
   const fetchBusinessServicesAndAddons = async () => {
-    if (!provider?.business_id) {
-      console.log("fetchBusinessServicesAndAddons: No business_id available");
+    if (!provider?.business_id || !isOwner) {
+      console.log("fetchBusinessServicesAndAddons: No business_id available or not owner");
       return;
     }
 
@@ -3062,9 +3062,11 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      // Fetch all available services
+      console.log("Fetching business services and add-ons for business:", provider.business_id);
+
+      // Fetch all available services that can be added
       const servicesResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/services?select=*&order=name`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/services?select=*&is_active=eq.true&order=name`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
@@ -3076,7 +3078,7 @@ export default function ProviderDashboard() {
 
       // Fetch all available service add-ons
       const addonsResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/service_addons?select=*&order=name`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/service_addons?select=*&is_active=eq.true&order=name`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
@@ -3086,9 +3088,9 @@ export default function ProviderDashboard() {
         }
       );
 
-      // Fetch business's current services
+      // Fetch business's current services with joined service details
       const businessServicesResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?business_id=eq.${provider.business_id}&select=*,services(*)`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?business_id=eq.${provider.business_id}&select=id,business_id,service_id,business_price,is_active,delivery_type,created_at,services(id,name,description,category,base_price,duration_minutes)`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
@@ -3098,9 +3100,9 @@ export default function ProviderDashboard() {
         }
       );
 
-      // Fetch business's current add-ons
+      // Fetch business's current add-ons with joined addon details
       const businessAddonsResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?business_id=eq.${provider.business_id}&select=*,service_addons(*)`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?business_id=eq.${provider.business_id}&select=id,business_id,addon_id,custom_price,is_available,created_at,service_addons(id,name,description,image_url)`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
@@ -3110,7 +3112,7 @@ export default function ProviderDashboard() {
         }
       );
 
-      // Fetch service-addon eligibility
+      // Fetch service-addon eligibility mapping
       const eligibilityResponse = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/service_addon_eligibility?select=*`,
         {
@@ -3123,26 +3125,33 @@ export default function ProviderDashboard() {
       );
 
       // Process all responses
-      const [servicesData, addonsData, businessServicesData, businessAddonsData, eligibilityData] = await Promise.all([
-        servicesResponse.ok ? servicesResponse.json() : [],
-        addonsResponse.ok ? addonsResponse.json() : [],
-        businessServicesResponse.ok ? businessServicesResponse.json() : [],
-        businessAddonsResponse.ok ? businessAddonsResponse.json() : [],
-        eligibilityResponse.ok ? eligibilityResponse.json() : []
-      ]);
+      const servicesData = servicesResponse.ok ? await servicesResponse.json() : [];
+      const addonsData = addonsResponse.ok ? await addonsResponse.json() : [];
+      const businessServicesData = businessServicesResponse.ok ? await businessServicesResponse.json() : [];
+      const businessAddonsData = businessAddonsResponse.ok ? await businessAddonsResponse.json() : [];
+      const eligibilityData = eligibilityResponse.ok ? await eligibilityResponse.json() : [];
 
-      setAllServices(servicesData);
-      setAllServiceAddons(addonsData);
-      setBusinessServicesData(businessServicesData);
-      setBusinessAddonsData(businessAddonsData);
-      setServiceAddonEligibility(eligibilityData);
+      // Log responses for debugging
+      console.log("API Responses:", {
+        servicesResponse: { ok: servicesResponse.ok, status: servicesResponse.status },
+        addonsResponse: { ok: addonsResponse.ok, status: addonsResponse.status },
+        businessServicesResponse: { ok: businessServicesResponse.ok, status: businessServicesResponse.status },
+        businessAddonsResponse: { ok: businessAddonsResponse.ok, status: businessAddonsResponse.status },
+        eligibilityResponse: { ok: eligibilityResponse.ok, status: eligibilityResponse.status }
+      });
+
+      setAllServices(servicesData || []);
+      setAllServiceAddons(addonsData || []);
+      setBusinessServicesData(businessServicesData || []);
+      setBusinessAddonsData(businessAddonsData || []);
+      setServiceAddonEligibility(eligibilityData || []);
 
       console.log("Business services and add-ons loaded:", {
-        services: servicesData.length,
-        addons: addonsData.length,
-        businessServices: businessServicesData.length,
-        businessAddons: businessAddonsData.length,
-        eligibility: eligibilityData.length
+        services: servicesData?.length || 0,
+        addons: addonsData?.length || 0,
+        businessServices: businessServicesData?.length || 0,
+        businessAddons: businessAddonsData?.length || 0,
+        eligibility: eligibilityData?.length || 0
       });
 
     } catch (error: any) {
