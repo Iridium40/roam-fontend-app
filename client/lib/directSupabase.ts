@@ -593,16 +593,13 @@ class DirectSupabaseAPI {
       hasAccessToken: !!this.accessToken
     });
 
-    // Validate we have an access token
-    if (!this.accessToken) {
-      throw new Error("No access token available. Please sign in again.");
-    }
-
+    // Try with anon key for customer_profiles table
+    console.log("DirectSupabase createCustomerProfileRecord: Using anon key...");
     const response = await fetch(`${this.baseURL}/rest/v1/customer_profiles`, {
       method: "POST",
       headers: {
         apikey: this.apiKey,
-        Authorization: `Bearer ${this.accessToken}`,
+        Authorization: `Bearer ${this.apiKey}`,
         "Content-Type": "application/json",
         Prefer: "return=minimal",
       },
