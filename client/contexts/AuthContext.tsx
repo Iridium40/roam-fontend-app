@@ -346,6 +346,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         last_name: profileData.lastName,
         email: profileData.email,
         phone: profileData.phone || null,
+        image_url: profileData.imageUrl || customer.image_url,
       };
 
       setCustomer(updatedCustomer);
