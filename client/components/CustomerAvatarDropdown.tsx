@@ -16,6 +16,8 @@ import {
   Calendar,
   LogOut,
   ChevronDown,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
