@@ -2188,7 +2188,7 @@ export default function ProviderDashboard() {
           isEmpty: !errorText || errorText.trim() === "",
         };
 
-        console.error("Service update failed:", debugInfo);
+        console.error("Service update failed - Debug Info:", JSON.stringify(debugInfo, null, 2));
 
         // If error details are empty, provide more context
         if (!errorDetails || errorDetails.trim() === "") {
