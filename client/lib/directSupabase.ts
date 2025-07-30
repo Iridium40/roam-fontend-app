@@ -554,12 +554,14 @@ class DirectSupabaseAPI {
 
     if (!response.ok) {
       // If update fails, try to create the record
-      if (response.status === 404 || responseText.includes("0 rows")) {
-        console.log("Customer profile not found, creating new record...");
+      if (response.status === 404 || responseText.includes("0 rows") || responseText.includes('relation "customer_profiles" does not exist')) {
+        console.log("Customer profile table or record not found, creating new record...");
         await this.createCustomerProfileRecord(customerId, updateData);
       } else {
-        throw new Error(`Customer profile update failed: ${responseText}`);
+        throw new Error(`Customer profile update failed: HTTP ${response.status} - ${responseText}`);
       }
+    } else {
+      console.log("DirectSupabase updateCustomerProfile: Update successful");
     }
   }
 
