@@ -518,7 +518,7 @@ class DirectSupabaseAPI {
     console.log("DirectSupabase updateCustomerProfile: Starting update", {
       customerId,
       updateData,
-      url: `${this.baseURL}/rest/v1/customer_profiles?id=eq.${customerId}`,
+      url: `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
       hasAccessToken: !!this.accessToken
     });
 
