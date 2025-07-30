@@ -24,7 +24,9 @@ interface AuthContextType {
     phone: string;
     dateOfBirth?: string;
     bio?: string;
+    imageUrl?: string;
   }) => Promise<void>;
+  uploadCustomerAvatar: (file: File) => Promise<string>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
   hasRole: (roles: ProviderRole[]) => boolean;
