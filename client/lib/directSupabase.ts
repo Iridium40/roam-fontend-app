@@ -592,14 +592,20 @@ class DirectSupabaseAPI {
   ): Promise<void> {
     console.log("DirectSupabase createCustomerProfileRecord: Starting creation", {
       customerId,
-      profileData
+      profileData,
+      hasAccessToken: !!this.accessToken
     });
+
+    // Validate we have an access token
+    if (!this.accessToken) {
+      throw new Error("No access token available. Please sign in again.");
+    }
 
     const response = await fetch(`${this.baseURL}/rest/v1/customer_profiles`, {
       method: "POST",
       headers: {
         apikey: this.apiKey,
-        Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+        Authorization: `Bearer ${this.accessToken}`,
         "Content-Type": "application/json",
         Prefer: "return=minimal",
       },
