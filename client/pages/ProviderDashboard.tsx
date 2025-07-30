@@ -3066,7 +3066,7 @@ export default function ProviderDashboard() {
 
       // Fetch all available services that can be added
       const servicesResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/services?select=id,name,description,base_price,duration_minutes,is_active,service_subcategories(id,name,service_categories(id,service_category_type,description))&is_active=eq.true&order=name`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/services?select=id,name,description,min_price,duration_minutes,is_active,service_subcategories(id,service_subcategory_type,service_categories(id,service_category_type,description))&is_active=eq.true&order=name`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
@@ -3090,7 +3090,7 @@ export default function ProviderDashboard() {
 
       // Fetch business's current services with joined service details
       const businessServicesResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?business_id=eq.${provider.business_id}&select=id,business_id,service_id,business_price,is_active,delivery_type,created_at,services(id,name,description,base_price,duration_minutes,service_subcategories(id,name,service_categories(id,service_category_type,description)))`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?business_id=eq.${provider.business_id}&select=id,business_id,service_id,business_price,is_active,delivery_type,created_at,services(id,name,description,min_price,duration_minutes,service_subcategories(id,service_subcategory_type,service_categories(id,service_category_type,description)))`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
