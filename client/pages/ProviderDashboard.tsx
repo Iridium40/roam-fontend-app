@@ -4214,7 +4214,7 @@ export default function ProviderDashboard() {
           {/* Main Content Tabs */}
           <Tabs
             value={activeTab}
-            onValueChange={setActiveTab}
+            onValueChange={handleTabChange}
             className="space-y-6"
           >
             <TabsList
