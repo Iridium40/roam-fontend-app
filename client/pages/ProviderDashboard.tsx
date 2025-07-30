@@ -2155,23 +2155,37 @@ export default function ProviderDashboard() {
           errorDetails = errorText;
         }
 
-        const debugInfo = {
-        status: response.status,
-        statusText: response.statusText,
-        responseText: errorText,
-        errorDetails: errorDetails,
-        updateData: updateData,
-        serviceId: editingService.id,
-        url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
-        headers: {
-          apikey: "***",
-          Authorization: directSupabaseAPI.currentAccessToken ? "Bearer [USER_TOKEN]" : "Bearer [ANON_KEY]",
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        }
-      };
+        // Capture response headers for debugging
+        const responseHeaders = {};
+        response.headers.forEach((value, key) => {
+          responseHeaders[key] = value;
+        });
 
-      console.error("Service update failed:", debugInfo);
+        const debugInfo = {
+          status: response.status,
+          statusText: response.statusText,
+          responseText: errorText,
+          responseHeaders: responseHeaders,
+          errorDetails: errorDetails,
+          updateData: updateData,
+          serviceId: editingService.id,
+          url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
+          headers: {
+            apikey: "***",
+            Authorization: directSupabaseAPI.currentAccessToken ? "Bearer [USER_TOKEN]" : "Bearer [ANON_KEY]",
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          errorTextLength: errorText?.length || 0,
+          isEmpty: !errorText || errorText.trim() === ""
+        };
+
+        console.error("Service update failed:", debugInfo);
+
+        // If error details are empty, provide more context
+        if (!errorDetails || errorDetails.trim() === "") {
+          errorDetails = `HTTP ${response.status} - No error details provided by server`;
+        }
 
       // Provide specific error message based on status code
       let userFriendlyError = errorDetails || errorText;
