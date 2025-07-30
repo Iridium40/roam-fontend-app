@@ -2337,7 +2337,8 @@ export default function ProviderDashboard() {
         throw new Error(userFriendlyError);
       }
 
-      // Update local state
+      // If we reach here, the update was successful (either immediately or after trying variations)
+      // Update local state - use the original updateData since that's what we want to reflect in the UI
       setBusinessServices((prev) =>
         prev.map((service) =>
           service.id === editingService.id
