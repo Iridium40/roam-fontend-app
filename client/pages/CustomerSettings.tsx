@@ -279,12 +279,6 @@ export default function CustomerSettings() {
                             SMS
                           </div>
                         </SelectItem>
-                        <SelectItem value="push">
-                          <div className="flex items-center gap-2">
-                            <Bell className="w-4 h-4" />
-                            Push Notifications
-                          </div>
-                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
