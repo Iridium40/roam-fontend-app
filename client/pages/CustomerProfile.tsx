@@ -121,18 +121,10 @@ export default function CustomerProfile() {
     }
   };
 
-  // Update profile data when customer data changes
+  // Load full profile data when customer data changes
   useEffect(() => {
-    if (customer) {
-      setProfileData({
-        firstName: customer.first_name,
-        lastName: customer.last_name,
-        email: customer.email,
-        phone: customer.phone || "",
-        dateOfBirth: "",
-        bio: "",
-        imageUrl: customer.image_url || "",
-      });
+    if (customer?.customer_id) {
+      loadCustomerProfile();
     } else {
       // Check if we have a stored token but no customer data
       const storedToken = localStorage.getItem("roam_access_token");
