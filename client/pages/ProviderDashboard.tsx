@@ -3496,6 +3496,19 @@ export default function ProviderDashboard() {
     }
   }, [provider, activeTab]);
 
+  // Fetch provider add-ons when provider is available and add-ons tab is active
+  useEffect(() => {
+    if (
+      provider &&
+      activeTab === "addons" &&
+      availableAddons.length === 0 &&
+      !addonsLoading
+    ) {
+      console.log("Auto-fetching provider add-ons for active tab");
+      fetchProviderAddons();
+    }
+  }, [provider, activeTab]);
+
   const fetchDashboardData = async () => {
     if (!user) return;
 
