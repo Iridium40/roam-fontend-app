@@ -2279,22 +2279,57 @@ export default function ProviderDashboard() {
       setServiceSuccess("Service updated successfully!");
       setEditingService(null);
     } catch (error: any) {
-      console.error("Service save error:", error);
+      console.error("Service save error details:", {
+        error: error,
+        errorType: typeof error,
+        errorMessage: error?.message,
+        errorString: String(error),
+        errorJSON: JSON.stringify(error, null, 2)
+      });
+
       let errorMessage = "Failed to update service";
 
+      // Comprehensive error message extraction
       if (error?.message && typeof error.message === "string") {
         errorMessage = error.message;
       } else if (typeof error === "string") {
         errorMessage = error;
       } else if (error && typeof error === "object") {
-        // Handle object errors by extracting useful information
-        if (error.toString && error.toString() !== "[object Object]") {
-          errorMessage = error.toString();
+        // Try multiple ways to extract meaningful error information
+        if (error.toString && typeof error.toString === "function") {
+          const stringified = error.toString();
+          if (stringified !== "[object Object]") {
+            errorMessage = stringified;
+          } else if (error.message) {
+            errorMessage = String(error.message);
+          } else if (error.error) {
+            errorMessage = String(error.error);
+          } else if (error.details) {
+            errorMessage = String(error.details);
+          } else {
+            // Last resort - extract any useful properties
+            const errorProps = Object.keys(error).filter(key =>
+              typeof error[key] === 'string' && error[key].length > 0
+            );
+            if (errorProps.length > 0) {
+              errorMessage = `Failed to update service: ${error[errorProps[0]]}`;
+            } else {
+              errorMessage = "Failed to update service: Unknown error occurred";
+            }
+          }
         } else {
-          errorMessage = `Failed to update service: ${JSON.stringify(error)}`;
+          errorMessage = "Failed to update service: Invalid error object";
         }
+      } else {
+        errorMessage = `Failed to update service: ${String(error)}`;
       }
 
+      // Final safety check to ensure errorMessage is always a string
+      if (typeof errorMessage !== "string") {
+        errorMessage = "Failed to update service: Error details could not be extracted";
+      }
+
+      console.log("Final error message to display:", errorMessage);
       setServiceError(errorMessage);
     } finally {
       setServiceSaving(false);
