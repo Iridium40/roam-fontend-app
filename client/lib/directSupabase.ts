@@ -465,6 +465,44 @@ class DirectSupabaseAPI {
 
     return customers[0];
   }
+
+  async updateCustomerProfile(
+    customerId: string,
+    updateData: {
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      phone?: string | null;
+      date_of_birth?: string | null;
+      bio?: string | null;
+    }
+  ): Promise<void> {
+    const response = await fetch(
+      `${this.baseURL}/rest/v1/customers?id=eq.${customerId}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify(updateData),
+      },
+    );
+
+    let responseText = "";
+    try {
+      responseText = await response.text();
+    } catch (readError) {
+      console.warn("Could not read response text:", readError);
+      responseText = `HTTP ${response.status} - ${response.statusText}`;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Customer profile update failed: ${responseText}`);
+    }
+  }
 }
 
 export const directSupabaseAPI = new DirectSupabaseAPI();
