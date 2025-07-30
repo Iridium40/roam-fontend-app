@@ -527,7 +527,41 @@ class DirectSupabaseAPI {
     });
 
     // Try with anon key first (for tables without RLS or with public policies)
-    // First, check if a record exists for this user
+    // First, test if we can access the customer_profiles table at all
+    console.log(
+      "DirectSupabase updateCustomerProfile: Testing table access...",
+    );
+    const testResponse = await fetch(
+      `${this.baseURL}/rest/v1/customer_profiles?limit=1`,
+      {
+        method: "GET",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const testText = await testResponse.text();
+    console.log("DirectSupabase updateCustomerProfile: Table access test", {
+      status: testResponse.status,
+      responseText: testText,
+      ok: testResponse.ok,
+    });
+
+    if (!testResponse.ok) {
+      // If we can't access the table at all, there's a fundamental issue
+      if (testText.includes('relation "customer_profiles" does not exist')) {
+        throw new Error("The customer_profiles table does not exist in the database. Please contact support.");
+      } else if (testText.includes("permission denied")) {
+        throw new Error("Access denied to customer_profiles table. Please contact support.");
+      } else {
+        console.warn("Table access test failed, but continuing with record check...");
+      }
+    }
+
+    // Now check if a record exists for this user
     console.log(
       "DirectSupabase updateCustomerProfile: Checking if record exists...",
     );
