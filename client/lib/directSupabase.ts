@@ -522,9 +522,9 @@ class DirectSupabaseAPI {
       hasAccessToken: !!this.accessToken
     });
 
-    // First try to update the customer_profiles table
+    // First try to update the customer_profiles table using user_id
     const response = await fetch(
-      `${this.baseURL}/rest/v1/customer_profiles?id=eq.${customerId}`,
+      `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
       {
         method: "PATCH",
         headers: {
