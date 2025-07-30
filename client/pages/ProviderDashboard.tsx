@@ -10267,6 +10267,133 @@ export default function ProviderDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Business Service Modal */}
+      <Dialog open={editServiceModal} onOpenChange={setEditServiceModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Business Service</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium">{editingBusinessService?.services?.name}</h4>
+              <p className="text-sm text-foreground/60">
+                Minimum price: ${editingBusinessService?.services?.min_price || "0"}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="business_price">Business Price ($)</Label>
+              <Input
+                id="business_price"
+                type="number"
+                step="0.01"
+                min={editingBusinessService?.services?.min_price || "0"}
+                value={editServiceForm.business_price}
+                onChange={(e) => setEditServiceForm(prev => ({
+                  ...prev,
+                  business_price: e.target.value
+                }))}
+                placeholder="Enter business price"
+              />
+              <p className="text-xs text-foreground/60">
+                Must be at least ${editingBusinessService?.services?.min_price || "0"} (service minimum)
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="delivery_type">Delivery Type</Label>
+              <Select
+                value={editServiceForm.delivery_type}
+                onValueChange={(value) => setEditServiceForm(prev => ({
+                  ...prev,
+                  delivery_type: value
+                }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="business_location">Business Location</SelectItem>
+                  <SelectItem value="customer_location">Customer Location</SelectItem>
+                  <SelectItem value="both">Both</SelectItem>
+                  <SelectItem value="virtual">Virtual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setEditServiceModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveBusinessService}
+                disabled={businessServicesSaving}
+                className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+              >
+                {businessServicesSaving ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Business Add-on Modal */}
+      <Dialog open={editAddonModal} onOpenChange={setEditAddonModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Business Add-on</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium">{editingBusinessAddon?.service_addons?.name}</h4>
+              <p className="text-sm text-foreground/60">
+                Default price: ${editingBusinessAddon?.service_addons?.default_price || "0"}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="custom_price">Custom Price ($)</Label>
+              <Input
+                id="custom_price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={editAddonForm.custom_price}
+                onChange={(e) => setEditAddonForm(prev => ({
+                  ...prev,
+                  custom_price: e.target.value
+                }))}
+                placeholder="Enter custom price"
+              />
+              <p className="text-xs text-foreground/60">
+                Leave empty to use default price (${editingBusinessAddon?.service_addons?.default_price || "0"})
+              </p>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setEditAddonModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveBusinessAddon}
+                disabled={businessServicesSaving}
+                className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+              >
+                {businessServicesSaving ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
