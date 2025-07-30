@@ -89,7 +89,15 @@ export default function CustomerProfile() {
       alert("Profile updated successfully!"); // Temporary user feedback
     } catch (error) {
       console.error("Failed to save profile:", error);
-      alert(`Failed to save profile: ${error.message || error}`); // Show error to user
+      const errorMessage = error.message || error;
+
+      // Show a more user-friendly error message
+      if (errorMessage.includes("session has expired") || errorMessage.includes("sign in again")) {
+        alert("Your session has expired. Please sign in again to save your changes.");
+        // Optionally redirect to login or show login modal
+      } else {
+        alert(`Failed to save profile: ${errorMessage}`);
+      }
     } finally {
       setSaving(false);
     }
