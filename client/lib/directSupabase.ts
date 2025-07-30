@@ -682,6 +682,9 @@ class DirectSupabaseAPI {
       responseText,
       ok: response.ok,
       operation: recordExists ? "UPDATE" : "CREATE",
+      authMethod: authMethod,
+      customerId: customerId,
+      updateData: updateData,
     });
 
     if (!response.ok) {
