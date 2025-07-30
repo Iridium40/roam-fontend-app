@@ -638,6 +638,12 @@ class DirectSupabaseAPI {
     });
 
     if (!response.ok) {
+      // Handle authentication errors specifically
+      if (response.status === 401) {
+        console.error("DirectSupabase createCustomerProfileRecord: Authentication failed");
+        this.accessToken = null; // Clear invalid token
+        throw new Error("Authentication failed. Please sign in again.");
+      }
       throw new Error(`Customer profile creation failed: HTTP ${response.status} - ${responseText}`);
     } else {
       console.log("DirectSupabase createCustomerProfileRecord: Creation successful");
