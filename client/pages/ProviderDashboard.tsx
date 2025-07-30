@@ -5462,6 +5462,15 @@ export default function ProviderDashboard() {
                                 "0"}
                             </span>
                           </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full mt-2 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                            onClick={() => handleEditAddon(businessAddon)}
+                          >
+                            <Edit className="w-4 h-4 mr-2" />
+                            Edit Add-on
+                          </Button>
                         </Card>
                       ))}
                     </div>
