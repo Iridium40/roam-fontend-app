@@ -2367,7 +2367,10 @@ export default function ProviderDashboard() {
 
       setAvailableServices(available);
     } catch (error: any) {
-      console.error("Error fetching available services:", JSON.stringify(error));
+      console.error(
+        "Error fetching available services:",
+        JSON.stringify(error),
+      );
       setServiceError(`Failed to load available services: ${error.message}`);
     } finally {
       setAvailableServicesLoading(false);
@@ -2593,7 +2596,10 @@ export default function ProviderDashboard() {
       setBusinessServices(servicesWithBookings);
       setBusinessAddons(addonsData || []);
     } catch (error: any) {
-      console.error("fetchBusinessServices: Caught error:", JSON.stringify(error));
+      console.error(
+        "fetchBusinessServices: Caught error:",
+        JSON.stringify(error),
+      );
       setServicesError(`Failed to load services: ${error.message}`);
       // Set empty arrays so we show the empty state instead of loading forever
       setBusinessServices([]);
@@ -2665,7 +2671,10 @@ export default function ProviderDashboard() {
       }
 
       if (updateData.service_subcategories) {
-        console.log("Validating subcategories:", updateData.service_subcategories);
+        console.log(
+          "Validating subcategories:",
+          updateData.service_subcategories,
+        );
         console.log("Valid subcategories:", validSubcategories);
         const invalidSubcategories = updateData.service_subcategories.filter(
           (sub) => !validSubcategories.includes(sub),
@@ -4594,8 +4603,6 @@ export default function ProviderDashboard() {
                             />
                           </div>
 
-
-
                           <div className="space-y-2">
                             <Label htmlFor="verification_status">
                               Verification Status
@@ -6102,486 +6109,699 @@ export default function ProviderDashboard() {
 
             {/* Analytics Tab */}
             {isOwner && (
-            <TabsContent value="analytics" className="space-y-6">
-              <h2 className="text-2xl font-bold">Business Analytics</h2>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-roam-blue" />
-                      Revenue Trend
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-48 bg-gradient-to-r from-roam-light-blue/20 to-roam-blue/20 rounded-lg flex items-center justify-center">
-                      <p className="text-foreground/60">
-                        Chart visualization would go here
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5 text-roam-blue" />
-                      Service Performance
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Deep Tissue Massage</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 h-2 bg-gray-200 rounded-full">
-                            <div className="w-3/4 h-2 bg-roam-blue rounded-full"></div>
-                          </div>
-                          <span className="text-sm text-roam-blue">75%</span>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Swedish Massage</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 h-2 bg-gray-200 rounded-full">
-                            <div className="w-1/2 h-2 bg-roam-light-blue rounded-full"></div>
-                          </div>
-                          <span className="text-sm text-roam-blue">50%</span>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Sports Recovery</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 h-2 bg-gray-200 rounded-full">
-                            <div className="w-1/4 h-2 bg-roam-yellow rounded-full"></div>
-                          </div>
-                          <span className="text-sm text-roam-blue">25%</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-            )}
-
-            {/* Financial Tab */}
-            {isOwner && (
-            <TabsContent value="financial" className="space-y-6">
-              <h2 className="text-2xl font-bold">Financial Management</h2>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {/* Earnings Overview */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-roam-blue" />
-                      Earnings Overview
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">
-                          This Month
-                        </span>
-                        <span className="text-xl font-semibold text-roam-blue">
-                          $3,250
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">
-                          Last Month
-                        </span>
-                        <span className="text-lg font-medium">$2,890</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">
-                          Total Earned
-                        </span>
-                        <span className="text-lg font-medium">$47,325</span>
-                      </div>
-                      <div className="pt-2 border-t">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-green-600">Growth</span>
-                          <span className="text-sm text-green-600 font-medium">
-                            +12.4%
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Pending Payments */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-roam-yellow" />
-                      Pending Payments
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">
-                          Outstanding
-                        </span>
-                        <span className="text-xl font-semibold text-roam-yellow">
-                          $485
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">
-                          Next Payout
-                        </span>
-                        <span className="text-sm font-medium">Tomorrow</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-foreground/60">
-                          Completed Services
-                        </span>
-                        <span className="text-sm font-medium">3 bookings</span>
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="w-full border-roam-yellow text-roam-yellow hover:bg-roam-yellow hover:text-white"
-                      >
-                        View Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Payout Info */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Building className="w-5 h-5 text-roam-blue" />
-                      Payout Info
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-blue-600">
-                              S
-                            </span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">
-                              Stripe Connect
-                            </p>
-                            <p className="text-xs text-foreground/60">
-                              acct_****4532
-                            </p>
-                          </div>
-                        </div>
-                        <Badge variant="secondary">Connected</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
-                            <span className="text-xs font-bold text-green-600">
-                              P
-                            </span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">Plaid Link</p>
-                            <p className="text-xs text-foreground/60">
-                              Bank verification
-                            </p>
-                          </div>
-                        </div>
-                        <Badge variant="outline">Verified</Badge>
-                      </div>
-                      <div className="pt-2 border-t">
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-foreground/60">
-                            Transfer Speed
-                          </span>
-                          <span className="font-medium">Instant</span>
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                      >
-                        <Settings className="w-4 h-4 mr-2" />
-                        Manage Payout
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Tax Information Management */}
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold">Tax Information</h3>
+              <TabsContent value="analytics" className="space-y-6">
+                <h2 className="text-2xl font-bold">Business Analytics</h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Business Tax Registration */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Building className="w-5 h-5 text-roam-blue" />
-                        Business Tax Registration
+                        <TrendingUp className="w-5 h-5 text-roam-blue" />
+                        Revenue Trend
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {taxInfoError && (
-                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
-                          {taxInfoError}
-                        </div>
-                      )}
-
-                      {taxInfoSuccess && (
-                        <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
-                          {taxInfoSuccess}
-                        </div>
-                      )}
-
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="legal_business_name">
-                              Legal Business Name *
-                            </Label>
-                            <Input
-                              id="legal_business_name"
-                              placeholder="Business legal name for tax purposes"
-                              disabled={taxInfoSaving}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="tax_id">Tax ID (EIN/SSN) *</Label>
-                            <Input
-                              id="tax_id"
-                              placeholder="XX-XXXXXXX"
-                              disabled={taxInfoSaving}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="tax_id_type">Tax ID Type *</Label>
-                            <Select>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select ID type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="EIN">
-                                  EIN (Employer Identification Number)
-                                </SelectItem>
-                                <SelectItem value="SSN">
-                                  SSN (Social Security Number)
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="business_entity_type">
-                              Business Entity Type *
-                            </Label>
-                            <Select>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select entity type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="sole_proprietorship">
-                                  Sole Proprietorship
-                                </SelectItem>
-                                <SelectItem value="partnership">
-                                  Partnership
-                                </SelectItem>
-                                <SelectItem value="llc">LLC</SelectItem>
-                                <SelectItem value="corporation">
-                                  Corporation
-                                </SelectItem>
-                                <SelectItem value="non_profit">
-                                  Non-Profit
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="tax_contact_name">
-                            Tax Contact Name *
-                          </Label>
-                          <Input
-                            id="tax_contact_name"
-                            placeholder="Primary contact for tax matters"
-                            disabled={taxInfoSaving}
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="tax_contact_email">
-                              Tax Contact Email *
-                            </Label>
-                            <Input
-                              id="tax_contact_email"
-                              type="email"
-                              placeholder="tax@yourbusiness.com"
-                              disabled={taxInfoSaving}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="tax_contact_phone">
-                              Tax Contact Phone
-                            </Label>
-                            <Input
-                              id="tax_contact_phone"
-                              type="tel"
-                              placeholder="(XXX) XXX-XXXX"
-                              disabled={taxInfoSaving}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex justify-end gap-2">
-                          <Button variant="outline" disabled={taxInfoSaving}>
-                            Cancel
-                          </Button>
-                          <Button
-                            className="bg-roam-blue hover:bg-roam-blue/90"
-                            disabled={taxInfoSaving}
-                          >
-                            {taxInfoSaving && (
-                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                            )}
-                            Save Tax Info
-                          </Button>
-                        </div>
+                      <div className="h-48 bg-gradient-to-r from-roam-light-blue/20 to-roam-blue/20 rounded-lg flex items-center justify-center">
+                        <p className="text-foreground/60">
+                          Chart visualization would go here
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
 
-                  {/* Tax Address */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <MapPin className="w-5 h-5 text-roam-blue" />
-                        Tax Mailing Address
+                        <BarChart3 className="w-5 h-5 text-roam-blue" />
+                        Service Performance
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="tax_address_line1">
-                            Address Line 1 *
-                          </Label>
-                          <Input
-                            id="tax_address_line1"
-                            placeholder="Street address"
-                            disabled={taxInfoSaving}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="tax_address_line2">
-                            Address Line 2
-                          </Label>
-                          <Input
-                            id="tax_address_line2"
-                            placeholder="Apt, suite, etc."
-                            disabled={taxInfoSaving}
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="tax_city">City *</Label>
-                            <Input
-                              id="tax_city"
-                              placeholder="City"
-                              disabled={taxInfoSaving}
-                            />
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Deep Tissue Massage</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 h-2 bg-gray-200 rounded-full">
+                              <div className="w-3/4 h-2 bg-roam-blue rounded-full"></div>
+                            </div>
+                            <span className="text-sm text-roam-blue">75%</span>
                           </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="tax_state">State *</Label>
-                            <Select>
-                              <SelectTrigger>
-                                <SelectValue placeholder="State" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="FL">Florida</SelectItem>
-                                <SelectItem value="CA">California</SelectItem>
-                                <SelectItem value="NY">New York</SelectItem>
-                                <SelectItem value="TX">Texas</SelectItem>
-                                {/* Add more states as needed */}
-                              </SelectContent>
-                            </Select>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Swedish Massage</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 h-2 bg-gray-200 rounded-full">
+                              <div className="w-1/2 h-2 bg-roam-light-blue rounded-full"></div>
+                            </div>
+                            <span className="text-sm text-roam-blue">50%</span>
                           </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="tax_postal_code">ZIP Code *</Label>
-                            <Input
-                              id="tax_postal_code"
-                              placeholder="12345"
-                              disabled={taxInfoSaving}
-                            />
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Sports Recovery</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 h-2 bg-gray-200 rounded-full">
+                              <div className="w-1/4 h-2 bg-roam-yellow rounded-full"></div>
+                            </div>
+                            <span className="text-sm text-roam-blue">25%</span>
                           </div>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
+              </TabsContent>
+            )}
 
-                {/* Stripe Tax Status & 1099 Information */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Financial Tab */}
+            {isOwner && (
+              <TabsContent value="financial" className="space-y-6">
+                <h2 className="text-2xl font-bold">Financial Management</h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {/* Earnings Overview */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-roam-blue" />
-                        Stripe Tax Registration
+                        <DollarSign className="w-5 h-5 text-roam-blue" />
+                        Earnings Overview
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            This Month
+                          </span>
+                          <span className="text-xl font-semibold text-roam-blue">
+                            $3,250
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Last Month
+                          </span>
+                          <span className="text-lg font-medium">$2,890</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Total Earned
+                          </span>
+                          <span className="text-lg font-medium">$47,325</span>
+                        </div>
+                        <div className="pt-2 border-t">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-green-600">
+                              Growth
+                            </span>
+                            <span className="text-sm text-green-600 font-medium">
+                              +12.4%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Pending Payments */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-roam-yellow" />
+                        Pending Payments
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Outstanding
+                          </span>
+                          <span className="text-xl font-semibold text-roam-yellow">
+                            $485
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Next Payout
+                          </span>
+                          <span className="text-sm font-medium">Tomorrow</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-foreground/60">
+                            Completed Services
+                          </span>
+                          <span className="text-sm font-medium">
+                            3 bookings
+                          </span>
+                        </div>
+                        <Button
+                          variant="outline"
+                          className="w-full border-roam-yellow text-roam-yellow hover:bg-roam-yellow hover:text-white"
+                        >
+                          View Details
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Payout Info */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Building className="w-5 h-5 text-roam-blue" />
+                        Payout Info
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            Registration Status
-                          </span>
-                          <Badge className="bg-green-100 text-green-800">
-                            Registered
-                          </Badge>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                              <span className="text-xs font-bold text-blue-600">
+                                S
+                              </span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">
+                                Stripe Connect
+                              </p>
+                              <p className="text-xs text-foreground/60">
+                                acct_****4532
+                              </p>
+                            </div>
+                          </div>
+                          <Badge variant="secondary">Connected</Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            Stripe Tax ID
-                          </span>
-                          <span className="text-sm font-medium">
-                            txr_****xyz123
-                          </span>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
+                              <span className="text-xs font-bold text-green-600">
+                                P
+                              </span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">Plaid Link</p>
+                              <p className="text-xs text-foreground/60">
+                                Bank verification
+                              </p>
+                            </div>
+                          </div>
+                          <Badge variant="outline">Verified</Badge>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            Registration Date
-                          </span>
-                          <span className="text-sm font-medium">
+                        <div className="pt-2 border-t">
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-foreground/60">
+                              Transfer Speed
+                            </span>
+                            <span className="font-medium">Instant</span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        >
+                          <Settings className="w-4 h-4 mr-2" />
+                          Manage Payout
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Tax Information Management */}
+                <div className="space-y-6">
+                  <h3 className="text-xl font-semibold">Tax Information</h3>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Business Tax Registration */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Building className="w-5 h-5 text-roam-blue" />
+                          Business Tax Registration
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {taxInfoError && (
+                          <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                            {taxInfoError}
+                          </div>
+                        )}
+
+                        {taxInfoSuccess && (
+                          <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
+                            {taxInfoSuccess}
+                          </div>
+                        )}
+
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="legal_business_name">
+                                Legal Business Name *
+                              </Label>
+                              <Input
+                                id="legal_business_name"
+                                placeholder="Business legal name for tax purposes"
+                                disabled={taxInfoSaving}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="tax_id">Tax ID (EIN/SSN) *</Label>
+                              <Input
+                                id="tax_id"
+                                placeholder="XX-XXXXXXX"
+                                disabled={taxInfoSaving}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="tax_id_type">Tax ID Type *</Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select ID type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="EIN">
+                                    EIN (Employer Identification Number)
+                                  </SelectItem>
+                                  <SelectItem value="SSN">
+                                    SSN (Social Security Number)
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="business_entity_type">
+                                Business Entity Type *
+                              </Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select entity type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="sole_proprietorship">
+                                    Sole Proprietorship
+                                  </SelectItem>
+                                  <SelectItem value="partnership">
+                                    Partnership
+                                  </SelectItem>
+                                  <SelectItem value="llc">LLC</SelectItem>
+                                  <SelectItem value="corporation">
+                                    Corporation
+                                  </SelectItem>
+                                  <SelectItem value="non_profit">
+                                    Non-Profit
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_contact_name">
+                              Tax Contact Name *
+                            </Label>
+                            <Input
+                              id="tax_contact_name"
+                              placeholder="Primary contact for tax matters"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="tax_contact_email">
+                                Tax Contact Email *
+                              </Label>
+                              <Input
+                                id="tax_contact_email"
+                                type="email"
+                                placeholder="tax@yourbusiness.com"
+                                disabled={taxInfoSaving}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="tax_contact_phone">
+                                Tax Contact Phone
+                              </Label>
+                              <Input
+                                id="tax_contact_phone"
+                                type="tel"
+                                placeholder="(XXX) XXX-XXXX"
+                                disabled={taxInfoSaving}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline" disabled={taxInfoSaving}>
+                              Cancel
+                            </Button>
+                            <Button
+                              className="bg-roam-blue hover:bg-roam-blue/90"
+                              disabled={taxInfoSaving}
+                            >
+                              {taxInfoSaving && (
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                              )}
+                              Save Tax Info
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Tax Address */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <MapPin className="w-5 h-5 text-roam-blue" />
+                          Tax Mailing Address
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_address_line1">
+                              Address Line 1 *
+                            </Label>
+                            <Input
+                              id="tax_address_line1"
+                              placeholder="Street address"
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="tax_address_line2">
+                              Address Line 2
+                            </Label>
+                            <Input
+                              id="tax_address_line2"
+                              placeholder="Apt, suite, etc."
+                              disabled={taxInfoSaving}
+                            />
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="tax_city">City *</Label>
+                              <Input
+                                id="tax_city"
+                                placeholder="City"
+                                disabled={taxInfoSaving}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="tax_state">State *</Label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="FL">Florida</SelectItem>
+                                  <SelectItem value="CA">California</SelectItem>
+                                  <SelectItem value="NY">New York</SelectItem>
+                                  <SelectItem value="TX">Texas</SelectItem>
+                                  {/* Add more states as needed */}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="tax_postal_code">
+                                ZIP Code *
+                              </Label>
+                              <Input
+                                id="tax_postal_code"
+                                placeholder="12345"
+                                disabled={taxInfoSaving}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Stripe Tax Status & 1099 Information */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-roam-blue" />
+                          Stripe Tax Registration
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              Registration Status
+                            </span>
+                            <Badge className="bg-green-100 text-green-800">
+                              Registered
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              Stripe Tax ID
+                            </span>
+                            <span className="text-sm font-medium">
+                              txr_****xyz123
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              Registration Date
+                            </span>
+                            <span className="text-sm font-medium">
+                              Jan 15, 2024
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              W-9 Status
+                            </span>
+                            <Badge className="bg-green-100 text-green-800">
+                              Received
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              Tax Setup
+                            </span>
+                            <Badge className="bg-green-100 text-green-800">
+                              Complete
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Star className="w-5 h-5 text-roam-blue" />
+                          1099 Information
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              2024 Earnings
+                            </span>
+                            <span className="text-xl font-semibold text-roam-blue">
+                              $47,325
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              1099 Threshold
+                            </span>
+                            <span className="text-sm font-medium">
+                              $600 (Met)
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              Threshold Reached
+                            </span>
+                            <span className="text-sm font-medium">
+                              Feb 12, 2024
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-foreground/60">
+                              1099 Status
+                            </span>
+                            <Badge className="bg-yellow-100 text-yellow-800">
+                              Will Generate
+                            </Badge>
+                          </div>
+                          <div className="pt-2 border-t">
+                            <p className="text-xs text-foreground/60">
+                              1099-NEC forms will be generated and sent by
+                              January 31st of the following year.
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Recent Transactions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5 text-roam-blue" />
+                      Recent Transactions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium">Payment Received</p>
+                            <p className="text-sm text-foreground/60">
+                              Deep Tissue Massage - Sarah M.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-green-600">
+                            +$120.00
+                          </p>
+                          <p className="text-xs text-foreground/60">
                             Jan 15, 2024
-                          </span>
+                          </p>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            W-9 Status
-                          </span>
-                          <Badge className="bg-green-100 text-green-800">
-                            Received
-                          </Badge>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <DollarSign className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium">Payout Processed</p>
+                            <p className="text-sm text-foreground/60">
+                              Weekly earnings
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            Tax Setup
-                          </span>
-                          <Badge className="bg-green-100 text-green-800">
-                            Complete
-                          </Badge>
+                        <div className="text-right">
+                          <p className="font-semibold text-blue-600">$850.00</p>
+                          <p className="text-xs text-foreground/60">
+                            Jan 12, 2024
+                          </p>
                         </div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                            <Clock className="w-5 h-5 text-gray-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium">Service Fee</p>
+                            <p className="text-sm text-foreground/60">
+                              Platform commission (8%)
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-600">-$9.60</p>
+                          <p className="text-xs text-foreground/60">
+                            Jan 15, 2024
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium">Payment Received</p>
+                            <p className="text-sm text-foreground/60">
+                              Couples Massage - John & Lisa D.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-green-600">
+                            +$240.00
+                          </p>
+                          <p className="text-xs text-foreground/60">
+                            Jan 14, 2024
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex justify-center">
+                      <Button
+                        variant="outline"
+                        className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
+                        View All Transactions
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Financial Settings */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Settings className="w-5 h-5 text-roam-blue" />
+                        Payout Settings
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label>Auto Payout</Label>
+                          <p className="text-sm text-foreground/60">
+                            Automatically transfer earnings weekly
+                          </p>
+                        </div>
+                        <Switch
+                          defaultChecked
+                          className="data-[state=checked]:bg-roam-blue"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Payout Day</Label>
+                        <Select defaultValue="friday">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="monday">Monday</SelectItem>
+                            <SelectItem value="tuesday">Tuesday</SelectItem>
+                            <SelectItem value="wednesday">Wednesday</SelectItem>
+                            <SelectItem value="thursday">Thursday</SelectItem>
+                            <SelectItem value="friday">Friday</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Minimum Payout Amount</Label>
+                        <Input type="number" defaultValue="50" min="25" />
+                        <p className="text-xs text-foreground/60">
+                          Minimum $25. Earnings below this amount will roll over
+                          to next payout.
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -6590,250 +6810,47 @@ export default function ProviderDashboard() {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Star className="w-5 h-5 text-roam-blue" />
-                        1099 Information
+                        Tax Information
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            2024 Earnings
-                          </span>
-                          <span className="text-xl font-semibold text-roam-blue">
-                            $47,325
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            1099 Threshold
-                          </span>
-                          <span className="text-sm font-medium">
-                            $600 (Met)
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            Threshold Reached
-                          </span>
-                          <span className="text-sm font-medium">
-                            Feb 12, 2024
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-foreground/60">
-                            1099 Status
-                          </span>
-                          <Badge className="bg-yellow-100 text-yellow-800">
-                            Will Generate
-                          </Badge>
-                        </div>
-                        <div className="pt-2 border-t">
-                          <p className="text-xs text-foreground/60">
-                            1099-NEC forms will be generated and sent by January
-                            31st of the following year.
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">Tax ID</p>
+                          <p className="text-sm text-foreground/60">
+                            ***-**-1234
                           </p>
                         </div>
+                        <Button variant="outline" size="sm">
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit
+                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Tax Documents</Label>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
+                            <span className="text-sm">2024 1099-NEC</span>
+                            <Badge variant="secondary">Available Soon</Badge>
+                          </div>
+                          <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
+                            <span className="text-sm">2023 1099-NEC</span>
+                            <Button variant="outline" size="sm">
+                              Download
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t">
+                        <p className="text-xs text-foreground/60">
+                          Tax documents are typically available by January 31st
+                          of the following year.
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
-              </div>
-
-              {/* Recent Transactions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-roam-blue" />
-                    Recent Transactions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">Payment Received</p>
-                          <p className="text-sm text-foreground/60">
-                            Deep Tissue Massage - Sarah M.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-green-600">+$120.00</p>
-                        <p className="text-xs text-foreground/60">
-                          Jan 15, 2024
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          <DollarSign className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">Payout Processed</p>
-                          <p className="text-sm text-foreground/60">
-                            Weekly earnings
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-blue-600">$850.00</p>
-                        <p className="text-xs text-foreground/60">
-                          Jan 12, 2024
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                          <Clock className="w-5 h-5 text-gray-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">Service Fee</p>
-                          <p className="text-sm text-foreground/60">
-                            Platform commission (8%)
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-gray-600">-$9.60</p>
-                        <p className="text-xs text-foreground/60">
-                          Jan 15, 2024
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">Payment Received</p>
-                          <p className="text-sm text-foreground/60">
-                            Couples Massage - John & Lisa D.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-green-600">+$240.00</p>
-                        <p className="text-xs text-foreground/60">
-                          Jan 14, 2024
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex justify-center">
-                    <Button
-                      variant="outline"
-                      className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                    >
-                      View All Transactions
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Financial Settings */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Settings className="w-5 h-5 text-roam-blue" />
-                      Payout Settings
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Auto Payout</Label>
-                        <p className="text-sm text-foreground/60">
-                          Automatically transfer earnings weekly
-                        </p>
-                      </div>
-                      <Switch
-                        defaultChecked
-                        className="data-[state=checked]:bg-roam-blue"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Payout Day</Label>
-                      <Select defaultValue="friday">
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="monday">Monday</SelectItem>
-                          <SelectItem value="tuesday">Tuesday</SelectItem>
-                          <SelectItem value="wednesday">Wednesday</SelectItem>
-                          <SelectItem value="thursday">Thursday</SelectItem>
-                          <SelectItem value="friday">Friday</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Minimum Payout Amount</Label>
-                      <Input type="number" defaultValue="50" min="25" />
-                      <p className="text-xs text-foreground/60">
-                        Minimum $25. Earnings below this amount will roll over
-                        to next payout.
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-roam-blue" />
-                      Tax Information
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Tax ID</p>
-                        <p className="text-sm text-foreground/60">
-                          ***-**-1234
-                        </p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </Button>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Tax Documents</Label>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
-                          <span className="text-sm">2024 1099-NEC</span>
-                          <Badge variant="secondary">Available Soon</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-accent/20 rounded border">
-                          <span className="text-sm">2023 1099-NEC</span>
-                          <Button variant="outline" size="sm">
-                            Download
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="pt-2 border-t">
-                      <p className="text-xs text-foreground/60">
-                        Tax documents are typically available by January 31st of
-                        the following year.
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
+              </TabsContent>
             )}
 
             {/* Settings Tab */}

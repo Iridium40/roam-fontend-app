@@ -48,7 +48,7 @@ export default function MyBookings() {
 
         // For now, we'll use the static data but with proper loading state
         // In the future, this would call the actual API
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
 
         const staticBookings = [
           {
@@ -304,8 +304,7 @@ export default function MyBookings() {
             <p className="text-lg text-foreground/70 mb-8">
               {userType === "customer"
                 ? "Manage your service appointments and view your booking history."
-                : "Manage your appointments and view your booking history."
-              }
+                : "Manage your appointments and view your booking history."}
             </p>
 
             {/* Active Service Alert */}

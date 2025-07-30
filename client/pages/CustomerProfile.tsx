@@ -20,7 +20,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function CustomerProfile() {
-  const { customer, updateCustomerProfile, uploadCustomerAvatar, loading } = useAuth();
+  const { customer, updateCustomerProfile, uploadCustomerAvatar, loading } =
+    useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -62,7 +63,8 @@ export default function CustomerProfile() {
     );
   }
 
-  const initials = `${customer.first_name.charAt(0)}${customer.last_name.charAt(0)}`.toUpperCase();
+  const initials =
+    `${customer.first_name.charAt(0)}${customer.last_name.charAt(0)}`.toUpperCase();
 
   const handleSave = async () => {
     setSaving(true);
@@ -87,30 +89,32 @@ export default function CustomerProfile() {
     }
   };
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB');
+      alert("File size must be less than 5MB");
       return;
     }
 
     setUploading(true);
     try {
       const imageUrl = await uploadCustomerAvatar(file);
-      setProfileData(prev => ({ ...prev, imageUrl }));
-      console.log('Avatar uploaded successfully');
+      setProfileData((prev) => ({ ...prev, imageUrl }));
+      console.log("Avatar uploaded successfully");
     } catch (error) {
-      console.error('Failed to upload avatar:', error);
-      alert('Failed to upload image. Please try again.');
+      console.error("Failed to upload avatar:", error);
+      alert("Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -213,7 +217,9 @@ export default function CustomerProfile() {
                         <Button
                           size="sm"
                           className="absolute bottom-0 right-0 rounded-full w-10 h-10 p-0 bg-roam-blue hover:bg-roam-blue/90"
-                          onClick={() => document.getElementById('avatar-upload')?.click()}
+                          onClick={() =>
+                            document.getElementById("avatar-upload")?.click()
+                          }
                           disabled={uploading}
                           type="button"
                         >

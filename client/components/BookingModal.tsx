@@ -55,37 +55,59 @@ interface BookingModalProps {
   provider: Provider;
 }
 
-type BookingStep = 'delivery' | 'datetime' | 'location' | 'details' | 'confirmation';
+type BookingStep =
+  | "delivery"
+  | "datetime"
+  | "location"
+  | "details"
+  | "confirmation";
 
-export default function BookingModal({ isOpen, onClose, service, provider }: BookingModalProps) {
-  const [currentStep, setCurrentStep] = useState<BookingStep>('delivery');
-  const [selectedDeliveryType, setSelectedDeliveryType] = useState<string>('');
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const [selectedTime, setSelectedTime] = useState<string>('');
+export default function BookingModal({
+  isOpen,
+  onClose,
+  service,
+  provider,
+}: BookingModalProps) {
+  const [currentStep, setCurrentStep] = useState<BookingStep>("delivery");
+  const [selectedDeliveryType, setSelectedDeliveryType] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string>("");
   const [customerLocation, setCustomerLocation] = useState({
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    notes: ''
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    notes: "",
   });
   const [customerDetails, setCustomerDetails] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    specialRequests: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    specialRequests: "",
   });
 
   // Reset when modal opens
   useEffect(() => {
     if (isOpen) {
-      setCurrentStep('delivery');
-      setSelectedDeliveryType('');
-      setSelectedDate('');
-      setSelectedTime('');
-      setCustomerLocation({ address: '', city: '', state: '', zipCode: '', notes: '' });
-      setCustomerDetails({ firstName: '', lastName: '', email: '', phone: '', specialRequests: '' });
+      setCurrentStep("delivery");
+      setSelectedDeliveryType("");
+      setSelectedDate("");
+      setSelectedTime("");
+      setCustomerLocation({
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        notes: "",
+      });
+      setCustomerDetails({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        specialRequests: "",
+      });
     }
   }, [isOpen]);
 
@@ -93,7 +115,14 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
 
   // Mock available times - in real app would come from provider's calendar
   const availableTimes = [
-    '9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
   ];
 
   // Generate next 14 days for calendar
@@ -104,12 +133,12 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       dates.push({
-        date: date.toISOString().split('T')[0],
-        display: date.toLocaleDateString('en-US', { 
-          weekday: 'short', 
-          month: 'short', 
-          day: 'numeric' 
-        })
+        date: date.toISOString().split("T")[0],
+        display: date.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        }),
       });
     }
     return dates;
@@ -119,65 +148,78 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
 
   const handleNext = () => {
     switch (currentStep) {
-      case 'delivery':
-        setCurrentStep('datetime');
+      case "delivery":
+        setCurrentStep("datetime");
         break;
-      case 'datetime':
-        setCurrentStep(selectedDeliveryType === 'mobile' ? 'location' : 'details');
+      case "datetime":
+        setCurrentStep(
+          selectedDeliveryType === "mobile" ? "location" : "details",
+        );
         break;
-      case 'location':
-        setCurrentStep('details');
+      case "location":
+        setCurrentStep("details");
         break;
-      case 'details':
-        setCurrentStep('confirmation');
+      case "details":
+        setCurrentStep("confirmation");
         break;
     }
   };
 
   const handleBack = () => {
     switch (currentStep) {
-      case 'datetime':
-        setCurrentStep('delivery');
+      case "datetime":
+        setCurrentStep("delivery");
         break;
-      case 'location':
-        setCurrentStep('datetime');
+      case "location":
+        setCurrentStep("datetime");
         break;
-      case 'details':
-        setCurrentStep(selectedDeliveryType === 'mobile' ? 'location' : 'datetime');
+      case "details":
+        setCurrentStep(
+          selectedDeliveryType === "mobile" ? "location" : "datetime",
+        );
         break;
-      case 'confirmation':
-        setCurrentStep('details');
+      case "confirmation":
+        setCurrentStep("details");
         break;
     }
   };
 
   const handleBooking = () => {
     // In real app, this would submit the booking to the API
-    console.log('Booking submitted:', {
+    console.log("Booking submitted:", {
       service,
       provider,
       deliveryType: selectedDeliveryType,
       date: selectedDate,
       time: selectedTime,
-      location: selectedDeliveryType === 'mobile' ? customerLocation : provider.businessAddress,
-      customer: customerDetails
+      location:
+        selectedDeliveryType === "mobile"
+          ? customerLocation
+          : provider.businessAddress,
+      customer: customerDetails,
     });
-    
-    alert('Booking request submitted! You will receive a confirmation email shortly.');
+
+    alert(
+      "Booking request submitted! You will receive a confirmation email shortly.",
+    );
     onClose();
   };
 
   const canProceed = () => {
     switch (currentStep) {
-      case 'delivery':
-        return selectedDeliveryType !== '';
-      case 'datetime':
-        return selectedDate !== '' && selectedTime !== '';
-      case 'location':
-        return customerLocation.address !== '' && customerLocation.city !== '';
-      case 'details':
-        return customerDetails.firstName !== '' && customerDetails.lastName !== '' && 
-               customerDetails.email !== '' && customerDetails.phone !== '';
+      case "delivery":
+        return selectedDeliveryType !== "";
+      case "datetime":
+        return selectedDate !== "" && selectedTime !== "";
+      case "location":
+        return customerLocation.address !== "" && customerLocation.city !== "";
+      case "details":
+        return (
+          customerDetails.firstName !== "" &&
+          customerDetails.lastName !== "" &&
+          customerDetails.email !== "" &&
+          customerDetails.phone !== ""
+        );
       default:
         return true;
     }
@@ -185,34 +227,34 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 'delivery':
+      case "delivery":
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Choose Service Type</h3>
             <div className="grid grid-cols-1 gap-3">
               {service.deliveryTypes.map((type) => (
-                <Card 
+                <Card
                   key={type}
                   className={`cursor-pointer transition-all ${
-                    selectedDeliveryType === type 
-                      ? 'ring-2 ring-roam-blue bg-roam-blue/5' 
-                      : 'hover:shadow-md'
+                    selectedDeliveryType === type
+                      ? "ring-2 ring-roam-blue bg-roam-blue/5"
+                      : "hover:shadow-md"
                   }`}
                   onClick={() => setSelectedDeliveryType(type)}
                 >
                   <CardContent className="p-4 flex items-center gap-3">
-                    {type === 'mobile' ? (
+                    {type === "mobile" ? (
                       <Smartphone className="w-8 h-8 text-roam-blue" />
                     ) : (
                       <Building className="w-8 h-8 text-roam-blue" />
                     )}
                     <div>
                       <h4 className="font-semibold">
-                        {type === 'mobile' ? 'Mobile Service' : 'In-Studio'}
+                        {type === "mobile" ? "Mobile Service" : "In-Studio"}
                       </h4>
                       <p className="text-sm text-gray-600">
-                        {type === 'mobile' 
-                          ? 'Service provided at your location' 
+                        {type === "mobile"
+                          ? "Service provided at your location"
                           : `Service at ${provider.businessAddress}`}
                       </p>
                     </div>
@@ -223,22 +265,26 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
           </div>
         );
 
-      case 'datetime':
+      case "datetime":
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">Select Date & Time</h3>
-            
+
             <div>
-              <Label className="text-sm font-medium mb-3 block">Choose Date</Label>
+              <Label className="text-sm font-medium mb-3 block">
+                Choose Date
+              </Label>
               <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
                 {dates.map((dateOption) => (
                   <Button
                     key={dateOption.date}
-                    variant={selectedDate === dateOption.date ? "default" : "outline"}
+                    variant={
+                      selectedDate === dateOption.date ? "default" : "outline"
+                    }
                     className={`justify-start ${
-                      selectedDate === dateOption.date 
-                        ? 'bg-roam-blue hover:bg-roam-blue/90' 
-                        : ''
+                      selectedDate === dateOption.date
+                        ? "bg-roam-blue hover:bg-roam-blue/90"
+                        : ""
                     }`}
                     onClick={() => setSelectedDate(dateOption.date)}
                   >
@@ -251,16 +297,18 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
 
             {selectedDate && (
               <div>
-                <Label className="text-sm font-medium mb-3 block">Choose Time</Label>
+                <Label className="text-sm font-medium mb-3 block">
+                  Choose Time
+                </Label>
                 <div className="grid grid-cols-2 gap-2">
                   {availableTimes.map((time) => (
                     <Button
                       key={time}
                       variant={selectedTime === time ? "default" : "outline"}
                       className={`justify-start ${
-                        selectedTime === time 
-                          ? 'bg-roam-blue hover:bg-roam-blue/90' 
-                          : ''
+                        selectedTime === time
+                          ? "bg-roam-blue hover:bg-roam-blue/90"
+                          : ""
                       }`}
                       onClick={() => setSelectedTime(time)}
                     >
@@ -274,32 +322,42 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
           </div>
         );
 
-      case 'location':
+      case "location":
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Service Location</h3>
             <p className="text-sm text-gray-600">
               Please provide the address where you'd like the service performed.
             </p>
-            
+
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="address">Street Address *</Label>
                 <Input
                   id="address"
                   value={customerLocation.address}
-                  onChange={(e) => setCustomerLocation({...customerLocation, address: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerLocation({
+                      ...customerLocation,
+                      address: e.target.value,
+                    })
+                  }
                   placeholder="123 Main Street, Apt 2B"
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="city">City *</Label>
                   <Input
                     id="city"
                     value={customerLocation.city}
-                    onChange={(e) => setCustomerLocation({...customerLocation, city: e.target.value})}
+                    onChange={(e) =>
+                      setCustomerLocation({
+                        ...customerLocation,
+                        city: e.target.value,
+                      })
+                    }
                     placeholder="Miami"
                   />
                 </div>
@@ -308,28 +366,43 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
                   <Input
                     id="state"
                     value={customerLocation.state}
-                    onChange={(e) => setCustomerLocation({...customerLocation, state: e.target.value})}
+                    onChange={(e) =>
+                      setCustomerLocation({
+                        ...customerLocation,
+                        state: e.target.value,
+                      })
+                    }
                     placeholder="FL"
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="zipCode">Zip Code</Label>
                 <Input
                   id="zipCode"
                   value={customerLocation.zipCode}
-                  onChange={(e) => setCustomerLocation({...customerLocation, zipCode: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerLocation({
+                      ...customerLocation,
+                      zipCode: e.target.value,
+                    })
+                  }
                   placeholder="33101"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="notes">Additional Notes</Label>
                 <Textarea
                   id="notes"
                   value={customerLocation.notes}
-                  onChange={(e) => setCustomerLocation({...customerLocation, notes: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerLocation({
+                      ...customerLocation,
+                      notes: e.target.value,
+                    })
+                  }
                   placeholder="Parking instructions, building access codes, etc."
                   rows={3}
                 />
@@ -338,18 +411,23 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
           </div>
         );
 
-      case 'details':
+      case "details":
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Contact Information</h3>
-            
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="firstName">First Name *</Label>
                 <Input
                   id="firstName"
                   value={customerDetails.firstName}
-                  onChange={(e) => setCustomerDetails({...customerDetails, firstName: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerDetails({
+                      ...customerDetails,
+                      firstName: e.target.value,
+                    })
+                  }
                   placeholder="John"
                 />
               </div>
@@ -358,40 +436,60 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
                 <Input
                   id="lastName"
                   value={customerDetails.lastName}
-                  onChange={(e) => setCustomerDetails({...customerDetails, lastName: e.target.value})}
+                  onChange={(e) =>
+                    setCustomerDetails({
+                      ...customerDetails,
+                      lastName: e.target.value,
+                    })
+                  }
                   placeholder="Doe"
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 type="email"
                 value={customerDetails.email}
-                onChange={(e) => setCustomerDetails({...customerDetails, email: e.target.value})}
+                onChange={(e) =>
+                  setCustomerDetails({
+                    ...customerDetails,
+                    email: e.target.value,
+                  })
+                }
                 placeholder="john@example.com"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="phone">Phone Number *</Label>
               <Input
                 id="phone"
                 type="tel"
                 value={customerDetails.phone}
-                onChange={(e) => setCustomerDetails({...customerDetails, phone: e.target.value})}
+                onChange={(e) =>
+                  setCustomerDetails({
+                    ...customerDetails,
+                    phone: e.target.value,
+                  })
+                }
                 placeholder="(555) 123-4567"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="specialRequests">Special Requests</Label>
               <Textarea
                 id="specialRequests"
                 value={customerDetails.specialRequests}
-                onChange={(e) => setCustomerDetails({...customerDetails, specialRequests: e.target.value})}
+                onChange={(e) =>
+                  setCustomerDetails({
+                    ...customerDetails,
+                    specialRequests: e.target.value,
+                  })
+                }
                 placeholder="Any specific requirements or preferences..."
                 rows={3}
               />
@@ -399,27 +497,27 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
           </div>
         );
 
-      case 'confirmation':
+      case "confirmation":
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">Booking Summary</h3>
-            
+
             <Card>
               <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Service</span>
                   <span>{service.name}</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Provider</span>
                   <span>{provider.name}</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Type</span>
                   <Badge variant="secondary">
-                    {selectedDeliveryType === 'mobile' ? (
+                    {selectedDeliveryType === "mobile" ? (
                       <>
                         <Smartphone className="w-3 h-3 mr-1" />
                         Mobile Service
@@ -432,49 +530,57 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
                     )}
                   </Badge>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Date & Time</span>
                   <span>
-                    {new Date(selectedDate).toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })} at {selectedTime}
+                    {new Date(selectedDate).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}{" "}
+                    at {selectedTime}
                   </span>
                 </div>
-                
+
                 <div className="flex items-start justify-between">
                   <span className="font-semibold">Location</span>
                   <div className="text-right max-w-xs">
-                    {selectedDeliveryType === 'mobile' ? (
+                    {selectedDeliveryType === "mobile" ? (
                       <div className="text-sm">
                         <div>{customerLocation.address}</div>
-                        <div>{customerLocation.city}, {customerLocation.state} {customerLocation.zipCode}</div>
+                        <div>
+                          {customerLocation.city}, {customerLocation.state}{" "}
+                          {customerLocation.zipCode}
+                        </div>
                       </div>
                     ) : (
                       <div className="text-sm">{provider.businessAddress}</div>
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Duration</span>
                   <span>{service.duration}</span>
                 </div>
-                
+
                 <div className="border-t pt-4">
                   <div className="flex items-center justify-between text-lg">
                     <span className="font-bold">Total</span>
-                    <span className="font-bold text-roam-blue">${service.price}</span>
+                    <span className="font-bold text-roam-blue">
+                      ${service.price}
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            
+
             <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
-              <p><strong>What happens next?</strong></p>
+              <p>
+                <strong>What happens next?</strong>
+              </p>
               <p>• Your booking request will be sent to {provider.name}</p>
               <p>• You'll receive a confirmation email within 15 minutes</p>
               <p>• The provider will contact you to confirm details</p>
@@ -493,29 +599,29 @@ export default function BookingModal({ isOpen, onClose, service, provider }: Boo
         <DialogHeader>
           <DialogTitle>Book {service.name}</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           {renderStepContent()}
-          
+
           <div className="flex justify-between pt-4 border-t">
-            {currentStep !== 'delivery' && (
+            {currentStep !== "delivery" && (
               <Button variant="outline" onClick={handleBack}>
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
             )}
-            
+
             <div className="ml-auto">
-              {currentStep === 'confirmation' ? (
-                <Button 
+              {currentStep === "confirmation" ? (
+                <Button
                   onClick={handleBooking}
                   className="bg-roam-blue hover:bg-roam-blue/90"
                 >
                   Confirm Booking
                 </Button>
               ) : (
-                <Button 
-                  onClick={handleNext} 
+                <Button
+                  onClick={handleNext}
                   disabled={!canProceed()}
                   className="bg-roam-blue hover:bg-roam-blue/90"
                 >

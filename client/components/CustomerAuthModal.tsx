@@ -120,9 +120,11 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
       // Provide more user-friendly error messages
       let errorMessage = "Sign in failed. Please try again.";
       if (err.message?.includes("Invalid login credentials")) {
-        errorMessage = "Invalid email or password. Please check your credentials.";
+        errorMessage =
+          "Invalid email or password. Please check your credentials.";
       } else if (err.message?.includes("Email not confirmed")) {
-        errorMessage = "Please check your email and confirm your account before signing in.";
+        errorMessage =
+          "Please check your email and confirm your account before signing in.";
       } else if (err.message?.includes("Customer account not found")) {
         errorMessage = "Account not found. Please sign up first.";
       }
@@ -148,21 +150,28 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
       });
 
       // Check if this was successful registration that requires email confirmation
-      setSuccess("Account created successfully! Please check your email to confirm your account, then sign in.");
+      setSuccess(
+        "Account created successfully! Please check your email to confirm your account, then sign in.",
+      );
       setActiveTab("signin");
       setSignInData({ email: signUpData.email, password: "" });
     } catch (err: any) {
       console.error("Sign up error:", err);
       // Provide more user-friendly error messages
       let errorMessage = "Sign up failed. Please try again.";
-      if (err.message?.includes("already registered") || err.message?.includes("already been registered")) {
-        errorMessage = "An account with this email already exists. Please sign in instead.";
+      if (
+        err.message?.includes("already registered") ||
+        err.message?.includes("already been registered")
+      ) {
+        errorMessage =
+          "An account with this email already exists. Please sign in instead.";
       } else if (err.message?.includes("password")) {
         errorMessage = "Password must be at least 8 characters long.";
       } else if (err.message?.includes("email")) {
         errorMessage = "Please enter a valid email address.";
       } else if (err.message?.includes("Registration failed")) {
-        errorMessage = "Please check your email to confirm your account, then try signing in.";
+        errorMessage =
+          "Please check your email to confirm your account, then try signing in.";
       }
       setError(errorMessage);
     }

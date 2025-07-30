@@ -38,17 +38,17 @@ export default function CustomerSettings() {
     bookingReminders: true,
     promotionalEmails: false,
     serviceUpdates: true,
-    
+
     // Privacy Settings
     profileVisibility: "private",
     dataSharing: false,
-    
+
     // App Preferences
     darkMode: false,
     language: "en",
     currency: "USD",
     timezone: "America/New_York",
-    
+
     // Communication Preferences
     preferredContactMethod: "email",
     quietHoursStart: "22:00",
@@ -74,7 +74,7 @@ export default function CustomerSettings() {
   };
 
   const updateSetting = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -318,7 +318,9 @@ export default function CustomerSettings() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="private">Private</SelectItem>
-                        <SelectItem value="providers">Providers Only</SelectItem>
+                        <SelectItem value="providers">
+                          Providers Only
+                        </SelectItem>
                         <SelectItem value="public">Public</SelectItem>
                       </SelectContent>
                     </Select>

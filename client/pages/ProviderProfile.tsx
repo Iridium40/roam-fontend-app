@@ -172,7 +172,7 @@ export default function ProviderProfile() {
   };
 
   const handleBookService = (serviceId: number) => {
-    const service = services.find(s => s.id === serviceId);
+    const service = services.find((s) => s.id === serviceId);
     setSelectedService(service || null);
     setShowBookingModal(true);
   };
@@ -584,7 +584,7 @@ export default function ProviderProfile() {
           id: provider.id,
           name: provider.name,
           businessAddress: provider.businessAddress,
-          serviceArea: provider.serviceArea
+          serviceArea: provider.serviceArea,
         }}
       />
 

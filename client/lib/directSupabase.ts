@@ -162,7 +162,11 @@ class DirectSupabaseAPI {
       });
 
       if (!response.ok) {
-        console.log("Session check failed:", response.status, response.statusText);
+        console.log(
+          "Session check failed:",
+          response.status,
+          response.statusText,
+        );
         // Clear invalid token
         this.accessToken = null;
         return null;
@@ -343,17 +347,14 @@ class DirectSupabaseAPI {
     email: string,
     password: string,
   ): Promise<AuthResponse> {
-    const response = await fetch(
-      `${this.baseURL}/auth/v1/signup`,
-      {
-        method: "POST",
-        headers: this.getHeaders(),
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      },
-    );
+    const response = await fetch(`${this.baseURL}/auth/v1/signup`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
 
     let responseText = "";
     try {
@@ -419,26 +420,23 @@ class DirectSupabaseAPI {
     last_name: string;
     phone: string | null;
   }): Promise<CustomerRecord> {
-    const response = await fetch(
-      `${this.baseURL}/rest/v1/customers`,
-      {
-        method: "POST",
-        headers: {
-          apikey: this.apiKey,
-          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation",
-        },
-        body: JSON.stringify({
-          ...customerData,
-          is_active: true,
-          total_bookings: 0,
-          total_spent: 0,
-          loyalty_points: 0,
-          preferred_communication: "email",
-        }),
+    const response = await fetch(`${this.baseURL}/rest/v1/customers`, {
+      method: "POST",
+      headers: {
+        apikey: this.apiKey,
+        Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
       },
-    );
+      body: JSON.stringify({
+        ...customerData,
+        is_active: true,
+        total_bookings: 0,
+        total_spent: 0,
+        loyalty_points: 0,
+        preferred_communication: "email",
+      }),
+    });
 
     let responseText = "";
     try {
@@ -470,7 +468,7 @@ class DirectSupabaseAPI {
     customerId: string,
     file: File,
   ): Promise<{ path: string; publicUrl: string }> {
-    const fileExt = file.name.split('.').pop();
+    const fileExt = file.name.split(".").pop();
     const fileName = `${customerId}-${Date.now()}.${fileExt}`;
     const filePath = `avatar-customer-user/${fileName}`;
 
@@ -515,7 +513,7 @@ class DirectSupabaseAPI {
       date_of_birth?: string | null;
       bio?: string | null;
       image_url?: string | null;
-    }
+    },
   ): Promise<void> {
     // First try to update the customer_profiles table
     const response = await fetch(
@@ -542,7 +540,7 @@ class DirectSupabaseAPI {
 
     if (!response.ok) {
       // If update fails, try to create the record
-      if (response.status === 404 || responseText.includes('0 rows')) {
+      if (response.status === 404 || responseText.includes("0 rows")) {
         console.log("Customer profile not found, creating new record...");
         await this.createCustomerProfileRecord(customerId, updateData);
       } else {
@@ -561,26 +559,23 @@ class DirectSupabaseAPI {
       date_of_birth?: string | null;
       bio?: string | null;
       image_url?: string | null;
-    }
+    },
   ): Promise<void> {
-    const response = await fetch(
-      `${this.baseURL}/rest/v1/customer_profiles`,
-      {
-        method: "POST",
-        headers: {
-          apikey: this.apiKey,
-          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify({
-          id: customerId,
-          ...profileData,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        }),
+    const response = await fetch(`${this.baseURL}/rest/v1/customer_profiles`, {
+      method: "POST",
+      headers: {
+        apikey: this.apiKey,
+        Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
       },
-    );
+      body: JSON.stringify({
+        id: customerId,
+        ...profileData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }),
+    });
 
     let responseText = "";
     try {

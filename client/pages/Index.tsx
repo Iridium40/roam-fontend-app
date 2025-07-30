@@ -52,7 +52,9 @@ export default function Index() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"signin" | "signup">("signin");
+  const [authModalTab, setAuthModalTab] = useState<"signin" | "signup">(
+    "signin",
+  );
 
   const handleProviderShare = (provider: any) => {
     setSelectedProvider(provider);

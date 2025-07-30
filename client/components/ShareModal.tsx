@@ -32,12 +32,12 @@ interface ShareModalProps {
   pageUrl: string;
 }
 
-export default function ShareModal({ 
-  isOpen, 
-  onClose, 
-  providerName, 
-  providerTitle, 
-  pageUrl 
+export default function ShareModal({
+  isOpen,
+  onClose,
+  providerName,
+  providerTitle,
+  pageUrl,
 }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
   const [emailRecipient, setEmailRecipient] = useState("");
@@ -51,26 +51,28 @@ export default function ShareModal({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy: ', err);
+      console.error("Failed to copy: ", err);
     }
   };
 
   const downloadQRCode = () => {
-    const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
+    const canvas = document.getElementById(
+      "qr-code-canvas",
+    ) as HTMLCanvasElement;
     if (canvas) {
       const link = document.createElement("a");
-      link.download = `${providerName.replace(/\s+/g, '-')}-qr-code.png`;
+      link.download = `${providerName.replace(/\s+/g, "-")}-qr-code.png`;
       link.href = canvas.toDataURL();
       link.click();
     } else {
       // Fallback: create a new canvas with the QR code
-      const qrElement = document.querySelector('#qr-code svg') as SVGElement;
+      const qrElement = document.querySelector("#qr-code svg") as SVGElement;
       if (qrElement) {
         const svg = qrElement.outerHTML;
-        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const blob = new Blob([svg], { type: "image/svg+xml" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        link.download = `${providerName.replace(/\s+/g, '-')}-qr-code.svg`;
+        link.download = `${providerName.replace(/\s+/g, "-")}-qr-code.svg`;
         link.href = url;
         link.click();
         URL.revokeObjectURL(url);
@@ -81,7 +83,9 @@ export default function ShareModal({
   const shareViaEmail = () => {
     const subject = encodeURIComponent(shareTitle);
     const body = encodeURIComponent(`${shareText}\n\n${pageUrl}`);
-    const to = emailRecipient ? `&to=${encodeURIComponent(emailRecipient)}` : '';
+    const to = emailRecipient
+      ? `&to=${encodeURIComponent(emailRecipient)}`
+      : "";
     window.open(`mailto:?subject=${subject}&body=${body}${to}`);
   };
 
@@ -92,20 +96,29 @@ export default function ShareModal({
 
   const shareViaFacebook = () => {
     const url = encodeURIComponent(pageUrl);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      "_blank",
+    );
   };
 
   const shareViaTwitter = () => {
     const text = encodeURIComponent(shareText);
     const url = encodeURIComponent(pageUrl);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      "_blank",
+    );
   };
 
   const shareViaLinkedIn = () => {
     const url = encodeURIComponent(pageUrl);
     const title = encodeURIComponent(shareTitle);
     const summary = encodeURIComponent(shareText);
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`, '_blank');
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`,
+      "_blank",
+    );
   };
 
   const handleNativeShare = async () => {
@@ -117,7 +130,7 @@ export default function ShareModal({
           url: pageUrl,
         });
       } catch (err) {
-        console.log('Error sharing:', err);
+        console.log("Error sharing:", err);
       }
     }
   };
@@ -149,10 +162,10 @@ export default function ShareModal({
                   readOnly
                   className="flex-1"
                 />
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   onClick={handleCopyLink}
-                  className={`min-w-[80px] ${copied ? 'bg-green-600 hover:bg-green-700' : 'bg-roam-blue hover:bg-roam-blue/90'}`}
+                  className={`min-w-[80px] ${copied ? "bg-green-600 hover:bg-green-700" : "bg-roam-blue hover:bg-roam-blue/90"}`}
                 >
                   {copied ? (
                     <>
@@ -189,12 +202,20 @@ export default function ShareModal({
 
             <div className="space-y-3">
               <div className="flex gap-2">
-                <Button onClick={shareViaSMS} variant="outline" className="flex-1">
+                <Button
+                  onClick={shareViaSMS}
+                  variant="outline"
+                  className="flex-1"
+                >
                   <MessageSquare className="w-4 h-4 mr-2" />
                   Send SMS
                 </Button>
                 {navigator.share && (
-                  <Button onClick={handleNativeShare} variant="outline" className="flex-1">
+                  <Button
+                    onClick={handleNativeShare}
+                    variant="outline"
+                    className="flex-1"
+                  >
                     <Share2 className="w-4 h-4 mr-2" />
                     More Options
                   </Button>
@@ -210,19 +231,23 @@ export default function ShareModal({
                   <div id="qr-code">
                     <QRCode
                       size={200}
-                      style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                      style={{
+                        height: "auto",
+                        maxWidth: "100%",
+                        width: "100%",
+                      }}
                       value={pageUrl}
                       viewBox="0 0 256 256"
                     />
                   </div>
                 </Card>
               </div>
-              
+
               <div className="space-y-2">
                 <h3 className="font-semibold">Scan to Book</h3>
                 <p className="text-sm text-gray-600">
-                  Customers can scan this QR code with their phone camera to instantly 
-                  access {providerName}'s booking page.
+                  Customers can scan this QR code with their phone camera to
+                  instantly access {providerName}'s booking page.
                 </p>
               </div>
 
@@ -244,28 +269,28 @@ export default function ShareModal({
               <p className="text-sm text-gray-600 text-center">
                 Share {providerName}'s profile on social media
               </p>
-              
+
               <div className="grid grid-cols-1 gap-3">
-                <Button 
-                  onClick={shareViaFacebook} 
-                  variant="outline" 
+                <Button
+                  onClick={shareViaFacebook}
+                  variant="outline"
                   className="justify-start bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
                 >
                   <Facebook className="w-4 h-4 mr-3" />
                   Share on Facebook
                 </Button>
-                
-                <Button 
-                  onClick={shareViaTwitter} 
+
+                <Button
+                  onClick={shareViaTwitter}
                   variant="outline"
                   className="justify-start bg-sky-50 border-sky-200 text-sky-700 hover:bg-sky-100"
                 >
                   <Twitter className="w-4 h-4 mr-3" />
                   Share on Twitter
                 </Button>
-                
-                <Button 
-                  onClick={shareViaLinkedIn} 
+
+                <Button
+                  onClick={shareViaLinkedIn}
                   variant="outline"
                   className="justify-start bg-blue-50 border-blue-200 text-blue-800 hover:bg-blue-100"
                 >
