@@ -5562,6 +5562,13 @@ export default function ProviderDashboard() {
                           (addon) =>
                             !businessAddons.some(
                               (ba) => ba.addon_id === addon.id,
+                            ) &&
+                            // Only show add-ons if business offers related services
+                            serviceAddonEligibility.some((eligibility) =>
+                              eligibility.addon_id === addon.id &&
+                              businessServices.some((bs) =>
+                                bs.service_id === eligibility.service_id
+                              )
                             ),
                         )
                         .map((addon) => (
