@@ -5224,7 +5224,7 @@ export default function ProviderDashboard() {
                               ����{" "}
                               {
                                 businessService.services?.service_subcategories
-                                  ?.name
+                                  ?.service_subcategory_type
                               }
                             </p>
                             {businessService.services?.description && (
