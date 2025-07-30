@@ -637,8 +637,17 @@ class DirectSupabaseAPI {
 
       // Handle table not found errors
       if (responseText.includes('relation "customer_profiles" does not exist')) {
+        console.error("DirectSupabase updateCustomerProfile: customer_profiles table does not exist");
         throw new Error(
           "Customer profiles table does not exist in the database. Please contact support.",
+        );
+      }
+
+      // Check for permission errors
+      if (responseText.includes("permission denied") || responseText.includes("RLS")) {
+        console.error("DirectSupabase updateCustomerProfile: Permission denied or RLS policy issue");
+        throw new Error(
+          "Permission denied: Unable to access customer profiles. Please contact support.",
         );
       }
 
