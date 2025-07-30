@@ -3090,7 +3090,7 @@ export default function ProviderDashboard() {
 
       // Fetch business's current services with joined service details
       const businessServicesResponse = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?business_id=eq.${provider.business_id}&select=id,business_id,service_id,business_price,is_active,delivery_type,created_at,services(id,name,description,category,base_price,duration_minutes)`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?business_id=eq.${provider.business_id}&select=id,business_id,service_id,business_price,is_active,delivery_type,created_at,services(id,name,description,base_price,duration_minutes,service_subcategories(id,name,service_categories(id,service_category_type,description)))`,
         {
           headers: {
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
