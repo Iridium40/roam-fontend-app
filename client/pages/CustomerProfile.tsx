@@ -23,6 +23,7 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function CustomerProfile() {
   const { customer, updateCustomerProfile, uploadCustomerAvatar, loading } =
     useAuth();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
