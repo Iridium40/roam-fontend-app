@@ -5367,7 +5367,7 @@ export default function ProviderDashboard() {
                               <span>Minimum Price:</span>
                               <span className="font-medium text-roam-blue">
                                 $
-                                {businessService.custom_price ||
+                                {businessService.business_price ||
                                   businessService.services?.min_price ||
                                   "0"}
                               </span>
