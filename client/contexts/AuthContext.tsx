@@ -337,10 +337,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      // Ensure we have a valid access token
+      const storedToken = localStorage.getItem("roam_access_token");
+      if (storedToken) {
+        directSupabaseAPI.currentAccessToken = storedToken;
+        console.log("AuthContext updateCustomerProfile: Using stored access token");
+      } else {
+        console.warn("AuthContext updateCustomerProfile: No access token found in localStorage");
+        throw new Error("No valid authentication token found. Please sign in again.");
+      }
+
+      // Validate the token is working by checking session
+      try {
+        const session = await directSupabaseAPI.getSession();
+        if (!session) {
+          console.warn("AuthContext updateCustomerProfile: Token is invalid or expired");
+          throw new Error("Authentication token is invalid or expired. Please sign in again.");
+        }
+        console.log("AuthContext updateCustomerProfile: Token validation successful");
+      } catch (sessionError) {
+        console.error("AuthContext updateCustomerProfile: Session validation failed:", sessionError);
+        throw new Error("Authentication token is invalid. Please sign in again.");
+      }
+
       // Try to update the database first
       try {
         console.log("AuthContext updateCustomerProfile: Updating database...", {
           customerId: customer.customer_id,
+          hasToken: !!directSupabaseAPI.currentAccessToken,
           updateData: {
             first_name: profileData.firstName,
             last_name: profileData.lastName,
