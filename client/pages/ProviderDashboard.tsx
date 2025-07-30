@@ -1497,24 +1497,41 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      const updateData = {
-        is_active: providerManagementForm.is_active,
-        provider_role: providerManagementForm.provider_role,
-        business_managed: providerManagementForm.business_managed,
-        location_id:
-          providerManagementForm.location_id &&
-          providerManagementForm.location_id !== "none"
-            ? providerManagementForm.location_id
-            : null,
-        verification_status: providerManagementForm.verification_status,
-      };
+      // Validate and prepare update data
+      const updateData: any = {};
+
+      // Only include fields that have valid values
+      if (typeof providerManagementForm.is_active === 'boolean') {
+        updateData.is_active = providerManagementForm.is_active;
+      }
+
+      if (providerManagementForm.provider_role && ['owner', 'dispatcher', 'provider'].includes(providerManagementForm.provider_role)) {
+        updateData.provider_role = providerManagementForm.provider_role;
+      }
+
+      if (typeof providerManagementForm.business_managed === 'boolean') {
+        updateData.business_managed = providerManagementForm.business_managed;
+      }
+
+      if (providerManagementForm.location_id && providerManagementForm.location_id !== "none") {
+        updateData.location_id = providerManagementForm.location_id;
+      } else {
+        updateData.location_id = null;
+      }
+
+      if (providerManagementForm.verification_status && ['pending', 'verified', 'rejected'].includes(providerManagementForm.verification_status)) {
+        updateData.verification_status = providerManagementForm.verification_status;
+      }
 
       // Debug logging
-      console.log(
-        "Updating provider with data:",
-        JSON.stringify(updateData, null, 2),
-      );
+      console.log("Original form data:", providerManagementForm);
+      console.log("Validated update data:", JSON.stringify(updateData, null, 2));
       console.log("Provider ID:", managingProvider.id);
+
+      // Ensure we have at least one field to update
+      if (Object.keys(updateData).length === 0) {
+        throw new Error("No valid fields to update");
+      }
 
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`,
