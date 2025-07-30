@@ -315,6 +315,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateCustomerProfile = async (profileData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth?: string;
+    bio?: string;
+  }) => {
+    if (!customer) {
+      throw new Error("No customer logged in");
+    }
+
+    setLoading(true);
+    try {
+      console.log("AuthContext updateCustomerProfile: Starting update...");
+
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // For now, since we don't have the customers table, we'll simulate the update
+      // and update the local customer state
+      console.log("AuthContext updateCustomerProfile: Updating customer data...");
+
+      // Update local customer state
+      const updatedCustomer = {
+        ...customer,
+        first_name: profileData.firstName,
+        last_name: profileData.lastName,
+        email: profileData.email,
+        phone: profileData.phone || null,
+      };
+
+      setCustomer(updatedCustomer);
+      localStorage.setItem("roam_customer", JSON.stringify(updatedCustomer));
+
+      console.log("AuthContext updateCustomerProfile: Profile updated successfully");
+    } catch (error) {
+      console.error("AuthContext updateCustomerProfile: Error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
