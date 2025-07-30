@@ -5128,8 +5128,8 @@ export default function ProviderDashboard() {
               )}
             </TabsContent>
 
-            {/* Services Tab */}
-            <TabsContent value="services" className="space-y-6">
+            {/* Services & Add-Ons Tab */}
+            <TabsContent value="services-addons" className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Your Services</h2>
                 <div className="flex gap-2">
