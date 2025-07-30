@@ -3143,7 +3143,9 @@ export default function ProviderDashboard() {
       setAllServices(servicesData || []);
       setAllServiceAddons(addonsData || []);
       setBusinessServicesData(businessServicesData || []);
+      setBusinessServices(businessServicesData || []); // Set both for compatibility
       setBusinessAddonsData(businessAddonsData || []);
+      setBusinessAddons(businessAddonsData || []); // Set both for compatibility
       setServiceAddonEligibility(eligibilityData || []);
 
       console.log("Business services and add-ons loaded:", {
