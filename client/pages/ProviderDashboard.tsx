@@ -4739,7 +4739,7 @@ export default function ProviderDashboard() {
               >
                 Bookings
               </TabsTrigger>
-              {isOwner && (
+              {(isOwner || isDispatcher) && (
                 <TabsTrigger
                   value="services-addons"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -5243,8 +5243,8 @@ export default function ProviderDashboard() {
               )}
             </TabsContent>
 
-            {/* Services & Add-Ons Tab - Owner Only */}
-            {isOwner && (
+            {/* Services & Add-Ons Tab - Owner and Dispatcher */}
+            {(isOwner || isDispatcher) && (
               <TabsContent value="services-addons" className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
