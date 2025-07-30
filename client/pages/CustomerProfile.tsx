@@ -316,9 +316,10 @@ export default function CustomerProfile() {
                       <Button
                         onClick={handleSave}
                         className="bg-roam-blue hover:bg-roam-blue/90 flex-1"
+                        disabled={saving}
                       >
                         <Save className="w-4 h-4 mr-2" />
-                        Save Changes
+                        {saving ? "Saving..." : "Save Changes"}
                       </Button>
                       <Button
                         onClick={handleCancel}
