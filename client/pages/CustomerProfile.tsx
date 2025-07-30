@@ -69,6 +69,11 @@ export default function CustomerProfile() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      console.log("CustomerProfile: Starting save with data:", {
+        customerId: customer?.customer_id,
+        profileData: profileData
+      });
+
       await updateCustomerProfile({
         firstName: profileData.firstName,
         lastName: profileData.lastName,
@@ -81,9 +86,10 @@ export default function CustomerProfile() {
 
       setIsEditing(false);
       console.log("Profile saved successfully");
+      alert("Profile updated successfully!"); // Temporary user feedback
     } catch (error) {
       console.error("Failed to save profile:", error);
-      // TODO: Show error message to user
+      alert(`Failed to save profile: ${error.message || error}`); // Show error to user
     } finally {
       setSaving(false);
     }
