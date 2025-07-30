@@ -2090,6 +2090,17 @@ export default function ProviderDashboard() {
         hasAccessToken: !!directSupabaseAPI.currentAccessToken,
       });
 
+      // Let's check the current service data structure first
+      console.log("Current business services structure:", {
+        allServices: businessServices.map(s => ({
+          id: s.id,
+          keys: Object.keys(s),
+          delivery_type: s.delivery_type,
+          custom_price: s.custom_price,
+          is_active: s.is_active
+        }))
+      });
+
       // Validate that we have a valid service ID
       if (!editingService.id || typeof editingService.id !== "string") {
         throw new Error("Invalid service ID - cannot update service");
