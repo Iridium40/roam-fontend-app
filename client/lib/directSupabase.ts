@@ -527,22 +527,87 @@ class DirectSupabaseAPI {
     });
 
     // Try with anon key first (for tables without RLS or with public policies)
+    // First, check if a record exists for this user
     console.log(
-      "DirectSupabase updateCustomerProfile: Trying with anon key...",
+      "DirectSupabase updateCustomerProfile: Checking if record exists...",
     );
-    const response = await fetch(
-      `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
+    const checkResponse = await fetch(
+      `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}&select=user_id`,
       {
-        method: "PATCH",
+        method: "GET",
         headers: {
           apikey: this.apiKey,
           Authorization: `Bearer ${this.apiKey}`,
           "Content-Type": "application/json",
-          Prefer: "return=minimal",
         },
-        body: JSON.stringify(updateData),
       },
     );
+
+    const checkText = await checkResponse.text();
+    console.log("DirectSupabase updateCustomerProfile: Check response", {
+      status: checkResponse.status,
+      responseText: checkText,
+    });
+
+    let recordExists = false;
+    if (checkResponse.ok) {
+      try {
+        const records = JSON.parse(checkText);
+        recordExists = Array.isArray(records) && records.length > 0;
+        console.log("DirectSupabase updateCustomerProfile: Record exists:", recordExists);
+      } catch (parseError) {
+        console.log("DirectSupabase updateCustomerProfile: Check parse error:", parseError);
+      }
+    }
+
+    let response;
+    if (recordExists) {
+      // Update existing record
+      console.log(
+        "DirectSupabase updateCustomerProfile: Updating existing record...",
+      );
+      response = await fetch(
+        `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: this.apiKey,
+            Authorization: `Bearer ${this.apiKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        },
+      );
+    } else {
+      // Create new record
+      console.log(
+        "DirectSupabase updateCustomerProfile: Creating new record...",
+      );
+      response = await fetch(
+        `${this.baseURL}/rest/v1/customer_profiles`,
+        {
+          method: "POST",
+          headers: {
+            apikey: this.apiKey,
+            Authorization: `Bearer ${this.apiKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            user_id: customerId,
+            ...updateData,
+            is_active: true,
+            email_notifications: true,
+            sms_notifications: true,
+            push_notifications: true,
+            marketing_emails: false,
+            email_verified: false,
+            phone_verified: false,
+          }),
+        },
+      );
+    }
 
     let responseText = "";
     try {
