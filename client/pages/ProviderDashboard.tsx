@@ -5483,20 +5483,36 @@ export default function ProviderDashboard() {
                     {/* Debug info */}
                     {business?.service_subcategories && (
                       <div className="text-xs bg-gray-100 p-2 rounded">
-                        <strong>Business subcategories:</strong> {JSON.stringify(business.service_subcategories)}
+                        <strong>Business subcategories:</strong>{" "}
+                        {JSON.stringify(business.service_subcategories)}
                         <br />
-                        <strong>All services count:</strong> {allServices.length}
+                        <strong>All services count:</strong>{" "}
+                        {allServices.length}
                         <br />
-                        <strong>Services after filtering:</strong> {allServices.filter(service =>
-                          !businessServices.some(bs => bs.service_id === service.id) &&
-                          business?.service_subcategories?.includes(service.subcategory_id)
-                        ).length}
+                        <strong>Services after filtering:</strong>{" "}
+                        {
+                          allServices.filter(
+                            (service) =>
+                              !businessServices.some(
+                                (bs) => bs.service_id === service.id,
+                              ) &&
+                              business?.service_subcategories?.includes(
+                                service.subcategory_id,
+                              ),
+                          ).length
+                        }
                         <br />
-                        <strong>Sample services:</strong> {JSON.stringify(allServices.slice(0,3).map(s => ({
-                          name: s.name,
-                          subcategory_id: s.subcategory_id,
-                          subcategory_type: s.service_subcategories?.service_subcategory_type
-                        })), null, 2)}
+                        <strong>Sample services:</strong>{" "}
+                        {JSON.stringify(
+                          allServices.slice(0, 3).map((s) => ({
+                            name: s.name,
+                            subcategory_id: s.subcategory_id,
+                            subcategory_type:
+                              s.service_subcategories?.service_subcategory_type,
+                          })),
+                          null,
+                          2,
+                        )}
                       </div>
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -5508,7 +5524,8 @@ export default function ProviderDashboard() {
                             ) &&
                             // Only show services if business offers the related subcategory type
                             business?.service_subcategories?.includes(
-                              service.service_subcategories?.service_subcategory_type
+                              service.service_subcategories
+                                ?.service_subcategory_type,
                             ),
                         )
                         .map((service) => (
@@ -5579,24 +5596,36 @@ export default function ProviderDashboard() {
 
                     {/* Debug info for add-ons */}
                     <div className="text-xs bg-gray-100 p-2 rounded">
-                      <strong>All add-ons count:</strong> {allServiceAddons.length}
+                      <strong>All add-ons count:</strong>{" "}
+                      {allServiceAddons.length}
                       <br />
-                      <strong>Business services count:</strong> {businessServices.length}
+                      <strong>Business services count:</strong>{" "}
+                      {businessServices.length}
                       <br />
-                      <strong>Eligibility rules count:</strong> {serviceAddonEligibility.length}
+                      <strong>Eligibility rules count:</strong>{" "}
+                      {serviceAddonEligibility.length}
                       <br />
-                      <strong>Add-ons after filtering:</strong> {allServiceAddons.filter(addon =>
-                        !businessAddons.some(ba => ba.addon_id === addon.id) &&
-                        serviceAddonEligibility.some(eligibility =>
-                          eligibility.addon_id === addon.id &&
-                          allServices.some(service =>
-                            service.id === eligibility.service_id &&
-                            business?.service_subcategories?.includes(
-                              service.service_subcategories?.service_subcategory_type
-                            )
-                          )
-                        )
-                      ).length}
+                      <strong>Add-ons after filtering:</strong>{" "}
+                      {
+                        allServiceAddons.filter(
+                          (addon) =>
+                            !businessAddons.some(
+                              (ba) => ba.addon_id === addon.id,
+                            ) &&
+                            serviceAddonEligibility.some(
+                              (eligibility) =>
+                                eligibility.addon_id === addon.id &&
+                                allServices.some(
+                                  (service) =>
+                                    service.id === eligibility.service_id &&
+                                    business?.service_subcategories?.includes(
+                                      service.service_subcategories
+                                        ?.service_subcategory_type,
+                                    ),
+                                ),
+                            ),
+                        ).length
+                      }
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {allServiceAddons
@@ -5606,14 +5635,17 @@ export default function ProviderDashboard() {
                               (ba) => ba.addon_id === addon.id,
                             ) &&
                             // Only show add-ons if business can offer related services (based on subcategories)
-                            serviceAddonEligibility.some((eligibility) =>
-                              eligibility.addon_id === addon.id &&
-                              allServices.some((service) =>
-                                service.id === eligibility.service_id &&
-                                business?.service_subcategories?.includes(
-                                  service.service_subcategories?.service_subcategory_type
-                                )
-                              )
+                            serviceAddonEligibility.some(
+                              (eligibility) =>
+                                eligibility.addon_id === addon.id &&
+                                allServices.some(
+                                  (service) =>
+                                    service.id === eligibility.service_id &&
+                                    business?.service_subcategories?.includes(
+                                      service.service_subcategories
+                                        ?.service_subcategory_type,
+                                    ),
+                                ),
                             ),
                         )
                         .map((addon) => (
