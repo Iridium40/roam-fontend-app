@@ -20,9 +20,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function CustomerProfile() {
-  const { customer, updateCustomerProfile, loading } = useAuth();
+  const { customer, updateCustomerProfile, uploadCustomerAvatar, loading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [profileData, setProfileData] = useState({
     firstName: customer?.first_name || "",
     lastName: customer?.last_name || "",
@@ -30,6 +31,7 @@ export default function CustomerProfile() {
     phone: customer?.phone || "",
     dateOfBirth: "",
     bio: "",
+    imageUrl: customer?.image_url || "",
   });
 
   // Update profile data when customer data changes
