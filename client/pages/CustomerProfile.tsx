@@ -47,10 +47,26 @@ export default function CustomerProfile() {
 
   const initials = `${customer.first_name.charAt(0)}${customer.last_name.charAt(0)}`.toUpperCase();
 
-  const handleSave = () => {
-    // TODO: Implement profile update API call
-    console.log("Saving profile data:", profileData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateCustomerProfile({
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        email: profileData.email,
+        phone: profileData.phone,
+        dateOfBirth: profileData.dateOfBirth,
+        bio: profileData.bio,
+      });
+
+      setIsEditing(false);
+      console.log("Profile saved successfully");
+    } catch (error) {
+      console.error("Failed to save profile:", error);
+      // TODO: Show error message to user
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
