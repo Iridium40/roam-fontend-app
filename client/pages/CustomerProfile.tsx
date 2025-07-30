@@ -229,7 +229,8 @@ export default function CustomerProfile() {
       ) {
         toast({
           title: "Session Expired",
-          description: "Your session has expired. Please sign in again to save your changes.",
+          description:
+            "Your session has expired. Please sign in again to save your changes.",
           variant: "destructive",
         });
         // Optionally redirect to login or show login modal
