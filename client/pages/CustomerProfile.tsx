@@ -186,8 +186,12 @@ export default function CustomerProfile() {
         imageUrl: profileData.imageUrl,
       });
 
+      console.log("CustomerProfile: Profile saved successfully, reloading data...");
+
+      // Reload the profile data to ensure UI shows the latest saved data
+      await loadCustomerProfile();
+
       setIsEditing(false);
-      console.log("CustomerProfile: Profile saved successfully");
       alert("Profile updated successfully!"); // Temporary user feedback
     } catch (error) {
       console.error("Failed to save profile:", error);
