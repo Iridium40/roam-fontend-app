@@ -374,7 +374,11 @@ export default function Index() {
               {isCustomer ? (
                 <>
                   <CustomerAvatarDropdown />
-                  <Button asChild variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
+                  >
                     <Link to="/provider-portal">
                       <Users className="w-4 h-4 mr-2" />
                       Provider Portal
@@ -404,7 +408,11 @@ export default function Index() {
                   >
                     Sign Up
                   </Button>
-                  <Button asChild variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
+                  >
                     <Link to="/provider-portal">
                       <Users className="w-4 h-4 mr-2" />
                       Provider Portal

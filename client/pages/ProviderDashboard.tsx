@@ -2051,7 +2051,11 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       // Validate delivery_type
-      const validDeliveryTypes = ["business_location", "service_location", "both"];
+      const validDeliveryTypes = [
+        "business_location",
+        "service_location",
+        "both",
+      ];
       if (!validDeliveryTypes.includes(serviceForm.delivery_type)) {
         throw new Error("Invalid delivery type selected");
       }
@@ -2083,11 +2087,11 @@ export default function ProviderDashboard() {
         updateData: updateData,
         serviceId: editingService.id,
         url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
-        hasAccessToken: !!directSupabaseAPI.currentAccessToken
+        hasAccessToken: !!directSupabaseAPI.currentAccessToken,
       });
 
       // Validate that we have a valid service ID
-      if (!editingService.id || typeof editingService.id !== 'string') {
+      if (!editingService.id || typeof editingService.id !== "string") {
         throw new Error("Invalid service ID - cannot update service");
       }
 
@@ -2107,11 +2111,13 @@ export default function ProviderDashboard() {
       const checkResult = await checkResponse.json();
       console.log("Service existence check:", {
         status: checkResponse.status,
-        result: checkResult
+        result: checkResult,
       });
 
       if (!checkResponse.ok || !checkResult || checkResult.length === 0) {
-        throw new Error(`Service with ID ${editingService.id} not found or inaccessible`);
+        throw new Error(
+          `Service with ID ${editingService.id} not found or inaccessible`,
+        );
       }
 
       const response = await fetch(
@@ -2172,12 +2178,14 @@ export default function ProviderDashboard() {
           url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
           headers: {
             apikey: "***",
-            Authorization: directSupabaseAPI.currentAccessToken ? "Bearer [USER_TOKEN]" : "Bearer [ANON_KEY]",
+            Authorization: directSupabaseAPI.currentAccessToken
+              ? "Bearer [USER_TOKEN]"
+              : "Bearer [ANON_KEY]",
             "Content-Type": "application/json",
             Prefer: "return=minimal",
           },
           errorTextLength: errorText?.length || 0,
-          isEmpty: !errorText || errorText.trim() === ""
+          isEmpty: !errorText || errorText.trim() === "",
         };
 
         console.error("Service update failed:", debugInfo);
@@ -2187,65 +2195,76 @@ export default function ProviderDashboard() {
           errorDetails = `HTTP ${response.status} - No error details provided by server`;
         }
 
-      // If HTTP 400 with empty error details, try a simpler update approach
-      if (response.status === 400 && (!errorDetails || errorDetails.trim() === "")) {
-        console.log("Attempting simplified update due to HTTP 400 with no details...");
-
-        try {
-          // Try updating only the is_active field first
-          const simpleData = { is_active: serviceForm.is_active };
-          const simpleResponse = await fetch(
-            `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
-            {
-              method: "PATCH",
-              headers: {
-                apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-                Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
-                "Content-Type": "application/json",
-                Prefer: "return=minimal",
-              },
-              body: JSON.stringify(simpleData),
-            },
+        // If HTTP 400 with empty error details, try a simpler update approach
+        if (
+          response.status === 400 &&
+          (!errorDetails || errorDetails.trim() === "")
+        ) {
+          console.log(
+            "Attempting simplified update due to HTTP 400 with no details...",
           );
 
-          if (simpleResponse.ok) {
-            console.log("Simple update succeeded - the issue may be with delivery_type or custom_price fields");
-
-            // Update local state with simple data
-            setBusinessServices((prev) =>
-              prev.map((service) =>
-                service.id === editingService.id
-                  ? { ...service, is_active: serviceForm.is_active }
-                  : service,
-              ),
+          try {
+            // Try updating only the is_active field first
+            const simpleData = { is_active: serviceForm.is_active };
+            const simpleResponse = await fetch(
+              `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
+              {
+                method: "PATCH",
+                headers: {
+                  apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+                  Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+                  "Content-Type": "application/json",
+                  Prefer: "return=minimal",
+                },
+                body: JSON.stringify(simpleData),
+              },
             );
 
-            setServiceSuccess("Service status updated successfully! (Note: Some fields may not have been updated due to data format issues)");
-            setEditingService(null);
-            setServiceSaving(false);
-            return; // Exit early on success
-          } else {
-            const fallbackError = await simpleResponse.text();
-            console.log("Simple update also failed:", fallbackError);
+            if (simpleResponse.ok) {
+              console.log(
+                "Simple update succeeded - the issue may be with delivery_type or custom_price fields",
+              );
+
+              // Update local state with simple data
+              setBusinessServices((prev) =>
+                prev.map((service) =>
+                  service.id === editingService.id
+                    ? { ...service, is_active: serviceForm.is_active }
+                    : service,
+                ),
+              );
+
+              setServiceSuccess(
+                "Service status updated successfully! (Note: Some fields may not have been updated due to data format issues)",
+              );
+              setEditingService(null);
+              setServiceSaving(false);
+              return; // Exit early on success
+            } else {
+              const fallbackError = await simpleResponse.text();
+              console.log("Simple update also failed:", fallbackError);
+            }
+          } catch (fallbackError) {
+            console.log("Fallback update failed:", fallbackError);
           }
-        } catch (fallbackError) {
-          console.log("Fallback update failed:", fallbackError);
         }
-      }
 
-      // Provide specific error message based on status code
-      let userFriendlyError = errorDetails || errorText;
-      if (response.status === 400) {
-        userFriendlyError = `Invalid request: ${errorDetails || 'The data format may be incorrect. Please check your input values.'}`;
-      } else if (response.status === 401) {
-        userFriendlyError = "Authentication failed. Please refresh the page and try again.";
-      } else if (response.status === 403) {
-        userFriendlyError = "Permission denied. You may not have access to update this service.";
-      } else if (response.status === 404) {
-        userFriendlyError = "Service not found. It may have been deleted.";
-      }
+        // Provide specific error message based on status code
+        let userFriendlyError = errorDetails || errorText;
+        if (response.status === 400) {
+          userFriendlyError = `Invalid request: ${errorDetails || "The data format may be incorrect. Please check your input values."}`;
+        } else if (response.status === 401) {
+          userFriendlyError =
+            "Authentication failed. Please refresh the page and try again.";
+        } else if (response.status === 403) {
+          userFriendlyError =
+            "Permission denied. You may not have access to update this service.";
+        } else if (response.status === 404) {
+          userFriendlyError = "Service not found. It may have been deleted.";
+        }
 
-      throw new Error(userFriendlyError);
+        throw new Error(userFriendlyError);
       }
 
       // Update local state
