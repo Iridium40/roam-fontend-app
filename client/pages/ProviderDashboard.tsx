@@ -375,6 +375,19 @@ export default function ProviderDashboard() {
   const [businessServicesSuccess, setBusinessServicesSuccess] = useState("");
   const [businessServicesSaving, setBusinessServicesSaving] = useState(false);
 
+  // Business service/addon editing state
+  const [editServiceModal, setEditServiceModal] = useState(false);
+  const [editAddonModal, setEditAddonModal] = useState(false);
+  const [editingBusinessService, setEditingBusinessService] = useState<any>(null);
+  const [editingBusinessAddon, setEditingBusinessAddon] = useState<any>(null);
+  const [editServiceForm, setEditServiceForm] = useState({
+    business_price: "",
+    delivery_type: "business_location"
+  });
+  const [editAddonForm, setEditAddonForm] = useState({
+    custom_price: ""
+  });
+
   // Tax Info state
   const [taxInfo, setTaxInfo] = useState(null);
   const [taxInfoLoading, setTaxInfoLoading] = useState(false);
