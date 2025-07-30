@@ -5414,6 +5414,52 @@ export default function ProviderDashboard() {
                   </div>
                 </div>
               )}
+
+              {/* Available Add-ons to Add Section */}
+              {allServiceAddons.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold">Available Add-ons</h3>
+                    <p className="text-sm text-foreground/60">
+                      Add add-ons to your business offering
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {allServiceAddons
+                      .filter(addon => !businessAddons.some(ba => ba.addon_id === addon.id))
+                      .map((addon) => (
+                      <Card key={addon.id} className="p-4 border-dashed border-2 hover:border-roam-blue transition-colors">
+                        <div className="space-y-3">
+                          <div>
+                            <h4 className="font-medium">{addon.name}</h4>
+                            <p className="text-sm text-foreground/60">
+                              {addon.addon_type}
+                            </p>
+                            {addon.description && (
+                              <p className="text-xs text-foreground/50 mt-1">
+                                {addon.description}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <span>Default Price: ${addon.default_price || "0"}</span>
+                            {addon.is_percentage && <span>% based</span>}
+                          </div>
+                          <Button
+                            size="sm"
+                            className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                            onClick={() => handleToggleBusinessAddon(addon.id, true, addon.default_price)}
+                            disabled={businessServicesSaving}
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add Add-on
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
             </TabsContent>
             )}
 
