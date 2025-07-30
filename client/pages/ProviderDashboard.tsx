@@ -3046,6 +3046,379 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Business Services & Add-ons Functions
+  const fetchBusinessServicesAndAddons = async () => {
+    if (!provider?.business_id) {
+      console.log("fetchBusinessServicesAndAddons: No business_id available");
+      return;
+    }
+
+    setBusinessServicesLoading(true);
+    setBusinessServicesError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Fetch all available services
+      const servicesResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/services?select=*&order=name`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Fetch all available service add-ons
+      const addonsResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/service_addons?select=*&order=name`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Fetch business's current services
+      const businessServicesResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?business_id=eq.${provider.business_id}&select=*,services(*)`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Fetch business's current add-ons
+      const businessAddonsResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?business_id=eq.${provider.business_id}&select=*,service_addons(*)`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Fetch service-addon eligibility
+      const eligibilityResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/service_addon_eligibility?select=*`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Process all responses
+      const [servicesData, addonsData, businessServicesData, businessAddonsData, eligibilityData] = await Promise.all([
+        servicesResponse.ok ? servicesResponse.json() : [],
+        addonsResponse.ok ? addonsResponse.json() : [],
+        businessServicesResponse.ok ? businessServicesResponse.json() : [],
+        businessAddonsResponse.ok ? businessAddonsResponse.json() : [],
+        eligibilityResponse.ok ? eligibilityResponse.json() : []
+      ]);
+
+      setAllServices(servicesData);
+      setAllServiceAddons(addonsData);
+      setBusinessServicesData(businessServicesData);
+      setBusinessAddonsData(businessAddonsData);
+      setServiceAddonEligibility(eligibilityData);
+
+      console.log("Business services and add-ons loaded:", {
+        services: servicesData.length,
+        addons: addonsData.length,
+        businessServices: businessServicesData.length,
+        businessAddons: businessAddonsData.length,
+        eligibility: eligibilityData.length
+      });
+
+    } catch (error: any) {
+      console.error("fetchBusinessServicesAndAddons: Error:", error);
+      setBusinessServicesError(`Failed to load services and add-ons: ${error.message}`);
+    } finally {
+      setBusinessServicesLoading(false);
+    }
+  };
+
+  const handleToggleBusinessService = async (serviceId: string, isActive: boolean, businessPrice?: number, deliveryType?: string) => {
+    if (!provider?.business_id) return;
+
+    setBusinessServicesSaving(true);
+    setBusinessServicesError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Check if business already has this service
+      const existingService = businessServicesData.find(bs => bs.service_id === serviceId);
+
+      if (existingService && !isActive) {
+        // Remove service (and cascade remove dependent add-ons)
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${existingService.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to remove service: ${errorText}`);
+        }
+
+        // Update local state
+        setBusinessServicesData(prev => prev.filter(bs => bs.id !== existingService.id));
+
+        // Also remove any add-ons that are no longer eligible
+        await updateEligibleAddons();
+
+      } else if (existingService && isActive) {
+        // Update existing service
+        const updateData = {
+          is_active: isActive,
+          ...(businessPrice && { business_price: businessPrice }),
+          ...(deliveryType && { delivery_type: deliveryType })
+        };
+
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${existingService.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify(updateData),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to update service: ${errorText}`);
+        }
+
+        // Update local state
+        setBusinessServicesData(prev =>
+          prev.map(bs =>
+            bs.id === existingService.id
+              ? { ...bs, ...updateData }
+              : bs
+          )
+        );
+
+      } else if (isActive && businessPrice) {
+        // Add new service
+        const service = allServices.find(s => s.id === serviceId);
+        if (!service) throw new Error("Service not found");
+
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services`,
+          {
+            method: "POST",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+              business_id: provider.business_id,
+              service_id: serviceId,
+              business_price: businessPrice,
+              delivery_type: deliveryType || "business_location",
+              is_active: true,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to add service: ${errorText}`);
+        }
+
+        const newService = await response.json();
+        const newServiceWithDetails = {
+          ...newService[0],
+          services: service
+        };
+
+        setBusinessServicesData(prev => [...prev, newServiceWithDetails]);
+      }
+
+      setBusinessServicesSuccess(isActive ? "Service added successfully!" : "Service removed successfully!");
+    } catch (error: any) {
+      console.error("handleToggleBusinessService: Error:", error);
+      setBusinessServicesError(`Failed to ${isActive ? 'add' : 'remove'} service: ${error.message}`);
+    } finally {
+      setBusinessServicesSaving(false);
+    }
+  };
+
+  const handleToggleBusinessAddon = async (addonId: string, isActive: boolean, customPrice?: number) => {
+    if (!provider?.business_id) return;
+
+    setBusinessServicesSaving(true);
+    setBusinessServicesError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Check if business already has this add-on
+      const existingAddon = businessAddonsData.find(ba => ba.addon_id === addonId);
+
+      if (existingAddon && !isActive) {
+        // Remove add-on
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?id=eq.${existingAddon.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to remove add-on: ${errorText}`);
+        }
+
+        // Update local state
+        setBusinessAddonsData(prev => prev.filter(ba => ba.id !== existingAddon.id));
+
+      } else if (existingAddon && isActive) {
+        // Update existing add-on
+        const updateData = {
+          is_available: isActive,
+          ...(customPrice && { custom_price: customPrice })
+        };
+
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?id=eq.${existingAddon.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify(updateData),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to update add-on: ${errorText}`);
+        }
+
+        // Update local state
+        setBusinessAddonsData(prev =>
+          prev.map(ba =>
+            ba.id === existingAddon.id
+              ? { ...ba, ...updateData }
+              : ba
+          )
+        );
+
+      } else if (isActive) {
+        // Add new add-on
+        const addon = allServiceAddons.find(a => a.id === addonId);
+        if (!addon) throw new Error("Add-on not found");
+
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons`,
+          {
+            method: "POST",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+              business_id: provider.business_id,
+              addon_id: addonId,
+              custom_price: customPrice || null,
+              is_available: true,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to add add-on: ${errorText}`);
+        }
+
+        const newAddon = await response.json();
+        const newAddonWithDetails = {
+          ...newAddon[0],
+          service_addons: addon
+        };
+
+        setBusinessAddonsData(prev => [...prev, newAddonWithDetails]);
+      }
+
+      setBusinessServicesSuccess(isActive ? "Add-on added successfully!" : "Add-on removed successfully!");
+    } catch (error: any) {
+      console.error("handleToggleBusinessAddon: Error:", error);
+      setBusinessServicesError(`Failed to ${isActive ? 'add' : 'remove'} add-on: ${error.message}`);
+    } finally {
+      setBusinessServicesSaving(false);
+    }
+  };
+
+  const updateEligibleAddons = async () => {
+    // Remove any business add-ons that are no longer eligible
+    const assignedServiceIds = businessServicesData.map(bs => bs.service_id);
+    const ineligibleAddons = businessAddonsData.filter(ba => {
+      const eligibility = serviceAddonEligibility.find(e => e.addon_id === ba.addon_id);
+      return eligibility && !assignedServiceIds.includes(eligibility.service_id);
+    });
+
+    for (const addon of ineligibleAddons) {
+      await handleToggleBusinessAddon(addon.addon_id, false);
+    }
+  };
+
+  const getEligibleAddonsForService = (serviceId: string) => {
+    const eligibleAddonIds = serviceAddonEligibility
+      .filter(e => e.service_id === serviceId)
+      .map(e => e.addon_id);
+
+    return allServiceAddons.filter(addon => eligibleAddonIds.includes(addon.id));
+  };
+
+  const isAddonEligible = (addonId: string) => {
+    const assignedServiceIds = businessServicesData.map(bs => bs.service_id);
+    const eligibility = serviceAddonEligibility.find(e => e.addon_id === addonId);
+    return eligibility && assignedServiceIds.includes(eligibility.service_id);
+  };
+
+  const clearBusinessServicesMessages = () => {
+    setBusinessServicesError("");
+    setBusinessServicesSuccess("");
+  };
+
   const handleSaveBusinessDetails = async () => {
     if (!business) return;
 
