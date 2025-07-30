@@ -47,9 +47,9 @@ export default function CustomerTransactions() {
         image: "/api/placeholder/60/60",
         rating: 4.9,
       },
-      amount: 120.00,
-      tip: 20.00,
-      total: 140.00,
+      amount: 120.0,
+      tip: 20.0,
+      total: 140.0,
       status: "completed",
       duration: "90 minutes",
       location: "Your Home - 123 Ocean Dr, Miami, FL",
@@ -67,9 +67,9 @@ export default function CustomerTransactions() {
         image: "/api/placeholder/60/60",
         rating: 5.0,
       },
-      amount: 80.00,
-      tip: 15.00,
-      total: 95.00,
+      amount: 80.0,
+      tip: 15.0,
+      total: 95.0,
       status: "completed",
       duration: "60 minutes",
       location: "Your Home - 456 Park Ave, Orlando, FL",
@@ -87,9 +87,9 @@ export default function CustomerTransactions() {
         image: "/api/placeholder/60/60",
         rating: 4.8,
       },
-      amount: 185.00,
-      tip: 0.00,
-      total: 185.00,
+      amount: 185.0,
+      tip: 0.0,
+      total: 185.0,
       status: "pending",
       duration: "3 hours",
       location: "Beauty Studio - 789 Main St, Tampa, FL",
@@ -112,18 +112,24 @@ export default function CustomerTransactions() {
     );
   }
 
-  const filteredTransactions = transactions.filter(transaction => {
-    const matchesSearch = transaction.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         transaction.provider.name.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredTransactions = transactions.filter((transaction) => {
+    const matchesSearch =
+      transaction.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.provider.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
     const matchesYear = transaction.date.startsWith(selectedYear);
-    const matchesStatus = selectedStatus === "all" || transaction.status === selectedStatus;
-    
+    const matchesStatus =
+      selectedStatus === "all" || transaction.status === selectedStatus;
+
     return matchesSearch && matchesYear && matchesStatus;
   });
 
   const totalSpent = transactions.reduce((sum, t) => sum + t.total, 0);
   const totalTips = transactions.reduce((sum, t) => sum + t.tip, 0);
-  const completedBookings = transactions.filter(t => t.status === "completed").length;
+  const completedBookings = transactions.filter(
+    (t) => t.status === "completed",
+  ).length;
 
   const getStatusConfig = (status: string) => {
     const configs = {
@@ -188,8 +194,12 @@ export default function CustomerTransactions() {
                       <DollarSign className="w-6 h-6 text-roam-blue" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-foreground/60">Total Spent</p>
-                      <p className="text-2xl font-bold">${totalSpent.toFixed(2)}</p>
+                      <p className="text-sm font-medium text-foreground/60">
+                        Total Spent
+                      </p>
+                      <p className="text-2xl font-bold">
+                        ${totalSpent.toFixed(2)}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -202,8 +212,12 @@ export default function CustomerTransactions() {
                       <Star className="w-6 h-6 text-green-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-foreground/60">Tips Given</p>
-                      <p className="text-2xl font-bold">${totalTips.toFixed(2)}</p>
+                      <p className="text-sm font-medium text-foreground/60">
+                        Tips Given
+                      </p>
+                      <p className="text-2xl font-bold">
+                        ${totalTips.toFixed(2)}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -216,7 +230,9 @@ export default function CustomerTransactions() {
                       <Calendar className="w-6 h-6 text-purple-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-foreground/60">Completed</p>
+                      <p className="text-sm font-medium text-foreground/60">
+                        Completed
+                      </p>
                       <p className="text-2xl font-bold">{completedBookings}</p>
                     </div>
                   </div>
@@ -230,9 +246,14 @@ export default function CustomerTransactions() {
                       <TrendingUp className="w-6 h-6 text-orange-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-foreground/60">Avg. Per Service</p>
+                      <p className="text-sm font-medium text-foreground/60">
+                        Avg. Per Service
+                      </p>
                       <p className="text-2xl font-bold">
-                        ${completedBookings > 0 ? (totalSpent / completedBookings).toFixed(2) : "0.00"}
+                        $
+                        {completedBookings > 0
+                          ? (totalSpent / completedBookings).toFixed(2)
+                          : "0.00"}
                       </p>
                     </div>
                   </div>
@@ -265,7 +286,10 @@ export default function CustomerTransactions() {
                       <SelectItem value="2022">2022</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <Select
+                    value={selectedStatus}
+                    onValueChange={setSelectedStatus}
+                  >
                     <SelectTrigger className="w-full sm:w-40">
                       <SelectValue />
                     </SelectTrigger>
@@ -285,9 +309,12 @@ export default function CustomerTransactions() {
             <div className="space-y-4">
               {filteredTransactions.map((transaction) => {
                 const statusConfig = getStatusConfig(transaction.status);
-                
+
                 return (
-                  <Card key={transaction.id} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={transaction.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardContent className="p-6">
                       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                         <div className="flex items-start gap-4">
@@ -306,7 +333,9 @@ export default function CustomerTransactions() {
                                 <div className="flex items-center gap-4 text-sm text-foreground/60">
                                   <div className="flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
-                                    {new Date(transaction.date).toLocaleDateString()}
+                                    {new Date(
+                                      transaction.date,
+                                    ).toLocaleDateString()}
                                   </div>
                                   <div className="flex items-center gap-1">
                                     <Clock className="w-4 h-4" />
@@ -314,7 +343,9 @@ export default function CustomerTransactions() {
                                   </div>
                                   <div className="flex items-center gap-1">
                                     <MapPin className="w-4 h-4" />
-                                    {transaction.deliveryType === "mobile" ? "Mobile" : "In-Studio"}
+                                    {transaction.deliveryType === "mobile"
+                                      ? "Mobile"
+                                      : "In-Studio"}
                                   </div>
                                 </div>
                               </div>
@@ -322,22 +353,29 @@ export default function CustomerTransactions() {
                                 {statusConfig.label}
                               </Badge>
                             </div>
-                            
+
                             <div className="bg-accent/20 rounded-lg p-3 mb-3">
                               <p className="text-sm">
-                                <strong>Location:</strong> {transaction.location}
+                                <strong>Location:</strong>{" "}
+                                {transaction.location}
                               </p>
                             </div>
 
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                               <div>
-                                <p className="text-foreground/60">Service Amount</p>
-                                <p className="font-semibold">${transaction.amount.toFixed(2)}</p>
+                                <p className="text-foreground/60">
+                                  Service Amount
+                                </p>
+                                <p className="font-semibold">
+                                  ${transaction.amount.toFixed(2)}
+                                </p>
                               </div>
                               <div>
                                 <p className="text-foreground/60">Tip</p>
                                 <p className="font-semibold">
-                                  {transaction.tip > 0 ? `$${transaction.tip.toFixed(2)}` : "No tip"}
+                                  {transaction.tip > 0
+                                    ? `$${transaction.tip.toFixed(2)}`
+                                    : "No tip"}
                                 </p>
                               </div>
                               <div>
@@ -347,8 +385,12 @@ export default function CustomerTransactions() {
                                 </p>
                               </div>
                               <div>
-                                <p className="text-foreground/60">Payment Method</p>
-                                <p className="font-semibold">{transaction.paymentMethod}</p>
+                                <p className="text-foreground/60">
+                                  Payment Method
+                                </p>
+                                <p className="font-semibold">
+                                  {transaction.paymentMethod}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -359,22 +401,22 @@ export default function CustomerTransactions() {
                             <Receipt className="w-4 h-4 mr-2" />
                             View Receipt
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            asChild
-                          >
+                          <Button variant="outline" size="sm" asChild>
                             <Link to={`/provider/${transaction.provider.id}`}>
                               <User className="w-4 h-4 mr-2" />
                               View Provider
                             </Link>
                           </Button>
-                          {transaction.status === "completed" && transaction.tip === 0 && (
-                            <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
-                              <Star className="w-4 h-4 mr-2" />
-                              Add Tip
-                            </Button>
-                          )}
+                          {transaction.status === "completed" &&
+                            transaction.tip === 0 && (
+                              <Button
+                                size="sm"
+                                className="bg-roam-blue hover:bg-roam-blue/90"
+                              >
+                                <Star className="w-4 h-4 mr-2" />
+                                Add Tip
+                              </Button>
+                            )}
                         </div>
                       </div>
                     </CardContent>
@@ -387,9 +429,12 @@ export default function CustomerTransactions() {
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Search className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">No transactions found</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    No transactions found
+                  </h3>
                   <p className="text-foreground/60 mb-4">
-                    Try adjusting your search criteria or browse all transactions.
+                    Try adjusting your search criteria or browse all
+                    transactions.
                   </p>
                   <Button
                     variant="outline"
