@@ -46,8 +46,6 @@ export default function CustomerSettings() {
     
     // Communication Preferences
     preferredContactMethod: "email",
-    quietHoursStart: "22:00",
-    quietHoursEnd: "08:00",
   });
 
   if (!customer) {
