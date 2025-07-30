@@ -586,10 +586,15 @@ class DirectSupabaseAPI {
         Prefer: "return=minimal",
       },
       body: JSON.stringify({
-        id: customerId,
+        user_id: customerId,
         ...profileData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        is_active: true,
+        email_notifications: true,
+        sms_notifications: true,
+        push_notifications: true,
+        marketing_emails: false,
+        email_verified: false,
+        phone_verified: false,
       }),
     });
 
