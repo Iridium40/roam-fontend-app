@@ -86,6 +86,35 @@ export default function CustomerProfile() {
     }
   };
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const imageUrl = await uploadCustomerAvatar(file);
+      setProfileData(prev => ({ ...prev, imageUrl }));
+      console.log('Avatar uploaded successfully');
+    } catch (error) {
+      console.error('Failed to upload avatar:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleCancel = () => {
     setProfileData({
       firstName: customer.first_name,
@@ -94,6 +123,7 @@ export default function CustomerProfile() {
       phone: customer.phone || "",
       dateOfBirth: "",
       bio: "",
+      imageUrl: customer.image_url || "",
     });
     setIsEditing(false);
   };
