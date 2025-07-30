@@ -2204,7 +2204,7 @@ export default function ProviderDashboard() {
         console.log("All schema variations failed. Using last response for error handling.");
       }
 
-      if (!response.ok) {
+      if (!updateSuccess && (!response || !response.ok)) {
         let errorText = "Unknown error";
         let errorDetails = "";
         try {
