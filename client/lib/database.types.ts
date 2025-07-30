@@ -880,6 +880,7 @@ export interface AuthCustomer {
   first_name: string;
   last_name: string;
   phone: string | null;
+  image_url: string | null;
 }
 
 export interface BusinessRegistration {
