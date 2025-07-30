@@ -5131,7 +5131,12 @@ export default function ProviderDashboard() {
             {/* Services & Add-Ons Tab */}
             <TabsContent value="services-addons" className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Your Services</h2>
+                <div>
+                  <h2 className="text-2xl font-bold">Business Services & Add-Ons</h2>
+                  <p className="text-foreground/60">
+                    Manage the services and add-ons your business offers to customers
+                  </p>
+                </div>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
