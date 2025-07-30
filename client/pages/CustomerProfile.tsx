@@ -47,6 +47,15 @@ export default function CustomerProfile() {
         bio: "",
         imageUrl: customer.image_url || "",
       });
+    } else {
+      // Check if we have a stored token but no customer data
+      const storedToken = localStorage.getItem("roam_access_token");
+      const storedCustomer = localStorage.getItem("roam_customer");
+
+      if (!storedToken || !storedCustomer) {
+        console.log("CustomerProfile: No valid authentication found");
+        // Could add a redirect to login here if needed
+      }
     }
   }, [customer]);
 
