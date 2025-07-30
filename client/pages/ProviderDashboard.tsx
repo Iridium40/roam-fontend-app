@@ -2752,6 +2752,14 @@ export default function ProviderDashboard() {
     setAddonsSuccess("");
   };
 
+  const handleTabChange = (newTab: string) => {
+    // Clear messages when switching tabs
+    if (newTab !== "addons") {
+      clearAddonsMessages();
+    }
+    setActiveTab(newTab);
+  };
+
   const fetchBusinessServices = async () => {
     if (!provider) {
       console.log("fetchBusinessServices: No provider available");
