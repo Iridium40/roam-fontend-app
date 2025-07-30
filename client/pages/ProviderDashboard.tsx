@@ -2878,6 +2878,150 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Provider Add-ons Functions
+  const fetchProviderAddons = async () => {
+    if (!provider) {
+      console.log("fetchProviderAddons: No provider available");
+      return;
+    }
+
+    setAddonsLoading(true);
+    setAddonsError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Fetch all available service add-ons
+      const availableResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/service_addons?select=*`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      let availableAddonsData = [];
+      if (availableResponse.ok) {
+        availableAddonsData = await availableResponse.json();
+      }
+
+      // Fetch provider's current add-ons
+      const providerResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/provider_addons?provider_id=eq.${provider.id}&select=*,service_addons(*)`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      let providerAddonsData = [];
+      if (providerResponse.ok) {
+        providerAddonsData = await providerResponse.json();
+      }
+
+      setAvailableAddons(availableAddonsData);
+      setProviderAddons(providerAddonsData);
+    } catch (error: any) {
+      console.error("fetchProviderAddons: Error:", error);
+      setAddonsError(`Failed to load add-ons: ${error.message}`);
+    } finally {
+      setAddonsLoading(false);
+    }
+  };
+
+  const handleToggleAddon = async (addonId: string, isActive: boolean) => {
+    if (!provider) return;
+
+    setAddonsSaving(true);
+    setAddonsError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Check if provider already has this add-on
+      const existingAddon = providerAddons.find(pa => pa.addon_id === addonId);
+
+      if (existingAddon) {
+        // Update existing provider_addon
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/provider_addons?id=eq.${existingAddon.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify({ is_active: isActive }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to update add-on: ${errorText}`);
+        }
+
+        // Update local state
+        setProviderAddons(prev =>
+          prev.map(pa =>
+            pa.id === existingAddon.id
+              ? { ...pa, is_active: isActive }
+              : pa
+          )
+        );
+      } else if (isActive) {
+        // Create new provider_addon
+        const response = await fetch(
+          `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/provider_addons`,
+          {
+            method: "POST",
+            headers: {
+              apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+              provider_id: provider.id,
+              addon_id: addonId,
+              is_active: true,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to add add-on: ${errorText}`);
+        }
+
+        const newAddon = await response.json();
+
+        // Add the service_addon details
+        const addonDetails = availableAddons.find(a => a.id === addonId);
+        const newAddonWithDetails = {
+          ...newAddon[0],
+          service_addons: addonDetails
+        };
+
+        setProviderAddons(prev => [...prev, newAddonWithDetails]);
+      }
+
+      setAddonsSuccess(isActive ? "Add-on enabled successfully!" : "Add-on disabled successfully!");
+    } catch (error: any) {
+      console.error("handleToggleAddon: Error:", error);
+      setAddonsError(`Failed to ${isActive ? 'enable' : 'disable'} add-on: ${error.message}`);
+    } finally {
+      setAddonsSaving(false);
+    }
+  };
+
   const handleSaveBusinessDetails = async () => {
     if (!business) return;
 
