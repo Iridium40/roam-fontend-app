@@ -150,6 +150,17 @@ export default function CustomerProfile() {
     );
   }
 
+  if (loadingProfile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <Card className="p-8 text-center">
+          <div className="w-6 h-6 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-lg">Loading your profile...</p>
+        </Card>
+      </div>
+    );
+  }
+
   const initials =
     `${customer.first_name.charAt(0)}${customer.last_name.charAt(0)}`.toUpperCase();
 
