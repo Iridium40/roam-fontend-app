@@ -2077,7 +2077,42 @@ export default function ProviderDashboard() {
         is_active: serviceForm.is_active,
       };
 
-      console.log("Service update data being sent:", updateData);
+      console.log("Service update - Debug info:", {
+        editingService: editingService,
+        serviceForm: serviceForm,
+        updateData: updateData,
+        serviceId: editingService.id,
+        url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
+        hasAccessToken: !!directSupabaseAPI.currentAccessToken
+      });
+
+      // Validate that we have a valid service ID
+      if (!editingService.id || typeof editingService.id !== 'string') {
+        throw new Error("Invalid service ID - cannot update service");
+      }
+
+      // Check if the service exists first
+      const checkResponse = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}&select=id`,
+        {
+          method: "GET",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const checkResult = await checkResponse.json();
+      console.log("Service existence check:", {
+        status: checkResponse.status,
+        result: checkResult
+      });
+
+      if (!checkResponse.ok || !checkResult || checkResult.length === 0) {
+        throw new Error(`Service with ID ${editingService.id} not found or inaccessible`);
+      }
 
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
