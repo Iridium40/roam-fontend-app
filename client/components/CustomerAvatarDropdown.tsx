@@ -40,7 +40,7 @@ export const CustomerAvatarDropdown: React.FC = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-10 w-auto px-3 py-2 text-left font-normal"
+          className="relative h-10 w-auto px-3 py-2 text-left font-normal border border-black/20 hover:border-black/30 rounded-md shadow-sm"
         >
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
