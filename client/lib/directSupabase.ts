@@ -517,8 +517,9 @@ class DirectSupabaseAPI {
       image_url?: string | null;
     }
   ): Promise<void> {
+    // First try to update the customer_profiles table
     const response = await fetch(
-      `${this.baseURL}/rest/v1/customers?id=eq.${customerId}`,
+      `${this.baseURL}/rest/v1/customer_profiles?id=eq.${customerId}`,
       {
         method: "PATCH",
         headers: {
@@ -540,7 +541,57 @@ class DirectSupabaseAPI {
     }
 
     if (!response.ok) {
-      throw new Error(`Customer profile update failed: ${responseText}`);
+      // If update fails, try to create the record
+      if (response.status === 404 || responseText.includes('0 rows')) {
+        console.log("Customer profile not found, creating new record...");
+        await this.createCustomerProfileRecord(customerId, updateData);
+      } else {
+        throw new Error(`Customer profile update failed: ${responseText}`);
+      }
+    }
+  }
+
+  async createCustomerProfileRecord(
+    customerId: string,
+    profileData: {
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      phone?: string | null;
+      date_of_birth?: string | null;
+      bio?: string | null;
+      image_url?: string | null;
+    }
+  ): Promise<void> {
+    const response = await fetch(
+      `${this.baseURL}/rest/v1/customer_profiles`,
+      {
+        method: "POST",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({
+          id: customerId,
+          ...profileData,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }),
+      },
+    );
+
+    let responseText = "";
+    try {
+      responseText = await response.text();
+    } catch (readError) {
+      console.warn("Could not read response text:", readError);
+      responseText = `HTTP ${response.status} - ${response.statusText}`;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Customer profile creation failed: ${responseText}`);
     }
   }
 }
