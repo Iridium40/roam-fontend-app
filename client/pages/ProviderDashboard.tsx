@@ -5576,6 +5576,28 @@ export default function ProviderDashboard() {
                         Add add-ons to your business offering
                       </p>
                     </div>
+
+                    {/* Debug info for add-ons */}
+                    <div className="text-xs bg-gray-100 p-2 rounded">
+                      <strong>All add-ons count:</strong> {allServiceAddons.length}
+                      <br />
+                      <strong>Business services count:</strong> {businessServices.length}
+                      <br />
+                      <strong>Eligibility rules count:</strong> {serviceAddonEligibility.length}
+                      <br />
+                      <strong>Add-ons after filtering:</strong> {allServiceAddons.filter(addon =>
+                        !businessAddons.some(ba => ba.addon_id === addon.id) &&
+                        serviceAddonEligibility.some(eligibility =>
+                          eligibility.addon_id === addon.id &&
+                          allServices.some(service =>
+                            service.id === eligibility.service_id &&
+                            business?.service_subcategories?.includes(
+                              service.service_subcategories?.service_subcategory_type
+                            )
+                          )
+                        )
+                      ).length}
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {allServiceAddons
                         .filter(
