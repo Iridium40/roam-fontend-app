@@ -25,6 +25,7 @@ export default function CustomerProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
     firstName: customer?.first_name || "",
     lastName: customer?.last_name || "",
@@ -34,6 +35,91 @@ export default function CustomerProfile() {
     bio: "",
     imageUrl: customer?.image_url || "",
   });
+
+  // Function to load full customer profile data from database
+  const loadCustomerProfile = async () => {
+    if (!customer?.customer_id) return;
+
+    setLoadingProfile(true);
+    try {
+      console.log("CustomerProfile: Loading full profile data...");
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Get the stored access token
+      const storedToken = localStorage.getItem("roam_access_token");
+      if (storedToken) {
+        directSupabaseAPI.currentAccessToken = storedToken;
+      }
+
+      // Fetch the customer profile data
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/customer_profiles?user_id=eq.${customer.customer_id}&select=*`,
+        {
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const profiles = await response.json();
+        if (profiles && profiles.length > 0) {
+          const profile = profiles[0];
+          console.log("CustomerProfile: Loaded profile data:", profile);
+
+          setProfileData({
+            firstName: profile.first_name || customer.first_name || "",
+            lastName: profile.last_name || customer.last_name || "",
+            email: profile.email || customer.email || "",
+            phone: profile.phone || customer.phone || "",
+            dateOfBirth: profile.date_of_birth || "",
+            bio: profile.bio || "",
+            imageUrl: profile.image_url || customer.image_url || "",
+          });
+        } else {
+          console.log("CustomerProfile: No profile data found, using customer data");
+          // Use customer data as fallback
+          setProfileData({
+            firstName: customer.first_name || "",
+            lastName: customer.last_name || "",
+            email: customer.email || "",
+            phone: customer.phone || "",
+            dateOfBirth: "",
+            bio: "",
+            imageUrl: customer.image_url || "",
+          });
+        }
+      } else {
+        console.log("CustomerProfile: Failed to load profile data, using customer data");
+        // Use customer data as fallback
+        setProfileData({
+          firstName: customer.first_name || "",
+          lastName: customer.last_name || "",
+          email: customer.email || "",
+          phone: customer.phone || "",
+          dateOfBirth: "",
+          bio: "",
+          imageUrl: customer.image_url || "",
+        });
+      }
+    } catch (error) {
+      console.error("CustomerProfile: Error loading profile data:", error);
+      // Use customer data as fallback
+      setProfileData({
+        firstName: customer.first_name || "",
+        lastName: customer.last_name || "",
+        email: customer.email || "",
+        phone: customer.phone || "",
+        dateOfBirth: "",
+        bio: "",
+        imageUrl: customer.image_url || "",
+      });
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
 
   // Update profile data when customer data changes
   useEffect(() => {
