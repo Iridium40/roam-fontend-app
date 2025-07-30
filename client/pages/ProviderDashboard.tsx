@@ -2358,6 +2358,9 @@ export default function ProviderDashboard() {
         errorJSON: JSON.stringify(error, null, 2)
       });
 
+      // Also log a simple string version to avoid [object Object]
+      console.error("Service save error (simple):", String(error));
+
       let errorMessage = "Failed to update service";
 
       // Comprehensive error message extraction
