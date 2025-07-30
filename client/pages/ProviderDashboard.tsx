@@ -2160,19 +2160,49 @@ export default function ProviderDashboard() {
       let updateSuccess = false;
       let lastError = null;
 
-      const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
-          },
-          body: JSON.stringify(updateData),
-        },
-      );
+      // Try each variation until one works
+      let response;
+      for (let i = 0; i < possibleUpdateVariations.length; i++) {
+        const testData = possibleUpdateVariations[i];
+        console.log(`Attempt ${i + 1}: Trying update with data:`, testData);
+
+        try {
+          response = await fetch(
+            `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingService.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+                Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+                "Content-Type": "application/json",
+                Prefer: "return=minimal",
+              },
+              body: JSON.stringify(testData),
+            },
+          );
+
+          if (response.ok) {
+            console.log(`Success with attempt ${i + 1}! Correct schema:`, testData);
+            updateSuccess = true;
+            break;
+          } else {
+            const errorText = await response.text();
+            console.log(`Attempt ${i + 1} failed:`, {
+              status: response.status,
+              error: errorText
+            });
+            lastError = errorText;
+          }
+        } catch (error) {
+          console.log(`Attempt ${i + 1} threw error:`, error);
+          lastError = error;
+        }
+      }
+
+      // If all attempts failed, proceed with original error handling
+      if (!updateSuccess) {
+        console.log("All schema variations failed. Using last response for error handling.");
+      }
 
       if (!response.ok) {
         let errorText = "Unknown error";
