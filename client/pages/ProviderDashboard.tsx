@@ -5353,7 +5353,7 @@ export default function ProviderDashboard() {
                             <p className="text-sm text-foreground/60">
                               {service.service_subcategories?.service_categories?.description ||
                                service.service_subcategories?.service_categories?.service_category_type}{" "}
-                              — {service.service_subcategories?.name}
+                              — {service.service_subcategories?.service_subcategory_type}
                             </p>
                             {service.description && (
                               <p className="text-xs text-foreground/50 mt-1">
@@ -5362,13 +5362,13 @@ export default function ProviderDashboard() {
                             )}
                           </div>
                           <div className="flex justify-between items-center text-sm">
-                            <span>Base Price: ${service.base_price || "0"}</span>
+                            <span>Min Price: ${service.min_price || "0"}</span>
                             <span>{service.duration_minutes}min</span>
                           </div>
                           <Button
                             size="sm"
                             className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                            onClick={() => handleToggleBusinessService(service.id, true, service.base_price)}
+                            onClick={() => handleToggleBusinessService(service.id, true, service.min_price)}
                             disabled={businessServicesSaving}
                           >
                             <Plus className="w-4 h-4 mr-2" />
