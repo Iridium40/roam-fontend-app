@@ -39,11 +39,9 @@ export default function CustomerSettings() {
     bookingReminders: true,
     promotionalEmails: false,
     serviceUpdates: true,
-    
 
-    
     // App Preferences (only dark mode is now managed by theme context)
-    
+
     // Communication Preferences
     preferredContactMethod: "email",
   });
@@ -67,7 +65,7 @@ export default function CustomerSettings() {
   };
 
   const updateSetting = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -218,8 +216,6 @@ export default function CustomerSettings() {
                       />
                     </div>
                   </div>
-
-
                 </CardContent>
               </Card>
 
@@ -261,8 +257,6 @@ export default function CustomerSettings() {
                   </div>
                 </CardContent>
               </Card>
-
-
 
               {/* App Preferences */}
               <Card>

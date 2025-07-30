@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import type { AuthUser, AuthCustomer, ProviderRole } from "@/lib/database.types";
+import type {
+  AuthUser,
+  AuthCustomer,
+  ProviderRole,
+} from "@/lib/database.types";
 
 type UserType = "provider" | "customer";
 
@@ -75,13 +79,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const storedUser = localStorage.getItem("roam_user");
         const storedCustomer = localStorage.getItem("roam_customer");
         const storedToken = localStorage.getItem("roam_access_token");
-        const storedUserType = localStorage.getItem("roam_user_type") as UserType | null;
+        const storedUserType = localStorage.getItem(
+          "roam_user_type",
+        ) as UserType | null;
 
         if ((storedUser || storedCustomer) && storedToken && storedUserType) {
           console.log("AuthContext: Found stored session and token", {
             hasUser: !!storedUser,
             hasCustomer: !!storedCustomer,
-            userType: storedUserType
+            userType: storedUserType,
           });
 
           // Restore the access token to the directSupabaseAPI
@@ -102,8 +108,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           setLoading(false);
           return;
-        } else if ((storedUser || storedCustomer) && (!storedToken || !storedUserType)) {
-          console.log("AuthContext: Found incomplete stored session, clearing data");
+        } else if (
+          (storedUser || storedCustomer) &&
+          (!storedToken || !storedUserType)
+        ) {
+          console.log(
+            "AuthContext: Found incomplete stored session, clearing data",
+          );
           clearStoredData();
         }
 
@@ -136,13 +147,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               setUserType("provider");
               localStorage.setItem("roam_user", JSON.stringify(userData));
               localStorage.setItem("roam_user_type", "provider");
-              console.log("AuthContext: Provider session restored successfully");
+              console.log(
+                "AuthContext: Provider session restored successfully",
+              );
             } else {
-              console.log("AuthContext: Provider not found, clearing stored session");
+              console.log(
+                "AuthContext: Provider not found, clearing stored session",
+              );
               clearStoredData();
             }
           } else {
-            console.log("AuthContext: No active session, clearing stored data if any");
+            console.log(
+              "AuthContext: No active session, clearing stored data if any",
+            );
             clearStoredData();
           }
         } catch (sessionError) {
@@ -241,12 +258,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error("Authentication failed - no user returned");
       }
 
-      console.log("AuthContext signInCustomer: Auth successful, using auth user data...");
+      console.log(
+        "AuthContext signInCustomer: Auth successful, using auth user data...",
+      );
 
       // For now, use the auth user data directly since customers table may not exist
       // Extract name from email or use placeholder values
-      const emailParts = authData.user.email?.split('@')[0] || '';
-      const nameParts = emailParts.split('.');
+      const emailParts = authData.user.email?.split("@")[0] || "";
+      const nameParts = emailParts.split(".");
 
       const customerData = {
         id: authData.user.id,
@@ -309,7 +328,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // since the customers table may not exist yet. The user metadata can be updated later
       // when the customers table is available.
 
-      console.log("AuthContext signUpCustomer: Customer registration completed successfully");
+      console.log(
+        "AuthContext signUpCustomer: Customer registration completed successfully",
+      );
     } catch (error) {
       console.error("AuthContext signUpCustomer: Error:", error);
       throw error;
@@ -341,12 +362,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const storedToken = localStorage.getItem("roam_access_token");
       if (storedToken) {
         directSupabaseAPI.currentAccessToken = storedToken;
-        console.log("AuthContext updateCustomerProfile: Using stored access token");
+        console.log(
+          "AuthContext updateCustomerProfile: Using stored access token",
+        );
       } else {
-        console.warn("AuthContext updateCustomerProfile: No access token found in localStorage");
+        console.warn(
+          "AuthContext updateCustomerProfile: No access token found in localStorage",
+        );
         // Clear any stale auth state and prompt for re-authentication
         await signOut();
-        throw new Error("Your session has expired. Please sign in again to continue.");
+        throw new Error(
+          "Your session has expired. Please sign in again to continue.",
+        );
       }
 
       // Try to update the database first
@@ -362,7 +389,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             date_of_birth: profileData.dateOfBirth || null,
             bio: profileData.bio || null,
             image_url: profileData.imageUrl || null,
-          }
+          },
         });
 
         await directSupabaseAPI.updateCustomerProfile(customer.customer_id, {
@@ -375,20 +402,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           image_url: profileData.imageUrl || null,
         });
 
-        console.log("AuthContext updateCustomerProfile: Database update successful");
+        console.log(
+          "AuthContext updateCustomerProfile: Database update successful",
+        );
       } catch (dbError) {
-        console.error("AuthContext updateCustomerProfile: Database update failed:", dbError);
+        console.error(
+          "AuthContext updateCustomerProfile: Database update failed:",
+          dbError,
+        );
 
         // Handle authentication errors specifically
-        if (dbError.message && (dbError.message.includes("Authentication failed") || dbError.message.includes("401"))) {
-          console.log("AuthContext updateCustomerProfile: Authentication error detected, clearing session");
+        if (
+          dbError.message &&
+          (dbError.message.includes("Authentication failed") ||
+            dbError.message.includes("401"))
+        ) {
+          console.log(
+            "AuthContext updateCustomerProfile: Authentication error detected, clearing session",
+          );
           // Clear the invalid session
           await signOut();
-          throw new Error("Your session has expired. Please sign in again to save your changes.");
+          throw new Error(
+            "Your session has expired. Please sign in again to save your changes.",
+          );
         }
 
         // Re-throw the error so the UI can show it to the user
-        throw new Error(`Database update failed: ${dbError.message || dbError}`);
+        throw new Error(
+          `Database update failed: ${dbError.message || dbError}`,
+        );
       }
 
       // Update local customer state
@@ -404,7 +446,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setCustomer(updatedCustomer);
       localStorage.setItem("roam_customer", JSON.stringify(updatedCustomer));
 
-      console.log("AuthContext updateCustomerProfile: Profile updated successfully");
+      console.log(
+        "AuthContext updateCustomerProfile: Profile updated successfully",
+      );
     } catch (error) {
       console.error("AuthContext updateCustomerProfile: Error:", error);
       throw error;
@@ -427,10 +471,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Upload file to Supabase storage
       const uploadResult = await directSupabaseAPI.uploadCustomerAvatar(
         customer.customer_id,
-        file
+        file,
       );
 
-      console.log("AuthContext uploadCustomerAvatar: Upload successful", uploadResult);
+      console.log(
+        "AuthContext uploadCustomerAvatar: Upload successful",
+        uploadResult,
+      );
 
       // Update customer profile with new image URL
       const updatedCustomer = {

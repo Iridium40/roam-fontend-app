@@ -521,11 +521,15 @@ class DirectSupabaseAPI {
       url: `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
       hasAccessToken: !!this.accessToken,
       tokenLength: this.accessToken ? this.accessToken.length : 0,
-      tokenPrefix: this.accessToken ? this.accessToken.substring(0, 20) + "..." : "none"
+      tokenPrefix: this.accessToken
+        ? this.accessToken.substring(0, 20) + "..."
+        : "none",
     });
 
     // Try with anon key first (for tables without RLS or with public policies)
-    console.log("DirectSupabase updateCustomerProfile: Trying with anon key...");
+    console.log(
+      "DirectSupabase updateCustomerProfile: Trying with anon key...",
+    );
     const response = await fetch(
       `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
       {
@@ -552,23 +556,33 @@ class DirectSupabaseAPI {
       status: response.status,
       statusText: response.statusText,
       responseText,
-      ok: response.ok
+      ok: response.ok,
     });
 
     if (!response.ok) {
       // Handle authentication errors specifically
       if (response.status === 401) {
-        console.error("DirectSupabase updateCustomerProfile: Authentication failed");
+        console.error(
+          "DirectSupabase updateCustomerProfile: Authentication failed",
+        );
         this.accessToken = null; // Clear invalid token
         throw new Error("Authentication failed. Please sign in again.");
       }
 
       // If update fails, try to create the record
-      if (response.status === 404 || responseText.includes("0 rows") || responseText.includes('relation "customer_profiles" does not exist')) {
-        console.log("Customer profile table or record not found, creating new record...");
+      if (
+        response.status === 404 ||
+        responseText.includes("0 rows") ||
+        responseText.includes('relation "customer_profiles" does not exist')
+      ) {
+        console.log(
+          "Customer profile table or record not found, creating new record...",
+        );
         await this.createCustomerProfileRecord(customerId, updateData);
       } else {
-        throw new Error(`Customer profile update failed: HTTP ${response.status} - ${responseText}`);
+        throw new Error(
+          `Customer profile update failed: HTTP ${response.status} - ${responseText}`,
+        );
       }
     } else {
       console.log("DirectSupabase updateCustomerProfile: Update successful");
@@ -587,14 +601,19 @@ class DirectSupabaseAPI {
       image_url?: string | null;
     },
   ): Promise<void> {
-    console.log("DirectSupabase createCustomerProfileRecord: Starting creation", {
-      customerId,
-      profileData,
-      hasAccessToken: !!this.accessToken
-    });
+    console.log(
+      "DirectSupabase createCustomerProfileRecord: Starting creation",
+      {
+        customerId,
+        profileData,
+        hasAccessToken: !!this.accessToken,
+      },
+    );
 
     // Try with anon key for customer_profiles table
-    console.log("DirectSupabase createCustomerProfileRecord: Using anon key...");
+    console.log(
+      "DirectSupabase createCustomerProfileRecord: Using anon key...",
+    );
     const response = await fetch(`${this.baseURL}/rest/v1/customer_profiles`, {
       method: "POST",
       headers: {
@@ -628,19 +647,25 @@ class DirectSupabaseAPI {
       status: response.status,
       statusText: response.statusText,
       responseText,
-      ok: response.ok
+      ok: response.ok,
     });
 
     if (!response.ok) {
       // Handle authentication errors specifically
       if (response.status === 401) {
-        console.error("DirectSupabase createCustomerProfileRecord: Authentication failed");
+        console.error(
+          "DirectSupabase createCustomerProfileRecord: Authentication failed",
+        );
         this.accessToken = null; // Clear invalid token
         throw new Error("Authentication failed. Please sign in again.");
       }
-      throw new Error(`Customer profile creation failed: HTTP ${response.status} - ${responseText}`);
+      throw new Error(
+        `Customer profile creation failed: HTTP ${response.status} - ${responseText}`,
+      );
     } else {
-      console.log("DirectSupabase createCustomerProfileRecord: Creation successful");
+      console.log(
+        "DirectSupabase createCustomerProfileRecord: Creation successful",
+      );
     }
   }
 }

@@ -80,7 +80,7 @@ export default function CustomerProfile() {
     try {
       console.log("CustomerProfile: Starting save with data:", {
         customerId: customer?.customer_id,
-        profileData: profileData
+        profileData: profileData,
       });
 
       await updateCustomerProfile({
@@ -101,8 +101,13 @@ export default function CustomerProfile() {
       const errorMessage = error.message || error;
 
       // Show a more user-friendly error message
-      if (errorMessage.includes("session has expired") || errorMessage.includes("sign in again")) {
-        alert("Your session has expired. Please sign in again to save your changes.");
+      if (
+        errorMessage.includes("session has expired") ||
+        errorMessage.includes("sign in again")
+      ) {
+        alert(
+          "Your session has expired. Please sign in again to save your changes.",
+        );
         // Optionally redirect to login or show login modal
       } else {
         alert(`Failed to save profile: ${errorMessage}`);
