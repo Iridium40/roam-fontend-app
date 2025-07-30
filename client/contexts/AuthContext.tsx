@@ -17,6 +17,14 @@ interface AuthContextType {
     lastName: string;
     phone?: string;
   }) => Promise<void>;
+  updateCustomerProfile: (profileData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth?: string;
+    bio?: string;
+  }) => Promise<void>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
   hasRole: (roles: ProviderRole[]) => boolean;
