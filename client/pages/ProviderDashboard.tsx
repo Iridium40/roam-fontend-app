@@ -4626,12 +4626,14 @@ export default function ProviderDashboard() {
               >
                 Bookings
               </TabsTrigger>
-              <TabsTrigger
-                value="services-addons"
-                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-              >
-                Services & Add-Ons
-              </TabsTrigger>
+              {isOwner && (
+                <TabsTrigger
+                  value="services-addons"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
+                  Services & Add-Ons
+                </TabsTrigger>
+              )}
               {(isOwner || isDispatcher) && (
                 <TabsTrigger
                   value="business"
