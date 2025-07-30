@@ -3163,7 +3163,7 @@ export default function ProviderDashboard() {
   };
 
   const handleToggleBusinessService = async (serviceId: string, isActive: boolean, businessPrice?: number, deliveryType?: string) => {
-    if (!provider?.business_id) return;
+    if (!provider?.business_id || !isOwner) return;
 
     setBusinessServicesSaving(true);
     setBusinessServicesError("");
@@ -3171,11 +3171,14 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      console.log("Toggle business service:", { serviceId, isActive, businessPrice, deliveryType });
+
       // Check if business already has this service
       const existingService = businessServicesData.find(bs => bs.service_id === serviceId);
 
       if (existingService && !isActive) {
-        // Remove service (and cascade remove dependent add-ons)
+        // Remove service
+        console.log("Removing service:", existingService.id);
         const response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${existingService.id}`,
           {
@@ -3190,23 +3193,23 @@ export default function ProviderDashboard() {
 
         if (!response.ok) {
           const errorText = await response.text();
+          console.error("Delete service failed:", errorText);
           throw new Error(`Failed to remove service: ${errorText}`);
         }
 
         // Update local state
         setBusinessServicesData(prev => prev.filter(bs => bs.id !== existingService.id));
 
-        // Also remove any add-ons that are no longer eligible
+        // Remove dependent add-ons
         await updateEligibleAddons();
 
       } else if (existingService && isActive) {
         // Update existing service
-        const updateData = {
-          is_active: isActive,
-          ...(businessPrice && { business_price: businessPrice }),
-          ...(deliveryType && { delivery_type: deliveryType })
-        };
+        const updateData: any = { is_active: isActive };
+        if (businessPrice !== undefined) updateData.business_price = businessPrice;
+        if (deliveryType) updateData.delivery_type = deliveryType;
 
+        console.log("Updating service:", existingService.id, updateData);
         const response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${existingService.id}`,
           {
@@ -3223,6 +3226,7 @@ export default function ProviderDashboard() {
 
         if (!response.ok) {
           const errorText = await response.text();
+          console.error("Update service failed:", errorText);
           throw new Error(`Failed to update service: ${errorText}`);
         }
 
@@ -3240,6 +3244,15 @@ export default function ProviderDashboard() {
         const service = allServices.find(s => s.id === serviceId);
         if (!service) throw new Error("Service not found");
 
+        const newServiceData = {
+          business_id: provider.business_id,
+          service_id: serviceId,
+          business_price: businessPrice,
+          delivery_type: deliveryType || "business_location",
+          is_active: true,
+        };
+
+        console.log("Adding new service:", newServiceData);
         const response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services`,
           {
@@ -3250,18 +3263,13 @@ export default function ProviderDashboard() {
               "Content-Type": "application/json",
               Prefer: "return=representation",
             },
-            body: JSON.stringify({
-              business_id: provider.business_id,
-              service_id: serviceId,
-              business_price: businessPrice,
-              delivery_type: deliveryType || "business_location",
-              is_active: true,
-            }),
+            body: JSON.stringify(newServiceData),
           }
         );
 
         if (!response.ok) {
           const errorText = await response.text();
+          console.error("Add service failed:", errorText);
           throw new Error(`Failed to add service: ${errorText}`);
         }
 
