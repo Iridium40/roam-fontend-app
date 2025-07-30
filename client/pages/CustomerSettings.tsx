@@ -45,10 +45,7 @@ export default function CustomerSettings() {
     profileVisibility: "private",
     dataSharing: false,
     
-    // App Preferences
-    language: "en",
-    currency: "USD",
-    timezone: "America/New_York",
+    // App Preferences (only dark mode is now managed by theme context)
     
     // Communication Preferences
     preferredContactMethod: "email",
