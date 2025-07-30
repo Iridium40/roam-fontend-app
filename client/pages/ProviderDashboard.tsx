@@ -5146,50 +5146,15 @@ export default function ProviderDashboard() {
                 </Button>
               </div>
 
-              {/* Service Management Info for Providers */}
-              {isProvider && !isOwner && !isDispatcher && (
-                <Card
-                  className={`border-l-4 ${provider?.business_managed ? "border-l-blue-500 bg-blue-50" : "border-l-purple-500 bg-purple-50"}`}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          provider?.business_managed
-                            ? "bg-blue-100"
-                            : "bg-purple-100"
-                        }`}
-                      >
-                        {provider?.business_managed ? (
-                          <Building className="w-4 h-4 text-blue-600" />
-                        ) : (
-                          <Users className="w-4 h-4 text-purple-600" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <h3
-                          className={`font-semibold ${provider?.business_managed ? "text-blue-900" : "text-purple-900"}`}
-                        >
-                          {provider?.business_managed
-                            ? "Business Managed Services"
-                            : "Self Managed Services"}
-                        </h3>
-                        <p
-                          className={`text-sm ${provider?.business_managed ? "text-blue-700" : "text-purple-700"}`}
-                        >
-                          {provider?.business_managed
-                            ? "Your services are managed by the business. You can view your assigned services but cannot change assignments or pricing."
-                            : "You can activate or deactivate your service assignments. Pricing is set by the business and cannot be changed."}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              {businessServicesError && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                  {typeof businessServicesError === 'string' ? businessServicesError : 'An error occurred while loading services and add-ons'}
+                </div>
               )}
 
-              {servicesError && (
-                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                  {servicesError}
+              {businessServicesSuccess && (
+                <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                  {businessServicesSuccess}
                 </div>
               )}
 
