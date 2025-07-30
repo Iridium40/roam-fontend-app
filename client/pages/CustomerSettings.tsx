@@ -221,28 +221,7 @@ export default function CustomerSettings() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                    <div className="space-y-2">
-                      <Label>Quiet Hours Start</Label>
-                      <Input
-                        type="time"
-                        value={settings.quietHoursStart}
-                        onChange={(e) =>
-                          updateSetting("quietHoursStart", e.target.value)
-                        }
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Quiet Hours End</Label>
-                      <Input
-                        type="time"
-                        value={settings.quietHoursEnd}
-                        onChange={(e) =>
-                          updateSetting("quietHoursEnd", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
+
                 </CardContent>
               </Card>
 
