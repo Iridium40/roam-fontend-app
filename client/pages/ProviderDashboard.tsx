@@ -5333,6 +5333,52 @@ export default function ProviderDashboard() {
                 </div>
               )}
 
+              {/* Current Business Add-ons Section */}
+              {businessAddons.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold">Current Add-ons</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {businessAddons.map((businessAddon) => (
+                      <Card key={businessAddon.id} className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h4 className="font-medium">
+                              {businessAddon.service_addons?.name}
+                            </h4>
+                            <p className="text-sm text-foreground/60">
+                              {businessAddon.service_addons?.addon_type}
+                            </p>
+                          </div>
+                          <Switch
+                            checked={businessAddon.is_available}
+                            className="data-[state=checked]:bg-roam-blue"
+                            onCheckedChange={(checked) => {
+                              handleToggleBusinessAddon(
+                                businessAddon.addon_id,
+                                checked,
+                                businessAddon.custom_price
+                              );
+                            }}
+                          />
+                        </div>
+                        <p className="text-xs text-foreground/50 mb-2">
+                          {businessAddon.service_addons?.description}
+                        </p>
+                        <div className="flex justify-between items-center text-sm">
+                          <span>Price:</span>
+                          <span className="font-medium text-roam-blue">
+                            $
+                            {businessAddon.custom_price ||
+                              businessAddon.service_addons?.default_price ||
+                              "0"}
+                          </span>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Available Services to Add Section */}
               {allServices.length > 0 && (
                 <div className="space-y-4">
@@ -5374,52 +5420,6 @@ export default function ProviderDashboard() {
                             <Plus className="w-4 h-4 mr-2" />
                             Add Service
                           </Button>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Available Add-ons Section */}
-              {businessAddons.length > 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Available Add-ons</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {businessAddons.map((businessAddon) => (
-                      <Card key={businessAddon.id} className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h4 className="font-medium">
-                              {businessAddon.service_addons?.name}
-                            </h4>
-                            <p className="text-sm text-foreground/60">
-                              {businessAddon.service_addons?.addon_type}
-                            </p>
-                          </div>
-                          <Switch
-                            checked={businessAddon.is_available}
-                            className="data-[state=checked]:bg-roam-blue"
-                            onCheckedChange={(checked) => {
-                              handleToggleBusinessAddon(
-                                businessAddon.addon_id,
-                                checked,
-                                businessAddon.custom_price
-                              );
-                            }}
-                          />
-                        </div>
-                        <p className="text-xs text-foreground/50 mb-2">
-                          {businessAddon.service_addons?.description}
-                        </p>
-                        <div className="flex justify-between items-center text-sm">
-                          <span>Price:</span>
-                          <span className="font-medium text-roam-blue">
-                            $
-                            {businessAddon.custom_price ||
-                              businessAddon.service_addons?.default_price ||
-                              "0"}
-                          </span>
                         </div>
                       </Card>
                     ))}
