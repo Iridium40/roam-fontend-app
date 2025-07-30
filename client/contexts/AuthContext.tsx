@@ -337,9 +337,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      // For now, since we don't have the customers table, we'll simulate the update
-      // and update the local customer state
-      console.log("AuthContext updateCustomerProfile: Updating customer data...");
+      // Try to update the database first
+      try {
+        console.log("AuthContext updateCustomerProfile: Updating database...");
+
+        await directSupabaseAPI.updateCustomerProfile(customer.customer_id, {
+          first_name: profileData.firstName,
+          last_name: profileData.lastName,
+          email: profileData.email,
+          phone: profileData.phone || null,
+          date_of_birth: profileData.dateOfBirth || null,
+          bio: profileData.bio || null,
+          image_url: profileData.imageUrl || null,
+        });
+
+        console.log("AuthContext updateCustomerProfile: Database update successful");
+      } catch (dbError) {
+        console.warn("AuthContext updateCustomerProfile: Database update failed, updating local state only:", dbError);
+        // Continue with local update even if database update fails
+      }
 
       // Update local customer state
       const updatedCustomer = {
