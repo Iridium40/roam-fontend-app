@@ -520,22 +520,19 @@ class DirectSupabaseAPI {
       updateData,
       url: `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
       hasAccessToken: !!this.accessToken,
-      tokenLength: this.accessToken ? this.accessToken.length : 0
+      tokenLength: this.accessToken ? this.accessToken.length : 0,
+      tokenPrefix: this.accessToken ? this.accessToken.substring(0, 20) + "..." : "none"
     });
 
-    // Validate we have an access token
-    if (!this.accessToken) {
-      throw new Error("No access token available. Please sign in again.");
-    }
-
-    // First try to update the customer_profiles table using user_id
+    // Try with anon key first (for tables without RLS or with public policies)
+    console.log("DirectSupabase updateCustomerProfile: Trying with anon key...");
     const response = await fetch(
       `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
       {
         method: "PATCH",
         headers: {
           apikey: this.apiKey,
-          Authorization: `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.apiKey}`,
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
