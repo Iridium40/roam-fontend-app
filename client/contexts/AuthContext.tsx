@@ -361,6 +361,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const uploadCustomerAvatar = async (file: File): Promise<string> => {
+    if (!customer) {
+      throw new Error("No customer logged in");
+    }
+
+    setLoading(true);
+    try {
+      console.log("AuthContext uploadCustomerAvatar: Starting upload...");
+
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Upload file to Supabase storage
+      const uploadResult = await directSupabaseAPI.uploadCustomerAvatar(
+        customer.customer_id,
+        file
+      );
+
+      console.log("AuthContext uploadCustomerAvatar: Upload successful", uploadResult);
+
+      // Update customer profile with new image URL
+      const updatedCustomer = {
+        ...customer,
+        image_url: uploadResult.publicUrl,
+      };
+
+      setCustomer(updatedCustomer);
+      localStorage.setItem("roam_customer", JSON.stringify(updatedCustomer));
+
+      return uploadResult.publicUrl;
+    } catch (error) {
+      console.error("AuthContext uploadCustomerAvatar: Error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
