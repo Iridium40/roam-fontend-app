@@ -594,53 +594,78 @@ class DirectSupabaseAPI {
       }
     }
 
+    // Try the operation with anon key first, then with user token if that fails
     let response;
-    if (recordExists) {
-      // Update existing record
-      console.log(
-        "DirectSupabase updateCustomerProfile: Updating existing record...",
-      );
-      response = await fetch(
-        `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
-        {
-          method: "PATCH",
-          headers: {
-            apikey: this.apiKey,
-            Authorization: `Bearer ${this.apiKey}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
+    let authMethod = "anon";
+
+    const tryOperation = async (useUserToken = false) => {
+      const authToken = useUserToken && this.accessToken ? this.accessToken : this.apiKey;
+      const authHeader = `Bearer ${authToken}`;
+
+      console.log(`DirectSupabase updateCustomerProfile: Trying with ${useUserToken ? 'user token' : 'anon key'}`);
+
+      if (recordExists) {
+        // Update existing record
+        console.log(
+          "DirectSupabase updateCustomerProfile: Updating existing record...",
+        );
+        return await fetch(
+          `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: this.apiKey,
+              Authorization: authHeader,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify(updateData),
           },
-          body: JSON.stringify(updateData),
-        },
-      );
-    } else {
-      // Create new record
-      console.log(
-        "DirectSupabase updateCustomerProfile: Creating new record...",
-      );
-      response = await fetch(
-        `${this.baseURL}/rest/v1/customer_profiles`,
-        {
-          method: "POST",
-          headers: {
-            apikey: this.apiKey,
-            Authorization: `Bearer ${this.apiKey}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
+        );
+      } else {
+        // Create new record
+        console.log(
+          "DirectSupabase updateCustomerProfile: Creating new record...",
+        );
+        return await fetch(
+          `${this.baseURL}/rest/v1/customer_profiles`,
+          {
+            method: "POST",
+            headers: {
+              apikey: this.apiKey,
+              Authorization: authHeader,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify({
+              user_id: customerId,
+              ...updateData,
+              is_active: true,
+              email_notifications: true,
+              sms_notifications: true,
+              push_notifications: true,
+              marketing_emails: false,
+              email_verified: false,
+              phone_verified: false,
+            }),
           },
-          body: JSON.stringify({
-            user_id: customerId,
-            ...updateData,
-            is_active: true,
-            email_notifications: true,
-            sms_notifications: true,
-            push_notifications: true,
-            marketing_emails: false,
-            email_verified: false,
-            phone_verified: false,
-          }),
-        },
-      );
+        );
+      }
+    };
+
+    // Try with anon key first
+    response = await tryOperation(false);
+
+    // If anon key fails with auth/permission error, try with user token
+    if (!response.ok && (response.status === 401 || response.status === 403)) {
+      const responseText = await response.text();
+      if (this.accessToken) {
+        console.log("DirectSupabase updateCustomerProfile: Anon key failed, trying with user token...");
+        authMethod = "user";
+        response = await tryOperation(true);
+      } else {
+        console.log("DirectSupabase updateCustomerProfile: No user token available for fallback");
+      }
     }
 
     let responseText = "";
