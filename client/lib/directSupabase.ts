@@ -611,8 +611,17 @@ class DirectSupabaseAPI {
       responseText = `HTTP ${response.status} - ${response.statusText}`;
     }
 
+    console.log("DirectSupabase createCustomerProfileRecord: Response", {
+      status: response.status,
+      statusText: response.statusText,
+      responseText,
+      ok: response.ok
+    });
+
     if (!response.ok) {
-      throw new Error(`Customer profile creation failed: ${responseText}`);
+      throw new Error(`Customer profile creation failed: HTTP ${response.status} - ${responseText}`);
+    } else {
+      console.log("DirectSupabase createCustomerProfileRecord: Creation successful");
     }
   }
 }
