@@ -2768,6 +2768,9 @@ export default function ProviderDashboard() {
     if (newTab !== "addons") {
       clearAddonsMessages();
     }
+    if (newTab !== "services-addons") {
+      clearBusinessServicesMessages();
+    }
     setActiveTab(newTab);
   };
 
