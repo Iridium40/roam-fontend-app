@@ -7624,7 +7624,7 @@ export default function ProviderDashboard() {
             <div className="p-6 space-y-6">
               {serviceError && (
                 <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                  {serviceError}
+                  {typeof serviceError === 'string' ? serviceError : 'An error occurred while updating the service'}
                 </div>
               )}
 
