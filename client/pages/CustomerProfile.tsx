@@ -191,7 +191,10 @@ export default function CustomerProfile() {
                   <div className="relative">
                     <Avatar className="h-32 w-32">
                       <AvatarImage
-                        src={`https://api.dicebear.com/7.x/initials/svg?seed=${customer.first_name}${customer.last_name}`}
+                        src={
+                          profileData.imageUrl ||
+                          `https://api.dicebear.com/7.x/initials/svg?seed=${customer.first_name}${customer.last_name}`
+                        }
                         alt={`${customer.first_name} ${customer.last_name}`}
                       />
                       <AvatarFallback className="bg-roam-blue text-white text-2xl">
@@ -199,12 +202,28 @@ export default function CustomerProfile() {
                       </AvatarFallback>
                     </Avatar>
                     {isEditing && (
-                      <Button
-                        size="sm"
-                        className="absolute bottom-0 right-0 rounded-full w-10 h-10 p-0 bg-roam-blue hover:bg-roam-blue/90"
-                      >
-                        <Camera className="w-4 h-4" />
-                      </Button>
+                      <>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleAvatarUpload}
+                          className="hidden"
+                          id="avatar-upload"
+                        />
+                        <Button
+                          size="sm"
+                          className="absolute bottom-0 right-0 rounded-full w-10 h-10 p-0 bg-roam-blue hover:bg-roam-blue/90"
+                          onClick={() => document.getElementById('avatar-upload')?.click()}
+                          disabled={uploading}
+                          type="button"
+                        >
+                          {uploading ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Camera className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </>
                     )}
                   </div>
                   <div className="text-center">
