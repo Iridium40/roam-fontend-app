@@ -5485,6 +5485,10 @@ export default function ProviderDashboard() {
                           (service) =>
                             !businessServices.some(
                               (bs) => bs.service_id === service.id,
+                            ) &&
+                            // Only show services if business offers the related subcategory
+                            business?.service_subcategories?.includes(
+                              service.subcategory_id
                             ),
                         )
                         .map((service) => (
