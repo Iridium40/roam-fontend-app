@@ -5491,6 +5491,12 @@ export default function ProviderDashboard() {
                           !businessServices.some(bs => bs.service_id === service.id) &&
                           business?.service_subcategories?.includes(service.subcategory_id)
                         ).length}
+                        <br />
+                        <strong>Sample services:</strong> {JSON.stringify(allServices.slice(0,3).map(s => ({
+                          name: s.name,
+                          subcategory_id: s.subcategory_id,
+                          subcategory_type: s.service_subcategories?.service_subcategory_type
+                        })), null, 2)}
                       </div>
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
