@@ -44,6 +44,7 @@ export default function CustomerProfile() {
         phone: customer.phone || "",
         dateOfBirth: "",
         bio: "",
+        imageUrl: customer.image_url || "",
       });
     }
   }, [customer]);
