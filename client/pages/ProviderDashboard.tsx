@@ -1535,9 +1535,13 @@ export default function ProviderDashboard() {
         let errorDetails = "";
         try {
           errorText = await response.text();
+          console.error("Raw error response:", errorText);
+
           // Try to parse error details from response
           try {
             const errorJson = JSON.parse(errorText);
+            console.error("Parsed error JSON:", errorJson);
+
             if (errorJson.message) {
               errorDetails = errorJson.message;
             } else if (errorJson.error) {
@@ -1546,8 +1550,13 @@ export default function ProviderDashboard() {
               errorDetails = errorJson.hint;
             } else if (errorJson.details) {
               errorDetails = errorJson.details;
+            } else if (errorJson.code) {
+              errorDetails = `Error code: ${errorJson.code}`;
+            } else {
+              errorDetails = JSON.stringify(errorJson);
             }
           } catch (parseError) {
+            console.error("Failed to parse error JSON:", parseError);
             // errorText is not JSON, use as-is
             errorDetails = errorText;
           }
@@ -1564,6 +1573,7 @@ export default function ProviderDashboard() {
           errorDetails: errorDetails,
           updateData: JSON.stringify(updateData, null, 2),
           providerId: managingProvider.id,
+          headers: Object.fromEntries(response.headers.entries()),
         });
 
         throw new Error(
