@@ -5605,11 +5605,14 @@ export default function ProviderDashboard() {
                             !businessAddons.some(
                               (ba) => ba.addon_id === addon.id,
                             ) &&
-                            // Only show add-ons if business offers related services
+                            // Only show add-ons if business can offer related services (based on subcategories)
                             serviceAddonEligibility.some((eligibility) =>
                               eligibility.addon_id === addon.id &&
-                              businessServices.some((bs) =>
-                                bs.service_id === eligibility.service_id
+                              allServices.some((service) =>
+                                service.id === eligibility.service_id &&
+                                business?.service_subcategories?.includes(
+                                  service.service_subcategories?.service_subcategory_type
+                                )
                               )
                             ),
                         )
