@@ -31,6 +31,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 export default function CustomerSettings() {
   const { customer } = useAuth();
+  const { theme, setTheme, isDark } = useTheme();
   const [settings, setSettings] = useState({
     // Notification Preferences
     emailNotifications: true,
