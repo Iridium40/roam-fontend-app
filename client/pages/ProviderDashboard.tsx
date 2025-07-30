@@ -3292,7 +3292,7 @@ export default function ProviderDashboard() {
   };
 
   const handleToggleBusinessAddon = async (addonId: string, isActive: boolean, customPrice?: number) => {
-    if (!provider?.business_id) return;
+    if (!provider?.business_id || !isOwner) return;
 
     setBusinessServicesSaving(true);
     setBusinessServicesError("");
@@ -3300,11 +3300,14 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      console.log("Toggle business addon:", { addonId, isActive, customPrice });
+
       // Check if business already has this add-on
       const existingAddon = businessAddonsData.find(ba => ba.addon_id === addonId);
 
       if (existingAddon && !isActive) {
         // Remove add-on
+        console.log("Removing addon:", existingAddon.id);
         const response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?id=eq.${existingAddon.id}`,
           {
@@ -3319,6 +3322,7 @@ export default function ProviderDashboard() {
 
         if (!response.ok) {
           const errorText = await response.text();
+          console.error("Delete addon failed:", errorText);
           throw new Error(`Failed to remove add-on: ${errorText}`);
         }
 
@@ -3327,11 +3331,10 @@ export default function ProviderDashboard() {
 
       } else if (existingAddon && isActive) {
         // Update existing add-on
-        const updateData = {
-          is_available: isActive,
-          ...(customPrice && { custom_price: customPrice })
-        };
+        const updateData: any = { is_available: isActive };
+        if (customPrice !== undefined) updateData.custom_price = customPrice;
 
+        console.log("Updating addon:", existingAddon.id, updateData);
         const response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?id=eq.${existingAddon.id}`,
           {
@@ -3348,6 +3351,7 @@ export default function ProviderDashboard() {
 
         if (!response.ok) {
           const errorText = await response.text();
+          console.error("Update addon failed:", errorText);
           throw new Error(`Failed to update add-on: ${errorText}`);
         }
 
@@ -3365,6 +3369,14 @@ export default function ProviderDashboard() {
         const addon = allServiceAddons.find(a => a.id === addonId);
         if (!addon) throw new Error("Add-on not found");
 
+        const newAddonData = {
+          business_id: provider.business_id,
+          addon_id: addonId,
+          custom_price: customPrice || null,
+          is_available: true,
+        };
+
+        console.log("Adding new addon:", newAddonData);
         const response = await fetch(
           `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons`,
           {
@@ -3375,17 +3387,13 @@ export default function ProviderDashboard() {
               "Content-Type": "application/json",
               Prefer: "return=representation",
             },
-            body: JSON.stringify({
-              business_id: provider.business_id,
-              addon_id: addonId,
-              custom_price: customPrice || null,
-              is_available: true,
-            }),
+            body: JSON.stringify(newAddonData),
           }
         );
 
         if (!response.ok) {
           const errorText = await response.text();
+          console.error("Add addon failed:", errorText);
           throw new Error(`Failed to add add-on: ${errorText}`);
         }
 
