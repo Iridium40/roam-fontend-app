@@ -5137,24 +5137,13 @@ export default function ProviderDashboard() {
                     Manage the services and add-ons your business offers to customers
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={fetchBusinessServices}
-                    disabled={servicesLoading}
-                  >
-                    🔄 Refresh
-                  </Button>
-                  {(isOwner || isDispatcher) && (
-                    <Button
-                      className="bg-roam-blue hover:bg-roam-blue/90"
-                      onClick={handleStartAddService}
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Service
-                    </Button>
-                  )}
-                </div>
+                <Button
+                  onClick={() => fetchBusinessServicesAndAddons()}
+                  disabled={businessServicesLoading}
+                  variant="outline"
+                >
+                  {businessServicesLoading ? "Loading..." : "Refresh"}
+                </Button>
               </div>
 
               {/* Service Management Info for Providers */}
