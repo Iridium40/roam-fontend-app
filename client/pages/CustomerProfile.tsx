@@ -20,8 +20,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function CustomerProfile() {
-  const { customer } = useAuth();
+  const { customer, updateCustomerProfile, loading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [profileData, setProfileData] = useState({
     firstName: customer?.first_name || "",
     lastName: customer?.last_name || "",
