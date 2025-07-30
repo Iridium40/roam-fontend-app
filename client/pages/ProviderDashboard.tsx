@@ -5364,7 +5364,7 @@ export default function ProviderDashboard() {
                               </span>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Price:</span>
+                              <span>Minimum Price:</span>
                               <span className="font-medium text-roam-blue">
                                 $
                                 {businessService.custom_price ||
