@@ -3081,6 +3081,127 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Business Service Editing Functions
+  const handleEditBusinessService = (businessService: any) => {
+    setEditServiceForm({
+      business_price: businessService.business_price?.toString() || businessService.services?.min_price?.toString() || "",
+      delivery_type: businessService.delivery_type || "business_location"
+    });
+    setEditingBusinessService(businessService);
+    setEditServiceModal(true);
+  };
+
+  const handleSaveBusinessService = async () => {
+    if (!editingBusinessService || !provider?.business_id || (!isOwner && !isDispatcher)) return;
+
+    setBusinessServicesSaving(true);
+    setBusinessServicesError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const updateData = {
+        business_price: parseFloat(editServiceForm.business_price),
+        delivery_type: editServiceForm.delivery_type
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_services?id=eq.${editingBusinessService.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update service: ${errorText}`);
+      }
+
+      // Update local state
+      setBusinessServices(prev =>
+        prev.map(bs => bs.id === editingBusinessService.id
+          ? { ...bs, business_price: updateData.business_price, delivery_type: updateData.delivery_type }
+          : bs
+        )
+      );
+
+      setBusinessServicesSuccess("Service updated successfully!");
+      setEditServiceModal(false);
+      setTimeout(() => setBusinessServicesSuccess(""), 3000);
+    } catch (error: any) {
+      console.error("Error updating business service:", error);
+      setBusinessServicesError(`Failed to update service: ${error.message}`);
+    } finally {
+      setBusinessServicesSaving(false);
+    }
+  };
+
+  const handleEditAddon = (businessAddon: any) => {
+    setEditAddonForm({
+      custom_price: businessAddon.custom_price?.toString() || businessAddon.service_addons?.default_price?.toString() || ""
+    });
+    setEditingBusinessAddon(businessAddon);
+    setEditAddonModal(true);
+  };
+
+  const handleSaveBusinessAddon = async () => {
+    if (!editingBusinessAddon || !provider?.business_id || (!isOwner && !isDispatcher)) return;
+
+    setBusinessServicesSaving(true);
+    setBusinessServicesError("");
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const updateData = {
+        custom_price: parseFloat(editAddonForm.custom_price)
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_addons?id=eq.${editingBusinessAddon.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update add-on: ${errorText}`);
+      }
+
+      // Update local state
+      setBusinessAddons(prev =>
+        prev.map(ba => ba.id === editingBusinessAddon.id
+          ? { ...ba, custom_price: updateData.custom_price }
+          : ba
+        )
+      );
+
+      setBusinessServicesSuccess("Add-on updated successfully!");
+      setEditAddonModal(false);
+      setTimeout(() => setBusinessServicesSuccess(""), 3000);
+    } catch (error: any) {
+      console.error("Error updating business add-on:", error);
+      setBusinessServicesError(`Failed to update add-on: ${error.message}`);
+    } finally {
+      setBusinessServicesSaving(false);
+    }
+  };
+
   // Business Services & Add-ons Functions (Owner Only)
   const fetchBusinessServicesAndAddons = async () => {
     if (!provider?.business_id || (!isOwner && !isDispatcher)) {
