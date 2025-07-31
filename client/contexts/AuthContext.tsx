@@ -205,14 +205,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log("AuthContext signIn: Auth successful, fetching profile...");
 
-      // Use direct API for provider lookup too
-      const provider = await directSupabaseAPI.getProviderByUserId(
-        authData.user.id,
-      );
+      // Use standard Supabase client for provider lookup
+      const { data: provider, error: providerError } = await supabase
+        .from("providers")
+        .select("*")
+        .eq("user_id", authData.user.id)
+        .eq("is_active", true)
+        .single();
 
-      if (!provider) {
-        console.error("AuthContext signIn: No provider found");
-        await directSupabaseAPI.signOut();
+      if (providerError || !provider) {
+        console.error("AuthContext signIn: No provider found", providerError);
+        await supabase.auth.signOut();
         throw new Error("Provider account not found or inactive");
       }
 
