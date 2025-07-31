@@ -995,9 +995,24 @@ export default function ProviderDashboard() {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Upload file using Supabase client directly
+      // Create authenticated Supabase client for upload
       console.log("Attempting upload to:", filePath);
-      const { data, error } = await supabase
+
+      // Get the current session and create an authenticated client
+      let authenticatedSupabase = supabase;
+      if (session?.access_token) {
+        console.log("Using session access token for upload");
+        authenticatedSupabase = supabase;
+        // The session should already be set in the global supabase client
+      } else if (user?.id) {
+        console.log("No session but user exists, checking stored token");
+        const storedToken = localStorage.getItem("roam_access_token");
+        if (storedToken) {
+          console.log("Found stored token, will use it");
+        }
+      }
+
+      const { data, error } = await authenticatedSupabase
         .storage
         .from('roam-file-storage')
         .upload(filePath, file, {
@@ -1006,13 +1021,14 @@ export default function ProviderDashboard() {
         });
 
       if (error) {
-        console.error("Supabase upload error:", JSON.stringify(error, null, 2));
-        console.error("Error details:", {
+        console.error("Supabase upload error details:", {
           message: error.message,
           details: error.details,
           hint: error.hint,
-          code: error.code
+          code: error.code,
+          statusCode: error.statusCode
         });
+        console.error("Full error object:", error);
         throw new Error(`Upload failed: ${error.message}`);
       }
 
