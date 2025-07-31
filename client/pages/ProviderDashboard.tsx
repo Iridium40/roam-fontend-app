@@ -1617,25 +1617,30 @@ export default function ProviderDashboard() {
 
         try {
           responseHeaders = Object.fromEntries(response.headers.entries());
-          console.error("Response headers:", responseHeaders);
+          console.error("Response headers:", JSON.stringify(responseHeaders, null, 2));
         } catch (e) {
           console.warn("Could not read headers:", e);
         }
 
+        // Read response body only once and handle all parsing from that
+        let responseBodyText = "";
         try {
-          errorText = await response.text();
-          console.error("Raw error response text:", errorText);
-          console.error("Error text length:", errorText.length);
-          console.error("Error text type:", typeof errorText);
+          // Clone the response to avoid "body stream already read" error
+          const responseClone = response.clone();
+          responseBodyText = await responseClone.text();
+          console.error("Raw error response text:", responseBodyText);
+          console.error("Error text length:", responseBodyText.length);
+          console.error("Error text type:", typeof responseBodyText);
 
-          if (!errorText || errorText.trim() === '') {
+          if (!responseBodyText || responseBodyText.trim() === '') {
             errorDetails = `Empty response body with HTTP ${response.status}`;
+            errorText = errorDetails;
           } else {
+            errorText = responseBodyText;
             // Try to parse error details from response
             try {
-              const errorJson = JSON.parse(errorText);
-              console.error("Parsed error JSON:", errorJson);
-              console.error("Error JSON keys:", Object.keys(errorJson));
+              const errorJson = JSON.parse(responseBodyText);
+              console.error("Parsed error JSON:", JSON.stringify(errorJson, null, 2));
 
               // Extract error details with priority
               if (errorJson.message) {
@@ -1656,13 +1661,14 @@ export default function ProviderDashboard() {
             } catch (parseError) {
               console.error("Failed to parse error JSON:", parseError);
               console.error("Parse error message:", parseError.message);
-              errorDetails = errorText.substring(0, 500); // Limit length
+              errorDetails = responseBodyText.substring(0, 500); // Limit length
             }
           }
         } catch (readError) {
           console.error("Could not read response text:", readError);
+          console.error("Read error details:", readError.message);
           errorText = `HTTP ${response.status} - ${response.statusText}`;
-          errorDetails = errorText;
+          errorDetails = `Could not read response: ${readError.message}`;
         }
 
         const debugInfo = {
@@ -1678,7 +1684,8 @@ export default function ProviderDashboard() {
           hasAccessToken: !!directSupabaseAPI.currentAccessToken
         };
 
-        console.error("=== COMPLETE DEBUG INFO ===", debugInfo);
+        console.error("=== COMPLETE DEBUG INFO ===");
+        console.error(JSON.stringify(debugInfo, null, 2));
 
         throw new Error(
           `Failed to update provider: HTTP ${response.status} - ${errorDetails}`,
