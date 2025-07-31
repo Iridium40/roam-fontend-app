@@ -6873,46 +6873,7 @@ export default function ProviderDashboard() {
                   </Card>
                 </div>
 
-                {/* Recent Activity */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Business Activity</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {recentActivity.length > 0 ? (
-                        recentActivity.map((activity, index) => (
-                          <div
-                            key={index}
-                            className="flex items-start gap-3 p-3 rounded-lg bg-accent/20"
-                          >
-                            <div className="w-8 h-8 bg-roam-blue rounded-full flex items-center justify-center">
-                              <activity.icon className="w-4 h-4 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-medium text-sm">
-                                {activity.action}
-                              </p>
-                              <p className="text-xs text-foreground/60">
-                                {activity.details}
-                              </p>
-                            </div>
-                            <span className="text-xs text-foreground/50">
-                              {activity.time}
-                            </span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-foreground/60">
-                          <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                          <p className="text-sm">
-                            No recent activity to display
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+
 
                 {/* Provider Onboarding Documents Section */}
                 <Card>
