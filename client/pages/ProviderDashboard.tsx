@@ -4435,11 +4435,22 @@ export default function ProviderDashboard() {
       });
     }
 
-    // Create Plaid Link handler
+    // Wait a moment for Plaid to be fully available
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Create Plaid Link handler with proper configuration
     const handler = (window as any).Plaid.create({
       token: linkToken,
+      receivedRedirectUri: null,
       onLoad: () => {
         console.log('Plaid Link loaded successfully');
+        // Ensure the modal has proper focus
+        setTimeout(() => {
+          const plaidModal = document.querySelector('[data-plaid-link-modal]');
+          if (plaidModal) {
+            (plaidModal as HTMLElement).focus();
+          }
+        }, 500);
       },
       onSuccess: (public_token: string, metadata: any) => {
         console.log('Plaid Success:', { public_token, metadata });
@@ -4452,9 +4463,22 @@ export default function ProviderDashboard() {
         } else {
           console.log('User exited Plaid Link');
         }
+        setPlaidLoading(false);
       },
       onEvent: (eventName: string, metadata: any) => {
         console.log('Plaid Event:', eventName, metadata);
+
+        // Handle specific events that might indicate interaction issues
+        if (eventName === 'OPEN') {
+          console.log('Plaid Link opened - ensuring proper focus');
+          setTimeout(() => {
+            // Try to focus the first input field
+            const firstInput = document.querySelector('input[type="text"], input[type="search"]');
+            if (firstInput) {
+              (firstInput as HTMLElement).focus();
+            }
+          }, 1000);
+        }
       }
     });
 
