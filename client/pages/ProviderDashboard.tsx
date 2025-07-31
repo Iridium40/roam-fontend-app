@@ -7689,6 +7689,129 @@ export default function ProviderDashboard() {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Business Documents */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Download className="w-5 h-5 text-roam-blue" />
+                      Business Documents
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {businessDocumentsError && (
+                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                        {businessDocumentsError}
+                      </div>
+                    )}
+
+                    {businessDocumentsLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="w-6 h-6 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mr-2"></div>
+                        Loading documents...
+                      </div>
+                    ) : businessDocuments.length === 0 ? (
+                      <div className="text-center py-8 text-foreground/60">
+                        <Download className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
+                        <p>No documents have been submitted yet.</p>
+                        <p className="text-sm mt-2">Documents submitted during onboarding will appear here.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <p className="text-sm text-foreground/60 mb-4">
+                          View and download documents you submitted during the business verification process.
+                        </p>
+
+                        <div className="grid gap-4">
+                          {businessDocuments.map((document: any) => (
+                            <div
+                              key={document.id}
+                              className="border rounded-lg p-4 hover:bg-accent/20 transition-colors"
+                            >
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <div className="flex items-center gap-2">
+                                      <Download className="w-4 h-4 text-roam-blue" />
+                                      <h4 className="font-medium text-foreground">
+                                        {document.document_name}
+                                      </h4>
+                                    </div>
+                                    <Badge className={getDocumentStatusBadge(document.verification_status)}>
+                                      {document.verification_status === 'approved' && 'Approved'}
+                                      {document.verification_status === 'pending' && 'Pending Review'}
+                                      {document.verification_status === 'rejected' && 'Rejected'}
+                                      {document.verification_status === 'expired' && 'Expired'}
+                                      {!document.verification_status && 'Submitted'}
+                                    </Badge>
+                                  </div>
+
+                                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-foreground/60">
+                                    <div>
+                                      <span className="font-medium">Type:</span>
+                                      <br />
+                                      {document.document_type?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">Size:</span>
+                                      <br />
+                                      {formatFileSize(document.file_size_bytes)}
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">Submitted:</span>
+                                      <br />
+                                      {new Date(document.created_at).toLocaleDateString()}
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">Status Updated:</span>
+                                      <br />
+                                      {document.verified_at
+                                        ? new Date(document.verified_at).toLocaleDateString()
+                                        : 'Not reviewed'
+                                      }
+                                    </div>
+                                  </div>
+
+                                  {document.expiry_date && (
+                                    <div className="mt-2 text-sm">
+                                      <span className="font-medium text-foreground/60">Expires:</span>{' '}
+                                      <span className={
+                                        new Date(document.expiry_date) < new Date()
+                                          ? 'text-red-600 font-medium'
+                                          : 'text-foreground/60'
+                                      }>
+                                        {new Date(document.expiry_date).toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {document.rejection_reason && (
+                                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded text-sm">
+                                      <span className="font-medium text-red-800">Rejection Reason:</span>
+                                      <p className="text-red-700 mt-1">{document.rejection_reason}</p>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="ml-4">
+                                  <Button
+                                    onClick={() => window.open(document.file_url, '_blank')}
+                                    variant="outline"
+                                    size="sm"
+                                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                                  >
+                                    <Download className="w-4 h-4 mr-2" />
+                                    View
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </TabsContent>
             )}
 
