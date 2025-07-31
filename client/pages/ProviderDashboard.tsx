@@ -7145,9 +7145,9 @@ export default function ProviderDashboard() {
                           </div>
                           <div>
                             <div className="font-medium">
-                              {teamProviders.filter(p => p.verification_status === 'verified').length}
+                              {teamProviders.filter(p => p.provider_role !== 'owner' && p.verification_status === 'verified').length}
                             </div>
-                            <div className="text-sm text-foreground/60">Verified Providers</div>
+                            <div className="text-sm text-foreground/60">Verified Staff</div>
                           </div>
                         </div>
 
@@ -7157,9 +7157,9 @@ export default function ProviderDashboard() {
                           </div>
                           <div>
                             <div className="font-medium">
-                              {teamProviders.filter(p => p.provider_role === 'owner').length}
+                              {teamProviders.filter(p => p.provider_role === 'provider').length}
                             </div>
-                            <div className="text-sm text-foreground/60">Owners</div>
+                            <div className="text-sm text-foreground/60">Providers</div>
                           </div>
                         </div>
 
