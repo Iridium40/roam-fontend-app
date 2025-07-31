@@ -356,6 +356,19 @@ export default function ProviderDashboard() {
   const [editProviderModal, setEditProviderModal] = useState(false);
   const [editingProvider, setEditingProvider] = useState<any>(null);
   const [providerActionLoading, setProviderActionLoading] = useState(false);
+  const [editProviderForm, setEditProviderForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    provider_role: "",
+    hourly_rate: "",
+    business_managed: false,
+    is_active: true,
+    verification_status: "",
+    background_check_status: "",
+    location_id: ""
+  });
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
   const [editingService, setEditingService] = useState<any>(null);
