@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleCreateLinkToken, handleExchangeToken } from "./routes/plaid";
+import { handleFileUpload, uploadDocument } from "./routes/upload";
 
 export function createServer() {
   const app = express();
