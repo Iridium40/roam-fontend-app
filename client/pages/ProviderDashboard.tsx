@@ -4342,7 +4342,7 @@ export default function ProviderDashboard() {
 
   // Load business documents
   const loadBusinessDocuments = async () => {
-    if (!provider?.id) return;
+    if (!business?.id) return;
 
     setBusinessDocumentsLoading(true);
     setBusinessDocumentsError("");
@@ -4362,7 +4362,7 @@ export default function ProviderDashboard() {
           expiry_date,
           created_at
         `)
-        .eq("provider_id", provider.id)
+        .eq("business_id", business.id)
         .order("created_at", { ascending: false });
 
       if (error) {
