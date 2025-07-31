@@ -9963,7 +9963,7 @@ export default function ProviderDashboard() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Users className="w-5 h-5 text-roam-blue" />
-              Add New Provider - Step {addProviderStep} of 3
+              Add New Staff - Step {addProviderStep} of 3
             </DialogTitle>
           </DialogHeader>
 
