@@ -2252,7 +2252,7 @@ export default function ProviderDashboard() {
             is_active: editProviderForm.is_active,
             verification_status: editProviderForm.verification_status,
             background_check_status: editProviderForm.background_check_status,
-            location_id: editProviderForm.location_id || (locations.length > 0 ? locations[0].id : null),
+            location_id: editProviderForm.location_id || null,
             experience_years: editProviderForm.experience_years ? parseInt(editProviderForm.experience_years) : null
           }),
         }
