@@ -957,41 +957,23 @@ export default function ProviderDashboard() {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Use Netlify function to upload (bypasses RLS policies)
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folderPath", "business-documents");
-      formData.append("providerId", provider?.id || "");
-      formData.append("businessId", business?.id || "");
+      // Upload file using Supabase client directly
+      const { data, error } = await supabase
+        .storage
+        .from('roam-file-storage')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-      const uploadResponse = await fetch("/.netlify/functions/upload-document", {
-        method: "POST",
-        body: formData,
-      });
-
-      // Clone response to avoid body stream issues
-      const responseClone = uploadResponse.clone();
-
-      if (!uploadResponse.ok) {
-        let errorText = `HTTP ${uploadResponse.status}`;
-        try {
-          errorText = await responseClone.text();
-        } catch (readError) {
-          console.warn("Could not read error response:", readError);
-        }
-        throw new Error(`Upload failed: ${errorText}`);
+      if (error) {
+        throw new Error(`Upload failed: ${error.message}`);
       }
 
-      // Parse the response as JSON
-      let uploadResult;
-      try {
-        uploadResult = await uploadResponse.json();
-      } catch (parseError) {
-        console.error("JSON parse error:", parseError);
-        throw new Error("Invalid response format from upload service");
-      }
-
-      const publicUrl = uploadResult.publicUrl;
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('roam-file-storage').getPublicUrl(filePath);
 
       // Save document metadata to database
       await saveDocumentToDatabase({
