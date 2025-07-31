@@ -11269,6 +11269,120 @@ export default function ProviderDashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Payout Management Modal */}
+      <Dialog open={payoutManagementModal} onOpenChange={setPayoutManagementModal}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Building className="w-5 h-5 text-roam-blue" />
+              Manage Payouts
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {plaidError && (
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                {plaidError}
+              </div>
+            )}
+
+            {plaidSuccess && (
+              <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                {plaidSuccess}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium mb-2">Bank Account Connection</h4>
+                <p className="text-sm text-foreground/60 mb-4">
+                  Connect your bank account securely through Plaid to receive payouts from Stripe.
+                </p>
+              </div>
+
+              {payoutInfo?.bank_connected ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-green-800">Bank Account Connected</p>
+                        <p className="text-sm text-green-600">
+                          {payoutInfo?.bank_name} ****{payoutInfo?.account_last4}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-foreground/60">Payout Schedule</span>
+                      <span className="font-medium">{payoutInfo?.payout_schedule || 'Daily'}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-foreground/60">Transfer Speed</span>
+                      <span className="font-medium">{payoutInfo?.transfer_speed || 'Standard (2-3 days)'}</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={handleDisconnectBankAccount}
+                    disabled={stripeConnectLoading}
+                    variant="outline"
+                    className="w-full border-red-300 text-red-600 hover:bg-red-50"
+                  >
+                    {stripeConnectLoading && (
+                      <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                    )}
+                    Disconnect Bank Account
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Shield className="w-5 h-5 text-blue-600" />
+                      <span className="font-medium text-blue-800">Secure Connection</span>
+                    </div>
+                    <p className="text-sm text-blue-700">
+                      We use Plaid's bank-grade security to safely connect your account.
+                      Your banking credentials are never stored on our servers.
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={createPlaidLinkToken}
+                    disabled={plaidLoading}
+                    className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                  >
+                    {plaidLoading && (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    )}
+                    Connect Bank Account
+                  </Button>
+
+                  <div className="text-xs text-foreground/60 text-center">
+                    By connecting your bank account, you agree to our terms of service and Stripe's connected account agreement.
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setPayoutManagementModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
