@@ -4168,6 +4168,159 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Load tax information from database
+  const loadTaxInfo = async () => {
+    if (!business?.id) return;
+
+    setTaxInfoLoading(true);
+    setTaxInfoError("");
+
+    try {
+      const { data, error } = await supabase
+        .from("business_stripe_tax_info")
+        .select("*")
+        .eq("business_id", business.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = not found, which is OK
+        throw error;
+      }
+
+      if (data) {
+        setTaxInfo({
+          legal_business_name: data.legal_business_name || "",
+          tax_id: data.tax_id || "",
+          tax_id_type: data.tax_id_type || "",
+          tax_address_line1: data.tax_address_line1 || "",
+          tax_address_line2: data.tax_address_line2 || "",
+          tax_city: data.tax_city || "",
+          tax_state: data.tax_state || "",
+          tax_postal_code: data.tax_postal_code || "",
+          tax_country: data.tax_country || "US",
+          business_entity_type: data.business_entity_type || "",
+          tax_contact_name: data.tax_contact_name || "",
+          tax_contact_email: data.tax_contact_email || "",
+          tax_contact_phone: data.tax_contact_phone || "",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error loading tax info:", error);
+      setTaxInfoError("Failed to load tax information");
+    } finally {
+      setTaxInfoLoading(false);
+    }
+  };
+
+  // Save tax information to database
+  const handleSaveTaxInfo = async () => {
+    if (!business?.id) return;
+
+    // Validate required fields
+    if (!taxInfo.legal_business_name?.trim()) {
+      setTaxInfoError("Legal business name is required");
+      return;
+    }
+    if (!taxInfo.tax_id?.trim()) {
+      setTaxInfoError("Tax ID is required");
+      return;
+    }
+    if (!taxInfo.tax_id_type) {
+      setTaxInfoError("Tax ID type is required");
+      return;
+    }
+    if (!taxInfo.business_entity_type) {
+      setTaxInfoError("Business entity type is required");
+      return;
+    }
+    if (!taxInfo.tax_contact_name?.trim()) {
+      setTaxInfoError("Tax contact name is required");
+      return;
+    }
+    if (!taxInfo.tax_contact_email?.trim()) {
+      setTaxInfoError("Tax contact email is required");
+      return;
+    }
+    if (!taxInfo.tax_address_line1?.trim()) {
+      setTaxInfoError("Tax address is required");
+      return;
+    }
+    if (!taxInfo.tax_city?.trim()) {
+      setTaxInfoError("Tax city is required");
+      return;
+    }
+    if (!taxInfo.tax_state) {
+      setTaxInfoError("Tax state is required");
+      return;
+    }
+    if (!taxInfo.tax_postal_code?.trim()) {
+      setTaxInfoError("Tax ZIP code is required");
+      return;
+    }
+
+    setTaxInfoSaving(true);
+    setTaxInfoError("");
+    setTaxInfoSuccess("");
+
+    try {
+      const taxData = {
+        business_id: business.id,
+        legal_business_name: taxInfo.legal_business_name.trim(),
+        tax_id: taxInfo.tax_id.trim(),
+        tax_id_type: taxInfo.tax_id_type,
+        tax_address_line1: taxInfo.tax_address_line1.trim(),
+        tax_address_line2: taxInfo.tax_address_line2?.trim() || null,
+        tax_city: taxInfo.tax_city.trim(),
+        tax_state: taxInfo.tax_state,
+        tax_postal_code: taxInfo.tax_postal_code.trim(),
+        tax_country: taxInfo.tax_country || "US",
+        business_entity_type: taxInfo.business_entity_type,
+        tax_contact_name: taxInfo.tax_contact_name.trim(),
+        tax_contact_email: taxInfo.tax_contact_email.trim(),
+        tax_contact_phone: taxInfo.tax_contact_phone?.trim() || null,
+        updated_at: new Date().toISOString(),
+      };
+
+      // Try to update first, if no rows affected, then insert
+      const { data: existingData } = await supabase
+        .from("business_stripe_tax_info")
+        .select("id")
+        .eq("business_id", business.id)
+        .single();
+
+      if (existingData) {
+        // Update existing record
+        const { error } = await supabase
+          .from("business_stripe_tax_info")
+          .update(taxData)
+          .eq("business_id", business.id);
+
+        if (error) throw error;
+      } else {
+        // Insert new record
+        const { error } = await supabase
+          .from("business_stripe_tax_info")
+          .insert(taxData);
+
+        if (error) throw error;
+      }
+
+      setTaxInfoSuccess("Tax information saved successfully!");
+    } catch (error: any) {
+      console.error("Error saving tax info:", error);
+      setTaxInfoError(error.message || "Failed to save tax information");
+    } finally {
+      setTaxInfoSaving(false);
+    }
+  };
+
+  // Handle tax info form changes
+  const handleTaxInfoChange = (field: string, value: string) => {
+    setTaxInfo(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   // Helper functions to filter bookings by date and status
   const filterBookingsByDate = (
     bookings: any[],
