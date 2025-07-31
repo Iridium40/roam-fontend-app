@@ -64,6 +64,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
+// Plaid configuration
+const PLAID_CLIENT_ID = "670d967ef5ca2b001925eee0";
+const PLAID_ENV = "sandbox"; // Change to "production" for live environment
+
 // Service category and subcategory types for database integration
 interface ServiceCategory {
   id: string;
