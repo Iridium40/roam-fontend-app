@@ -9962,7 +9962,7 @@ export default function ProviderDashboard() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="provider_role">Provider Role</Label>
+                    <Label htmlFor="staff_role">Staff Role</Label>
                     <Select
                       value={providerForm.provider_role}
                       onValueChange={(value) =>
