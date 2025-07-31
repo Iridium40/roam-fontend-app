@@ -926,33 +926,6 @@ export default function ProviderDashboard() {
   const handleDocumentUploadWithFile = async (file: File) => {
     if (!file || !business?.id) return;
 
-    // Validate file size (50MB max)
-    if (file.size > 50 * 1024 * 1024) {
-      setDocumentUploadError("File is too large. Maximum size is 50MB.");
-      event.target.value = "";
-      return;
-    }
-
-    // Validate file type
-    const allowedTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-    ];
-    if (!allowedTypes.includes(file.type)) {
-      setDocumentUploadError(
-        "Invalid file type. Please upload PDF, DOC, DOCX, JPG, JPEG, or PNG files.",
-      );
-      event.target.value = "";
-      return;
-    }
-
-    setDocumentUploading(true);
-    setDocumentUploadError("");
-
     try {
       // Verify user is authenticated before upload
       console.log("Checking authentication status...");
