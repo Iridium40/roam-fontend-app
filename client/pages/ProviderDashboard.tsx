@@ -4710,6 +4710,18 @@ export default function ProviderDashboard() {
     }
   }, [provider, activeTab]);
 
+  // Load tax info when financial tab is active
+  useEffect(() => {
+    if (
+      business?.id &&
+      activeTab === "financial" &&
+      !taxInfoLoading &&
+      (isOwner || isDispatcher)
+    ) {
+      loadTaxInfo();
+    }
+  }, [business, activeTab]);
+
   const fetchDashboardData = async () => {
     if (!user) return;
 
