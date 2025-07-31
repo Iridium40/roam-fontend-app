@@ -8350,7 +8350,7 @@ export default function ProviderDashboard() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="tax_id_type">Tax ID Type *</Label>
-                              <Select>
+                              <Select value={taxInfo.tax_id_type} onValueChange={(value) => handleTaxInfoChange("tax_id_type", value)}>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select ID type" />
                                 </SelectTrigger>
