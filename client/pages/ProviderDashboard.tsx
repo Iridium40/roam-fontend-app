@@ -1075,6 +1075,16 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Document type options
+  const documentTypeOptions = [
+    { value: "drivers_license", label: "Drivers License" },
+    { value: "proof_of_address", label: "Proof Of Address" },
+    { value: "liability_insurance", label: "Liability Insurance" },
+    { value: "professional_license", label: "Professional License" },
+    { value: "professional_certificate", label: "Professional Certificate" },
+    { value: "other", label: "Other" },
+  ];
+
   const getDocumentTypeFromName = (fileName: string): string => {
     const lowerName = fileName.toLowerCase();
     if (lowerName.includes("license") || lowerName.includes("permit")) {
