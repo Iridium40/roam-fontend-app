@@ -4506,6 +4506,24 @@ export default function ProviderDashboard() {
     setPlaidError("");
 
     try {
+      // For development, simulate disconnection since backend API doesn't exist yet
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Update mock data to show disconnected state
+      setPayoutInfo({
+        bank_connected: false,
+        bank_name: null,
+        account_last4: null,
+        payout_schedule: 'Daily',
+        transfer_speed: 'Standard (2-3 days)',
+        stripe_account_id: null,
+        payout_enabled: false
+      });
+
+      setPlaidSuccess('Bank account disconnected successfully! (Development mode)');
+
+      // TODO: Uncomment when backend API is ready
+      /*
       const response = await fetch('/api/stripe/disconnect-bank', {
         method: 'POST',
         headers: {
@@ -4518,11 +4536,16 @@ export default function ProviderDashboard() {
       });
 
       if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+          throw new Error('Stripe disconnect API endpoint not yet implemented');
+        }
         throw new Error('Failed to disconnect bank account');
       }
 
       setPlaidSuccess('Bank account disconnected successfully!');
       loadPayoutInfo();
+      */
     } catch (error: any) {
       console.error('Error disconnecting bank account:', error);
       setPlaidError(error.message || 'Failed to disconnect bank account');
