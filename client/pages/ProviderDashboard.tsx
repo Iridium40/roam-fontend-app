@@ -7160,27 +7160,46 @@ export default function ProviderDashboard() {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="text-center p-3 bg-accent/20 rounded-lg">
                               <div className="text-lg font-bold text-roam-blue">
-                                {teamProviders.filter(p => p.verification_status === 'verified').length}
+                                {teamProviders
+                                  .filter(p =>
+                                    (selectedProviderRoleFilter === "all" || p.provider_role === selectedProviderRoleFilter) &&
+                                    (selectedVerificationStatusFilter === "all" || p.verification_status === selectedVerificationStatusFilter) &&
+                                    p.verification_status === 'verified'
+                                  ).length}
                               </div>
                               <div className="text-xs text-foreground/60">Verified</div>
                             </div>
                             <div className="text-center p-3 bg-accent/20 rounded-lg">
                               <div className="text-lg font-bold text-roam-blue">
-                                {teamProviders.filter(p => p.background_check_status === 'approved').length}
+                                {teamProviders
+                                  .filter(p =>
+                                    (selectedProviderRoleFilter === "all" || p.provider_role === selectedProviderRoleFilter) &&
+                                    (selectedVerificationStatusFilter === "all" || p.verification_status === selectedVerificationStatusFilter) &&
+                                    p.background_check_status === 'approved'
+                                  ).length}
                               </div>
                               <div className="text-xs text-foreground/60">Background Approved</div>
                             </div>
                             <div className="text-center p-3 bg-accent/20 rounded-lg">
                               <div className="text-lg font-bold text-roam-blue">
-                                {teamProviders.filter(p => p.is_active).length}
+                                {teamProviders
+                                  .filter(p =>
+                                    (selectedProviderRoleFilter === "all" || p.provider_role === selectedProviderRoleFilter) &&
+                                    (selectedVerificationStatusFilter === "all" || p.verification_status === selectedVerificationStatusFilter) &&
+                                    p.is_active
+                                  ).length}
                               </div>
                               <div className="text-xs text-foreground/60">Active Providers</div>
                             </div>
                             <div className="text-center p-3 bg-accent/20 rounded-lg">
                               <div className="text-lg font-bold text-roam-blue">
-                                {teamProviders.length}
+                                {teamProviders
+                                  .filter(p =>
+                                    (selectedProviderRoleFilter === "all" || p.provider_role === selectedProviderRoleFilter) &&
+                                    (selectedVerificationStatusFilter === "all" || p.verification_status === selectedVerificationStatusFilter)
+                                  ).length}
                               </div>
-                              <div className="text-xs text-foreground/60">Total Team Members</div>
+                              <div className="text-xs text-foreground/60">Filtered Results</div>
                             </div>
                           </div>
                         </div>
