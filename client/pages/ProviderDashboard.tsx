@@ -2137,12 +2137,12 @@ export default function ProviderDashboard() {
       email: provider.email || "",
       phone: provider.phone || "",
       provider_role: provider.provider_role || "",
-      hourly_rate: provider.hourly_rate || "",
       business_managed: provider.business_managed || false,
       is_active: provider.is_active || false,
       verification_status: provider.verification_status || "",
       background_check_status: provider.background_check_status || "",
-      location_id: provider.location_id || ""
+      location_id: provider.location_id || "",
+      experience_years: provider.experience_years ? provider.experience_years.toString() : ""
     });
     setEditProviderModal(true);
   };
