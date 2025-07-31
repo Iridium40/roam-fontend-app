@@ -7448,163 +7448,162 @@ export default function ProviderDashboard() {
             <TabsContent value="profile" className="space-y-6">
               <h2 className="text-2xl font-bold">Provider Profile</h2>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Profile Photo & Basic Info */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Profile Photo</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center space-y-4">
-                    <div className="relative">
-                      <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto overflow-hidden">
-                        {provider?.image_url ? (
-                          <img
-                            src={provider.image_url}
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <Users className="w-16 h-16 text-white" />
+              {/* Unified Profile Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Profile Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Error and Success Messages */}
+                  {(profileError || avatarError) && (
+                    <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                      {profileError || avatarError}
+                    </div>
+                  )}
+
+                  {profileSuccess && (
+                    <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                      {profileSuccess}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Profile Photo Section */}
+                    <div className="text-center space-y-4">
+                      <h3 className="font-medium text-lg mb-4">Profile Photo</h3>
+                      <div className="relative">
+                        <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto overflow-hidden">
+                          {provider?.image_url ? (
+                            <img
+                              src={provider.image_url}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Users className="w-16 h-16 text-white" />
+                          )}
+                        </div>
+                        {avatarUploading && (
+                          <div className="absolute inset-0 w-32 h-32 bg-black/50 rounded-full flex items-center justify-center mx-auto">
+                            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          </div>
                         )}
                       </div>
-                      {avatarUploading && (
-                        <div className="absolute inset-0 w-32 h-32 bg-black/50 rounded-full flex items-center justify-center mx-auto">
-                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                      )}
-                    </div>
 
-                    {avatarError && (
-                      <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
-                        {avatarError}
-                      </div>
-                    )}
-
-                    <div className="flex gap-2 justify-center">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatarUpload}
-                        className="hidden"
-                        id="avatar-upload"
-                        disabled={avatarUploading}
-                      />
-                      <Button
-                        variant="outline"
-                        className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        onClick={() =>
-                          document.getElementById("avatar-upload")?.click()
-                        }
-                        disabled={avatarUploading}
-                      >
-                        <Camera className="w-4 h-4 mr-2" />
-                        {provider?.image_url ? "Change Photo" : "Upload Photo"}
-                      </Button>
-
-                      {provider?.image_url && (
+                      <div className="flex gap-2 justify-center">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleAvatarUpload}
+                          className="hidden"
+                          id="avatar-upload"
+                          disabled={avatarUploading || profileSaving}
+                        />
                         <Button
                           variant="outline"
-                          className="border-red-300 text-red-600 hover:bg-red-50"
-                          onClick={handleAvatarRemove}
-                          disabled={avatarUploading}
+                          className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                          onClick={() =>
+                            document.getElementById("avatar-upload")?.click()
+                          }
+                          disabled={avatarUploading || profileSaving}
                         >
-                          Remove
+                          <Camera className="w-4 h-4 mr-2" />
+                          {provider?.image_url ? "Change Photo" : "Upload Photo"}
                         </Button>
-                      )}
+
+                        {provider?.image_url && (
+                          <Button
+                            variant="outline"
+                            className="border-red-300 text-red-600 hover:bg-red-50"
+                            onClick={handleAvatarRemove}
+                            disabled={avatarUploading || profileSaving}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+
+                      <p className="text-xs text-foreground/60">
+                        Upload a professional photo (max 5MB)
+                      </p>
                     </div>
 
-                    <p className="text-xs text-foreground/60">
-                      Upload a professional photo (max 5MB)
-                    </p>
-                  </CardContent>
-                </Card>
+                    {/* Contact Information Section */}
+                    <div className="lg:col-span-2 space-y-4">
+                      <h3 className="font-medium text-lg mb-4">Contact Information</h3>
 
-                {/* Contact Information */}
-                <Card className="lg:col-span-2">
-                  <CardHeader>
-                    <CardTitle>Contact Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {profileError && (
-                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                        {profileError}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="firstName">First Name *</Label>
+                          <Input
+                            id="firstName"
+                            value={formData.firstName}
+                            onChange={(e) =>
+                              handleFormChange("firstName", e.target.value)
+                            }
+                            disabled={profileSaving || avatarUploading}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName">Last Name *</Label>
+                          <Input
+                            id="lastName"
+                            value={formData.lastName}
+                            onChange={(e) =>
+                              handleFormChange("lastName", e.target.value)
+                            }
+                            disabled={profileSaving || avatarUploading}
+                          />
+                        </div>
                       </div>
-                    )}
 
-                    {profileSuccess && (
-                      <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
-                        {profileSuccess}
-                      </div>
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name *</Label>
+                        <Label htmlFor="email">Email Address *</Label>
                         <Input
-                          id="firstName"
-                          value={formData.firstName}
-                          onChange={(e) =>
-                            handleFormChange("firstName", e.target.value)
-                          }
-                          disabled={profileSaving}
+                          id="email"
+                          type="email"
+                          value={formData.email}
+                          readOnly
+                          className="bg-muted cursor-not-allowed"
+                          title="Email address cannot be changed"
                         />
                       </div>
+
                       <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name *</Label>
+                        <Label htmlFor="phone">Phone Number</Label>
                         <Input
-                          id="lastName"
-                          value={formData.lastName}
+                          id="phone"
+                          type="tel"
+                          value={formData.phone}
                           onChange={(e) =>
-                            handleFormChange("lastName", e.target.value)
+                            handleFormChange("phone", e.target.value)
                           }
-                          disabled={profileSaving}
+                          disabled={profileSaving || avatarUploading}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="bio">Professional Bio</Label>
+                        <Textarea
+                          id="bio"
+                          value={formData.bio}
+                          onChange={(e) =>
+                            handleFormChange("bio", e.target.value)
+                          }
+                          rows={4}
+                          placeholder="Tell customers about your professional background and expertise..."
+                          disabled={profileSaving || avatarUploading}
                         />
                       </div>
                     </div>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        readOnly
-                        className="bg-muted cursor-not-allowed"
-                        title="Email address cannot be changed"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) =>
-                          handleFormChange("phone", e.target.value)
-                        }
-                        disabled={profileSaving}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="bio">Professional Bio</Label>
-                      <Textarea
-                        id="bio"
-                        value={formData.bio}
-                        onChange={(e) =>
-                          handleFormChange("bio", e.target.value)
-                        }
-                        rows={4}
-                        placeholder="Tell customers about your professional background and expertise..."
-                        disabled={profileSaving}
-                      />
-                    </div>
-
+                  {/* Single Save Button */}
+                  <div className="flex justify-end pt-6 border-t">
                     <Button
                       className="bg-roam-blue hover:bg-roam-blue/90"
                       onClick={handleSaveProfile}
-                      disabled={profileSaving}
+                      disabled={profileSaving || avatarUploading}
                     >
                       {profileSaving ? (
                         <>
@@ -7615,9 +7614,9 @@ export default function ProviderDashboard() {
                         "Save Changes"
                       )}
                     </Button>
-                  </CardContent>
-                </Card>
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Provider Statistics */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
