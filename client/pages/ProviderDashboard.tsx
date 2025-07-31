@@ -474,6 +474,8 @@ export default function ProviderDashboard() {
   const [businessDocuments, setBusinessDocuments] = useState([]);
   const [businessDocumentsLoading, setBusinessDocumentsLoading] = useState(false);
   const [businessDocumentsError, setBusinessDocumentsError] = useState("");
+  const [documentUploading, setDocumentUploading] = useState(false);
+  const [documentUploadError, setDocumentUploadError] = useState("");
 
   // Providers state
   const [teamProviders, setTeamProviders] = useState([]);
