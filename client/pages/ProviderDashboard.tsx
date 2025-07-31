@@ -952,18 +952,29 @@ export default function ProviderDashboard() {
 
     try {
       // Verify user is authenticated before upload
-      const { data: { session } } = await supabase.auth.getSession();
+      console.log("Checking authentication status...");
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+      console.log("Session debug:", {
+        hasSession: !!session,
+        sessionError: sessionError,
+        user: session?.user || null,
+        accessToken: session?.access_token ? `${session.access_token.substring(0, 20)}...` : null
+      });
+
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        setDocumentUploadError("Authentication error. Please try logging in again.");
+        return;
+      }
+
       if (!session) {
-        console.error('Not authenticated - cannot upload document');
+        console.error('No session found - user not authenticated');
         setDocumentUploadError("Please log in to upload documents");
         return;
       }
 
-      console.log("Authentication verified:", {
-        userId: session.user.id,
-        email: session.user.email,
-        hasAccessToken: !!session.access_token
-      });
+      console.log("Authentication verified - proceeding with upload");
 
       // Generate unique filename
       const fileExt = file.name.split(".").pop();
