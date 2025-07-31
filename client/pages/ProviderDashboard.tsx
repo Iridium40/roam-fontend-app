@@ -7091,7 +7091,7 @@ export default function ProviderDashboard() {
                     onClick={handleStartAddProvider}
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Provider
+                    Add Staff
                   </Button>
                 </div>
 
