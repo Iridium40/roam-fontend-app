@@ -956,8 +956,18 @@ export default function ProviderDashboard() {
 
       // Ensure we have a valid access token
       const storedToken = localStorage.getItem("supabase_access_token");
+      console.log("Auth debug:", {
+        hasStoredToken: !!storedToken,
+        tokenLength: storedToken?.length || 0,
+        tokenStart: storedToken?.substring(0, 20) || 'none',
+        businessId: business?.id,
+        providerId: provider?.id
+      });
+
       if (storedToken) {
         directSupabaseAPI.currentAccessToken = storedToken;
+      } else {
+        console.warn("No stored access token found");
       }
 
       // Generate unique filename
