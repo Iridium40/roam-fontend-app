@@ -1006,7 +1006,13 @@ export default function ProviderDashboard() {
         });
 
       if (error) {
-        console.error("Supabase upload error:", error);
+        console.error("Supabase upload error details:", {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+          fullError: error
+        });
         throw new Error(`Upload failed: ${error.message}`);
       }
 
