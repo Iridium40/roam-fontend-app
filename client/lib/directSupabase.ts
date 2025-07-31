@@ -191,6 +191,32 @@ class DirectSupabaseAPI {
   }
 
   // Storage operations using direct API
+  async testBucketAccess(bucket: string): Promise<boolean> {
+    try {
+      const response = await fetch(
+        `${this.baseURL}/storage/v1/bucket/${bucket}`,
+        {
+          method: "GET",
+          headers: {
+            apikey: this.apiKey,
+            Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          },
+        },
+      );
+
+      console.log("Bucket test response:", {
+        status: response.status,
+        statusText: response.statusText,
+        bucket
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error("Bucket test error:", error);
+      return false;
+    }
+  }
+
   async uploadFile(
     bucket: string,
     path: string,
