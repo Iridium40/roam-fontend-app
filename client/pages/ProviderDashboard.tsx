@@ -7477,16 +7477,59 @@ export default function ProviderDashboard() {
                                   ? "Business Managed"
                                   : "Self Managed"}
                               </Badge>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  handleManageProvider(teamProvider)
-                                }
-                              >
-                                <Settings className="w-4 h-4 mr-2" />
-                                Manage
-                              </Button>
+                              <div className="flex gap-2">
+                                {/* Background Approval Toggle */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleToggleBackgroundApproval(teamProvider)}
+                                  disabled={providerActionLoading}
+                                  className={teamProvider.background_check_status === 'approved'
+                                    ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+                                    : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  {teamProvider.background_check_status === 'approved' ? 'Background ✓' : 'Background'}
+                                </Button>
+
+                                {/* Verification Approval Toggle */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleToggleVerificationApproval(teamProvider)}
+                                  disabled={providerActionLoading}
+                                  className={teamProvider.verification_status === 'approved'
+                                    ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+                                    : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  {teamProvider.verification_status === 'approved' ? 'Verified ✓' : 'Verify'}
+                                </Button>
+
+                                {/* Active/Deactivate Toggle */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleToggleProviderActive(teamProvider)}
+                                  disabled={providerActionLoading}
+                                  className={teamProvider.is_active
+                                    ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+                                    : "bg-red-50 border-red-300 text-red-700 hover:bg-red-100"}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  {teamProvider.is_active ? 'Active' : 'Activate'}
+                                </Button>
+
+                                {/* Edit Provider */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleEditProvider(teamProvider)}
+                                >
+                                  <Edit className="w-4 h-4 mr-1" />
+                                  Edit
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         ))}
