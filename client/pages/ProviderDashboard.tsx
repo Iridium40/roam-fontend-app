@@ -8648,8 +8648,7 @@ export default function ProviderDashboard() {
             <TabsContent value="settings" className="space-y-6">
               <h2 className="text-2xl font-bold">Account Settings</h2>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <Card>
+              <Card className="max-w-2xl">
                   <CardHeader>
                     <CardTitle>Notification Preferences</CardTitle>
                   </CardHeader>
@@ -8745,10 +8744,7 @@ export default function ProviderDashboard() {
 
 
                   </CardContent>
-                </Card>
-
-
-              </div>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
