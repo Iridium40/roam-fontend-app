@@ -5321,7 +5321,7 @@ export default function ProviderDashboard() {
                         <SelectItem value="all">All Locations</SelectItem>
                         {locations.map((location) => (
                           <SelectItem key={location.id} value={location.id}>
-                            {location.name}
+                            {location.location_name}
                           </SelectItem>
                         ))}
                       </SelectContent>
