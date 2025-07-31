@@ -6930,47 +6930,99 @@ export default function ProviderDashboard() {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Provider Management Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Users className="w-5 h-5 text-roam-blue" />
-                        Team Overview
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Active Providers
-                          </span>
-                          <span className="font-medium">
-                            {businessMetrics.teamMembers}
-                          </span>
+                {/* Full-width Team Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-roam-blue" />
+                      Team Overview
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      {/* Active Providers */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {businessMetrics.teamMembers}
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Total Locations
-                          </span>
-                          <span className="font-medium">
-                            {businessMetrics.activeLocations}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Services Offered
-                          </span>
-                          <span className="font-medium">
-                            {businessMetrics.servicesOffered}
-                          </span>
+                        <div className="text-sm text-foreground/60">
+                          Active Providers
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
 
+                      {/* Total Locations */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {businessMetrics.activeLocations}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Total Locations
+                        </div>
+                      </div>
 
-                </div>
+                      {/* Services Offered */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {businessMetrics.servicesOffered}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Services Offered
+                        </div>
+                      </div>
+
+                      {/* Total Bookings This Month */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {businessMetrics.totalBookingsThisMonth || 0}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Bookings This Month
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Additional Team Insights */}
+                    <div className="mt-6 pt-6 border-t">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {teamProviders.filter(p => p.verification_status === 'verified').length}
+                            </div>
+                            <div className="text-sm text-foreground/60">Verified Providers</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <Users className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {teamProviders.filter(p => p.provider_role === 'owner').length}
+                            </div>
+                            <div className="text-sm text-foreground/60">Owners</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <Settings className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {teamProviders.filter(p => p.provider_role === 'dispatcher').length}
+                            </div>
+                            <div className="text-sm text-foreground/60">Dispatchers</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Provider List */}
                 <Card>
