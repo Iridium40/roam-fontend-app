@@ -6741,113 +6741,132 @@ export default function ProviderDashboard() {
                   </CardContent>
                 </Card>
 
-                {/* Business Overview */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Business Overview</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Business Name
-                          </span>
-                          <span className="font-medium">
-                            {business?.business_name || "Loading..."}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Business Type
-                          </span>
-                          <span className="font-medium">
-                            {business?.business_type
-                              ? formatBusinessType(business.business_type)
-                              : "Loading..."}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Verification Status
-                          </span>
-                          <Badge
-                            className={
-                              business?.verification_status === "verified"
-                                ? "bg-green-100 text-green-800"
-                                : business?.verification_status === "pending"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-red-100 text-red-800"
-                            }
-                          >
-                            {business?.verification_status || "Unknown"}
-                          </Badge>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Active Locations
-                          </span>
-                          <span className="font-medium">
-                            {businessMetrics.activeLocations}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Team Members
-                          </span>
-                          <span className="font-medium">
-                            {businessMetrics.teamMembers}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Services Offered
-                          </span>
-                          <span className="font-medium">
-                            {businessMetrics.servicesOffered}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Stripe Payouts
-                          </span>
-                          <span
-                            className={`font-medium ${
-                              business?.stripe_connected_account_id
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {business?.stripe_connected_account_id
-                              ? "Enabled"
-                              : "Disabled"}
-                          </span>
-                        </div>
+                {/* Business Hours */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Business Hours</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {businessHoursError && (
+                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                        {businessHoursError}
                       </div>
-                    </CardContent>
-                  </Card>
+                    )}
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Business Hours</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {businessHoursError && (
-                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
-                          {businessHoursError}
-                        </div>
-                      )}
+                    {businessHoursSuccess && (
+                      <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
+                        {businessHoursSuccess}
+                      </div>
+                    )}
 
-                      {businessHoursSuccess && (
-                        <div className="text-sm text-green-600 bg-green-50 p-3 rounded mb-4">
-                          {businessHoursSuccess}
-                        </div>
-                      )}
+                    <div className="space-y-3">
+                      {editingBusinessHours
+                        ? // Editing mode
+                          [
+                            "Monday",
+                            "Tuesday",
+                            "Wednesday",
+                            "Thursday",
+                            "Friday",
+                            "Saturday",
+                            "Sunday",
+                          ].map((day) => (
+                            <div
+                              key={day}
+                              className="flex items-center justify-between p-3 border rounded-lg"
+                            >
+                              <div className="flex items-center space-x-3">
+                                <Switch
+                                  checked={businessHoursForm[day].isOpen}
+                                  onCheckedChange={(checked) =>
+                                    handleBusinessHoursChange(
+                                      day,
+                                      "isOpen",
+                                      checked,
+                                    )
+                                  }
+                                  disabled={businessHoursSaving}
+                                  className="data-[state=checked]:bg-roam-blue"
+                                />
+                                <span className="text-sm font-medium w-20">
+                                  {day}
+                                </span>
+                              </div>
 
-                      <div className="space-y-3">
-                        {editingBusinessHours
-                          ? // Editing mode
-                            [
+                              {businessHoursForm[day].isOpen ? (
+                                <div className="flex items-center space-x-2">
+                                  <Input
+                                    type="time"
+                                    value={businessHoursForm[day].open}
+                                    onChange={(e) =>
+                                      handleBusinessHoursChange(
+                                        day,
+                                        "open",
+                                        e.target.value,
+                                      )
+                                    }
+                                    disabled={businessHoursSaving}
+                                    className="w-24"
+                                  />
+                                  <span className="text-sm text-foreground/60">
+                                    to
+                                  </span>
+                                  <Input
+                                    type="time"
+                                    value={businessHoursForm[day].close}
+                                    onChange={(e) =>
+                                      handleBusinessHoursChange(
+                                        day,
+                                        "close",
+                                        e.target.value,
+                                      )
+                                    }
+                                    disabled={businessHoursSaving}
+                                    className="w-24"
+                                  />
+                                </div>
+                              ) : (
+                                <span className="text-sm text-foreground/60">
+                                  Closed
+                                </span>
+                              )}
+                            </div>
+                          ))
+                        : // Display mode
+                          businessHours
+                          ? [
+                              "Monday",
+                              "Tuesday",
+                              "Wednesday",
+                              "Thursday",
+                              "Friday",
+                              "Saturday",
+                              "Sunday",
+                            ].map((day) => {
+                              const dayHours = businessHours[day];
+                              const isOpen =
+                                dayHours &&
+                                typeof dayHours === "object" &&
+                                dayHours.open &&
+                                dayHours.close;
+
+                              return (
+                                <div
+                                  key={day}
+                                  className="flex justify-between items-center"
+                                >
+                                  <span className="text-sm font-medium">
+                                    {day}
+                                  </span>
+                                  <span className="text-sm text-foreground/60">
+                                    {isOpen
+                                      ? `${formatTimeTo12Hour(dayHours.open)} - ${formatTimeTo12Hour(dayHours.close)}`
+                                      : "Closed"}
+                                  </span>
+                                </div>
+                              );
+                            })
+                          : [
                               "Monday",
                               "Tuesday",
                               "Wednesday",
@@ -6858,163 +6877,58 @@ export default function ProviderDashboard() {
                             ].map((day) => (
                               <div
                                 key={day}
-                                className="flex items-center justify-between p-3 border rounded-lg"
+                                className="flex justify-between items-center"
                               >
-                                <div className="flex items-center space-x-3">
-                                  <Switch
-                                    checked={businessHoursForm[day].isOpen}
-                                    onCheckedChange={(checked) =>
-                                      handleBusinessHoursChange(
-                                        day,
-                                        "isOpen",
-                                        checked,
-                                      )
-                                    }
-                                    disabled={businessHoursSaving}
-                                    className="data-[state=checked]:bg-roam-blue"
-                                  />
-                                  <span className="text-sm font-medium w-20">
-                                    {day}
-                                  </span>
-                                </div>
-
-                                {businessHoursForm[day].isOpen ? (
-                                  <div className="flex items-center space-x-2">
-                                    <Input
-                                      type="time"
-                                      value={businessHoursForm[day].open}
-                                      onChange={(e) =>
-                                        handleBusinessHoursChange(
-                                          day,
-                                          "open",
-                                          e.target.value,
-                                        )
-                                      }
-                                      disabled={businessHoursSaving}
-                                      className="w-24"
-                                    />
-                                    <span className="text-sm text-foreground/60">
-                                      to
-                                    </span>
-                                    <Input
-                                      type="time"
-                                      value={businessHoursForm[day].close}
-                                      onChange={(e) =>
-                                        handleBusinessHoursChange(
-                                          day,
-                                          "close",
-                                          e.target.value,
-                                        )
-                                      }
-                                      disabled={businessHoursSaving}
-                                      className="w-24"
-                                    />
-                                  </div>
-                                ) : (
-                                  <span className="text-sm text-foreground/60">
-                                    Closed
-                                  </span>
-                                )}
+                                <span className="text-sm font-medium">
+                                  {day}
+                                </span>
+                                <span className="text-sm text-foreground/60">
+                                  Loading...
+                                </span>
                               </div>
-                            ))
-                          : // Display mode
-                            businessHours
-                            ? [
-                                "Monday",
-                                "Tuesday",
-                                "Wednesday",
-                                "Thursday",
-                                "Friday",
-                                "Saturday",
-                                "Sunday",
-                              ].map((day) => {
-                                const dayHours = businessHours[day];
-                                const isOpen =
-                                  dayHours &&
-                                  typeof dayHours === "object" &&
-                                  dayHours.open &&
-                                  dayHours.close;
+                            ))}
+                    </div>
 
-                                return (
-                                  <div
-                                    key={day}
-                                    className="flex justify-between items-center"
-                                  >
-                                    <span className="text-sm font-medium">
-                                      {day}
-                                    </span>
-                                    <span className="text-sm text-foreground/60">
-                                      {isOpen
-                                        ? `${formatTimeTo12Hour(dayHours.open)} - ${formatTimeTo12Hour(dayHours.close)}`
-                                        : "Closed"}
-                                    </span>
-                                  </div>
-                                );
-                              })
-                            : [
-                                "Monday",
-                                "Tuesday",
-                                "Wednesday",
-                                "Thursday",
-                                "Friday",
-                                "Saturday",
-                                "Sunday",
-                              ].map((day) => (
-                                <div
-                                  key={day}
-                                  className="flex justify-between items-center"
-                                >
-                                  <span className="text-sm font-medium">
-                                    {day}
-                                  </span>
-                                  <span className="text-sm text-foreground/60">
-                                    Loading...
-                                  </span>
-                                </div>
-                              ))}
-                      </div>
-
-                      {editingBusinessHours ? (
-                        <div className="flex gap-2 mt-4">
-                          <Button
-                            className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
-                            onClick={handleSaveBusinessHours}
-                            disabled={businessHoursSaving}
-                          >
-                            {businessHoursSaving ? (
-                              <>
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                                Saving...
-                              </>
-                            ) : (
-                              <>
-                                <Clock className="w-4 h-4 mr-2" />
-                                Save Hours
-                              </>
-                            )}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="flex-1"
-                            onClick={handleCancelBusinessHours}
-                            disabled={businessHoursSaving}
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-                      ) : (
+                    {editingBusinessHours ? (
+                      <div className="flex gap-2 mt-4">
+                        <Button
+                          className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                          onClick={handleSaveBusinessHours}
+                          disabled={businessHoursSaving}
+                        >
+                          {businessHoursSaving ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                              Saving...
+                            </>
+                          ) : (
+                            <>
+                              <Clock className="w-4 h-4 mr-2" />
+                              Save Hours
+                            </>
+                          )}
+                        </Button>
                         <Button
                           variant="outline"
-                          className="w-full mt-4 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                          onClick={() => setEditingBusinessHours(true)}
+                          className="flex-1"
+                          onClick={handleCancelBusinessHours}
+                          disabled={businessHoursSaving}
                         >
-                          <Clock className="w-4 h-4 mr-2" />
-                          Edit Hours
+                          Cancel
                         </Button>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full mt-4 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                        onClick={() => setEditingBusinessHours(true)}
+                      >
+                        <Clock className="w-4 h-4 mr-2" />
+                        Edit Hours
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
 
 
 
