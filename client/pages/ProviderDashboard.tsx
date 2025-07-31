@@ -7242,44 +7242,7 @@ export default function ProviderDashboard() {
                     </CardContent>
                   </Card>
 
-                  {/* Quick Actions Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Quick Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        onClick={() => {
-                          setAddingLocation(true);
-                          setManagingLocations(true);
-                          resetLocationForm();
-                        }}
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add New Location
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        onClick={() => {
-                          fetchLocations();
-                        }}
-                      >
-                        <MapPin className="w-4 h-4 mr-2" />
-                        Refresh Locations
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        onClick={() => setActiveTab("providers")}
-                      >
-                        <Users className="w-4 h-4 mr-2" />
-                        Assign to Providers
-                      </Button>
-                    </CardContent>
-                  </Card>
+
                 </div>
 
                 {/* Locations List */}
