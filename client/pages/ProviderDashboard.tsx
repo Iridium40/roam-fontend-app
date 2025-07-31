@@ -362,12 +362,12 @@ export default function ProviderDashboard() {
     email: "",
     phone: "",
     provider_role: "",
-    hourly_rate: "",
     business_managed: false,
     is_active: true,
     verification_status: "",
     background_check_status: "",
-    location_id: ""
+    location_id: "",
+    experience_years: ""
   });
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
