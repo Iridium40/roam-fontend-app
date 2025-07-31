@@ -4198,6 +4198,7 @@ export default function ProviderDashboard() {
     }
 
     console.log("Loading providers for owner/dispatcher...");
+    console.log("Current provider business_id:", provider?.business_id);
 
     try {
       // First, load providers without location join
