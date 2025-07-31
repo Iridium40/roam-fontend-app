@@ -2115,6 +2115,70 @@ export default function ProviderDashboard() {
     setDeleteConfirmOpen(true);
   };
 
+  // Provider action handlers
+  const handleEditProvider = (provider: any) => {
+    setEditingProvider(provider);
+    setEditProviderModal(true);
+  };
+
+  const handleToggleProviderActive = async (provider: any) => {
+    const newStatus = !provider.is_active;
+    await updateProviderStatus(provider.id, { is_active: newStatus });
+  };
+
+  const handleToggleBackgroundApproval = async (provider: any) => {
+    const newStatus = provider.background_check_status === 'approved' ? 'pending' : 'approved';
+    await updateProviderStatus(provider.id, { background_check_status: newStatus });
+  };
+
+  const handleToggleVerificationApproval = async (provider: any) => {
+    const newStatus = provider.verification_status === 'approved' ? 'pending' : 'approved';
+    await updateProviderStatus(provider.id, { verification_status: newStatus });
+  };
+
+  const updateProviderStatus = async (providerId: string, updates: any) => {
+    setProviderActionLoading(true);
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${providerId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(updates),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update provider");
+      }
+
+      toast({
+        title: "Provider Updated",
+        description: "Provider status updated successfully",
+        variant: "default",
+      });
+
+      // Refresh the team providers list
+      await fetchTeamProviders();
+    } catch (error: any) {
+      console.error("Provider update error:", error);
+      toast({
+        title: "Update Failed",
+        description: `Failed to update provider: ${error.message}`,
+        variant: "destructive",
+      });
+    } finally {
+      setProviderActionLoading(false);
+    }
+  };
+
   const confirmDeleteLocation = async () => {
     if (!locationToDelete) return;
 
