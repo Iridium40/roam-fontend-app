@@ -1005,7 +1005,7 @@ export default function ProviderDashboard() {
       // Save document metadata to database
       await saveDocumentToDatabase({
         businessId: business.id,
-        documentName: file.name,
+        documentName: documentName.trim(),
         fileUrl: publicUrl,
         fileSize: file.size,
         documentType: selectedDocumentType,
