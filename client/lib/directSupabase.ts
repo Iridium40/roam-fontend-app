@@ -212,27 +212,37 @@ class DirectSupabaseAPI {
       },
     );
 
+    // Read response once and handle both success and error cases
+    let responseText = '';
+    try {
+      responseText = await response.text();
+    } catch (readError) {
+      console.error("Could not read response body:", readError);
+      throw new Error(`Upload failed with status ${response.status}: Could not read response`);
+    }
+
+    // Log detailed debug information
+    console.log("Upload response debug:", {
+      status: response.status,
+      statusText: response.statusText,
+      url: `${this.baseURL}/storage/v1/object/${bucket}/${path}`,
+      bucket,
+      path,
+      hasAuthToken: !!this.accessToken,
+      responseBody: responseText
+    });
+
     if (!response.ok) {
-      // For error cases, read as text
-      let errorMessage = `Upload failed with status ${response.status}`;
-      try {
-        const errorText = await response.text();
-        console.error("Supabase upload error response:", errorText);
-        console.error("Request URL:", `${this.baseURL}/storage/v1/object/${bucket}/${path}`);
-        console.error("Auth token present:", !!this.accessToken);
-        errorMessage = `Upload failed (${response.status}): ${errorText}`;
-      } catch (readError) {
-        console.error("Could not read error response:", readError);
-      }
+      const errorMessage = `Upload failed (${response.status}): ${responseText || response.statusText}`;
       throw new Error(errorMessage);
     }
 
-    // For success cases, read as text and parse as JSON
+    // For success cases, parse as JSON
     let result;
     try {
-      const responseText = await response.text();
       result = JSON.parse(responseText);
     } catch (parseError) {
+      console.warn("Could not parse upload response as JSON:", parseError);
       // If parsing fails, create a minimal result object
       result = { Key: null };
     }
