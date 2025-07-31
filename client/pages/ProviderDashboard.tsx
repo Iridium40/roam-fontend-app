@@ -4390,31 +4390,45 @@ export default function ProviderDashboard() {
     }
   };
 
-  // Initialize Plaid Link with the token
-  const initializePlaidLink = (linkToken: string) => {
-    // This would initialize the Plaid Link component
-    // For now, we'll show success since the token was created
-    setPlaidSuccess('Plaid Link token created successfully! Ready for bank connection.');
+  // Open Plaid Link to connect bank account
+  const openPlaidLink = () => {
+    if (!plaidLinkToken) {
+      setPlaidError('No link token available. Please try creating a new connection.');
+      return;
+    }
 
-    // TODO: Implement actual Plaid Link component
-    // Example of what this would look like:
-    /*
-    const handler = Plaid.create({
-      token: linkToken,
-      onSuccess: (public_token, metadata) => {
-        handlePlaidSuccess(public_token, metadata);
-      },
-      onExit: (err, metadata) => {
-        if (err != null) {
-          setPlaidError(err.display_message || 'Connection cancelled');
-        }
-      },
-      onEvent: (eventName, metadata) => {
-        console.log('Plaid event:', eventName, metadata);
+    // Load Plaid Link script and initialize
+    const script = document.createElement('script');
+    script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
+    script.onload = () => {
+      // @ts-ignore - Plaid is loaded from external script
+      if (window.Plaid) {
+        // @ts-ignore
+        const handler = window.Plaid.create({
+          token: plaidLinkToken,
+          onSuccess: (public_token: string, metadata: any) => {
+            console.log('Plaid Success:', { public_token, metadata });
+            handlePlaidSuccess(public_token, metadata);
+          },
+          onExit: (err: any, metadata: any) => {
+            if (err != null) {
+              console.error('Plaid Exit Error:', err);
+              setPlaidError(err.display_message || 'Connection cancelled');
+            }
+          },
+          onEvent: (eventName: string, metadata: any) => {
+            console.log('Plaid Event:', eventName, metadata);
+          }
+        });
+        handler.open();
+      } else {
+        setPlaidError('Failed to load Plaid Link. Please try again.');
       }
-    });
-    handler.open();
-    */
+    };
+    script.onerror = () => {
+      setPlaidError('Failed to load Plaid Link script. Please check your internet connection.');
+    };
+    document.head.appendChild(script);
   };
 
   // Handle Plaid Link Success
@@ -7566,7 +7580,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        ���� Refresh
+                        �� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
