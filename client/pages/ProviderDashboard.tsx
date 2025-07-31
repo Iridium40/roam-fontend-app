@@ -4415,7 +4415,27 @@ export default function ProviderDashboard() {
     setPayoutInfoError("");
 
     try {
-      // Load payout information from your backend
+      // For now, we'll mock the payout info since the backend API endpoints don't exist yet
+      // In production, this would call your actual API endpoint
+
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Mock payout info data - replace with actual API call when backend is ready
+      const mockPayoutInfo = {
+        bank_connected: false, // Set to true to test connected state
+        bank_name: null,
+        account_last4: null,
+        payout_schedule: 'Daily',
+        transfer_speed: 'Standard (2-3 days)',
+        stripe_account_id: null,
+        payout_enabled: false
+      };
+
+      setPayoutInfo(mockPayoutInfo);
+
+      // TODO: Uncomment and modify when backend API is ready
+      /*
       const response = await fetch(`/api/stripe/payout-info/${business.id}`, {
         headers: {
           'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
@@ -4423,14 +4443,35 @@ export default function ProviderDashboard() {
       });
 
       if (!response.ok) {
+        // Check if response is HTML (404 page) instead of JSON
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+          throw new Error('Payout API endpoint not yet implemented');
+        }
         throw new Error('Failed to load payout information');
       }
 
       const data = await response.json();
       setPayoutInfo(data);
+      */
     } catch (error: any) {
       console.error('Error loading payout info:', error);
-      setPayoutInfoError(error.message || 'Failed to load payout information');
+      // Don't show error for missing API endpoints during development
+      if (error.message?.includes('not yet implemented') ||
+          error.message?.includes('Unexpected token')) {
+        console.log('Payout API endpoints not yet implemented - using mock data');
+        setPayoutInfo({
+          bank_connected: false,
+          bank_name: null,
+          account_last4: null,
+          payout_schedule: 'Daily',
+          transfer_speed: 'Standard (2-3 days)',
+          stripe_account_id: null,
+          payout_enabled: false
+        });
+      } else {
+        setPayoutInfoError(error.message || 'Failed to load payout information');
+      }
     } finally {
       setPayoutInfoLoading(false);
     }
