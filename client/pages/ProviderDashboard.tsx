@@ -6969,32 +6969,7 @@ export default function ProviderDashboard() {
                     </CardContent>
                   </Card>
 
-                  {/* Quick Actions Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Quick Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        onClick={handleStartAddProvider}
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add New Provider
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        asChild
-                      >
-                        <Link to="/business-management">
-                          <Edit className="w-4 h-4 mr-2" />
-                          Manage Roles & Permissions
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
+
                 </div>
 
                 {/* Provider List */}
