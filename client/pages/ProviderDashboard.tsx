@@ -4329,6 +4329,152 @@ export default function ProviderDashboard() {
     }));
   };
 
+  // Plaid Link Token Creation
+  const createPlaidLinkToken = async () => {
+    if (!business?.id) return;
+
+    setPlaidLoading(true);
+    setPlaidError("");
+
+    try {
+      // This would typically call your backend endpoint to create a Plaid link token
+      // For now, we'll simulate the process
+      const response = await fetch('/api/plaid/create-link-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          business_id: business.id,
+          user_id: user?.id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create Plaid link token');
+      }
+
+      const data = await response.json();
+      setPlaidLinkToken(data.link_token);
+    } catch (error: any) {
+      console.error('Error creating Plaid link token:', error);
+      setPlaidError(error.message || 'Failed to initialize bank connection');
+    } finally {
+      setPlaidLoading(false);
+    }
+  };
+
+  // Handle Plaid Link Success
+  const handlePlaidSuccess = async (publicToken: string, metadata: any) => {
+    setPlaidLoading(true);
+    setPlaidError("");
+
+    try {
+      // Exchange public token for access token and create Stripe external account
+      const response = await fetch('/api/plaid/exchange-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          public_token: publicToken,
+          business_id: business.id,
+          account_id: metadata.account_id,
+          institution: metadata.institution
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to connect bank account');
+      }
+
+      const data = await response.json();
+      setPlaidSuccess('Bank account connected successfully!');
+
+      // Refresh payout info
+      loadPayoutInfo();
+
+      // Close the modal
+      setPayoutManagementModal(false);
+    } catch (error: any) {
+      console.error('Error connecting bank account:', error);
+      setPlaidError(error.message || 'Failed to connect bank account');
+    } finally {
+      setPlaidLoading(false);
+    }
+  };
+
+  // Load current payout info
+  const loadPayoutInfo = async () => {
+    if (!business?.id) return;
+
+    setPayoutInfoLoading(true);
+    setPayoutInfoError("");
+
+    try {
+      // Load payout information from your backend
+      const response = await fetch(`/api/stripe/payout-info/${business.id}`, {
+        headers: {
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load payout information');
+      }
+
+      const data = await response.json();
+      setPayoutInfo(data);
+    } catch (error: any) {
+      console.error('Error loading payout info:', error);
+      setPayoutInfoError(error.message || 'Failed to load payout information');
+    } finally {
+      setPayoutInfoLoading(false);
+    }
+  };
+
+  // Handle manage payout button click
+  const handleManagePayout = () => {
+    setPayoutManagementModal(true);
+    setPlaidError("");
+    setPlaidSuccess("");
+  };
+
+  // Disconnect bank account
+  const handleDisconnectBankAccount = async () => {
+    if (!business?.id) return;
+
+    setStripeConnectLoading(true);
+    setPlaidError("");
+
+    try {
+      const response = await fetch('/api/stripe/disconnect-bank', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          business_id: business.id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to disconnect bank account');
+      }
+
+      setPlaidSuccess('Bank account disconnected successfully!');
+      loadPayoutInfo();
+    } catch (error: any) {
+      console.error('Error disconnecting bank account:', error);
+      setPlaidError(error.message || 'Failed to disconnect bank account');
+    } finally {
+      setStripeConnectLoading(false);
+    }
+  };
+
   // Helper functions to filter bookings by date and status
   const filterBookingsByDate = (
     bookings: any[],
