@@ -6991,46 +6991,7 @@ export default function ProviderDashboard() {
                       </div>
                     </div>
 
-                    {/* Additional Team Insights */}
-                    <div className="mt-6 pt-6 border-t">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                            <CheckCircle className="w-5 h-5 text-green-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {teamProviders.filter(p => p.provider_role !== 'owner' && p.verification_status === 'verified').length}
-                            </div>
-                            <div className="text-sm text-foreground/60">Verified Staff</div>
-                          </div>
-                        </div>
 
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <Users className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {teamProviders.filter(p => p.provider_role === 'provider').length}
-                            </div>
-                            <div className="text-sm text-foreground/60">Providers</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                            <Settings className="w-5 h-5 text-purple-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {teamProviders.filter(p => p.provider_role === 'dispatcher').length}
-                            </div>
-                            <div className="text-sm text-foreground/60">Dispatchers</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </CardContent>
                 </Card>
 
