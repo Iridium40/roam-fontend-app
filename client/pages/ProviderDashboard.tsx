@@ -4490,14 +4490,13 @@ export default function ProviderDashboard() {
 
     try {
       // Exchange public token for access token and get account details
-      const response = await fetch('/netlify/functions/plaid-integration', {
+      const response = await fetch('/api/plaid/exchange-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
         },
         body: JSON.stringify({
-          action: 'exchange_public_token',
           public_token: publicToken,
           business_id: business.id,
           account_id: metadata.account_id,
