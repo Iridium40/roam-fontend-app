@@ -47,6 +47,38 @@ FOR DELETE USING (
   )
 );
 
+-- Policies for business documents folder
+-- Allow public read access to business documents (for verification purposes)
+CREATE POLICY "Public read access for business documents" ON storage.objects
+FOR SELECT USING (
+  bucket_id = 'roam-file-storage'
+  AND (name LIKE 'business-documents/%')
+);
+
+-- Allow authenticated users to upload business documents
+CREATE POLICY "Authenticated users can upload business documents" ON storage.objects
+FOR INSERT WITH CHECK (
+  bucket_id = 'roam-file-storage'
+  AND (name LIKE 'business-documents/%')
+  AND auth.uid() IS NOT NULL
+);
+
+-- Allow authenticated users to update business documents
+CREATE POLICY "Authenticated users can update business documents" ON storage.objects
+FOR UPDATE USING (
+  bucket_id = 'roam-file-storage'
+  AND (name LIKE 'business-documents/%')
+  AND auth.uid() IS NOT NULL
+);
+
+-- Allow authenticated users to delete business documents
+CREATE POLICY "Authenticated users can delete business documents" ON storage.objects
+FOR DELETE USING (
+  bucket_id = 'roam-file-storage'
+  AND (name LIKE 'business-documents/%')
+  AND auth.uid() IS NOT NULL
+);
+
 -- Alternative simpler policies if the above don't work (less secure but functional):
 -- These policies check if the filename starts with the provider's ID
 
