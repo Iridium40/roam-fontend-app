@@ -7399,46 +7399,7 @@ export default function ProviderDashboard() {
                       </div>
                     </div>
 
-                    {/* Location Details */}
-                    <div className="mt-6 pt-6 border-t">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                            <CheckCircle className="w-5 h-5 text-green-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {locations.find((loc) => loc.is_primary)?.location_name || "None set"}
-                            </div>
-                            <div className="text-sm text-foreground/60">Primary Location</div>
-                          </div>
-                        </div>
 
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <Building className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {locations.filter((loc) => !loc.offers_mobile_services).length}
-                            </div>
-                            <div className="text-sm text-foreground/60">Fixed Locations</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-purple-600" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {locations.filter((loc) => loc.service_radius).length}
-                            </div>
-                            <div className="text-sm text-foreground/60">With Service Radius</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
 
                   </CardContent>
