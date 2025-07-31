@@ -9801,7 +9801,7 @@ export default function ProviderDashboard() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="provider_email">
-                        Provider Email Address *
+                        Staff Email Address *
                       </Label>
                       <Input
                         id="provider_email"
