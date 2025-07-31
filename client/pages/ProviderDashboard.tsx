@@ -4338,8 +4338,17 @@ export default function ProviderDashboard() {
     setPlaidError("");
 
     try {
-      // This would typically call your backend endpoint to create a Plaid link token
-      // For now, we'll simulate the process
+      // For now, we'll show a message that the backend isn't ready
+      // In production, this would call your actual Plaid API endpoint
+
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // For development, show helpful message instead of trying to call non-existent API
+      setPlaidError('Plaid integration requires backend API endpoints to be implemented. Please contact your developer to set up the Plaid/Stripe integration endpoints.');
+
+      // TODO: Uncomment when backend API is ready
+      /*
       const response = await fetch('/api/plaid/create-link-token', {
         method: 'POST',
         headers: {
@@ -4353,11 +4362,16 @@ export default function ProviderDashboard() {
       });
 
       if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+          throw new Error('Plaid API endpoint not yet implemented');
+        }
         throw new Error('Failed to create Plaid link token');
       }
 
       const data = await response.json();
       setPlaidLinkToken(data.link_token);
+      */
     } catch (error: any) {
       console.error('Error creating Plaid link token:', error);
       setPlaidError(error.message || 'Failed to initialize bank connection');
