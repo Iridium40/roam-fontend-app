@@ -1600,6 +1600,9 @@ export default function ProviderDashboard() {
         },
       );
 
+      // Clone response immediately to prevent body consumption issues
+      const responseClone = response.clone();
+
       console.log("=== SENDING REQUEST ===");
       console.log("URL:", `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`);
       console.log("Method: PATCH");
