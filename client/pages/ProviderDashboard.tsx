@@ -5694,7 +5694,7 @@ export default function ProviderDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold">
-                      Business Services & Add-Ons
+                      Business Services
                     </h2>
                     <p className="text-foreground/60">
                       Manage the services and add-ons your business offers to
