@@ -481,6 +481,7 @@ export default function ProviderDashboard() {
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [selectedDocumentType, setSelectedDocumentType] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [documentName, setDocumentName] = useState("");
 
   // Providers state
   const [teamProviders, setTeamProviders] = useState([]);
