@@ -196,18 +196,38 @@ class DirectSupabaseAPI {
     path: string,
     file: File,
   ): Promise<{ path: string; publicUrl: string }> {
+    // Debug logging before request
+    console.log("Upload request debug:", {
+      bucket,
+      path,
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      baseURL: this.baseURL,
+      hasApiKey: !!this.apiKey,
+      hasAccessToken: !!this.accessToken,
+      accessTokenLength: this.accessToken?.length || 0
+    });
+
     const formData = new FormData();
     formData.append("", file);
+
+    const requestHeaders = {
+      apikey: this.apiKey,
+      Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+      // Don't set Content-Type - let browser set it automatically for FormData
+    };
+
+    console.log("Request headers:", {
+      ...requestHeaders,
+      Authorization: this.accessToken ? `Bearer [TOKEN_${this.accessToken.substring(0, 10)}...]` : `Bearer [API_KEY_${this.apiKey.substring(0, 10)}...]`
+    });
 
     const response = await fetch(
       `${this.baseURL}/storage/v1/object/${bucket}/${path}`,
       {
         method: "POST",
-        headers: {
-          apikey: this.apiKey,
-          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
-          // Don't set Content-Type - let browser set it automatically for FormData
-        },
+        headers: requestHeaders,
         body: formData,
       },
     );
