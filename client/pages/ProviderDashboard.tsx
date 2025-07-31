@@ -1600,51 +1600,85 @@ export default function ProviderDashboard() {
         },
       );
 
+      console.log("=== SENDING REQUEST ===");
+      console.log("URL:", `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`);
+      console.log("Method: PATCH");
+      console.log("Body:", JSON.stringify(updateData, null, 2));
+      console.log("Has access token:", !!directSupabaseAPI.currentAccessToken);
+
       if (!response.ok) {
+        console.error("=== REQUEST FAILED ===");
+        console.error("Response status:", response.status);
+        console.error("Response statusText:", response.statusText);
+
         let errorText = "Unknown error";
         let errorDetails = "";
+        let responseHeaders = {};
+
+        try {
+          responseHeaders = Object.fromEntries(response.headers.entries());
+          console.error("Response headers:", responseHeaders);
+        } catch (e) {
+          console.warn("Could not read headers:", e);
+        }
+
         try {
           errorText = await response.text();
-          console.error("Raw error response:", errorText);
+          console.error("Raw error response text:", errorText);
+          console.error("Error text length:", errorText.length);
+          console.error("Error text type:", typeof errorText);
 
-          // Try to parse error details from response
-          try {
-            const errorJson = JSON.parse(errorText);
-            console.error("Parsed error JSON:", errorJson);
+          if (!errorText || errorText.trim() === '') {
+            errorDetails = `Empty response body with HTTP ${response.status}`;
+          } else {
+            // Try to parse error details from response
+            try {
+              const errorJson = JSON.parse(errorText);
+              console.error("Parsed error JSON:", errorJson);
+              console.error("Error JSON keys:", Object.keys(errorJson));
 
-            if (errorJson.message) {
-              errorDetails = errorJson.message;
-            } else if (errorJson.error) {
-              errorDetails = errorJson.error;
-            } else if (errorJson.hint) {
-              errorDetails = errorJson.hint;
-            } else if (errorJson.details) {
-              errorDetails = errorJson.details;
-            } else if (errorJson.code) {
-              errorDetails = `Error code: ${errorJson.code}`;
-            } else {
-              errorDetails = JSON.stringify(errorJson);
+              // Extract error details with priority
+              if (errorJson.message) {
+                errorDetails = errorJson.message;
+              } else if (errorJson.error) {
+                errorDetails = errorJson.error;
+              } else if (errorJson.hint) {
+                errorDetails = errorJson.hint;
+              } else if (errorJson.details) {
+                errorDetails = errorJson.details;
+              } else if (errorJson.code) {
+                errorDetails = `Error code: ${errorJson.code}`;
+              } else if (Array.isArray(errorJson) && errorJson.length > 0) {
+                errorDetails = JSON.stringify(errorJson[0]);
+              } else {
+                errorDetails = JSON.stringify(errorJson);
+              }
+            } catch (parseError) {
+              console.error("Failed to parse error JSON:", parseError);
+              console.error("Parse error message:", parseError.message);
+              errorDetails = errorText.substring(0, 500); // Limit length
             }
-          } catch (parseError) {
-            console.error("Failed to parse error JSON:", parseError);
-            // errorText is not JSON, use as-is
-            errorDetails = errorText;
           }
         } catch (readError) {
-          console.warn("Could not read response text:", readError);
+          console.error("Could not read response text:", readError);
           errorText = `HTTP ${response.status} - ${response.statusText}`;
           errorDetails = errorText;
         }
 
-        console.error("Provider update failed:", {
+        const debugInfo = {
           status: response.status,
           statusText: response.statusText,
+          url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`,
+          method: "PATCH",
+          requestBody: updateData,
           responseText: errorText,
           errorDetails: errorDetails,
-          updateData: JSON.stringify(updateData, null, 2),
           providerId: managingProvider.id,
-          headers: Object.fromEntries(response.headers.entries()),
-        });
+          responseHeaders: responseHeaders,
+          hasAccessToken: !!directSupabaseAPI.currentAccessToken
+        };
+
+        console.error("=== COMPLETE DEBUG INFO ===", debugInfo);
 
         throw new Error(
           `Failed to update provider: HTTP ${response.status} - ${errorDetails}`,
