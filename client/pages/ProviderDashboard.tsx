@@ -7100,7 +7100,7 @@ export default function ProviderDashboard() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="w-5 h-5 text-roam-blue" />
-                      Provider Overview
+                      Staff Overview
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
