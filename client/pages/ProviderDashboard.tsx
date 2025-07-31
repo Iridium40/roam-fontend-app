@@ -6987,6 +6987,207 @@ export default function ProviderDashboard() {
                   </CardContent>
                 </Card>
 
+                {/* Provider Onboarding Status Section */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-roam-blue" />
+                      Provider Onboarding Status
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {teamProviders.length > 0 ? (
+                      <div className="space-y-4">
+                        <p className="text-sm text-foreground/60 mb-4">
+                          Track your team members' onboarding and verification status. This information is read-only and managed through the provider verification process.
+                        </p>
+
+                        <div className="overflow-x-auto">
+                          <table className="w-full border-collapse">
+                            <thead>
+                              <tr className="border-b bg-accent/20">
+                                <th className="text-left p-3 font-medium">Provider</th>
+                                <th className="text-left p-3 font-medium">Role</th>
+                                <th className="text-left p-3 font-medium">Verification Status</th>
+                                <th className="text-left p-3 font-medium">Background Check</th>
+                                <th className="text-left p-3 font-medium">Experience</th>
+                                <th className="text-left p-3 font-medium">Active Status</th>
+                                <th className="text-left p-3 font-medium">Joined</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {teamProviders.map((provider) => (
+                                <tr key={provider.id} className="border-b hover:bg-accent/10">
+                                  <td className="p-3">
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-8 h-8 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                        {provider.image_url ? (
+                                          <img
+                                            src={provider.image_url}
+                                            alt={`${provider.first_name} ${provider.last_name}`}
+                                            className="w-8 h-8 rounded-full object-cover"
+                                          />
+                                        ) : (
+                                          <span className="text-white text-xs font-medium">
+                                            {provider.first_name?.charAt(0)}{provider.last_name?.charAt(0)}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div>
+                                        <div className="font-medium">
+                                          {provider.first_name} {provider.last_name}
+                                        </div>
+                                        <div className="text-xs text-foreground/60">
+                                          {provider.email}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="p-3">
+                                    <Badge
+                                      variant="outline"
+                                      className={
+                                        provider.provider_role === 'owner'
+                                          ? "border-blue-200 text-blue-700 bg-blue-50"
+                                          : provider.provider_role === 'dispatcher'
+                                          ? "border-purple-200 text-purple-700 bg-purple-50"
+                                          : "border-green-200 text-green-700 bg-green-50"
+                                      }
+                                    >
+                                      {provider.provider_role === 'owner' && 'Owner'}
+                                      {provider.provider_role === 'dispatcher' && 'Dispatcher'}
+                                      {provider.provider_role === 'provider' && 'Provider'}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-3">
+                                    <Badge
+                                      className={
+                                        provider.verification_status === 'verified'
+                                          ? "bg-green-100 text-green-800"
+                                          : provider.verification_status === 'pending'
+                                          ? "bg-yellow-100 text-yellow-800"
+                                          : "bg-red-100 text-red-800"
+                                      }
+                                    >
+                                      {provider.verification_status === 'verified' && (
+                                        <>
+                                          <CheckCircle className="w-3 h-3 mr-1" />
+                                          Verified
+                                        </>
+                                      )}
+                                      {provider.verification_status === 'pending' && (
+                                        <>
+                                          <Clock className="w-3 h-3 mr-1" />
+                                          Pending
+                                        </>
+                                      )}
+                                      {provider.verification_status === 'rejected' && (
+                                        <>
+                                          <AlertCircle className="w-3 h-3 mr-1" />
+                                          Rejected
+                                        </>
+                                      )}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-3">
+                                    <Badge
+                                      className={
+                                        provider.background_check_status === 'approved'
+                                          ? "bg-green-100 text-green-800"
+                                          : provider.background_check_status === 'under_review'
+                                          ? "bg-yellow-100 text-yellow-800"
+                                          : "bg-red-100 text-red-800"
+                                      }
+                                    >
+                                      {provider.background_check_status === 'approved' && (
+                                        <>
+                                          <CheckCircle className="w-3 h-3 mr-1" />
+                                          Approved
+                                        </>
+                                      )}
+                                      {provider.background_check_status === 'under_review' && (
+                                        <>
+                                          <Clock className="w-3 h-3 mr-1" />
+                                          Under Review
+                                        </>
+                                      )}
+                                      {provider.background_check_status === 'failed' && (
+                                        <>
+                                          <AlertCircle className="w-3 h-3 mr-1" />
+                                          Failed
+                                        </>
+                                      )}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-3">
+                                    <span className="text-sm">
+                                      {provider.experience_years ? `${provider.experience_years} years` : 'Not specified'}
+                                    </span>
+                                  </td>
+                                  <td className="p-3">
+                                    <Badge
+                                      className={
+                                        provider.is_active
+                                          ? "bg-green-100 text-green-800"
+                                          : "bg-gray-100 text-gray-800"
+                                      }
+                                    >
+                                      {provider.is_active ? 'Active' : 'Inactive'}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-3">
+                                    <span className="text-sm text-foreground/60">
+                                      {provider.created_at ? new Date(provider.created_at).toLocaleDateString() : 'Unknown'}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Summary Stats */}
+                        <div className="mt-6 pt-4 border-t">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="text-center p-3 bg-accent/20 rounded-lg">
+                              <div className="text-lg font-bold text-roam-blue">
+                                {teamProviders.filter(p => p.verification_status === 'verified').length}
+                              </div>
+                              <div className="text-xs text-foreground/60">Verified</div>
+                            </div>
+                            <div className="text-center p-3 bg-accent/20 rounded-lg">
+                              <div className="text-lg font-bold text-roam-blue">
+                                {teamProviders.filter(p => p.background_check_status === 'approved').length}
+                              </div>
+                              <div className="text-xs text-foreground/60">Background Approved</div>
+                            </div>
+                            <div className="text-center p-3 bg-accent/20 rounded-lg">
+                              <div className="text-lg font-bold text-roam-blue">
+                                {teamProviders.filter(p => p.is_active).length}
+                              </div>
+                              <div className="text-xs text-foreground/60">Active Providers</div>
+                            </div>
+                            <div className="text-center p-3 bg-accent/20 rounded-lg">
+                              <div className="text-lg font-bold text-roam-blue">
+                                {teamProviders.length}
+                              </div>
+                              <div className="text-xs text-foreground/60">Total Team Members</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-foreground/60">
+                        <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg mb-2">No team members yet</p>
+                        <p className="text-sm">
+                          Add your first provider to start tracking onboarding status
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
                 {/* Provider List */}
                 <Card>
                   <CardHeader>
