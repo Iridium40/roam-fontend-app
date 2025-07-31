@@ -49,29 +49,24 @@ export const handler: Handler = async (event, context) => {
     if (action === 'create_plaid_link_token') {
       console.log('Creating Plaid link token for:', { business_id, user_id, business_name });
 
-      // Create Plaid Link Token with Stripe integration
+      // Create Plaid Link Token following proper API structure
       const linkTokenRequest = {
         client_id: PLAID_CLIENT_ID,
         secret: PLAID_SECRET,
-        client_name: business_name || 'ROAM Business',
-        country_codes: ['US'],
-        language: 'en',
         user: {
+          // This should correspond to a unique id for the current user
           client_user_id: user_id || `user_${business_id}`,
         },
+        client_name: business_name || 'ROAM Business',
         products: ['auth'],
-        required_if_supported_products: ['identity'],
+        language: 'en',
+        webhook: `${process.env.URL || 'https://your-domain.com'}/api/plaid/webhook`,
+        redirect_uri: null, // Not needed for web integration
+        country_codes: ['US'],
         account_filters: {
           depository: {
             account_subtypes: ['checking', 'savings'],
           },
-        },
-        redirect_uri: null,
-        // Add Stripe integration parameters
-        auth: {
-          automated_microdeposits_enabled: true,
-          same_day_microdeposits_enabled: true,
-          instant_match_enabled: true,
         },
       };
 
