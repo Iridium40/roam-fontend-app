@@ -7206,25 +7206,51 @@ export default function ProviderDashboard() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {/* Provider Role Filter */}
-                    <div className="mb-4">
-                      <Label htmlFor="role-filter" className="text-sm font-medium">
-                        Filter by Role
-                      </Label>
-                      <Select
-                        value={selectedProviderRoleFilter}
-                        onValueChange={setSelectedProviderRoleFilter}
-                      >
-                        <SelectTrigger className="w-48 mt-1">
-                          <SelectValue placeholder="All Roles" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Roles</SelectItem>
-                          <SelectItem value="owner">Owner</SelectItem>
-                          <SelectItem value="dispatcher">Dispatcher</SelectItem>
-                          <SelectItem value="provider">Provider</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    {/* Filters */}
+                    <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Provider Role Filter */}
+                      <div>
+                        <Label htmlFor="role-filter" className="text-sm font-medium">
+                          Filter by Role
+                        </Label>
+                        <Select
+                          value={selectedProviderRoleFilter}
+                          onValueChange={setSelectedProviderRoleFilter}
+                        >
+                          <SelectTrigger className="w-full mt-1">
+                            <SelectValue placeholder="All Roles" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Roles</SelectItem>
+                            <SelectItem value="owner">Owner</SelectItem>
+                            <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                            <SelectItem value="provider">Provider</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Verification Status Filter */}
+                      <div>
+                        <Label htmlFor="verification-filter" className="text-sm font-medium">
+                          Filter by Verification Status
+                        </Label>
+                        <Select
+                          value={selectedVerificationStatusFilter}
+                          onValueChange={setSelectedVerificationStatusFilter}
+                        >
+                          <SelectTrigger className="w-full mt-1">
+                            <SelectValue placeholder="All Statuses" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Statuses</SelectItem>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="documents_submitted">Documents Submitted</SelectItem>
+                            <SelectItem value="under_review">Under Review</SelectItem>
+                            <SelectItem value="approved">Approved</SelectItem>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     {providersError && (
