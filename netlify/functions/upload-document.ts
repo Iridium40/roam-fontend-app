@@ -34,7 +34,7 @@ export default async (req: Request, context: Context) => {
 
     // Upload file using service role (bypasses RLS)
     const { data, error } = await supabase.storage
-      .from("roam-provider-documents")
+      .from("roam-file-storage")
       .upload(filePath, file);
 
     if (error) {
@@ -45,7 +45,7 @@ export default async (req: Request, context: Context) => {
     // Get public URL
     const {
       data: { publicUrl },
-    } = supabase.storage.from("roam-provider-documents").getPublicUrl(filePath);
+    } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
 
     return new Response(
       JSON.stringify({
