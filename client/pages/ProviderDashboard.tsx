@@ -6913,44 +6913,34 @@ export default function ProviderDashboard() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                      {/* Active Providers */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* Number of Providers */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {businessMetrics.teamMembers}
+                          {teamProviders.length}
                         </div>
                         <div className="text-sm text-foreground/60">
-                          Active Providers
+                          Number of Providers
                         </div>
                       </div>
 
-                      {/* Total Locations */}
+                      {/* Number Unverified */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
-                        <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {businessMetrics.activeLocations}
+                        <div className="text-2xl font-bold text-amber-600 mb-1">
+                          {teamProviders.filter(p => p.verification_status !== 'approved').length}
                         </div>
                         <div className="text-sm text-foreground/60">
-                          Total Locations
+                          Number Unverified
                         </div>
                       </div>
 
-                      {/* Services Offered */}
+                      {/* Number Self Managed */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
-                        <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {businessMetrics.servicesOffered}
+                        <div className="text-2xl font-bold text-purple-600 mb-1">
+                          {teamProviders.filter(p => !p.business_managed).length}
                         </div>
                         <div className="text-sm text-foreground/60">
-                          Services Offered
-                        </div>
-                      </div>
-
-                      {/* Total Bookings This Month */}
-                      <div className="text-center p-4 bg-accent/20 rounded-lg">
-                        <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {businessMetrics.totalBookingsThisMonth || 0}
-                        </div>
-                        <div className="text-sm text-foreground/60">
-                          Bookings This Month
+                          Number Self Managed
                         </div>
                       </div>
                     </div>
