@@ -8645,7 +8645,7 @@ export default function ProviderDashboard() {
             <TabsContent value="settings" className="space-y-6">
               <h2 className="text-2xl font-bold">Account Settings</h2>
 
-              <Card className="max-w-2xl">
+              <Card className="max-w-6xl">
                 <CardHeader>
                   <CardTitle>Notification Preferences</CardTitle>
                 </CardHeader>
