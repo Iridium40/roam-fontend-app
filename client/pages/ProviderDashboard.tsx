@@ -10248,7 +10248,7 @@ export default function ProviderDashboard() {
                     {addProviderLoading && (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                     )}
-                    Create Provider
+                    Create Staff
                   </Button>
                 </div>
               </div>
