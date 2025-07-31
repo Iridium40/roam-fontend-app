@@ -1009,12 +1009,15 @@ export default function ProviderDashboard() {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Use server endpoint to upload (bypasses RLS with service role)
-      console.log("Attempting upload via server endpoint");
+      // Use Netlify function to upload (bypasses RLS with service role)
+      console.log("Attempting upload via Netlify function");
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("folderPath", "business-documents");
+      formData.append("providerId", provider?.id || "");
+      formData.append("businessId", business?.id || "");
 
-      const uploadResponse = await fetch("/api/upload-document", {
+      const uploadResponse = await fetch("/.netlify/functions/upload-document", {
         method: "POST",
         body: formData,
       });
