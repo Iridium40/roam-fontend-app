@@ -6974,6 +6974,12 @@ export default function ProviderDashboard() {
                       </div>
                     ) : teamProviders.length > 0 ? (
                       <div className="space-y-4">
+                        {/* Show filtered count */}
+                        {selectedProviderRoleFilter !== "all" && (
+                          <div className="text-sm text-foreground/60 pb-2 border-b">
+                            Showing {teamProviders.filter(tp => tp.provider_role === selectedProviderRoleFilter).length} of {teamProviders.length} team members
+                          </div>
+                        )}
                         {teamProviders
                           .filter((teamProvider) =>
                             selectedProviderRoleFilter === "all" ||
