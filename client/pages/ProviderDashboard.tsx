@@ -345,8 +345,10 @@ export default function ProviderDashboard() {
     useState<string>("all");
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
     useState<string>("all");
-  const [selectedVerificationStatusFilter, setSelectedVerificationStatusFilter] =
-    useState<string>("all");
+  const [
+    selectedVerificationStatusFilter,
+    setSelectedVerificationStatusFilter,
+  ] = useState<string>("all");
   const [selectedActiveStatusFilter, setSelectedActiveStatusFilter] =
     useState<string>("all");
 
@@ -369,7 +371,7 @@ export default function ProviderDashboard() {
     verification_status: "",
     background_check_status: "",
     location_id: "",
-    experience_years: ""
+    experience_years: "",
   });
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
@@ -417,14 +419,15 @@ export default function ProviderDashboard() {
   // Business service/addon editing state
   const [editServiceModal, setEditServiceModal] = useState(false);
   const [editAddonModal, setEditAddonModal] = useState(false);
-  const [editingBusinessService, setEditingBusinessService] = useState<any>(null);
+  const [editingBusinessService, setEditingBusinessService] =
+    useState<any>(null);
   const [editingBusinessAddon, setEditingBusinessAddon] = useState<any>(null);
   const [editServiceForm, setEditServiceForm] = useState({
     business_price: "",
-    delivery_type: "business_location"
+    delivery_type: "business_location",
   });
   const [editAddonForm, setEditAddonForm] = useState({
-    custom_price: ""
+    custom_price: "",
   });
 
   // Tax Info state
@@ -1538,7 +1541,9 @@ export default function ProviderDashboard() {
 
       // Check if we have a valid access token
       if (!directSupabaseAPI.currentAccessToken) {
-        console.warn("No access token available for provider update, using anon key");
+        console.warn(
+          "No access token available for provider update, using anon key",
+        );
       } else {
         console.log("Using access token for provider update");
       }
@@ -1551,7 +1556,7 @@ export default function ProviderDashboard() {
         current_business_managed: managingProvider.business_managed,
         current_is_active: managingProvider.is_active,
         current_verification_status: managingProvider.verification_status,
-        current_location_id: managingProvider.location_id
+        current_location_id: managingProvider.location_id,
       });
 
       console.log("Form data received:", {
@@ -1559,7 +1564,7 @@ export default function ProviderDashboard() {
         provider_role: providerManagementForm.provider_role,
         business_managed: providerManagementForm.business_managed,
         location_id: providerManagementForm.location_id,
-        verification_status: providerManagementForm.verification_status
+        verification_status: providerManagementForm.verification_status,
       });
 
       // Validate and prepare update data with strict checking
@@ -1567,52 +1572,73 @@ export default function ProviderDashboard() {
       const validationErrors: string[] = [];
 
       // Validate is_active
-      if (typeof providerManagementForm.is_active === 'boolean') {
+      if (typeof providerManagementForm.is_active === "boolean") {
         updateData.is_active = providerManagementForm.is_active;
       } else {
-        validationErrors.push(`Invalid is_active: ${providerManagementForm.is_active} (type: ${typeof providerManagementForm.is_active})`);
+        validationErrors.push(
+          `Invalid is_active: ${providerManagementForm.is_active} (type: ${typeof providerManagementForm.is_active})`,
+        );
       }
 
       // Validate provider_role
-      const validRoles = ['owner', 'dispatcher', 'provider'];
-      if (providerManagementForm.provider_role && validRoles.includes(providerManagementForm.provider_role)) {
+      const validRoles = ["owner", "dispatcher", "provider"];
+      if (
+        providerManagementForm.provider_role &&
+        validRoles.includes(providerManagementForm.provider_role)
+      ) {
         updateData.provider_role = providerManagementForm.provider_role;
       } else {
-        validationErrors.push(`Invalid provider_role: ${providerManagementForm.provider_role}. Valid options: ${validRoles.join(', ')}`);
+        validationErrors.push(
+          `Invalid provider_role: ${providerManagementForm.provider_role}. Valid options: ${validRoles.join(", ")}`,
+        );
       }
 
       // Validate business_managed
-      if (typeof providerManagementForm.business_managed === 'boolean') {
+      if (typeof providerManagementForm.business_managed === "boolean") {
         updateData.business_managed = providerManagementForm.business_managed;
       } else {
-        validationErrors.push(`Invalid business_managed: ${providerManagementForm.business_managed} (type: ${typeof providerManagementForm.business_managed})`);
+        validationErrors.push(
+          `Invalid business_managed: ${providerManagementForm.business_managed} (type: ${typeof providerManagementForm.business_managed})`,
+        );
       }
 
       // Validate location_id (UUID or null)
-      if (providerManagementForm.location_id && providerManagementForm.location_id !== "none") {
+      if (
+        providerManagementForm.location_id &&
+        providerManagementForm.location_id !== "none"
+      ) {
         // Check if it's a valid UUID format
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        const uuidRegex =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         if (uuidRegex.test(providerManagementForm.location_id)) {
           updateData.location_id = providerManagementForm.location_id;
         } else {
-          validationErrors.push(`Invalid location_id UUID format: ${providerManagementForm.location_id}`);
+          validationErrors.push(
+            `Invalid location_id UUID format: ${providerManagementForm.location_id}`,
+          );
         }
       } else {
         updateData.location_id = null;
       }
 
       // Validate verification_status
-      const validStatuses = ['pending', 'verified', 'rejected'];
-      if (providerManagementForm.verification_status && validStatuses.includes(providerManagementForm.verification_status)) {
-        updateData.verification_status = providerManagementForm.verification_status;
+      const validStatuses = ["pending", "verified", "rejected"];
+      if (
+        providerManagementForm.verification_status &&
+        validStatuses.includes(providerManagementForm.verification_status)
+      ) {
+        updateData.verification_status =
+          providerManagementForm.verification_status;
       } else {
-        validationErrors.push(`Invalid verification_status: ${providerManagementForm.verification_status}. Valid options: ${validStatuses.join(', ')}`);
+        validationErrors.push(
+          `Invalid verification_status: ${providerManagementForm.verification_status}. Valid options: ${validStatuses.join(", ")}`,
+        );
       }
 
       // Check for validation errors
       if (validationErrors.length > 0) {
         console.error("Validation errors:", validationErrors);
-        throw new Error(`Validation failed: ${validationErrors.join('; ')}`);
+        throw new Error(`Validation failed: ${validationErrors.join("; ")}`);
       }
 
       console.log("Final update data:", JSON.stringify(updateData, null, 2));
@@ -1624,7 +1650,10 @@ export default function ProviderDashboard() {
       }
 
       console.log("=== SENDING REQUEST ===");
-      console.log("URL:", `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`);
+      console.log(
+        "URL:",
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`,
+      );
       console.log("Method: PATCH");
       console.log("Body:", JSON.stringify(updateData, null, 2));
       console.log("Has access token:", !!directSupabaseAPI.currentAccessToken);
@@ -1666,13 +1695,16 @@ export default function ProviderDashboard() {
 
         let errorDetails = "";
 
-        if (!responseBodyText || responseBodyText.trim() === '') {
+        if (!responseBodyText || responseBodyText.trim() === "") {
           errorDetails = `Empty response body with HTTP ${response.status}`;
         } else {
           // Try to parse error details from response
           try {
             const errorJson = JSON.parse(responseBodyText);
-            console.error("Parsed error JSON:", JSON.stringify(errorJson, null, 2));
+            console.error(
+              "Parsed error JSON:",
+              JSON.stringify(errorJson, null, 2),
+            );
 
             // Extract error details with priority
             if (errorJson.message) {
@@ -1706,7 +1738,7 @@ export default function ProviderDashboard() {
           errorDetails: errorDetails,
           providerId: managingProvider.id,
           responseHeaders: responseHeaders,
-          hasAccessToken: !!directSupabaseAPI.currentAccessToken
+          hasAccessToken: !!directSupabaseAPI.currentAccessToken,
         };
 
         console.error("=== COMPLETE DEBUG INFO ===");
@@ -2144,7 +2176,9 @@ export default function ProviderDashboard() {
       verification_status: provider.verification_status || "",
       background_check_status: provider.background_check_status || "",
       location_id: provider.location_id || "",
-      experience_years: provider.experience_years ? provider.experience_years.toString() : ""
+      experience_years: provider.experience_years
+        ? provider.experience_years.toString()
+        : "",
     });
     setEditProviderModal(true);
   };
@@ -2155,12 +2189,18 @@ export default function ProviderDashboard() {
   };
 
   const handleToggleBackgroundApproval = async (provider: any) => {
-    const newStatus = provider.background_check_status === 'approved' ? 'under_review' : 'approved';
-    await updateProviderStatus(provider.id, { background_check_status: newStatus });
+    const newStatus =
+      provider.background_check_status === "approved"
+        ? "under_review"
+        : "approved";
+    await updateProviderStatus(provider.id, {
+      background_check_status: newStatus,
+    });
   };
 
   const handleToggleVerificationApproval = async (provider: any) => {
-    const newStatus = provider.verification_status === 'approved' ? 'pending' : 'approved';
+    const newStatus =
+      provider.verification_status === "approved" ? "pending" : "approved";
     await updateProviderStatus(provider.id, { verification_status: newStatus });
   };
 
@@ -2202,10 +2242,16 @@ export default function ProviderDashboard() {
     if (!editingProvider) return;
 
     // Validate required fields
-    if (!editProviderForm.first_name || !editProviderForm.last_name || !editProviderForm.email || !editProviderForm.phone) {
+    if (
+      !editProviderForm.first_name ||
+      !editProviderForm.last_name ||
+      !editProviderForm.email ||
+      !editProviderForm.phone
+    ) {
       toast({
         title: "Validation Error",
-        description: "First name, last name, email, and phone are required fields",
+        description:
+          "First name, last name, email, and phone are required fields",
         variant: "destructive",
       });
       return;
@@ -2225,7 +2271,9 @@ export default function ProviderDashboard() {
         verification_status: editProviderForm.verification_status,
         background_check_status: editProviderForm.background_check_status,
         location_id: editProviderForm.location_id || null,
-        experience_years: editProviderForm.experience_years ? parseInt(editProviderForm.experience_years) : null
+        experience_years: editProviderForm.experience_years
+          ? parseInt(editProviderForm.experience_years)
+          : null,
       };
 
       const { error } = await supabase
@@ -3355,15 +3403,23 @@ export default function ProviderDashboard() {
   // Business Service Editing Functions
   const handleEditBusinessService = (businessService: any) => {
     setEditServiceForm({
-      business_price: businessService.business_price?.toString() || businessService.services?.min_price?.toString() || "",
-      delivery_type: businessService.delivery_type || "business_location"
+      business_price:
+        businessService.business_price?.toString() ||
+        businessService.services?.min_price?.toString() ||
+        "",
+      delivery_type: businessService.delivery_type || "business_location",
     });
     setEditingBusinessService(businessService);
     setEditServiceModal(true);
   };
 
   const handleSaveBusinessService = async () => {
-    if (!editingBusinessService || !provider?.business_id || (!isOwner && !isDispatcher)) return;
+    if (
+      !editingBusinessService ||
+      !provider?.business_id ||
+      (!isOwner && !isDispatcher)
+    )
+      return;
 
     setBusinessServicesSaving(true);
     setBusinessServicesError("");
@@ -3373,7 +3429,7 @@ export default function ProviderDashboard() {
 
       const updateData = {
         business_price: parseFloat(editServiceForm.business_price),
-        delivery_type: editServiceForm.delivery_type
+        delivery_type: editServiceForm.delivery_type,
       };
 
       const response = await fetch(
@@ -3387,7 +3443,7 @@ export default function ProviderDashboard() {
             Prefer: "return=minimal",
           },
           body: JSON.stringify(updateData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -3396,11 +3452,16 @@ export default function ProviderDashboard() {
       }
 
       // Update local state
-      setBusinessServices(prev =>
-        prev.map(bs => bs.id === editingBusinessService.id
-          ? { ...bs, business_price: updateData.business_price, delivery_type: updateData.delivery_type }
-          : bs
-        )
+      setBusinessServices((prev) =>
+        prev.map((bs) =>
+          bs.id === editingBusinessService.id
+            ? {
+                ...bs,
+                business_price: updateData.business_price,
+                delivery_type: updateData.delivery_type,
+              }
+            : bs,
+        ),
       );
 
       setBusinessServicesSuccess("Service updated successfully!");
@@ -3416,14 +3477,22 @@ export default function ProviderDashboard() {
 
   const handleEditAddon = (businessAddon: any) => {
     setEditAddonForm({
-      custom_price: businessAddon.custom_price?.toString() || businessAddon.service_addons?.default_price?.toString() || ""
+      custom_price:
+        businessAddon.custom_price?.toString() ||
+        businessAddon.service_addons?.default_price?.toString() ||
+        "",
     });
     setEditingBusinessAddon(businessAddon);
     setEditAddonModal(true);
   };
 
   const handleSaveBusinessAddon = async () => {
-    if (!editingBusinessAddon || !provider?.business_id || (!isOwner && !isDispatcher)) return;
+    if (
+      !editingBusinessAddon ||
+      !provider?.business_id ||
+      (!isOwner && !isDispatcher)
+    )
+      return;
 
     setBusinessServicesSaving(true);
     setBusinessServicesError("");
@@ -3432,7 +3501,7 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       const updateData = {
-        custom_price: parseFloat(editAddonForm.custom_price)
+        custom_price: parseFloat(editAddonForm.custom_price),
       };
 
       const response = await fetch(
@@ -3446,7 +3515,7 @@ export default function ProviderDashboard() {
             Prefer: "return=minimal",
           },
           body: JSON.stringify(updateData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -3455,11 +3524,12 @@ export default function ProviderDashboard() {
       }
 
       // Update local state
-      setBusinessAddons(prev =>
-        prev.map(ba => ba.id === editingBusinessAddon.id
-          ? { ...ba, custom_price: updateData.custom_price }
-          : ba
-        )
+      setBusinessAddons((prev) =>
+        prev.map((ba) =>
+          ba.id === editingBusinessAddon.id
+            ? { ...ba, custom_price: updateData.custom_price }
+            : ba,
+        ),
       );
 
       setBusinessServicesSuccess("Add-on updated successfully!");
@@ -4298,7 +4368,7 @@ export default function ProviderDashboard() {
         return;
       }
 
-      const providerIds = businessProviders.map(p => p.id);
+      const providerIds = businessProviders.map((p) => p.id);
 
       const { data: allBookings, error } = await supabase
         .from("bookings")
@@ -4406,7 +4476,9 @@ export default function ProviderDashboard() {
   // Load providers and bookings when provider context is available
   useEffect(() => {
     if (provider && (isOwner || isDispatcher)) {
-      console.log("Provider context available, loading providers and bookings...");
+      console.log(
+        "Provider context available, loading providers and bookings...",
+      );
       loadAllProviders();
       loadAllBookings();
     }
@@ -5381,7 +5453,9 @@ export default function ProviderDashboard() {
                                           <div className="flex items-center gap-2 mb-2">
                                             <Users className="w-4 h-4" />
                                             <span className="text-sm text-foreground/60">
-                                              Provider: {booking.providers.first_name} {booking.providers.last_name}
+                                              Provider:{" "}
+                                              {booking.providers.first_name}{" "}
+                                              {booking.providers.last_name}
                                             </span>
                                           </div>
                                         )}
@@ -5548,7 +5622,8 @@ export default function ProviderDashboard() {
                                     <div className="flex items-center gap-2 mb-2">
                                       <Users className="w-4 h-4" />
                                       <span className="text-sm text-foreground/60">
-                                        Provider: {booking.providers.first_name} {booking.providers.last_name}
+                                        Provider: {booking.providers.first_name}{" "}
+                                        {booking.providers.last_name}
                                       </span>
                                     </div>
                                   )}
@@ -5700,9 +5775,7 @@ export default function ProviderDashboard() {
               <TabsContent value="services-addons" className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold">
-                      Business Services
-                    </h2>
+                    <h2 className="text-2xl font-bold">Business Services</h2>
                     <p className="text-foreground/60">
                       Manage the services and add-ons your business offers to
                       customers
@@ -5846,7 +5919,9 @@ export default function ProviderDashboard() {
                               variant="outline"
                               size="sm"
                               className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                              onClick={() => handleEditBusinessService(businessService)}
+                              onClick={() =>
+                                handleEditBusinessService(businessService)
+                              }
                             >
                               <Edit className="w-4 h-4 mr-2" />
                               Edit Service
@@ -5941,7 +6016,6 @@ export default function ProviderDashboard() {
                       </p>
                     </div>
 
-
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                       {allServices
                         .filter(
@@ -6020,7 +6094,6 @@ export default function ProviderDashboard() {
                         Add add-ons to your business offering
                       </p>
                     </div>
-
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {allServiceAddons
@@ -6929,10 +7002,6 @@ export default function ProviderDashboard() {
                     )}
                   </CardContent>
                 </Card>
-
-
-
-
               </TabsContent>
             )}
 
@@ -6963,7 +7032,11 @@ export default function ProviderDashboard() {
                       {/* Number of Staff */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {teamProviders.filter(p => p.provider_role !== 'owner').length}
+                          {
+                            teamProviders.filter(
+                              (p) => p.provider_role !== "owner",
+                            ).length
+                          }
                         </div>
                         <div className="text-sm text-foreground/60">
                           Number of Staff
@@ -6973,7 +7046,13 @@ export default function ProviderDashboard() {
                       {/* Number Unverified */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-amber-600 mb-1">
-                          {teamProviders.filter(p => p.provider_role !== 'owner' && p.verification_status !== 'approved').length}
+                          {
+                            teamProviders.filter(
+                              (p) =>
+                                p.provider_role !== "owner" &&
+                                p.verification_status !== "approved",
+                            ).length
+                          }
                         </div>
                         <div className="text-sm text-foreground/60">
                           Number Unverified
@@ -6983,19 +7062,21 @@ export default function ProviderDashboard() {
                       {/* Number Self Managed */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-purple-600 mb-1">
-                          {teamProviders.filter(p => p.provider_role !== 'owner' && !p.business_managed).length}
+                          {
+                            teamProviders.filter(
+                              (p) =>
+                                p.provider_role !== "owner" &&
+                                !p.business_managed,
+                            ).length
+                          }
                         </div>
                         <div className="text-sm text-foreground/60">
                           Number Self Managed
                         </div>
                       </div>
                     </div>
-
-
                   </CardContent>
                 </Card>
-
-
 
                 {/* Provider List */}
                 <Card>
@@ -7017,7 +7098,10 @@ export default function ProviderDashboard() {
                     <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                       {/* Provider Role Filter */}
                       <div>
-                        <Label htmlFor="role-filter" className="text-sm font-medium">
+                        <Label
+                          htmlFor="role-filter"
+                          className="text-sm font-medium"
+                        >
                           Filter by Role
                         </Label>
                         <Select
@@ -7029,7 +7113,9 @@ export default function ProviderDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Roles</SelectItem>
-                            <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                            <SelectItem value="dispatcher">
+                              Dispatcher
+                            </SelectItem>
                             <SelectItem value="provider">Provider</SelectItem>
                           </SelectContent>
                         </Select>
@@ -7037,7 +7123,10 @@ export default function ProviderDashboard() {
 
                       {/* Verification Status Filter */}
                       <div>
-                        <Label htmlFor="verification-filter" className="text-sm font-medium">
+                        <Label
+                          htmlFor="verification-filter"
+                          className="text-sm font-medium"
+                        >
                           Filter by Verification Status
                         </Label>
                         <Select
@@ -7050,8 +7139,12 @@ export default function ProviderDashboard() {
                           <SelectContent>
                             <SelectItem value="all">All Statuses</SelectItem>
                             <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="documents_submitted">Documents Submitted</SelectItem>
-                            <SelectItem value="under_review">Under Review</SelectItem>
+                            <SelectItem value="documents_submitted">
+                              Documents Submitted
+                            </SelectItem>
+                            <SelectItem value="under_review">
+                              Under Review
+                            </SelectItem>
                             <SelectItem value="approved">Approved</SelectItem>
                             <SelectItem value="rejected">Rejected</SelectItem>
                           </SelectContent>
@@ -7060,7 +7153,10 @@ export default function ProviderDashboard() {
 
                       {/* Active Status Filter */}
                       <div>
-                        <Label htmlFor="active-filter" className="text-sm font-medium">
+                        <Label
+                          htmlFor="active-filter"
+                          className="text-sm font-medium"
+                        >
                           Filter by Active Status
                         </Label>
                         <Select
@@ -7090,144 +7186,205 @@ export default function ProviderDashboard() {
                         <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                         <p>Loading team members...</p>
                       </div>
-                    ) : teamProviders.filter(tp => tp.provider_role !== "owner").length > 0 ? (
+                    ) : teamProviders.filter(
+                        (tp) => tp.provider_role !== "owner",
+                      ).length > 0 ? (
                       <div className="space-y-4">
                         {/* Show filtered count */}
-                        {(selectedProviderRoleFilter !== "all" || selectedVerificationStatusFilter !== "all" || selectedActiveStatusFilter !== "all" || teamProviders.some(tp => tp.provider_role === "owner")) && (
+                        {(selectedProviderRoleFilter !== "all" ||
+                          selectedVerificationStatusFilter !== "all" ||
+                          selectedActiveStatusFilter !== "all" ||
+                          teamProviders.some(
+                            (tp) => tp.provider_role === "owner",
+                          )) && (
                           <div className="text-sm text-foreground/60 pb-2 border-b">
-                            Showing {teamProviders.filter(tp =>
-                              tp.provider_role !== "owner" &&
-                              (selectedProviderRoleFilter === "all" || tp.provider_role === selectedProviderRoleFilter) &&
-                              (selectedVerificationStatusFilter === "all" || tp.verification_status === selectedVerificationStatusFilter) &&
-                              (selectedActiveStatusFilter === "all" || tp.is_active.toString() === selectedActiveStatusFilter)
-                            ).length} of {teamProviders.filter(tp => tp.provider_role !== "owner").length} staff members
+                            Showing{" "}
+                            {
+                              teamProviders.filter(
+                                (tp) =>
+                                  tp.provider_role !== "owner" &&
+                                  (selectedProviderRoleFilter === "all" ||
+                                    tp.provider_role ===
+                                      selectedProviderRoleFilter) &&
+                                  (selectedVerificationStatusFilter === "all" ||
+                                    tp.verification_status ===
+                                      selectedVerificationStatusFilter) &&
+                                  (selectedActiveStatusFilter === "all" ||
+                                    tp.is_active.toString() ===
+                                      selectedActiveStatusFilter),
+                              ).length
+                            }{" "}
+                            of{" "}
+                            {
+                              teamProviders.filter(
+                                (tp) => tp.provider_role !== "owner",
+                              ).length
+                            }{" "}
+                            staff members
                           </div>
                         )}
                         {teamProviders
-                          .filter((teamProvider) =>
-                            teamProvider.provider_role !== "owner" &&
-                            (selectedProviderRoleFilter === "all" ||
-                            teamProvider.provider_role === selectedProviderRoleFilter) &&
-                            (selectedVerificationStatusFilter === "all" ||
-                            teamProvider.verification_status === selectedVerificationStatusFilter) &&
-                            (selectedActiveStatusFilter === "all" ||
-                            teamProvider.is_active.toString() === selectedActiveStatusFilter)
+                          .filter(
+                            (teamProvider) =>
+                              teamProvider.provider_role !== "owner" &&
+                              (selectedProviderRoleFilter === "all" ||
+                                teamProvider.provider_role ===
+                                  selectedProviderRoleFilter) &&
+                              (selectedVerificationStatusFilter === "all" ||
+                                teamProvider.verification_status ===
+                                  selectedVerificationStatusFilter) &&
+                              (selectedActiveStatusFilter === "all" ||
+                                teamProvider.is_active.toString() ===
+                                  selectedActiveStatusFilter),
                           )
                           .map((teamProvider) => (
-                          <div
-                            key={teamProvider.id}
-                            className="flex items-center justify-between p-4 bg-accent/20 rounded-lg border hover:shadow-md transition-shadow"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
-                                {teamProvider.image_url ? (
-                                  <img
-                                    src={teamProvider.image_url}
-                                    alt={`${teamProvider.first_name} ${teamProvider.last_name}`}
-                                    className="w-12 h-12 rounded-full object-cover"
-                                  />
-                                ) : (
-                                  <span className="text-white font-semibold">
-                                    {teamProvider.first_name?.charAt(0)}
-                                    {teamProvider.last_name?.charAt(0)}
-                                  </span>
-                                )}
-                              </div>
-                              <div>
-                                <h3 className="font-semibold">
-                                  {teamProvider.first_name}{" "}
-                                  {teamProvider.last_name}
-                                </h3>
-                                <p className="text-sm text-foreground/60">
-                                  {teamProvider.email}
-                                </p>
-                                <div className="flex items-center gap-4 text-sm text-foreground/60 mt-1">
-                                  <span className="capitalize">
-                                    {teamProvider.provider_role || "Provider"}
-                                  </span>
-                                  {teamProvider.business_locations && teamProvider.location_id ? (
-                                    <div className="flex items-center gap-1">
-                                      <MapPin className="w-3 h-3" />
-                                      <span>
-                                        {teamProvider.business_locations.location_name}
-                                        {teamProvider.business_locations.is_primary && (
-                                          <Badge
-                                            variant="secondary"
-                                            className="ml-1 text-xs"
-                                          >
-                                            Primary
-                                          </Badge>
-                                        )}
-                                      </span>
-                                    </div>
+                            <div
+                              key={teamProvider.id}
+                              className="flex items-center justify-between p-4 bg-accent/20 rounded-lg border hover:shadow-md transition-shadow"
+                            >
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                  {teamProvider.image_url ? (
+                                    <img
+                                      src={teamProvider.image_url}
+                                      alt={`${teamProvider.first_name} ${teamProvider.last_name}`}
+                                      className="w-12 h-12 rounded-full object-cover"
+                                    />
                                   ) : (
-                                    <div className="flex items-center gap-1">
-                                      <MapPin className="w-3 h-3" />
-                                      <span className="text-foreground/40">
-                                        No location assigned
-                                      </span>
-                                    </div>
+                                    <span className="text-white font-semibold">
+                                      {teamProvider.first_name?.charAt(0)}
+                                      {teamProvider.last_name?.charAt(0)}
+                                    </span>
                                   )}
+                                </div>
+                                <div>
+                                  <h3 className="font-semibold">
+                                    {teamProvider.first_name}{" "}
+                                    {teamProvider.last_name}
+                                  </h3>
+                                  <p className="text-sm text-foreground/60">
+                                    {teamProvider.email}
+                                  </p>
+                                  <div className="flex items-center gap-4 text-sm text-foreground/60 mt-1">
+                                    <span className="capitalize">
+                                      {teamProvider.provider_role || "Provider"}
+                                    </span>
+                                    {teamProvider.business_locations &&
+                                    teamProvider.location_id ? (
+                                      <div className="flex items-center gap-1">
+                                        <MapPin className="w-3 h-3" />
+                                        <span>
+                                          {
+                                            teamProvider.business_locations
+                                              .location_name
+                                          }
+                                          {teamProvider.business_locations
+                                            .is_primary && (
+                                            <Badge
+                                              variant="secondary"
+                                              className="ml-1 text-xs"
+                                            >
+                                              Primary
+                                            </Badge>
+                                          )}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <div className="flex items-center gap-1">
+                                        <MapPin className="w-3 h-3" />
+                                        <span className="text-foreground/40">
+                                          No location assigned
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <div className="flex gap-2">
+                                  {/* Background Approval Toggle */}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleToggleBackgroundApproval(
+                                        teamProvider,
+                                      )
+                                    }
+                                    disabled={providerActionLoading}
+                                    className={
+                                      teamProvider.background_check_status ===
+                                      "approved"
+                                        ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+                                        : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"
+                                    }
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                    {teamProvider.background_check_status ===
+                                    "approved"
+                                      ? "Background ✓"
+                                      : "Approve BG"}
+                                  </Button>
+
+                                  {/* Verification Approval Toggle */}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleToggleVerificationApproval(
+                                        teamProvider,
+                                      )
+                                    }
+                                    disabled={providerActionLoading}
+                                    className={
+                                      teamProvider.verification_status ===
+                                      "approved"
+                                        ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+                                        : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"
+                                    }
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                    {teamProvider.verification_status ===
+                                    "approved"
+                                      ? "Verified ✓"
+                                      : "Verify"}
+                                  </Button>
+
+                                  {/* Active/Deactivate Toggle */}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleToggleProviderActive(teamProvider)
+                                    }
+                                    disabled={providerActionLoading}
+                                    className={
+                                      teamProvider.is_active
+                                        ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+                                        : "bg-red-50 border-red-300 text-red-700 hover:bg-red-100"
+                                    }
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                    {teamProvider.is_active
+                                      ? "Active"
+                                      : "Activate"}
+                                  </Button>
+
+                                  {/* Edit Provider */}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleEditProvider(teamProvider)
+                                    }
+                                  >
+                                    <Edit className="w-4 h-4 mr-1" />
+                                    Edit
+                                  </Button>
                                 </div>
                               </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <div className="flex gap-2">
-                                {/* Background Approval Toggle */}
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleToggleBackgroundApproval(teamProvider)}
-                                  disabled={providerActionLoading}
-                                  className={teamProvider.background_check_status === 'approved'
-                                    ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
-                                    : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"}
-                                >
-                                  <CheckCircle className="w-4 h-4 mr-1" />
-                                  {teamProvider.background_check_status === 'approved' ? 'Background ✓' : 'Approve BG'}
-                                </Button>
-
-                                {/* Verification Approval Toggle */}
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleToggleVerificationApproval(teamProvider)}
-                                  disabled={providerActionLoading}
-                                  className={teamProvider.verification_status === 'approved'
-                                    ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
-                                    : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"}
-                                >
-                                  <CheckCircle className="w-4 h-4 mr-1" />
-                                  {teamProvider.verification_status === 'approved' ? 'Verified ✓' : 'Verify'}
-                                </Button>
-
-                                {/* Active/Deactivate Toggle */}
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleToggleProviderActive(teamProvider)}
-                                  disabled={providerActionLoading}
-                                  className={teamProvider.is_active
-                                    ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
-                                    : "bg-red-50 border-red-300 text-red-700 hover:bg-red-100"}
-                                >
-                                  <CheckCircle className="w-4 h-4 mr-1" />
-                                  {teamProvider.is_active ? 'Active' : 'Activate'}
-                                </Button>
-
-                                {/* Edit Provider */}
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleEditProvider(teamProvider)}
-                                >
-                                  <Edit className="w-4 h-4 mr-1" />
-                                  Edit
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                          ))}
                       </div>
                     ) : (
                       <div className="text-center py-8 text-foreground/60">
@@ -7304,17 +7461,17 @@ export default function ProviderDashboard() {
                       {/* Mobile Service Areas */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {locations.filter((loc) => loc.offers_mobile_services).length}
+                          {
+                            locations.filter(
+                              (loc) => loc.offers_mobile_services,
+                            ).length
+                          }
                         </div>
                         <div className="text-sm text-foreground/60">
                           Mobile Service Areas
                         </div>
                       </div>
                     </div>
-
-
-
-
                   </CardContent>
                 </Card>
 
@@ -7450,7 +7607,9 @@ export default function ProviderDashboard() {
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Profile Photo Section */}
                     <div className="text-center space-y-4">
-                      <h3 className="font-medium text-lg mb-4">Profile Photo</h3>
+                      <h3 className="font-medium text-lg mb-4">
+                        Profile Photo
+                      </h3>
                       <div className="relative">
                         <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto overflow-hidden">
                           {provider?.image_url ? (
@@ -7488,7 +7647,9 @@ export default function ProviderDashboard() {
                           disabled={avatarUploading || profileSaving}
                         >
                           <Camera className="w-4 h-4 mr-2" />
-                          {provider?.image_url ? "Change Photo" : "Upload Photo"}
+                          {provider?.image_url
+                            ? "Change Photo"
+                            : "Upload Photo"}
                         </Button>
 
                         {provider?.image_url && (
@@ -7510,7 +7671,9 @@ export default function ProviderDashboard() {
 
                     {/* Contact Information Section */}
                     <div className="lg:col-span-2 space-y-4">
-                      <h3 className="font-medium text-lg mb-4">Contact Information</h3>
+                      <h3 className="font-medium text-lg mb-4">
+                        Contact Information
+                      </h3>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -9716,8 +9879,8 @@ export default function ProviderDashboard() {
                   Step 1: Create User Account
                 </h3>
                 <p className="text-sm text-foreground/60">
-                  Create a new user account for the staff member. They will receive
-                  a verification email.
+                  Create a new user account for the staff member. They will
+                  receive a verification email.
                 </p>
 
                 {!otpSent ? (
@@ -9829,9 +9992,7 @@ export default function ProviderDashboard() {
           {addProviderStep === 2 && (
             <div className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">
-                  Step 2: Staff Profile
-                </h3>
+                <h3 className="text-lg font-semibold">Step 2: Staff Profile</h3>
                 <p className="text-sm text-foreground/60">
                   Complete the staff member's profile information.
                 </p>
@@ -10021,8 +10182,8 @@ export default function ProviderDashboard() {
                   Step 3: Management Settings
                 </h3>
                 <p className="text-sm text-foreground/60">
-                  Configure how this staff member will be managed and what services
-                  they inherit.
+                  Configure how this staff member will be managed and what
+                  services they inherit.
                 </p>
 
                 <Card>
@@ -10427,9 +10588,12 @@ export default function ProviderDashboard() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium">{editingBusinessService?.services?.name}</h4>
+              <h4 className="font-medium">
+                {editingBusinessService?.services?.name}
+              </h4>
               <p className="text-sm text-foreground/60">
-                Minimum price: ${editingBusinessService?.services?.min_price || "0"}
+                Minimum price: $
+                {editingBusinessService?.services?.min_price || "0"}
               </p>
             </div>
 
@@ -10441,14 +10605,18 @@ export default function ProviderDashboard() {
                 step="0.01"
                 min={editingBusinessService?.services?.min_price || "0"}
                 value={editServiceForm.business_price}
-                onChange={(e) => setEditServiceForm(prev => ({
-                  ...prev,
-                  business_price: e.target.value
-                }))}
+                onChange={(e) =>
+                  setEditServiceForm((prev) => ({
+                    ...prev,
+                    business_price: e.target.value,
+                  }))
+                }
                 placeholder="Enter business price"
               />
               <p className="text-xs text-foreground/60">
-                Must be at least ${editingBusinessService?.services?.min_price || "0"} (service minimum)
+                Must be at least $
+                {editingBusinessService?.services?.min_price || "0"} (service
+                minimum)
               </p>
             </div>
 
@@ -10456,17 +10624,23 @@ export default function ProviderDashboard() {
               <Label htmlFor="delivery_type">Delivery Type</Label>
               <Select
                 value={editServiceForm.delivery_type}
-                onValueChange={(value) => setEditServiceForm(prev => ({
-                  ...prev,
-                  delivery_type: value
-                }))}
+                onValueChange={(value) =>
+                  setEditServiceForm((prev) => ({
+                    ...prev,
+                    delivery_type: value,
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="business_location">Business Location</SelectItem>
-                  <SelectItem value="customer_location">Customer Location</SelectItem>
+                  <SelectItem value="business_location">
+                    Business Location
+                  </SelectItem>
+                  <SelectItem value="customer_location">
+                    Customer Location
+                  </SelectItem>
                   <SelectItem value="both">Both</SelectItem>
                   <SelectItem value="virtual">Virtual</SelectItem>
                 </SelectContent>
@@ -10501,9 +10675,12 @@ export default function ProviderDashboard() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium">{editingBusinessAddon?.service_addons?.name}</h4>
+              <h4 className="font-medium">
+                {editingBusinessAddon?.service_addons?.name}
+              </h4>
               <p className="text-sm text-foreground/60">
-                Default price: ${editingBusinessAddon?.service_addons?.default_price || "0"}
+                Default price: $
+                {editingBusinessAddon?.service_addons?.default_price || "0"}
               </p>
             </div>
 
@@ -10515,14 +10692,17 @@ export default function ProviderDashboard() {
                 step="0.01"
                 min="0"
                 value={editAddonForm.custom_price}
-                onChange={(e) => setEditAddonForm(prev => ({
-                  ...prev,
-                  custom_price: e.target.value
-                }))}
+                onChange={(e) =>
+                  setEditAddonForm((prev) => ({
+                    ...prev,
+                    custom_price: e.target.value,
+                  }))
+                }
                 placeholder="Enter custom price"
               />
               <p className="text-xs text-foreground/60">
-                Leave empty to use default price (${editingBusinessAddon?.service_addons?.default_price || "0"})
+                Leave empty to use default price ($
+                {editingBusinessAddon?.service_addons?.default_price || "0"})
               </p>
             </div>
 
@@ -10559,10 +10739,12 @@ export default function ProviderDashboard() {
                 <Input
                   id="first_name"
                   value={editProviderForm.first_name}
-                  onChange={(e) => setEditProviderForm(prev => ({
-                    ...prev,
-                    first_name: e.target.value
-                  }))}
+                  onChange={(e) =>
+                    setEditProviderForm((prev) => ({
+                      ...prev,
+                      first_name: e.target.value,
+                    }))
+                  }
                   placeholder="First name"
                 />
               </div>
@@ -10571,10 +10753,12 @@ export default function ProviderDashboard() {
                 <Input
                   id="last_name"
                   value={editProviderForm.last_name}
-                  onChange={(e) => setEditProviderForm(prev => ({
-                    ...prev,
-                    last_name: e.target.value
-                  }))}
+                  onChange={(e) =>
+                    setEditProviderForm((prev) => ({
+                      ...prev,
+                      last_name: e.target.value,
+                    }))
+                  }
                   placeholder="Last name"
                 />
               </div>
@@ -10586,10 +10770,12 @@ export default function ProviderDashboard() {
                 id="email"
                 type="email"
                 value={editProviderForm.email}
-                onChange={(e) => setEditProviderForm(prev => ({
-                  ...prev,
-                  email: e.target.value
-                }))}
+                onChange={(e) =>
+                  setEditProviderForm((prev) => ({
+                    ...prev,
+                    email: e.target.value,
+                  }))
+                }
                 placeholder="Email address"
               />
             </div>
@@ -10599,10 +10785,12 @@ export default function ProviderDashboard() {
               <Input
                 id="phone"
                 value={editProviderForm.phone}
-                onChange={(e) => setEditProviderForm(prev => ({
-                  ...prev,
-                  phone: e.target.value
-                }))}
+                onChange={(e) =>
+                  setEditProviderForm((prev) => ({
+                    ...prev,
+                    phone: e.target.value,
+                  }))
+                }
                 placeholder="Phone number"
               />
             </div>
@@ -10611,10 +10799,12 @@ export default function ProviderDashboard() {
               <Label htmlFor="provider_role">Provider Role</Label>
               <Select
                 value={editProviderForm.provider_role}
-                onValueChange={(value) => setEditProviderForm(prev => ({
-                  ...prev,
-                  provider_role: value
-                }))}
+                onValueChange={(value) =>
+                  setEditProviderForm((prev) => ({
+                    ...prev,
+                    provider_role: value,
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
@@ -10631,10 +10821,12 @@ export default function ProviderDashboard() {
               <Label htmlFor="location_id">Location (Optional)</Label>
               <Select
                 value={editProviderForm.location_id}
-                onValueChange={(value) => setEditProviderForm(prev => ({
-                  ...prev,
-                  location_id: value === "none" ? "" : value
-                }))}
+                onValueChange={(value) =>
+                  setEditProviderForm((prev) => ({
+                    ...prev,
+                    location_id: value === "none" ? "" : value,
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select location (optional)" />
@@ -10643,7 +10835,8 @@ export default function ProviderDashboard() {
                   <SelectItem value="none">No Location Assigned</SelectItem>
                   {locations.map((location) => (
                     <SelectItem key={location.id} value={location.id}>
-                      {location.location_name} {location.is_primary && "(Primary)"}
+                      {location.location_name}{" "}
+                      {location.is_primary && "(Primary)"}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -10658,10 +10851,12 @@ export default function ProviderDashboard() {
                 min="0"
                 max="50"
                 value={editProviderForm.experience_years}
-                onChange={(e) => setEditProviderForm(prev => ({
-                  ...prev,
-                  experience_years: e.target.value
-                }))}
+                onChange={(e) =>
+                  setEditProviderForm((prev) => ({
+                    ...prev,
+                    experience_years: e.target.value,
+                  }))
+                }
                 placeholder="Years of experience"
               />
             </div>
@@ -10671,17 +10866,21 @@ export default function ProviderDashboard() {
                 <Label htmlFor="verification_status">Verification Status</Label>
                 <Select
                   value={editProviderForm.verification_status}
-                  onValueChange={(value) => setEditProviderForm(prev => ({
-                    ...prev,
-                    verification_status: value
-                  }))}
+                  onValueChange={(value) =>
+                    setEditProviderForm((prev) => ({
+                      ...prev,
+                      verification_status: value,
+                    }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="documents_submitted">Documents Submitted</SelectItem>
+                    <SelectItem value="documents_submitted">
+                      Documents Submitted
+                    </SelectItem>
                     <SelectItem value="under_review">Under Review</SelectItem>
                     <SelectItem value="approved">Approved</SelectItem>
                     <SelectItem value="rejected">Rejected</SelectItem>
@@ -10690,13 +10889,17 @@ export default function ProviderDashboard() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="background_check_status">Background Check</Label>
+                <Label htmlFor="background_check_status">
+                  Background Check
+                </Label>
                 <Select
                   value={editProviderForm.background_check_status}
-                  onValueChange={(value) => setEditProviderForm(prev => ({
-                    ...prev,
-                    background_check_status: value
-                  }))}
+                  onValueChange={(value) =>
+                    setEditProviderForm((prev) => ({
+                      ...prev,
+                      background_check_status: value,
+                    }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
@@ -10715,10 +10918,12 @@ export default function ProviderDashboard() {
                 type="checkbox"
                 id="business_managed"
                 checked={editProviderForm.business_managed}
-                onChange={(e) => setEditProviderForm(prev => ({
-                  ...prev,
-                  business_managed: e.target.checked
-                }))}
+                onChange={(e) =>
+                  setEditProviderForm((prev) => ({
+                    ...prev,
+                    business_managed: e.target.checked,
+                  }))
+                }
                 className="rounded"
               />
               <Label htmlFor="business_managed">Business Managed</Label>
@@ -10729,10 +10934,12 @@ export default function ProviderDashboard() {
                 type="checkbox"
                 id="is_active"
                 checked={editProviderForm.is_active}
-                onChange={(e) => setEditProviderForm(prev => ({
-                  ...prev,
-                  is_active: e.target.checked
-                }))}
+                onChange={(e) =>
+                  setEditProviderForm((prev) => ({
+                    ...prev,
+                    is_active: e.target.checked,
+                  }))
+                }
                 className="rounded"
               />
               <Label htmlFor="is_active">Active</Label>
@@ -10761,13 +10968,14 @@ export default function ProviderDashboard() {
       {/* Delete Location Confirmation Dialog */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogTrigger asChild>
-          <button style={{ display: 'none' }} />
+          <button style={{ display: "none" }} />
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Location</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{locationToDelete?.location_name}"?
+              Are you sure you want to delete "{locationToDelete?.location_name}
+              "?
             </AlertDialogDescription>
             {locationToDelete?.is_primary && (
               <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
@@ -10775,12 +10983,14 @@ export default function ProviderDashboard() {
                   ⚠️ Warning: This is your primary location
                 </p>
                 <p className="text-amber-700 text-sm mt-1">
-                  Deleting it will leave your business without a primary location.
+                  Deleting it will leave your business without a primary
+                  location.
                 </p>
               </div>
             )}
             <div className="mt-3 text-sm text-foreground/80">
-              This action cannot be undone. Any bookings or assignments to this location may be affected.
+              This action cannot be undone. Any bookings or assignments to this
+              location may be affected.
             </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
