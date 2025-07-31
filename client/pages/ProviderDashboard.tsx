@@ -8743,54 +8743,7 @@ export default function ProviderDashboard() {
                       </div>
                     </div>
 
-                    {/* Notification Type Preferences */}
-                    <div className="space-y-4">
-                      <div>
-                        <h4 className="font-medium mb-2">Notification Types</h4>
-                        <p className="text-sm text-foreground/60 mb-4">
-                          Choose which types of notifications you want to
-                          receive
-                        </p>
-                      </div>
 
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label>New Booking Alerts</Label>
-                          <p className="text-sm text-foreground/60">
-                            Get notified when customers book your services
-                          </p>
-                        </div>
-                        <Switch
-                          defaultChecked
-                          className="data-[state=checked]:bg-roam-blue"
-                        />
-                      </div>
-
-                      {(isOwner || isDispatcher) && (
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <Label>Payment Notifications</Label>
-                            <p className="text-sm text-foreground/60">
-                              Receive alerts for payments and payouts
-                            </p>
-                          </div>
-                          <Switch
-                            defaultChecked
-                            className="data-[state=checked]:bg-roam-blue"
-                          />
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label>Marketing Updates</Label>
-                          <p className="text-sm text-foreground/60">
-                            Tips and updates to grow your business
-                          </p>
-                        </div>
-                        <Switch className="data-[state=checked]:bg-roam-blue" />
-                      </div>
-                    </div>
                   </CardContent>
                 </Card>
 
