@@ -273,8 +273,8 @@ export default function ProviderDocumentVerification() {
         file_size_bytes: fileSizeBytes,
       });
 
-      const { error } = await supabase.from("provider_documents").insert({
-        provider_id: providerId,
+      const { error } = await supabase.from("business_documents").insert({
+        business_id: providerId, // This should actually be business_id now
         document_type: documentType,
         document_name: documentName,
         file_url: fileUrl,
