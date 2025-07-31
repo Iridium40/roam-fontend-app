@@ -8397,6 +8397,8 @@ export default function ProviderDashboard() {
                             </Label>
                             <Input
                               id="tax_contact_name"
+                              value={taxInfo.tax_contact_name}
+                              onChange={(e) => handleTaxInfoChange("tax_contact_name", e.target.value)}
                               placeholder="Primary contact for tax matters"
                               disabled={taxInfoSaving}
                             />
