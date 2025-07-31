@@ -7454,9 +7454,9 @@ export default function ProviderDashboard() {
                     ) : (
                       <div className="text-center py-8 text-foreground/60">
                         <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                        <p className="text-lg mb-2">No team members found</p>
+                        <p className="text-lg mb-2">No staff members found</p>
                         <p className="text-sm mb-4">
-                          Start building your team by inviting providers to join
+                          Start building your team by inviting staff to join
                           your business
                         </p>
                         <Button
