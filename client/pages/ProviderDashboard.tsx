@@ -2224,17 +2224,6 @@ export default function ProviderDashboard() {
       return;
     }
 
-    // Ensure location_id is provided (NOT NULL in schema)
-    if (!editProviderForm.location_id && locations.length > 0) {
-      // Auto-assign to primary location if available
-      const primaryLocation = locations.find(loc => loc.is_primary);
-      if (primaryLocation) {
-        setEditProviderForm(prev => ({ ...prev, location_id: primaryLocation.id }));
-      } else if (locations.length > 0) {
-        setEditProviderForm(prev => ({ ...prev, location_id: locations[0].id }));
-      }
-    }
-
     setProviderActionLoading(true);
 
     try {
