@@ -951,6 +951,9 @@ export default function ProviderDashboard() {
     setDocumentUploadError("");
 
     try {
+      // Import directSupabaseAPI
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
       // Generate unique filename
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
