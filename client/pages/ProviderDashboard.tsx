@@ -1094,8 +1094,8 @@ export default function ProviderDashboard() {
   };
 
   const handleDocumentSubmit = async () => {
-    if (!selectedFile || !selectedDocumentType) {
-      setDocumentUploadError("Please select a file and document type.");
+    if (!selectedFile || !selectedDocumentType || !documentName.trim()) {
+      setDocumentUploadError("Please fill in all required fields.");
       return;
     }
 
@@ -1107,6 +1107,7 @@ export default function ProviderDashboard() {
       setShowDocumentModal(false);
       setSelectedFile(null);
       setSelectedDocumentType("");
+      setDocumentName("");
       toast({
         title: "Document Uploaded",
         description: "Document has been uploaded successfully!",
