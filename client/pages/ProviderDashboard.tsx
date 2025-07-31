@@ -8499,7 +8499,7 @@ export default function ProviderDashboard() {
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="tax_state">State *</Label>
-                              <Select>
+                              <Select value={taxInfo.tax_state} onValueChange={(value) => handleTaxInfoChange("tax_state", value)}>
                                 <SelectTrigger>
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
