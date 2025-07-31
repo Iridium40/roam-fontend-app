@@ -7858,9 +7858,9 @@ export default function ProviderDashboard() {
                       </div>
                     ) : businessDocuments.length === 0 ? (
                       <div className="text-center py-8 text-foreground/60">
-                        <Download className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
-                        <p>No documents have been submitted yet.</p>
-                        <p className="text-sm mt-2">Documents submitted during onboarding will appear here.</p>
+                        <Upload className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
+                        <p>No documents have been uploaded yet.</p>
+                        <p className="text-sm mt-2">Use the "Add Document" button above to upload business documents.</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
