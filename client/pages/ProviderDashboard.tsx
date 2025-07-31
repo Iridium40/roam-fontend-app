@@ -9813,7 +9813,7 @@ export default function ProviderDashboard() {
                             email: e.target.value,
                           }))
                         }
-                        placeholder="provider@example.com"
+                        placeholder="staff@example.com"
                         disabled={addProviderLoading}
                       />
                     </div>
