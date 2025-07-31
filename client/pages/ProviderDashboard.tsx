@@ -5545,6 +5545,14 @@ export default function ProviderDashboard() {
                                   <h3 className="font-semibold">
                                     {booking.services?.name || "Service"}
                                   </h3>
+                                  {booking.providers && (
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Users className="w-4 h-4" />
+                                      <span className="text-sm text-foreground/60">
+                                        Provider: {booking.providers.first_name} {booking.providers.last_name}
+                                      </span>
+                                    </div>
+                                  )}
                                   <div className="flex items-center gap-2 mb-2">
                                     {booking.customer_profiles?.image_url ? (
                                       <img
