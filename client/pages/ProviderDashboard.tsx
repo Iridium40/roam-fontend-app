@@ -7951,7 +7951,7 @@ export default function ProviderDashboard() {
                         <input
                           type="file"
                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                          onChange={handleDocumentUpload}
+                          onChange={handleFileSelection}
                           className="hidden"
                           id="document-upload"
                           disabled={documentUploading}
