@@ -7811,10 +7811,32 @@ export default function ProviderDashboard() {
                 {/* Business Documents */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Download className="w-5 h-5 text-roam-blue" />
-                      Business Documents
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2">
+                        <Download className="w-5 h-5 text-roam-blue" />
+                        Business Documents
+                      </CardTitle>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                          onChange={handleDocumentUpload}
+                          className="hidden"
+                          id="document-upload"
+                          disabled={documentUploading}
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => document.getElementById("document-upload")?.click()}
+                          disabled={documentUploading}
+                          className="flex items-center gap-2"
+                        >
+                          <Upload className="w-4 h-4" />
+                          {documentUploading ? "Uploading..." : "Add Document"}
+                        </Button>
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     {businessDocumentsError && (
