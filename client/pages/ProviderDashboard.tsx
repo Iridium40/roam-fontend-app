@@ -5205,7 +5205,7 @@ export default function ProviderDashboard() {
                   value="providers"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
                 >
-                  Providers
+                  Staff
                 </TabsTrigger>
               )}
               {(isOwner || isDispatcher) && (
