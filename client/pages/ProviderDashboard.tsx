@@ -7198,7 +7198,7 @@ export default function ProviderDashboard() {
                   </CardHeader>
                   <CardContent>
                     {/* Filters */}
-                    <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                       {/* Provider Role Filter */}
                       <div>
                         <Label htmlFor="role-filter" className="text-sm font-medium">
@@ -9497,7 +9497,7 @@ export default function ProviderDashboard() {
                                 service.service_subcategories
                                   ?.service_categories
                                   ?.service_category_type}{" "}
-                              ���{" "}
+                              →{" "}
                               {service.service_subcategories?.description ||
                                 service.service_subcategories
                                   ?.service_subcategory_type}
