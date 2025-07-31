@@ -7242,6 +7242,26 @@ export default function ProviderDashboard() {
                           </SelectContent>
                         </Select>
                       </div>
+
+                      {/* Active Status Filter */}
+                      <div>
+                        <Label htmlFor="active-filter" className="text-sm font-medium">
+                          Filter by Active Status
+                        </Label>
+                        <Select
+                          value={selectedActiveStatusFilter}
+                          onValueChange={setSelectedActiveStatusFilter}
+                        >
+                          <SelectTrigger className="w-full mt-1">
+                            <SelectValue placeholder="All Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Status</SelectItem>
+                            <SelectItem value="true">Active</SelectItem>
+                            <SelectItem value="false">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     {providersError && (
