@@ -1019,12 +1019,21 @@ export default function ProviderDashboard() {
         body: formData,
       });
 
+      // Read response body only once
+      const responseText = await uploadResponse.text();
+
       if (!uploadResponse.ok) {
-        const errorText = await uploadResponse.text();
-        throw new Error(`Upload failed: ${errorText}`);
+        throw new Error(`Upload failed: ${responseText}`);
       }
 
-      const uploadResult = await uploadResponse.json();
+      // Parse the successful response
+      let uploadResult;
+      try {
+        uploadResult = JSON.parse(responseText);
+      } catch (parseError) {
+        throw new Error(`Invalid response format: ${responseText}`);
+      }
+
       console.log("Upload successful:", uploadResult);
       const publicUrl = uploadResult.publicUrl;
 
