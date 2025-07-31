@@ -401,7 +401,7 @@ export default function ProviderDashboard() {
   const [addonsSuccess, setAddonsSuccess] = useState("");
   const [addonsSaving, setAddonsSaving] = useState(false);
 
-  // Business Services & Add-ons state (business level)
+  // Business Services state (business level)
   const [allServices, setAllServices] = useState<any[]>([]);
   const [allServiceAddons, setAllServiceAddons] = useState<any[]>([]);
   const [businessServicesData, setBusinessServicesData] = useState<any[]>([]);
