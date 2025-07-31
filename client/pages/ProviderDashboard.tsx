@@ -4195,7 +4195,8 @@ export default function ProviderDashboard() {
         .eq("business_id", business.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = not found, which is OK
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 = not found, which is OK
         throw error;
       }
 
@@ -4328,9 +4329,9 @@ export default function ProviderDashboard() {
 
   // Handle tax info form changes
   const handleTaxInfoChange = (field: string, value: string) => {
-    setTaxInfo(prev => ({
+    setTaxInfo((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -4347,40 +4348,46 @@ export default function ProviderDashboard() {
       const requestBody = {
         business_id: business.id,
         user_id: user?.id,
-        business_name: business.business_name || 'Your Business'
+        business_name: business.business_name || "Your Business",
       };
 
-      console.log('Sending Plaid request:', requestBody);
+      console.log("Sending Plaid request:", requestBody);
 
-      const response = await fetch('/api/plaid/create-link-token', {
-        method: 'POST',
+      const response = await fetch("/api/plaid/create-link-token", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
-        console.error('Plaid API request failed:', response.status, response.statusText);
+        console.error(
+          "Plaid API request failed:",
+          response.status,
+          response.statusText,
+        );
 
         // Handle 404 specifically - Netlify function not found
         if (response.status === 404) {
-          setPlaidError('Plaid integration service is not available. The Netlify function needs to be deployed.');
+          setPlaidError(
+            "Plaid integration service is not available. The Netlify function needs to be deployed.",
+          );
           return;
         }
 
         // For other errors, try to read response body once
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         try {
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('application/json')) {
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
             const errorData = await response.json();
-            console.error('Plaid API Error Response:', errorData);
+            console.error("Plaid API Error Response:", errorData);
             errorMessage = errorData.error || errorData.message || errorMessage;
           }
         } catch (readError) {
-          console.error('Could not read error response:', readError);
+          console.error("Could not read error response:", readError);
           // Use the default error message
         }
 
@@ -4390,7 +4397,9 @@ export default function ProviderDashboard() {
       const data = await response.json();
       if (data.link_token) {
         setPlaidLinkToken(data.link_token);
-        setPlaidSuccess('Plaid Link token created successfully! Opening Plaid Link...');
+        setPlaidSuccess(
+          "Plaid Link token created successfully! Opening Plaid Link...",
+        );
 
         // Automatically open Plaid Link after a short delay
         setTimeout(async () => {
@@ -4398,24 +4407,35 @@ export default function ProviderDashboard() {
             const handler = await createPlaidLinkHandler(data.link_token);
             handler.open();
           } catch (error) {
-            console.error('Error auto-opening Plaid Link:', error);
-            setPlaidError('Link token created but failed to open Plaid Link. Please try the "Open Plaid Link" button.');
+            console.error("Error auto-opening Plaid Link:", error);
+            setPlaidError(
+              'Link token created but failed to open Plaid Link. Please try the "Open Plaid Link" button.',
+            );
           }
         }, 1000);
       } else {
-        throw new Error('No link token received from server');
+        throw new Error("No link token received from server");
       }
     } catch (error: any) {
-      console.error('Error creating Plaid link token:', error);
+      console.error("Error creating Plaid link token:", error);
 
       // Handle different error scenarios
-      if (error.message?.includes('404') || error.message?.includes('not found')) {
-        setPlaidError('Plaid integration service is not available yet. The Netlify function needs to be deployed.');
-      } else if (error.message?.includes('not yet implemented') ||
-                 error.message?.includes('text/html')) {
-        setPlaidError(`Plaid credentials configured (Client ID: ${PLAID_CLIENT_ID}). Backend endpoint configuration in progress.`);
+      if (
+        error.message?.includes("404") ||
+        error.message?.includes("not found")
+      ) {
+        setPlaidError(
+          "Plaid integration service is not available yet. The Netlify function needs to be deployed.",
+        );
+      } else if (
+        error.message?.includes("not yet implemented") ||
+        error.message?.includes("text/html")
+      ) {
+        setPlaidError(
+          `Plaid credentials configured (Client ID: ${PLAID_CLIENT_ID}). Backend endpoint configuration in progress.`,
+        );
       } else {
-        setPlaidError(error.message || 'Failed to initialize bank connection');
+        setPlaidError(error.message || "Failed to initialize bank connection");
       }
     } finally {
       setPlaidLoading(false);
@@ -4427,8 +4447,8 @@ export default function ProviderDashboard() {
     // Load Plaid Link script if not already loaded
     if (!(window as any).Plaid) {
       await new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
+        const script = document.createElement("script");
+        script.src = "https://cdn.plaid.com/link/v2/stable/link-initialize.js";
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);
@@ -4436,50 +4456,52 @@ export default function ProviderDashboard() {
     }
 
     // Wait a moment for Plaid to be fully available
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Create Plaid Link handler with proper configuration
     const handler = (window as any).Plaid.create({
       token: linkToken,
       receivedRedirectUri: null,
       onLoad: () => {
-        console.log('Plaid Link loaded successfully');
+        console.log("Plaid Link loaded successfully");
         // Ensure the modal has proper focus
         setTimeout(() => {
-          const plaidModal = document.querySelector('[data-plaid-link-modal]');
+          const plaidModal = document.querySelector("[data-plaid-link-modal]");
           if (plaidModal) {
             (plaidModal as HTMLElement).focus();
           }
         }, 500);
       },
       onSuccess: (public_token: string, metadata: any) => {
-        console.log('Plaid Success:', { public_token, metadata });
+        console.log("Plaid Success:", { public_token, metadata });
         handlePlaidSuccess(public_token, metadata);
       },
       onExit: (err: any, metadata: any) => {
         if (err != null) {
-          console.error('Plaid Exit Error:', err);
-          setPlaidError(err.display_message || 'Connection cancelled');
+          console.error("Plaid Exit Error:", err);
+          setPlaidError(err.display_message || "Connection cancelled");
         } else {
-          console.log('User exited Plaid Link');
+          console.log("User exited Plaid Link");
         }
         setPlaidLoading(false);
       },
       onEvent: (eventName: string, metadata: any) => {
-        console.log('Plaid Event:', eventName, metadata);
+        console.log("Plaid Event:", eventName, metadata);
 
         // Handle specific events that might indicate interaction issues
-        if (eventName === 'OPEN') {
-          console.log('Plaid Link opened - ensuring proper focus');
+        if (eventName === "OPEN") {
+          console.log("Plaid Link opened - ensuring proper focus");
           setTimeout(() => {
             // Try to focus the first input field
-            const firstInput = document.querySelector('input[type="text"], input[type="search"]');
+            const firstInput = document.querySelector(
+              'input[type="text"], input[type="search"]',
+            );
             if (firstInput) {
               (firstInput as HTMLElement).focus();
             }
           }, 1000);
         }
-      }
+      },
     });
 
     return handler;
@@ -4488,12 +4510,14 @@ export default function ProviderDashboard() {
   // Open Plaid Link to connect bank account
   const openPlaidLink = async () => {
     if (!plaidLinkToken) {
-      setPlaidError('No link token available. Please try creating a new connection.');
+      setPlaidError(
+        "No link token available. Please try creating a new connection.",
+      );
       return;
     }
 
     setPlaidLoading(true);
-    setPlaidError('');
+    setPlaidError("");
 
     try {
       const handler = await createPlaidLinkHandler(plaidLinkToken);
@@ -4509,8 +4533,8 @@ export default function ProviderDashboard() {
         setPlaidLoading(false);
       }, 200);
     } catch (error) {
-      console.error('Error opening Plaid Link:', error);
-      setPlaidError('Failed to load Plaid Link. Please try again.');
+      console.error("Error opening Plaid Link:", error);
+      setPlaidError("Failed to load Plaid Link. Please try again.");
       setPlaidLoading(false);
     }
   };
@@ -4522,53 +4546,55 @@ export default function ProviderDashboard() {
 
     try {
       // Exchange public token for access token and get account details
-      const response = await fetch('/api/plaid/exchange-token', {
-        method: 'POST',
+      const response = await fetch("/api/plaid/exchange-token", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
         },
         body: JSON.stringify({
           public_token: publicToken,
           business_id: business.id,
           account_id: metadata.account_id,
-          institution: metadata.institution
-        })
+          institution: metadata.institution,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to connect bank account');
+        throw new Error(errorData.error || "Failed to connect bank account");
       }
 
       const data = await response.json();
 
       if (data.success) {
         // Update payout info with connected bank account
-        const connectedAccount = data.accounts?.find((acc: any) => acc.account_id === metadata.account_id);
+        const connectedAccount = data.accounts?.find(
+          (acc: any) => acc.account_id === metadata.account_id,
+        );
 
         setPayoutInfo({
           bank_connected: true,
-          bank_name: metadata.institution?.name || 'Connected Bank',
-          account_last4: connectedAccount?.mask || '****',
-          payout_schedule: 'Daily',
-          transfer_speed: 'Standard (2-3 days)',
+          bank_name: metadata.institution?.name || "Connected Bank",
+          account_last4: connectedAccount?.mask || "****",
+          payout_schedule: "Daily",
+          transfer_speed: "Standard (2-3 days)",
           stripe_account_id: null, // Would be set by Stripe integration
-          payout_enabled: true
+          payout_enabled: true,
         });
 
-        setPlaidSuccess('Bank account connected successfully!');
+        setPlaidSuccess("Bank account connected successfully!");
 
         // Close the modal after a short delay
         setTimeout(() => {
           setPayoutManagementModal(false);
         }, 2000);
       } else {
-        throw new Error('Failed to process bank account connection');
+        throw new Error("Failed to process bank account connection");
       }
     } catch (error: any) {
-      console.error('Error connecting bank account:', error);
-      setPlaidError(error.message || 'Failed to connect bank account');
+      console.error("Error connecting bank account:", error);
+      setPlaidError(error.message || "Failed to connect bank account");
     } finally {
       setPlaidLoading(false);
     }
@@ -4586,17 +4612,17 @@ export default function ProviderDashboard() {
       // In production, this would call your actual API endpoint
 
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Mock payout info data - replace with actual API call when backend is ready
       const mockPayoutInfo = {
         bank_connected: false, // Set to true to test connected state
         bank_name: null,
         account_last4: null,
-        payout_schedule: 'Daily',
-        transfer_speed: 'Standard (2-3 days)',
+        payout_schedule: "Daily",
+        transfer_speed: "Standard (2-3 days)",
         stripe_account_id: null,
-        payout_enabled: false
+        payout_enabled: false,
       };
 
       setPayoutInfo(mockPayoutInfo);
@@ -4622,22 +4648,28 @@ export default function ProviderDashboard() {
       setPayoutInfo(data);
       */
     } catch (error: any) {
-      console.error('Error loading payout info:', error);
+      console.error("Error loading payout info:", error);
       // Don't show error for missing API endpoints during development
-      if (error.message?.includes('not yet implemented') ||
-          error.message?.includes('Unexpected token')) {
-        console.log('Payout API endpoints not yet implemented - using mock data');
+      if (
+        error.message?.includes("not yet implemented") ||
+        error.message?.includes("Unexpected token")
+      ) {
+        console.log(
+          "Payout API endpoints not yet implemented - using mock data",
+        );
         setPayoutInfo({
           bank_connected: false,
           bank_name: null,
           account_last4: null,
-          payout_schedule: 'Daily',
-          transfer_speed: 'Standard (2-3 days)',
+          payout_schedule: "Daily",
+          transfer_speed: "Standard (2-3 days)",
           stripe_account_id: null,
-          payout_enabled: false
+          payout_enabled: false,
         });
       } else {
-        setPayoutInfoError(error.message || 'Failed to load payout information');
+        setPayoutInfoError(
+          error.message || "Failed to load payout information",
+        );
       }
     } finally {
       setPayoutInfoLoading(false);
@@ -4660,20 +4692,22 @@ export default function ProviderDashboard() {
 
     try {
       // For development, simulate disconnection since backend API doesn't exist yet
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Update mock data to show disconnected state
       setPayoutInfo({
         bank_connected: false,
         bank_name: null,
         account_last4: null,
-        payout_schedule: 'Daily',
-        transfer_speed: 'Standard (2-3 days)',
+        payout_schedule: "Daily",
+        transfer_speed: "Standard (2-3 days)",
         stripe_account_id: null,
-        payout_enabled: false
+        payout_enabled: false,
       });
 
-      setPlaidSuccess('Bank account disconnected successfully! (Development mode)');
+      setPlaidSuccess(
+        "Bank account disconnected successfully! (Development mode)",
+      );
 
       // TODO: Uncomment when backend API is ready
       /*
@@ -4700,8 +4734,8 @@ export default function ProviderDashboard() {
       loadPayoutInfo();
       */
     } catch (error: any) {
-      console.error('Error disconnecting bank account:', error);
-      setPlaidError(error.message || 'Failed to disconnect bank account');
+      console.error("Error disconnecting bank account:", error);
+      setPlaidError(error.message || "Failed to disconnect bank account");
     } finally {
       setStripeConnectLoading(false);
     }
@@ -8729,7 +8763,12 @@ export default function ProviderDashboard() {
                               <Input
                                 id="legal_business_name"
                                 value={taxInfo.legal_business_name}
-                                onChange={(e) => handleTaxInfoChange("legal_business_name", e.target.value)}
+                                onChange={(e) =>
+                                  handleTaxInfoChange(
+                                    "legal_business_name",
+                                    e.target.value,
+                                  )
+                                }
                                 placeholder="Business legal name for tax purposes"
                                 disabled={taxInfoSaving}
                               />
@@ -8739,7 +8778,9 @@ export default function ProviderDashboard() {
                               <Input
                                 id="tax_id"
                                 value={taxInfo.tax_id}
-                                onChange={(e) => handleTaxInfoChange("tax_id", e.target.value)}
+                                onChange={(e) =>
+                                  handleTaxInfoChange("tax_id", e.target.value)
+                                }
                                 placeholder="XX-XXXXXXX"
                                 disabled={taxInfoSaving}
                               />
@@ -8749,7 +8790,12 @@ export default function ProviderDashboard() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="tax_id_type">Tax ID Type *</Label>
-                              <Select value={taxInfo.tax_id_type} onValueChange={(value) => handleTaxInfoChange("tax_id_type", value)}>
+                              <Select
+                                value={taxInfo.tax_id_type}
+                                onValueChange={(value) =>
+                                  handleTaxInfoChange("tax_id_type", value)
+                                }
+                              >
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select ID type" />
                                 </SelectTrigger>
@@ -8767,7 +8813,15 @@ export default function ProviderDashboard() {
                               <Label htmlFor="business_entity_type">
                                 Business Entity Type *
                               </Label>
-                              <Select value={taxInfo.business_entity_type} onValueChange={(value) => handleTaxInfoChange("business_entity_type", value)}>
+                              <Select
+                                value={taxInfo.business_entity_type}
+                                onValueChange={(value) =>
+                                  handleTaxInfoChange(
+                                    "business_entity_type",
+                                    value,
+                                  )
+                                }
+                              >
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select entity type" />
                                 </SelectTrigger>
@@ -8797,7 +8851,12 @@ export default function ProviderDashboard() {
                             <Input
                               id="tax_contact_name"
                               value={taxInfo.tax_contact_name}
-                              onChange={(e) => handleTaxInfoChange("tax_contact_name", e.target.value)}
+                              onChange={(e) =>
+                                handleTaxInfoChange(
+                                  "tax_contact_name",
+                                  e.target.value,
+                                )
+                              }
                               placeholder="Primary contact for tax matters"
                               disabled={taxInfoSaving}
                             />
@@ -8812,7 +8871,12 @@ export default function ProviderDashboard() {
                                 id="tax_contact_email"
                                 type="email"
                                 value={taxInfo.tax_contact_email}
-                                onChange={(e) => handleTaxInfoChange("tax_contact_email", e.target.value)}
+                                onChange={(e) =>
+                                  handleTaxInfoChange(
+                                    "tax_contact_email",
+                                    e.target.value,
+                                  )
+                                }
                                 placeholder="tax@yourbusiness.com"
                                 disabled={taxInfoSaving}
                               />
@@ -8825,7 +8889,12 @@ export default function ProviderDashboard() {
                                 id="tax_contact_phone"
                                 type="tel"
                                 value={taxInfo.tax_contact_phone}
-                                onChange={(e) => handleTaxInfoChange("tax_contact_phone", e.target.value)}
+                                onChange={(e) =>
+                                  handleTaxInfoChange(
+                                    "tax_contact_phone",
+                                    e.target.value,
+                                  )
+                                }
                                 placeholder="(XXX) XXX-XXXX"
                                 disabled={taxInfoSaving}
                               />
@@ -8868,7 +8937,12 @@ export default function ProviderDashboard() {
                             <Input
                               id="tax_address_line1"
                               value={taxInfo.tax_address_line1}
-                              onChange={(e) => handleTaxInfoChange("tax_address_line1", e.target.value)}
+                              onChange={(e) =>
+                                handleTaxInfoChange(
+                                  "tax_address_line1",
+                                  e.target.value,
+                                )
+                              }
                               placeholder="Street address"
                               disabled={taxInfoSaving}
                             />
@@ -8880,7 +8954,12 @@ export default function ProviderDashboard() {
                             <Input
                               id="tax_address_line2"
                               value={taxInfo.tax_address_line2}
-                              onChange={(e) => handleTaxInfoChange("tax_address_line2", e.target.value)}
+                              onChange={(e) =>
+                                handleTaxInfoChange(
+                                  "tax_address_line2",
+                                  e.target.value,
+                                )
+                              }
                               placeholder="Apt, suite, etc."
                               disabled={taxInfoSaving}
                             />
@@ -8891,14 +8970,24 @@ export default function ProviderDashboard() {
                               <Input
                                 id="tax_city"
                                 value={taxInfo.tax_city}
-                                onChange={(e) => handleTaxInfoChange("tax_city", e.target.value)}
+                                onChange={(e) =>
+                                  handleTaxInfoChange(
+                                    "tax_city",
+                                    e.target.value,
+                                  )
+                                }
                                 placeholder="City"
                                 disabled={taxInfoSaving}
                               />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="tax_state">State *</Label>
-                              <Select value={taxInfo.tax_state} onValueChange={(value) => handleTaxInfoChange("tax_state", value)}>
+                              <Select
+                                value={taxInfo.tax_state}
+                                onValueChange={(value) =>
+                                  handleTaxInfoChange("tax_state", value)
+                                }
+                              >
                                 <SelectTrigger>
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
@@ -8918,7 +9007,12 @@ export default function ProviderDashboard() {
                               <Input
                                 id="tax_postal_code"
                                 value={taxInfo.tax_postal_code}
-                                onChange={(e) => handleTaxInfoChange("tax_postal_code", e.target.value)}
+                                onChange={(e) =>
+                                  handleTaxInfoChange(
+                                    "tax_postal_code",
+                                    e.target.value,
+                                  )
+                                }
                                 placeholder="12345"
                                 disabled={taxInfoSaving}
                               />
@@ -9241,7 +9335,12 @@ export default function ProviderDashboard() {
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
               <h2 className="text-2xl font-bold">
-                <span style={{letterSpacing: '-0.6px', backgroundColor: 'rgb(255, 255, 255)'}}>
+                <span
+                  style={{
+                    letterSpacing: "-0.6px",
+                    backgroundColor: "rgb(255, 255, 255)",
+                  }}
+                >
                   Notification Preferences
                 </span>
               </h2>
@@ -11503,7 +11602,10 @@ export default function ProviderDashboard() {
       </AlertDialog>
 
       {/* Payout Management Modal */}
-      <Dialog open={payoutManagementModal} onOpenChange={setPayoutManagementModal}>
+      <Dialog
+        open={payoutManagementModal}
+        onOpenChange={setPayoutManagementModal}
+      >
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -11529,7 +11631,8 @@ export default function ProviderDashboard() {
               <div>
                 <h4 className="font-medium mb-2">Bank Account Connection</h4>
                 <p className="text-sm text-foreground/60 mb-4">
-                  Connect your bank account securely through Plaid to receive payouts from Stripe.
+                  Connect your bank account securely through Plaid to receive
+                  payouts from Stripe.
                 </p>
               </div>
 
@@ -11541,9 +11644,12 @@ export default function ProviderDashboard() {
                         <CheckCircle className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
-                        <p className="font-medium text-green-800">Bank Account Connected</p>
+                        <p className="font-medium text-green-800">
+                          Bank Account Connected
+                        </p>
                         <p className="text-sm text-green-600">
-                          {payoutInfo?.bank_name} ****{payoutInfo?.account_last4}
+                          {payoutInfo?.bank_name} ****
+                          {payoutInfo?.account_last4}
                         </p>
                       </div>
                     </div>
@@ -11551,12 +11657,18 @@ export default function ProviderDashboard() {
 
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-foreground/60">Payout Schedule</span>
-                      <span className="font-medium">{payoutInfo?.payout_schedule || 'Daily'}</span>
+                      <span className="text-foreground/60">
+                        Payout Schedule
+                      </span>
+                      <span className="font-medium">
+                        {payoutInfo?.payout_schedule || "Daily"}
+                      </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-foreground/60">Transfer Speed</span>
-                      <span className="font-medium">{payoutInfo?.transfer_speed || 'Standard (2-3 days)'}</span>
+                      <span className="font-medium">
+                        {payoutInfo?.transfer_speed || "Standard (2-3 days)"}
+                      </span>
                     </div>
                   </div>
 
@@ -11577,11 +11689,14 @@ export default function ProviderDashboard() {
                   <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Shield className="w-5 h-5 text-blue-600" />
-                      <span className="font-medium text-blue-800">Secure Connection</span>
+                      <span className="font-medium text-blue-800">
+                        Secure Connection
+                      </span>
                     </div>
                     <p className="text-sm text-blue-700">
-                      We use Plaid's bank-grade security to safely connect your account.
-                      Your banking credentials are never stored on our servers.
+                      We use Plaid's bank-grade security to safely connect your
+                      account. Your banking credentials are never stored on our
+                      servers.
                     </p>
                   </div>
 
@@ -11600,7 +11715,8 @@ export default function ProviderDashboard() {
                     <div className="space-y-3">
                       <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                         <p className="text-sm text-green-800 text-center">
-                          ✓ Connection token ready! Plaid Link should open automatically.
+                          ✓ Connection token ready! Plaid Link should open
+                          automatically.
                         </p>
                       </div>
                       <Button
@@ -11618,7 +11734,8 @@ export default function ProviderDashboard() {
                   )}
 
                   <div className="text-xs text-foreground/60 text-center">
-                    By connecting your bank account, you agree to our terms of service and Stripe's connected account agreement.
+                    By connecting your bank account, you agree to our terms of
+                    service and Stripe's connected account agreement.
                   </div>
                 </div>
               )}
