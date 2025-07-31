@@ -346,6 +346,10 @@ export default function ProviderDashboard() {
     useState<string>("provider");
   const [selectedVerificationStatusFilter, setSelectedVerificationStatusFilter] =
     useState<string>("all");
+
+  // Delete confirmation dialog state
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [locationToDelete, setLocationToDelete] = useState<any>(null);
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
   const [editingService, setEditingService] = useState<any>(null);
