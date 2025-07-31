@@ -212,16 +212,22 @@ class DirectSupabaseAPI {
       },
     );
 
-    // Read response text once and handle both success and error cases
-    const responseText = await response.text();
-
     if (!response.ok) {
-      throw new Error(`Upload failed: ${responseText}`);
+      // For error cases, read as text
+      let errorMessage = `Upload failed with status ${response.status}`;
+      try {
+        const errorText = await response.text();
+        errorMessage = `Upload failed: ${errorText}`;
+      } catch (readError) {
+        // If we can't read the error, use the default message
+      }
+      throw new Error(errorMessage);
     }
 
-    // Parse the response text as JSON for success case
+    // For success cases, read as text and parse as JSON
     let result;
     try {
+      const responseText = await response.text();
       result = JSON.parse(responseText);
     } catch (parseError) {
       // If parsing fails, create a minimal result object
