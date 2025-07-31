@@ -206,6 +206,7 @@ class DirectSupabaseAPI {
         headers: {
           apikey: this.apiKey,
           Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          // Don't set Content-Type - let browser set it automatically for FormData
         },
         body: formData,
       },
