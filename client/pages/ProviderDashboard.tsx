@@ -6006,17 +6006,7 @@ export default function ProviderDashboard() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="availability" className="text-sm">
-                  Available
-                </Label>
-                <Switch
-                  id="availability"
-                  checked={isAvailable}
-                  onCheckedChange={setIsAvailable}
-                  className="data-[state=checked]:bg-roam-blue"
-                />
-              </div>
+
               <Button variant="ghost" size="sm">
                 <Bell className="w-4 h-4" />
               </Button>
