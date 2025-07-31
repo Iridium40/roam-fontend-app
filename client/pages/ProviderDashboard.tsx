@@ -8491,6 +8491,8 @@ export default function ProviderDashboard() {
                               <Label htmlFor="tax_city">City *</Label>
                               <Input
                                 id="tax_city"
+                                value={taxInfo.tax_city}
+                                onChange={(e) => handleTaxInfoChange("tax_city", e.target.value)}
                                 placeholder="City"
                                 disabled={taxInfoSaving}
                               />
