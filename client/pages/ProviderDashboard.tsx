@@ -1506,40 +1506,84 @@ export default function ProviderDashboard() {
         console.log("Using access token for provider update");
       }
 
-      // Validate and prepare update data
-      const updateData: any = {};
+      // Enhanced validation and debugging
+      console.log("=== PROVIDER UPDATE DEBUG START ===");
+      console.log("Provider being updated:", {
+        id: managingProvider.id,
+        current_role: managingProvider.provider_role,
+        current_business_managed: managingProvider.business_managed,
+        current_is_active: managingProvider.is_active,
+        current_verification_status: managingProvider.verification_status,
+        current_location_id: managingProvider.location_id
+      });
 
-      // Only include fields that have valid values
+      console.log("Form data received:", {
+        is_active: providerManagementForm.is_active,
+        provider_role: providerManagementForm.provider_role,
+        business_managed: providerManagementForm.business_managed,
+        location_id: providerManagementForm.location_id,
+        verification_status: providerManagementForm.verification_status
+      });
+
+      // Validate and prepare update data with strict checking
+      const updateData: any = {};
+      const validationErrors: string[] = [];
+
+      // Validate is_active
       if (typeof providerManagementForm.is_active === 'boolean') {
         updateData.is_active = providerManagementForm.is_active;
+      } else {
+        validationErrors.push(`Invalid is_active: ${providerManagementForm.is_active} (type: ${typeof providerManagementForm.is_active})`);
       }
 
-      if (providerManagementForm.provider_role && ['owner', 'dispatcher', 'provider'].includes(providerManagementForm.provider_role)) {
+      // Validate provider_role
+      const validRoles = ['owner', 'dispatcher', 'provider'];
+      if (providerManagementForm.provider_role && validRoles.includes(providerManagementForm.provider_role)) {
         updateData.provider_role = providerManagementForm.provider_role;
+      } else {
+        validationErrors.push(`Invalid provider_role: ${providerManagementForm.provider_role}. Valid options: ${validRoles.join(', ')}`);
       }
 
+      // Validate business_managed
       if (typeof providerManagementForm.business_managed === 'boolean') {
         updateData.business_managed = providerManagementForm.business_managed;
+      } else {
+        validationErrors.push(`Invalid business_managed: ${providerManagementForm.business_managed} (type: ${typeof providerManagementForm.business_managed})`);
       }
 
+      // Validate location_id (UUID or null)
       if (providerManagementForm.location_id && providerManagementForm.location_id !== "none") {
-        updateData.location_id = providerManagementForm.location_id;
+        // Check if it's a valid UUID format
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(providerManagementForm.location_id)) {
+          updateData.location_id = providerManagementForm.location_id;
+        } else {
+          validationErrors.push(`Invalid location_id UUID format: ${providerManagementForm.location_id}`);
+        }
       } else {
         updateData.location_id = null;
       }
 
-      if (providerManagementForm.verification_status && ['pending', 'verified', 'rejected'].includes(providerManagementForm.verification_status)) {
+      // Validate verification_status
+      const validStatuses = ['pending', 'verified', 'rejected'];
+      if (providerManagementForm.verification_status && validStatuses.includes(providerManagementForm.verification_status)) {
         updateData.verification_status = providerManagementForm.verification_status;
+      } else {
+        validationErrors.push(`Invalid verification_status: ${providerManagementForm.verification_status}. Valid options: ${validStatuses.join(', ')}`);
       }
 
-      // Debug logging
-      console.log("Original form data:", providerManagementForm);
-      console.log("Validated update data:", JSON.stringify(updateData, null, 2));
-      console.log("Provider ID:", managingProvider.id);
+      // Check for validation errors
+      if (validationErrors.length > 0) {
+        console.error("Validation errors:", validationErrors);
+        throw new Error(`Validation failed: ${validationErrors.join('; ')}`);
+      }
+
+      console.log("Final update data:", JSON.stringify(updateData, null, 2));
+      console.log("Update data keys:", Object.keys(updateData));
 
       // Ensure we have at least one field to update
       if (Object.keys(updateData).length === 0) {
-        throw new Error("No valid fields to update");
+        throw new Error("No valid fields to update after validation");
       }
 
       const response = await fetch(
