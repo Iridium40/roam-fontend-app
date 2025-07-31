@@ -10061,7 +10061,7 @@ export default function ProviderDashboard() {
                       }))
                     }
                     rows={3}
-                    placeholder="Brief description of the provider's background and expertise..."
+                    placeholder="Brief description of the staff member's background and expertise..."
                     disabled={addProviderLoading}
                   />
                 </div>
