@@ -2265,7 +2265,13 @@ export default function ProviderDashboard() {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
+        let errorText = "";
+        try {
+          errorText = await response.text();
+        } catch (readError) {
+          console.warn("Could not read error response:", readError);
+          errorText = response.statusText || "Unknown error";
+        }
         console.error("Provider save error response:", errorText);
         throw new Error(`Failed to save provider: ${response.status} ${errorText}`);
       }
