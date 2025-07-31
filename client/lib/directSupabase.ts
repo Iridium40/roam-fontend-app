@@ -212,13 +212,16 @@ class DirectSupabaseAPI {
       },
     );
 
-    // Read response once and handle both success and error cases
+    // Clone response to avoid body stream issues
+    const responseForText = response.clone();
     let responseText = '';
+
     try {
-      responseText = await response.text();
+      responseText = await responseForText.text();
     } catch (readError) {
       console.error("Could not read response body:", readError);
-      throw new Error(`Upload failed with status ${response.status}: Could not read response`);
+      // If we can't read the response body, use status info
+      responseText = `HTTP ${response.status} ${response.statusText}`;
     }
 
     // Log detailed debug information
