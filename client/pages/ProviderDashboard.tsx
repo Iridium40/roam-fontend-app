@@ -1019,19 +1019,26 @@ export default function ProviderDashboard() {
         body: formData,
       });
 
-      // Read response body only once
-      const responseText = await uploadResponse.text();
-
       if (!uploadResponse.ok) {
-        throw new Error(`Upload failed: ${responseText}`);
+        // Use cloned response for error case
+        let errorMessage = `Upload failed with status ${uploadResponse.status}`;
+        try {
+          const errorResponse = uploadResponse.clone();
+          const errorText = await errorResponse.text();
+          errorMessage = `Upload failed: ${errorText}`;
+        } catch (readError) {
+          console.warn("Could not read error response:", readError);
+        }
+        throw new Error(errorMessage);
       }
 
-      // Parse the successful response
+      // Parse the successful response directly as JSON
       let uploadResult;
       try {
-        uploadResult = JSON.parse(responseText);
+        uploadResult = await uploadResponse.json();
       } catch (parseError) {
-        throw new Error(`Invalid response format: ${responseText}`);
+        console.error("JSON parse error:", parseError);
+        throw new Error("Invalid response format from upload service");
       }
 
       console.log("Upload successful:", uploadResult);
