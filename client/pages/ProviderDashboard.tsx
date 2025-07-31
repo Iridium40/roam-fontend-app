@@ -8122,17 +8122,73 @@ export default function ProviderDashboard() {
 
                 {/* Document Upload Modal */}
                 <Dialog open={showDocumentModal} onOpenChange={setShowDocumentModal}>
-                  <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
                       <DialogTitle>Upload Document</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
-                      {selectedFile && (
-                        <div className="text-sm text-foreground/70">
-                          <strong>Selected file:</strong> {selectedFile.name}
+                      {/* File Upload Section */}
+                      <div className="space-y-2">
+                        <Label htmlFor="file-upload">Select File *</Label>
+                        <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                          {selectedFile ? (
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-center">
+                                <Upload className="w-8 h-8 text-green-500" />
+                              </div>
+                              <p className="text-sm font-medium">{selectedFile.name}</p>
+                              <p className="text-xs text-foreground/60">
+                                {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                              </p>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setSelectedFile(null)}
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <Upload className="w-8 h-8 text-foreground/50 mx-auto" />
+                              <p className="text-sm text-foreground/70">
+                                Click to upload or drag and drop
+                              </p>
+                              <p className="text-xs text-foreground/50">
+                                PDF, DOC, DOCX, JPG, JPEG, PNG (max 50MB)
+                              </p>
+                              <input
+                                type="file"
+                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                onChange={handleFileSelection}
+                                className="hidden"
+                                id="modal-file-upload"
+                              />
+                              <Button
+                                variant="outline"
+                                onClick={() =>
+                                  document.getElementById("modal-file-upload")?.click()
+                                }
+                              >
+                                Choose File
+                              </Button>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
 
+                      {/* Document Name Field */}
+                      <div className="space-y-2">
+                        <Label htmlFor="document-name">Document Name *</Label>
+                        <Input
+                          id="document-name"
+                          value={documentName}
+                          onChange={(e) => setDocumentName(e.target.value)}
+                          placeholder="Enter document name"
+                        />
+                      </div>
+
+                      {/* Document Type Field */}
                       <div className="space-y-2">
                         <Label htmlFor="document-type">Document Type *</Label>
                         <Select value={selectedDocumentType} onValueChange={setSelectedDocumentType}>
@@ -8162,6 +8218,7 @@ export default function ProviderDashboard() {
                           setShowDocumentModal(false);
                           setSelectedFile(null);
                           setSelectedDocumentType("");
+                          setDocumentName("");
                           setDocumentUploadError("");
                         }}
                         disabled={documentUploading}
@@ -8170,7 +8227,7 @@ export default function ProviderDashboard() {
                       </Button>
                       <Button
                         onClick={handleDocumentSubmit}
-                        disabled={!selectedDocumentType || documentUploading}
+                        disabled={!selectedFile || !selectedDocumentType || !documentName || documentUploading}
                       >
                         {documentUploading ? "Uploading..." : "Upload Document"}
                       </Button>
