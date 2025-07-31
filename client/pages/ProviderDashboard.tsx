@@ -7172,44 +7172,6 @@ export default function ProviderDashboard() {
                               </div>
                             </div>
                             <div className="flex items-center gap-3">
-                              <Badge
-                                className={
-                                  teamProvider.is_active
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
-                                }
-                              >
-                                {teamProvider.is_active ? "Active" : "Inactive"}
-                              </Badge>
-                              <Badge
-                                className={
-                                  teamProvider.verification_status ===
-                                  "verified"
-                                    ? "bg-green-100 text-green-800"
-                                    : teamProvider.verification_status ===
-                                        "pending"
-                                      ? "bg-yellow-100 text-yellow-800"
-                                      : "bg-red-100 text-red-800"
-                                }
-                              >
-                                {teamProvider.verification_status === "verified"
-                                  ? "Verified"
-                                  : teamProvider.verification_status ===
-                                      "pending"
-                                    ? "Pending"
-                                    : "Unverified"}
-                              </Badge>
-                              <Badge
-                                className={
-                                  teamProvider.business_managed
-                                    ? "bg-blue-100 text-blue-800"
-                                    : "bg-purple-100 text-purple-800"
-                                }
-                              >
-                                {teamProvider.business_managed
-                                  ? "Business Managed"
-                                  : "Self Managed"}
-                              </Badge>
                               <div className="flex gap-2">
                                 {/* Background Approval Toggle */}
                                 <Button
