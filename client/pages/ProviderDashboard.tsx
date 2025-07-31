@@ -8646,101 +8646,99 @@ export default function ProviderDashboard() {
               <h2 className="text-2xl font-bold">Account Settings</h2>
 
               <Card className="max-w-2xl">
-                  <CardHeader>
-                    <CardTitle>Notification Preferences</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Notification Contact Details */}
-                    <div className="space-y-4 pb-4 border-b">
-                      <div>
-                        <h4 className="font-medium mb-2">
-                          Notification Contact Details
-                        </h4>
-                        <p className="text-sm text-foreground/60 mb-4">
-                          Specify dedicated contact details for receiving
-                          notifications and alerts
+                <CardHeader>
+                  <CardTitle>Notification Preferences</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Notification Contact Details */}
+                  <div className="space-y-4 pb-4 border-b">
+                    <div>
+                      <h4 className="font-medium mb-2">
+                        Notification Contact Details
+                      </h4>
+                      <p className="text-sm text-foreground/60 mb-4">
+                        Specify dedicated contact details for receiving
+                        notifications and alerts
+                      </p>
+                    </div>
+
+                    {notificationSettingsError && (
+                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                        {notificationSettingsError}
+                      </div>
+                    )}
+
+                    {notificationSettingsSuccess && (
+                      <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                        {notificationSettingsSuccess}
+                      </div>
+                    )}
+
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="notification_email">
+                          Notification Email
+                        </Label>
+                        <Input
+                          id="notification_email"
+                          type="email"
+                          value={notificationSettings.notification_email}
+                          onChange={(e) =>
+                            handleNotificationSettingsChange(
+                              "notification_email",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="Enter email for notifications (optional)"
+                          disabled={notificationSettingsSaving}
+                        />
+                        <p className="text-xs text-foreground/60">
+                          If provided, notifications will be sent to this email
+                          instead of your main account email
                         </p>
                       </div>
 
-                      {notificationSettingsError && (
-                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                          {notificationSettingsError}
-                        </div>
-                      )}
-
-                      {notificationSettingsSuccess && (
-                        <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
-                          {notificationSettingsSuccess}
-                        </div>
-                      )}
-
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="notification_email">
-                            Notification Email
-                          </Label>
-                          <Input
-                            id="notification_email"
-                            type="email"
-                            value={notificationSettings.notification_email}
-                            onChange={(e) =>
-                              handleNotificationSettingsChange(
-                                "notification_email",
-                                e.target.value,
-                              )
-                            }
-                            placeholder="Enter email for notifications (optional)"
-                            disabled={notificationSettingsSaving}
-                          />
-                          <p className="text-xs text-foreground/60">
-                            If provided, notifications will be sent to this
-                            email instead of your main account email
-                          </p>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="notification_phone">
-                            Notification Phone
-                          </Label>
-                          <Input
-                            id="notification_phone"
-                            type="tel"
-                            value={notificationSettings.notification_phone}
-                            onChange={(e) =>
-                              handleNotificationSettingsChange(
-                                "notification_phone",
-                                e.target.value,
-                              )
-                            }
-                            placeholder="Enter phone for SMS notifications (optional)"
-                            disabled={notificationSettingsSaving}
-                          />
-                          <p className="text-xs text-foreground/60">
-                            If provided, SMS notifications will be sent to this
-                            number instead of your main phone number
-                          </p>
-                        </div>
-
-                        <Button
-                          onClick={handleSaveNotificationSettings}
+                      <div className="space-y-2">
+                        <Label htmlFor="notification_phone">
+                          Notification Phone
+                        </Label>
+                        <Input
+                          id="notification_phone"
+                          type="tel"
+                          value={notificationSettings.notification_phone}
+                          onChange={(e) =>
+                            handleNotificationSettingsChange(
+                              "notification_phone",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="Enter phone for SMS notifications (optional)"
                           disabled={notificationSettingsSaving}
-                          className="bg-roam-blue hover:bg-roam-blue/90"
-                          size="sm"
-                        >
-                          {notificationSettingsSaving ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                              Saving...
-                            </>
-                          ) : (
-                            "Save Notification Settings"
-                          )}
-                        </Button>
+                        />
+                        <p className="text-xs text-foreground/60">
+                          If provided, SMS notifications will be sent to this
+                          number instead of your main phone number
+                        </p>
                       </div>
+
+                      <Button
+                        onClick={handleSaveNotificationSettings}
+                        disabled={notificationSettingsSaving}
+                        className="bg-roam-blue hover:bg-roam-blue/90"
+                        size="sm"
+                      >
+                        {notificationSettingsSaving ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            Saving...
+                          </>
+                        ) : (
+                          "Save Notification Settings"
+                        )}
+                      </Button>
                     </div>
-
-
-                  </CardContent>
+                  </div>
+                </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
