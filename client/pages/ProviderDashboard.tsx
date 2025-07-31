@@ -4359,12 +4359,7 @@ export default function ProviderDashboard() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
         },
-        body: JSON.stringify({
-          action: 'create_plaid_link_token',
-          business_id: business.id,
-          user_id: user?.id,
-          business_name: business.business_name || 'Your Business'
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
