@@ -120,18 +120,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         // If no stored session, try to get current session from Supabase
-        const { directSupabaseAPI } = await import("@/lib/directSupabase");
-
         try {
-          const session = await directSupabaseAPI.getSession();
+          const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
             console.log(
               "AuthContext: Found active Supabase session, fetching provider...",
             );
 
-            const provider = await directSupabaseAPI.getProviderByUserId(
-              session.user.id,
-            );
+            const { data: provider } = await supabase
+              .from("providers")
+              .select("*")
+              .eq("user_id", session.user.id)
+              .eq("is_active", true)
+              .single();
             if (provider) {
               const userData = {
                 id: session.user.id,
