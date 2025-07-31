@@ -4367,28 +4367,31 @@ export default function ProviderDashboard() {
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
 
         try {
-          const errorData = await response.text();
-          console.error('Plaid API Error Response:', errorData);
-
+          // Check content type first to avoid reading HTML as JSON
           if (contentType && contentType.includes('text/html')) {
-            // Backend endpoint doesn't exist yet
-            setPlaidError('Plaid integration endpoint not found. The function may not be deployed yet.');
+            // Backend endpoint doesn't exist - likely 404 from Netlify
+            setPlaidError('Plaid integration endpoint not found. The Netlify function may not be deployed yet.');
             return;
           }
 
-          // Try to parse as JSON for detailed error
-          try {
-            const jsonError = JSON.parse(errorData);
-            errorMessage = jsonError.error || jsonError.message || errorMessage;
-            if (jsonError.details) {
-              console.error('Plaid Error Details:', jsonError.details);
-              errorMessage += ` - ${JSON.stringify(jsonError.details)}`;
+          // Try to read as JSON if it's application/json
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            console.error('Plaid API Error Response:', errorData);
+            errorMessage = errorData.error || errorData.message || errorMessage;
+            if (errorData.details) {
+              console.error('Plaid Error Details:', errorData.details);
+              errorMessage += ` - ${JSON.stringify(errorData.details)}`;
             }
-          } catch (e) {
-            errorMessage = errorData || errorMessage;
+          } else {
+            // Read as text for other content types
+            const errorText = await response.text();
+            console.error('Plaid API Error Response:', errorText);
+            errorMessage = errorText || errorMessage;
           }
         } catch (e) {
           console.error('Error reading response:', e);
+          // Don't throw here, use the status message instead
         }
 
         throw new Error(errorMessage);
