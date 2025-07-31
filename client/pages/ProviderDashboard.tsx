@@ -7949,20 +7949,10 @@ export default function ProviderDashboard() {
                         Business Documents
                       </CardTitle>
                       <div className="flex items-center gap-2">
-                        <input
-                          type="file"
-                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                          onChange={handleFileSelection}
-                          className="hidden"
-                          id="document-upload"
-                          disabled={documentUploading}
-                        />
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() =>
-                            document.getElementById("document-upload")?.click()
-                          }
+                          onClick={() => setShowDocumentModal(true)}
                           disabled={documentUploading}
                           className="flex items-center gap-2"
                         >
