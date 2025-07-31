@@ -6953,7 +6953,12 @@ export default function ProviderDashboard() {
                       </div>
                     ) : teamProviders.length > 0 ? (
                       <div className="space-y-4">
-                        {teamProviders.map((teamProvider) => (
+                        {teamProviders
+                          .filter((teamProvider) =>
+                            selectedProviderRoleFilter === "all" ||
+                            teamProvider.provider_role === selectedProviderRoleFilter
+                          )
+                          .map((teamProvider) => (
                           <div
                             key={teamProvider.id}
                             className="flex items-center justify-between p-4 bg-accent/20 rounded-lg border hover:shadow-md transition-shadow"
