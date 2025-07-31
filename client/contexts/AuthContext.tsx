@@ -249,12 +249,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log("AuthContext signInCustomer: Starting authentication...");
 
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
-
-      const authData = await directSupabaseAPI.signInWithPassword(
+      // Use standard Supabase client for authentication
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
-      );
+      });
+
+      if (authError) {
+        console.error("AuthContext signInCustomer: Auth error:", authError);
+        throw new Error(`Authentication failed: ${authError.message}`);
+      }
 
       if (!authData.user) {
         console.error("AuthContext signInCustomer: No user returned");
