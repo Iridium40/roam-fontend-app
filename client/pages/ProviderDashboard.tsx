@@ -954,6 +954,12 @@ export default function ProviderDashboard() {
       // Import directSupabaseAPI
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      // Ensure we have a valid access token
+      const storedToken = localStorage.getItem("supabase_access_token");
+      if (storedToken) {
+        directSupabaseAPI.currentAccessToken = storedToken;
+      }
+
       // Generate unique filename
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
