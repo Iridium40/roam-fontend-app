@@ -970,21 +970,24 @@ export default function ProviderDashboard() {
         console.warn("No stored access token found");
       }
 
-      // Test bucket access first
-      const canAccessBucket = await directSupabaseAPI.testBucketAccess("roam-file-storage");
-      console.log("Bucket access test result:", canAccessBucket);
-
       // Generate unique filename
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Upload file to Supabase storage
-      const { publicUrl } = await directSupabaseAPI.uploadFile(
-        "roam-file-storage",
-        filePath,
-        file
-      );
+      // Upload file using regular Supabase client (same as ProviderDocumentVerification.tsx)
+      const { data, error } = await supabase.storage
+        .from("roam-file-storage")
+        .upload(filePath, file);
+
+      if (error) {
+        throw new Error(`Upload failed: ${error.message}`);
+      }
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
 
       // Save document metadata to database
       await saveDocumentToDatabase({
