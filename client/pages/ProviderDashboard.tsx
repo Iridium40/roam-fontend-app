@@ -4340,6 +4340,68 @@ export default function ProviderDashboard() {
     }));
   };
 
+  // Load business documents
+  const loadBusinessDocuments = async () => {
+    if (!provider?.id) return;
+
+    setBusinessDocumentsLoading(true);
+    setBusinessDocumentsError("");
+
+    try {
+      const { data, error } = await supabase
+        .from("business_documents")
+        .select(`
+          id,
+          document_type,
+          document_name,
+          file_url,
+          file_size_bytes,
+          verification_status,
+          verified_at,
+          rejection_reason,
+          expiry_date,
+          created_at
+        `)
+        .eq("provider_id", provider.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      setBusinessDocuments(data || []);
+    } catch (error: any) {
+      console.error("Error loading business documents:", error);
+      setBusinessDocumentsError("Failed to load business documents");
+    } finally {
+      setBusinessDocumentsLoading(false);
+    }
+  };
+
+  // Get document status badge color
+  const getDocumentStatusBadge = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      case 'expired':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Format file size
+  const formatFileSize = (bytes: number) => {
+    if (!bytes) return 'Unknown size';
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+  };
+
   // Create Plaid Link Token using actual Plaid API
   const createPlaidLinkToken = async () => {
     if (!business?.id) return;
