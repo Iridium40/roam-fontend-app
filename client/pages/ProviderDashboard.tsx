@@ -919,6 +919,72 @@ export default function ProviderDashboard() {
     }
   };
 
+  const handleDocumentUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file || !business?.id) return;
+
+    setDocumentUploading(true);
+    setDocumentUploadError("");
+
+    try {
+      // Generate unique filename
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `business-documents/${fileName}`;
+
+      // Upload file to Supabase storage
+      const { publicUrl } = await directSupabaseAPI.uploadFile(
+        "roam-file-storage",
+        filePath,
+        file
+      );
+
+      // Save document metadata to database
+      await saveDocumentToDatabase({
+        businessId: business.id,
+        documentName: file.name,
+        fileUrl: publicUrl,
+        fileSize: file.size,
+        documentType: getDocumentTypeFromName(file.name),
+      });
+
+      // Reload business documents
+      await loadBusinessDocuments();
+
+      toast({
+        title: "Document Uploaded",
+        description: "Document has been uploaded successfully!",
+        variant: "default",
+      });
+    } catch (error: any) {
+      console.error("Document upload error:", error);
+      let errorMessage = "Failed to upload document";
+
+      if (error.message.includes("413")) {
+        errorMessage = "File is too large. Maximum size is 50MB.";
+      } else if (error.message.includes("401")) {
+        errorMessage = "Authentication failed. Please refresh and try again.";
+      } else if (error.message.includes("403")) {
+        errorMessage = "Permission denied. Please contact support.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      setDocumentUploadError(errorMessage);
+      toast({
+        title: "Upload Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setDocumentUploading(false);
+      // Reset file input
+      event.target.value = "";
+    }
+  };
+
   const handleFormChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear success/error messages when user starts typing
