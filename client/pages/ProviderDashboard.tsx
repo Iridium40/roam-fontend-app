@@ -457,6 +457,14 @@ export default function ProviderDashboard() {
   const [payoutInfoError, setPayoutInfoError] = useState("");
   const [payoutInfoSuccess, setPayoutInfoSuccess] = useState("");
 
+  // Plaid/Stripe Payout state
+  const [plaidLinkToken, setPlaidLinkToken] = useState(null);
+  const [plaidLoading, setPlaidLoading] = useState(false);
+  const [plaidError, setPlaidError] = useState("");
+  const [plaidSuccess, setPlaidSuccess] = useState("");
+  const [stripeConnectLoading, setStripeConnectLoading] = useState(false);
+  const [payoutManagementModal, setPayoutManagementModal] = useState(false);
+
   // Providers state
   const [teamProviders, setTeamProviders] = useState([]);
   const [providersLoading, setProvidersLoading] = useState(false);
