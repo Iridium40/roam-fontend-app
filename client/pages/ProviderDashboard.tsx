@@ -4876,6 +4876,18 @@ export default function ProviderDashboard() {
     }
   }, [business, activeTab]);
 
+  // Load payout info when financial tab is active
+  useEffect(() => {
+    if (
+      business?.id &&
+      activeTab === "financial" &&
+      !payoutInfoLoading &&
+      (isOwner || isDispatcher)
+    ) {
+      loadPayoutInfo();
+    }
+  }, [business, activeTab]);
+
   const fetchDashboardData = async () => {
     if (!user) return;
 
