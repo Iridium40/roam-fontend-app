@@ -4360,12 +4360,34 @@ export default function ProviderDashboard() {
 
       if (!response.ok) {
         const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('text/html')) {
-          // Backend endpoint doesn't exist yet, use temporary solution
-          setPlaidError('Backend Plaid integration is being set up. The Plaid credentials are configured but need backend implementation.');
-          return;
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+
+        try {
+          const errorData = await response.text();
+          console.error('Plaid API Error Response:', errorData);
+
+          if (contentType && contentType.includes('text/html')) {
+            // Backend endpoint doesn't exist yet
+            setPlaidError('Plaid integration endpoint not found. The function may not be deployed yet.');
+            return;
+          }
+
+          // Try to parse as JSON for detailed error
+          try {
+            const jsonError = JSON.parse(errorData);
+            errorMessage = jsonError.error || jsonError.message || errorMessage;
+            if (jsonError.details) {
+              console.error('Plaid Error Details:', jsonError.details);
+              errorMessage += ` - ${JSON.stringify(jsonError.details)}`;
+            }
+          } catch (e) {
+            errorMessage = errorData || errorMessage;
+          }
+        } catch (e) {
+          console.error('Error reading response:', e);
         }
-        throw new Error('Failed to create Plaid link token');
+
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
