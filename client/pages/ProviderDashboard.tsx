@@ -2168,8 +2168,8 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      // Get fresh access token
-      const accessToken = await directSupabaseAPI.getCurrentAccessToken();
+      // Get current access token
+      const accessToken = directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
 
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${providerId}`,
