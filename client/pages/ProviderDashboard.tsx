@@ -9862,7 +9862,7 @@ export default function ProviderDashboard() {
                       <p className="text-sm text-blue-700">
                         A verification email has been sent to{" "}
                         <strong>{newUserForm.email}</strong>. Please ask the
-                        provider to check their email and enter the OTP code
+                        staff member to check their email and enter the OTP code
                         below.
                       </p>
                     </div>
