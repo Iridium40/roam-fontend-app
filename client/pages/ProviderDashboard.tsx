@@ -11567,19 +11567,27 @@ export default function ProviderDashboard() {
                       {plaidLoading && (
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                       )}
-                      Create Connection Token
+                      Connect Bank Account
                     </Button>
                   ) : (
-                    <Button
-                      onClick={openPlaidLink}
-                      disabled={plaidLoading}
-                      className="w-full bg-green-600 hover:bg-green-700"
-                    >
-                      {plaidLoading && (
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                      )}
-                      Open Plaid Link
-                    </Button>
+                    <div className="space-y-3">
+                      <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-800 text-center">
+                          ✓ Connection token ready! Plaid Link should open automatically.
+                        </p>
+                      </div>
+                      <Button
+                        onClick={openPlaidLink}
+                        disabled={plaidLoading}
+                        variant="outline"
+                        className="w-full border-green-500 text-green-700 hover:bg-green-50"
+                      >
+                        {plaidLoading && (
+                          <div className="w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full animate-spin mr-2"></div>
+                        )}
+                        Open Plaid Link Manually
+                      </Button>
+                    </div>
                   )}
 
                   <div className="text-xs text-foreground/60 text-center">
