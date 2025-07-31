@@ -6940,6 +6940,27 @@ export default function ProviderDashboard() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
+                    {/* Provider Role Filter */}
+                    <div className="mb-4">
+                      <Label htmlFor="role-filter" className="text-sm font-medium">
+                        Filter by Role
+                      </Label>
+                      <Select
+                        value={selectedProviderRoleFilter}
+                        onValueChange={setSelectedProviderRoleFilter}
+                      >
+                        <SelectTrigger className="w-48 mt-1">
+                          <SelectValue placeholder="All Roles" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Roles</SelectItem>
+                          <SelectItem value="owner">Owner</SelectItem>
+                          <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                          <SelectItem value="provider">Provider</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
                     {providersError && (
                       <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
                         {providersError}
