@@ -8747,54 +8747,7 @@ export default function ProviderDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Account Actions</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Change Password
-                      </Button>
 
-                      {(isOwner || isDispatcher) && (
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        >
-                          <Mail className="w-4 h-4 mr-2" />
-                          Update Email
-                        </Button>
-                      )}
-
-                      {(isOwner || isDispatcher) && (
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        >
-                          <DollarSign className="w-4 h-4 mr-2" />
-                          Payment Settings
-                        </Button>
-                      )}
-
-                      {(isOwner || isDispatcher) && (
-                        <div className="pt-4 border-t">
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50"
-                          >
-                            <AlertCircle className="w-4 h-4 mr-2" />
-                            Deactivate Account
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </TabsContent>
           </Tabs>
