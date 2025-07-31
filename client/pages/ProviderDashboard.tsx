@@ -2102,25 +2102,17 @@ export default function ProviderDashboard() {
     });
   };
 
-  const handleDeleteLocation = async (locationId: string) => {
-    // Find the location being deleted for better messaging
-    const locationToDelete = locations.find((loc) => loc.id === locationId);
-    const locationName = locationToDelete?.location_name || "this location";
+  const handleDeleteLocation = (locationId: string) => {
+    // Find the location being deleted and store it for the confirmation dialog
+    const location = locations.find((loc) => loc.id === locationId);
+    setLocationToDelete(location);
+    setDeleteConfirmOpen(true);
+  };
 
-    // Enhanced confirmation with location name
-    const confirmed = confirm(
-      `Are you sure you want to delete \"${locationName}\"?\n\nThis action cannot be undone. Any bookings or assignments to this location may be affected.`,
-    );
+  const confirmDeleteLocation = async () => {
+    if (!locationToDelete) return;
 
-    if (!confirmed) return;
-
-    // Check if trying to delete primary location
-    if (locationToDelete?.is_primary) {
-      const confirmPrimary = confirm(
-        `Warning: \"${locationName}\" is your primary location.\n\nDeleting it will leave your business without a primary location. Are you sure you want to continue?`,
-      );
-      if (!confirmPrimary) return;
-    }
+    const locationName = locationToDelete.location_name || "this location";
 
     setLocationsSaving(true);
 
