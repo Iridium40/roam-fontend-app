@@ -970,8 +970,7 @@ export default function ProviderDashboard() {
       });
 
       if (!uploadResponse.ok) {
-        const errorText = await uploadResponse.text();
-        throw new Error(`Upload failed: ${errorText}`);
+        throw new Error(`Upload failed with status ${uploadResponse.status}`);
       }
 
       const uploadResult = await uploadResponse.json();
