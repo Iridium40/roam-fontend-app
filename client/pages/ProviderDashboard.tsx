@@ -2131,6 +2131,19 @@ export default function ProviderDashboard() {
   // Provider action handlers
   const handleEditProvider = (provider: any) => {
     setEditingProvider(provider);
+    setEditProviderForm({
+      first_name: provider.first_name || "",
+      last_name: provider.last_name || "",
+      email: provider.email || "",
+      phone: provider.phone || "",
+      provider_role: provider.provider_role || "",
+      hourly_rate: provider.hourly_rate || "",
+      business_managed: provider.business_managed || false,
+      is_active: provider.is_active || false,
+      verification_status: provider.verification_status || "",
+      background_check_status: provider.background_check_status || "",
+      location_id: provider.location_id || ""
+    });
     setEditProviderModal(true);
   };
 
