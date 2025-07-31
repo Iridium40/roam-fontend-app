@@ -969,19 +969,26 @@ export default function ProviderDashboard() {
         body: formData,
       });
 
-      // Read response body once
-      const responseText = await uploadResponse.text();
+      // Clone response to avoid body stream issues
+      const responseClone = uploadResponse.clone();
 
       if (!uploadResponse.ok) {
-        throw new Error(`Upload failed: ${responseText}`);
+        let errorText = `HTTP ${uploadResponse.status}`;
+        try {
+          errorText = await responseClone.text();
+        } catch (readError) {
+          console.warn("Could not read error response:", readError);
+        }
+        throw new Error(`Upload failed: ${errorText}`);
       }
 
       // Parse the response as JSON
       let uploadResult;
       try {
-        uploadResult = JSON.parse(responseText);
+        uploadResult = await uploadResponse.json();
       } catch (parseError) {
-        throw new Error(`Invalid response format: ${responseText}`);
+        console.error("JSON parse error:", parseError);
+        throw new Error("Invalid response format from upload service");
       }
 
       const publicUrl = uploadResult.publicUrl;
