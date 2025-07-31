@@ -11502,16 +11502,29 @@ export default function ProviderDashboard() {
                     </p>
                   </div>
 
-                  <Button
-                    onClick={createPlaidLinkToken}
-                    disabled={plaidLoading}
-                    className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                  >
-                    {plaidLoading && (
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    )}
-                    Connect Bank Account
-                  </Button>
+                  {!plaidLinkToken ? (
+                    <Button
+                      onClick={createPlaidLinkToken}
+                      disabled={plaidLoading}
+                      className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                    >
+                      {plaidLoading && (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      )}
+                      Create Connection Token
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={openPlaidLink}
+                      disabled={plaidLoading}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                    >
+                      {plaidLoading && (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      )}
+                      Open Plaid Link
+                    </Button>
+                  )}
 
                   <div className="text-xs text-foreground/60 text-center">
                     By connecting your bank account, you agree to our terms of service and Stripe's connected account agreement.
