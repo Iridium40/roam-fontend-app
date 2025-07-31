@@ -4424,14 +4424,15 @@ export default function ProviderDashboard() {
     setPlaidError("");
 
     try {
-      // Exchange public token for access token and create Stripe external account
-      const response = await fetch('/api/plaid/exchange-token', {
+      // Exchange public token for access token and get account details
+      const response = await fetch('/netlify/functions/plaid-integration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
         },
         body: JSON.stringify({
+          action: 'exchange_public_token',
           public_token: publicToken,
           business_id: business.id,
           account_id: metadata.account_id,
@@ -4440,17 +4441,35 @@ export default function ProviderDashboard() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to connect bank account');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to connect bank account');
       }
 
       const data = await response.json();
-      setPlaidSuccess('Bank account connected successfully!');
 
-      // Refresh payout info
-      loadPayoutInfo();
+      if (data.success) {
+        // Update payout info with connected bank account
+        const connectedAccount = data.accounts?.find((acc: any) => acc.account_id === metadata.account_id);
 
-      // Close the modal
-      setPayoutManagementModal(false);
+        setPayoutInfo({
+          bank_connected: true,
+          bank_name: metadata.institution?.name || 'Connected Bank',
+          account_last4: connectedAccount?.mask || '****',
+          payout_schedule: 'Daily',
+          transfer_speed: 'Standard (2-3 days)',
+          stripe_account_id: null, // Would be set by Stripe integration
+          payout_enabled: true
+        });
+
+        setPlaidSuccess('Bank account connected successfully!');
+
+        // Close the modal after a short delay
+        setTimeout(() => {
+          setPayoutManagementModal(false);
+        }, 2000);
+      } else {
+        throw new Error('Failed to process bank account connection');
+      }
     } catch (error: any) {
       console.error('Error connecting bank account:', error);
       setPlaidError(error.message || 'Failed to connect bank account');
