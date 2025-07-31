@@ -4213,6 +4213,7 @@ export default function ProviderDashboard() {
           is_active
         `,
         )
+        .eq("business_id", provider.business_id)
         .eq("provider_role", "provider")
         .eq("is_active", true);
 
