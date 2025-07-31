@@ -20,5 +20,9 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // Plaid integration routes
+  app.post("/api/plaid/create-link-token", handleCreateLinkToken);
+  app.post("/api/plaid/exchange-token", handleExchangeToken);
+
   return app;
 }
