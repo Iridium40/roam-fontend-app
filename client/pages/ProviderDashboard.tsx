@@ -7334,20 +7334,7 @@ export default function ProviderDashboard() {
                       </div>
                     </div>
 
-                    {/* Action Button */}
-                    <div className="mt-6 pt-6 border-t">
-                      <Button
-                        onClick={() => {
-                          setAddingLocation(true);
-                          setManagingLocations(true);
-                          resetLocationForm();
-                        }}
-                        className="w-full sm:w-auto bg-roam-blue hover:bg-roam-blue/90"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add New Location
-                      </Button>
-                    </div>
+
                   </CardContent>
                 </Card>
 
