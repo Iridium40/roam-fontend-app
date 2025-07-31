@@ -470,6 +470,11 @@ export default function ProviderDashboard() {
   const [stripeConnectLoading, setStripeConnectLoading] = useState(false);
   const [payoutManagementModal, setPayoutManagementModal] = useState(false);
 
+  // Business Documents state
+  const [businessDocuments, setBusinessDocuments] = useState([]);
+  const [businessDocumentsLoading, setBusinessDocumentsLoading] = useState(false);
+  const [businessDocumentsError, setBusinessDocumentsError] = useState("");
+
   // Providers state
   const [teamProviders, setTeamProviders] = useState([]);
   const [providersLoading, setProvidersLoading] = useState(false);
