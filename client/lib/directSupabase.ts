@@ -217,9 +217,12 @@ class DirectSupabaseAPI {
       let errorMessage = `Upload failed with status ${response.status}`;
       try {
         const errorText = await response.text();
-        errorMessage = `Upload failed: ${errorText}`;
+        console.error("Supabase upload error response:", errorText);
+        console.error("Request URL:", `${this.baseURL}/storage/v1/object/${bucket}/${path}`);
+        console.error("Auth token present:", !!this.accessToken);
+        errorMessage = `Upload failed (${response.status}): ${errorText}`;
       } catch (readError) {
-        // If we can't read the error, use the default message
+        console.error("Could not read error response:", readError);
       }
       throw new Error(errorMessage);
     }
