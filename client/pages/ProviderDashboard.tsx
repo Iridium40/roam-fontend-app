@@ -923,10 +923,7 @@ export default function ProviderDashboard() {
     }
   };
 
-  const handleDocumentUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
+  const handleDocumentUploadWithFile = async (file: File) => {
     if (!file || !business?.id) return;
 
     // Validate file size (50MB max)
