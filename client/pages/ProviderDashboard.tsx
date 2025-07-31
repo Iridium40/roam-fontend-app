@@ -7105,20 +7105,20 @@ export default function ProviderDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      {/* Number of Providers */}
+                      {/* Number of Staff */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {teamProviders.length}
+                          {teamProviders.filter(p => p.provider_role !== 'owner').length}
                         </div>
                         <div className="text-sm text-foreground/60">
-                          Number of Providers
+                          Number of Staff
                         </div>
                       </div>
 
                       {/* Number Unverified */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-amber-600 mb-1">
-                          {teamProviders.filter(p => p.verification_status !== 'approved').length}
+                          {teamProviders.filter(p => p.provider_role !== 'owner' && p.verification_status !== 'approved').length}
                         </div>
                         <div className="text-sm text-foreground/60">
                           Number Unverified
@@ -7128,7 +7128,7 @@ export default function ProviderDashboard() {
                       {/* Number Self Managed */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-purple-600 mb-1">
-                          {teamProviders.filter(p => !p.business_managed).length}
+                          {teamProviders.filter(p => p.provider_role !== 'owner' && !p.business_managed).length}
                         </div>
                         <div className="text-sm text-foreground/60">
                           Number Self Managed
