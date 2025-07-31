@@ -2205,6 +2205,66 @@ export default function ProviderDashboard() {
     }
   };
 
+  const handleSaveProvider = async () => {
+    if (!editingProvider) return;
+
+    setProviderActionLoading(true);
+
+    try {
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${editingProvider.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            first_name: editProviderForm.first_name,
+            last_name: editProviderForm.last_name,
+            email: editProviderForm.email,
+            phone: editProviderForm.phone,
+            provider_role: editProviderForm.provider_role,
+            hourly_rate: editProviderForm.hourly_rate ? parseFloat(editProviderForm.hourly_rate) : null,
+            business_managed: editProviderForm.business_managed,
+            is_active: editProviderForm.is_active,
+            verification_status: editProviderForm.verification_status,
+            background_check_status: editProviderForm.background_check_status,
+            location_id: editProviderForm.location_id || null
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update provider");
+      }
+
+      toast({
+        title: "Provider Updated",
+        description: "Provider information updated successfully",
+        variant: "default",
+      });
+
+      setEditProviderModal(false);
+      setEditingProvider(null);
+
+      // Refresh the team providers list
+      await fetchTeamProviders();
+    } catch (error: any) {
+      console.error("Provider save error:", error);
+      toast({
+        title: "Save Failed",
+        description: `Failed to save provider: ${error.message}`,
+        variant: "destructive",
+      });
+    } finally {
+      setProviderActionLoading(false);
+    }
+  };
+
   const confirmDeleteLocation = async () => {
     if (!locationToDelete) return;
 
