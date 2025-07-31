@@ -7357,7 +7357,7 @@ export default function ProviderDashboard() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {/* Total Locations */}
                       <div className="text-center p-4 bg-accent/20 rounded-lg">
                         <div className="text-2xl font-bold text-roam-blue mb-1">
@@ -7385,16 +7385,6 @@ export default function ProviderDashboard() {
                         </div>
                         <div className="text-sm text-foreground/60">
                           Mobile Service Areas
-                        </div>
-                      </div>
-
-                      {/* Assigned Providers */}
-                      <div className="text-center p-4 bg-accent/20 rounded-lg">
-                        <div className="text-2xl font-bold text-roam-blue mb-1">
-                          {teamProviders.filter(p => p.location_id).length}
-                        </div>
-                        <div className="text-sm text-foreground/60">
-                          Assigned Providers
                         </div>
                       </div>
                     </div>
