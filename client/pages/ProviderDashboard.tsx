@@ -5381,7 +5381,7 @@ export default function ProviderDashboard() {
                                     </p>
                                     {booking.customer_profiles?.email && (
                                       <span className="text-xs text-foreground/40">
-                                        • {booking.customer_profiles.email}
+                                        ��� {booking.customer_profiles.email}
                                       </span>
                                     )}
                                   </div>
@@ -10796,6 +10796,42 @@ export default function ProviderDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Location Confirmation Dialog */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Location</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{locationToDelete?.location_name}"?
+              {locationToDelete?.is_primary && (
+                <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                  <p className="text-amber-800 font-medium">
+                    ⚠️ Warning: This is your primary location
+                  </p>
+                  <p className="text-amber-700 text-sm mt-1">
+                    Deleting it will leave your business without a primary location.
+                  </p>
+                </div>
+              )}
+              <div className="mt-3 text-foreground/80">
+                This action cannot be undone. Any bookings or assignments to this location may be affected.
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setLocationToDelete(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteLocation}
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+            >
+              Delete Location
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
