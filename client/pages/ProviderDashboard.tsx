@@ -7018,7 +7018,14 @@ export default function ProviderDashboard() {
                               </tr>
                             </thead>
                             <tbody>
-                              {teamProviders.map((provider) => (
+                              {teamProviders
+                                .filter((provider) =>
+                                  (selectedProviderRoleFilter === "all" ||
+                                  provider.provider_role === selectedProviderRoleFilter) &&
+                                  (selectedVerificationStatusFilter === "all" ||
+                                  provider.verification_status === selectedVerificationStatusFilter)
+                                )
+                                .map((provider) => (
                                 <tr key={provider.id} className="border-b hover:bg-accent/10">
                                   <td className="p-3">
                                     <div className="flex items-center gap-3">
