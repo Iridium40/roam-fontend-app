@@ -951,6 +951,19 @@ export default function ProviderDashboard() {
     setDocumentUploadError("");
 
     try {
+      // Verify user is authenticated before upload
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.error('Not authenticated - cannot upload document');
+        setDocumentUploadError("Please log in to upload documents");
+        return;
+      }
+
+      console.log("Authentication verified:", {
+        userId: session.user.id,
+        email: session.user.email,
+        hasAccessToken: !!session.access_token
+      });
 
       // Generate unique filename
       const fileExt = file.name.split(".").pop();
