@@ -333,7 +333,7 @@ export default function ProviderDashboard() {
   const [selectedProviderFilter, setSelectedProviderFilter] =
     useState<string>("all");
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
-    useState<string>("all");
+    useState<string>("provider");
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
   const [editingService, setEditingService] = useState<any>(null);
