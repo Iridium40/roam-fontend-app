@@ -4334,12 +4334,32 @@ export default function ProviderDashboard() {
     }));
   };
 
+  // Test if Netlify function is available
+  const testNetlifyFunction = async () => {
+    try {
+      const response = await fetch('/netlify/functions/plaid-integration', {
+        method: 'OPTIONS'
+      });
+      return response.status !== 404;
+    } catch (error) {
+      return false;
+    }
+  };
+
   // Create Plaid Link Token using actual Plaid API
   const createPlaidLinkToken = async () => {
     if (!business?.id) return;
 
     setPlaidLoading(true);
     setPlaidError("");
+
+    // First test if the function is available
+    const functionAvailable = await testNetlifyFunction();
+    if (!functionAvailable) {
+      setPlaidError('Plaid integration service is not deployed yet. Please contact support to enable bank account connections.');
+      setPlaidLoading(false);
+      return;
+    }
 
     try {
       // Create link token by calling Plaid's API through our backend
