@@ -4318,6 +4318,8 @@ export default function ProviderDashboard() {
       return;
     }
 
+    console.log("Loading bookings for business_id:", provider.business_id);
+
     try {
       // First get all provider IDs for this business
       const { data: businessProviders, error: providersError } = await supabase
