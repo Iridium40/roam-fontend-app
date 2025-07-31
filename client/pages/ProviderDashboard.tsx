@@ -8128,6 +8128,64 @@ export default function ProviderDashboard() {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Document Upload Modal */}
+                <Dialog open={showDocumentModal} onOpenChange={setShowDocumentModal}>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Upload Document</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      {selectedFile && (
+                        <div className="text-sm text-foreground/70">
+                          <strong>Selected file:</strong> {selectedFile.name}
+                        </div>
+                      )}
+
+                      <div className="space-y-2">
+                        <Label htmlFor="document-type">Document Type *</Label>
+                        <Select value={selectedDocumentType} onValueChange={setSelectedDocumentType}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select document type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {documentTypeOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {documentUploadError && (
+                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                          {documentUploadError}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setShowDocumentModal(false);
+                          setSelectedFile(null);
+                          setSelectedDocumentType("");
+                          setDocumentUploadError("");
+                        }}
+                        disabled={documentUploading}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleDocumentSubmit}
+                        disabled={!selectedDocumentType || documentUploading}
+                      >
+                        {documentUploading ? "Uploading..." : "Upload Document"}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </TabsContent>
             )}
 
