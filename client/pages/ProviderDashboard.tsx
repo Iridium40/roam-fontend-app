@@ -8518,6 +8518,8 @@ export default function ProviderDashboard() {
                               </Label>
                               <Input
                                 id="tax_postal_code"
+                                value={taxInfo.tax_postal_code}
+                                onChange={(e) => handleTaxInfoChange("tax_postal_code", e.target.value)}
                                 placeholder="12345"
                                 disabled={taxInfoSaving}
                               />
