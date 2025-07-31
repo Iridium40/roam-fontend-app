@@ -970,6 +970,10 @@ export default function ProviderDashboard() {
         console.warn("No stored access token found");
       }
 
+      // Test bucket access first
+      const canAccessBucket = await directSupabaseAPI.testBucketAccess("roam-file-storage");
+      console.log("Bucket access test result:", canAccessBucket);
+
       // Generate unique filename
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
