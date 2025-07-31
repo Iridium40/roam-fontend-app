@@ -9910,7 +9910,7 @@ export default function ProviderDashboard() {
                   Step 2: Staff Profile
                 </h3>
                 <p className="text-sm text-foreground/60">
-                  Complete the provider's profile information.
+                  Complete the staff member's profile information.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
