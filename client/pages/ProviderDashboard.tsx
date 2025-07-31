@@ -344,7 +344,7 @@ export default function ProviderDashboard() {
   const [selectedProviderFilter, setSelectedProviderFilter] =
     useState<string>("all");
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
-    useState<string>("provider");
+    useState<string>("all");
   const [selectedVerificationStatusFilter, setSelectedVerificationStatusFilter] =
     useState<string>("all");
   const [selectedActiveStatusFilter, setSelectedActiveStatusFilter] =
