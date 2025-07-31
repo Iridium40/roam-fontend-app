@@ -10799,6 +10799,9 @@ export default function ProviderDashboard() {
 
       {/* Delete Location Confirmation Dialog */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogTrigger asChild>
+          <button style={{ display: 'none' }} />
+        </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Location</AlertDialogTitle>
