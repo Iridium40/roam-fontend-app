@@ -212,19 +212,7 @@ class DirectSupabaseAPI {
       },
     );
 
-    // Clone response to avoid body stream issues
-    const responseForText = response.clone();
-    let responseText = '';
-
-    try {
-      responseText = await responseForText.text();
-    } catch (readError) {
-      console.error("Could not read response body:", readError);
-      // If we can't read the response body, use status info
-      responseText = `HTTP ${response.status} ${response.statusText}`;
-    }
-
-    // Log detailed debug information
+    // Log detailed debug information without consuming response body
     console.log("Upload response debug:", {
       status: response.status,
       statusText: response.statusText,
@@ -232,22 +220,37 @@ class DirectSupabaseAPI {
       bucket,
       path,
       hasAuthToken: !!this.accessToken,
-      responseBody: responseText
+      headers: Object.fromEntries(response.headers.entries())
     });
 
     if (!response.ok) {
-      const errorMessage = `Upload failed (${response.status}): ${responseText || response.statusText}`;
+      // For error cases, try to read response body safely
+      let errorDetails = response.statusText || `HTTP ${response.status}`;
+      try {
+        if (response.body && !response.bodyUsed) {
+          const errorText = await response.text();
+          errorDetails = errorText || errorDetails;
+        }
+      } catch (readError) {
+        console.warn("Could not read error response body:", readError);
+      }
+
+      const errorMessage = `Upload failed (${response.status}): ${errorDetails}`;
       throw new Error(errorMessage);
     }
 
-    // For success cases, parse as JSON
-    let result;
+    // For success cases, try to parse response body
+    let result = { Key: null };
     try {
-      result = JSON.parse(responseText);
+      if (response.body && !response.bodyUsed) {
+        const responseText = await response.text();
+        if (responseText) {
+          result = JSON.parse(responseText);
+        }
+      }
     } catch (parseError) {
-      console.warn("Could not parse upload response as JSON:", parseError);
-      // If parsing fails, create a minimal result object
-      result = { Key: null };
+      console.warn("Could not parse upload response:", parseError);
+      // Use default result object if parsing fails
     }
 
     // Get public URL
