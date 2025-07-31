@@ -4312,8 +4312,31 @@ export default function ProviderDashboard() {
   // Load bookings for all providers (for owners/dispatchers)
   const loadAllBookings = async () => {
     if (!isOwner && !isDispatcher) return;
+    if (!provider?.business_id) {
+      console.log("loadAllBookings: No business_id available");
+      return;
+    }
 
     try {
+      // First get all provider IDs for this business
+      const { data: businessProviders, error: providersError } = await supabase
+        .from("providers")
+        .select("id")
+        .eq("business_id", provider.business_id);
+
+      if (providersError) {
+        console.error("Error loading business providers:", providersError);
+        return;
+      }
+
+      if (!businessProviders || businessProviders.length === 0) {
+        console.log("No providers found for business");
+        setBookings([]);
+        return;
+      }
+
+      const providerIds = businessProviders.map(p => p.id);
+
       const { data: allBookings, error } = await supabase
         .from("bookings")
         .select(
@@ -4339,6 +4362,7 @@ export default function ProviderDashboard() {
           )
         `,
         )
+        .in("provider_id", providerIds)
         .order("booking_date", { ascending: false })
         .limit(50);
 
