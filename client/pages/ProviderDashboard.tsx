@@ -4418,10 +4418,12 @@ export default function ProviderDashboard() {
     } catch (error: any) {
       console.error('Error creating Plaid link token:', error);
 
-      // For development, show that credentials are configured
-      if (error.message?.includes('not yet implemented') ||
-          error.message?.includes('text/html')) {
-        setPlaidError(`Plaid credentials configured (Client ID: ${PLAID_CLIENT_ID}). Backend endpoint needed for full integration.`);
+      // Handle different error scenarios
+      if (error.message?.includes('404') || error.message?.includes('not found')) {
+        setPlaidError('Plaid integration service is not available yet. The Netlify function needs to be deployed.');
+      } else if (error.message?.includes('not yet implemented') ||
+                 error.message?.includes('text/html')) {
+        setPlaidError(`Plaid credentials configured (Client ID: ${PLAID_CLIENT_ID}). Backend endpoint configuration in progress.`);
       } else {
         setPlaidError(error.message || 'Failed to initialize bank connection');
       }
