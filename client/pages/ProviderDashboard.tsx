@@ -2168,6 +2168,9 @@ export default function ProviderDashboard() {
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      // Get fresh access token
+      const accessToken = await directSupabaseAPI.getCurrentAccessToken();
+
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${providerId}`,
         {
@@ -2175,14 +2178,17 @@ export default function ProviderDashboard() {
           headers: {
             "Content-Type": "application/json",
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            Authorization: `Bearer ${accessToken}`,
+            Prefer: "return=minimal"
           },
           body: JSON.stringify(updates),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update provider");
+        const errorText = await response.text();
+        console.error("Provider update error response:", errorText);
+        throw new Error(`Failed to update provider: ${response.status} ${errorText}`);
       }
 
       toast({
