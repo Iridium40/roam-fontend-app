@@ -7292,7 +7292,9 @@ export default function ProviderDashboard() {
                             (selectedProviderRoleFilter === "all" ||
                             teamProvider.provider_role === selectedProviderRoleFilter) &&
                             (selectedVerificationStatusFilter === "all" ||
-                            teamProvider.verification_status === selectedVerificationStatusFilter)
+                            teamProvider.verification_status === selectedVerificationStatusFilter) &&
+                            (selectedActiveStatusFilter === "all" ||
+                            teamProvider.is_active.toString() === selectedActiveStatusFilter)
                           )
                           .map((teamProvider) => (
                           <div
