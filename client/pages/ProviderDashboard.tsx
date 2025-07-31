@@ -4416,45 +4416,64 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Initialize Plaid Link handler
+  const createPlaidLinkHandler = async (linkToken: string) => {
+    // Load Plaid Link script if not already loaded
+    if (!(window as any).Plaid) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    // Create Plaid Link handler
+    const handler = (window as any).Plaid.create({
+      token: linkToken,
+      onLoad: () => {
+        console.log('Plaid Link loaded successfully');
+      },
+      onSuccess: (public_token: string, metadata: any) => {
+        console.log('Plaid Success:', { public_token, metadata });
+        handlePlaidSuccess(public_token, metadata);
+      },
+      onExit: (err: any, metadata: any) => {
+        if (err != null) {
+          console.error('Plaid Exit Error:', err);
+          setPlaidError(err.display_message || 'Connection cancelled');
+        } else {
+          console.log('User exited Plaid Link');
+        }
+      },
+      onEvent: (eventName: string, metadata: any) => {
+        console.log('Plaid Event:', eventName, metadata);
+      }
+    });
+
+    return handler;
+  };
+
   // Open Plaid Link to connect bank account
-  const openPlaidLink = () => {
+  const openPlaidLink = async () => {
     if (!plaidLinkToken) {
       setPlaidError('No link token available. Please try creating a new connection.');
       return;
     }
 
-    // Load Plaid Link script and initialize
-    const script = document.createElement('script');
-    script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
-    script.onload = () => {
-      // @ts-ignore - Plaid is loaded from external script
-      if (window.Plaid) {
-        // @ts-ignore
-        const handler = window.Plaid.create({
-          token: plaidLinkToken,
-          onSuccess: (public_token: string, metadata: any) => {
-            console.log('Plaid Success:', { public_token, metadata });
-            handlePlaidSuccess(public_token, metadata);
-          },
-          onExit: (err: any, metadata: any) => {
-            if (err != null) {
-              console.error('Plaid Exit Error:', err);
-              setPlaidError(err.display_message || 'Connection cancelled');
-            }
-          },
-          onEvent: (eventName: string, metadata: any) => {
-            console.log('Plaid Event:', eventName, metadata);
-          }
-        });
-        handler.open();
-      } else {
-        setPlaidError('Failed to load Plaid Link. Please try again.');
-      }
-    };
-    script.onerror = () => {
-      setPlaidError('Failed to load Plaid Link script. Please check your internet connection.');
-    };
-    document.head.appendChild(script);
+    setPlaidLoading(true);
+    setPlaidError('');
+
+    try {
+      const handler = await createPlaidLinkHandler(plaidLinkToken);
+      handler.open();
+    } catch (error) {
+      console.error('Error opening Plaid Link:', error);
+      setPlaidError('Failed to load Plaid Link. Please try again.');
+    } finally {
+      setPlaidLoading(false);
+    }
   };
 
   // Handle Plaid Link Success
