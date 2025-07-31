@@ -7845,6 +7845,12 @@ export default function ProviderDashboard() {
                       </div>
                     )}
 
+                    {documentUploadError && (
+                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                        {documentUploadError}
+                      </div>
+                    )}
+
                     {businessDocumentsLoading ? (
                       <div className="flex items-center justify-center py-8">
                         <div className="w-6 h-6 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mr-2"></div>
