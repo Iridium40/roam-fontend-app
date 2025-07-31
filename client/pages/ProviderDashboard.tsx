@@ -431,7 +431,21 @@ export default function ProviderDashboard() {
   });
 
   // Tax Info state
-  const [taxInfo, setTaxInfo] = useState(null);
+  const [taxInfo, setTaxInfo] = useState({
+    legal_business_name: "",
+    tax_id: "",
+    tax_id_type: "",
+    tax_address_line1: "",
+    tax_address_line2: "",
+    tax_city: "",
+    tax_state: "",
+    tax_postal_code: "",
+    tax_country: "US",
+    business_entity_type: "",
+    tax_contact_name: "",
+    tax_contact_email: "",
+    tax_contact_phone: "",
+  });
   const [taxInfoLoading, setTaxInfoLoading] = useState(false);
   const [taxInfoError, setTaxInfoError] = useState("");
   const [taxInfoSuccess, setTaxInfoSuccess] = useState("");
