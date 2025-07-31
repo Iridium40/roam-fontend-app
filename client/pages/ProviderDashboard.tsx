@@ -8339,6 +8339,8 @@ export default function ProviderDashboard() {
                               <Label htmlFor="tax_id">Tax ID (EIN/SSN) *</Label>
                               <Input
                                 id="tax_id"
+                                value={taxInfo.tax_id}
+                                onChange={(e) => handleTaxInfoChange("tax_id", e.target.value)}
                                 placeholder="XX-XXXXXXX"
                                 disabled={taxInfoSaving}
                               />
