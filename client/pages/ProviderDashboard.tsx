@@ -1085,6 +1085,65 @@ export default function ProviderDashboard() {
     { value: "other", label: "Other" },
   ];
 
+  const handleFileSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (50MB max)
+    if (file.size > 50 * 1024 * 1024) {
+      setDocumentUploadError("File is too large. Maximum size is 50MB.");
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      setDocumentUploadError(
+        "Invalid file type. Please upload PDF, DOC, DOCX, JPG, JPEG, or PNG files.",
+      );
+      return;
+    }
+
+    setSelectedFile(file);
+    setDocumentUploadError("");
+    setShowDocumentModal(true);
+    // Reset file input
+    event.target.value = "";
+  };
+
+  const handleDocumentSubmit = async () => {
+    if (!selectedFile || !selectedDocumentType) {
+      setDocumentUploadError("Please select a file and document type.");
+      return;
+    }
+
+    setDocumentUploading(true);
+    setDocumentUploadError("");
+
+    try {
+      await handleDocumentUploadWithFile(selectedFile);
+      setShowDocumentModal(false);
+      setSelectedFile(null);
+      setSelectedDocumentType("");
+      toast({
+        title: "Document Uploaded",
+        description: "Document has been uploaded successfully!",
+        variant: "default",
+      });
+    } catch (error: any) {
+      setDocumentUploadError(error.message);
+    } finally {
+      setDocumentUploading(false);
+    }
+  };
+
   const getDocumentTypeFromName = (fileName: string): string => {
     const lowerName = fileName.toLowerCase();
     if (lowerName.includes("license") || lowerName.includes("permit")) {
