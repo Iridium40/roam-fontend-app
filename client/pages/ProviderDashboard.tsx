@@ -4371,8 +4371,7 @@ export default function ProviderDashboard() {
       const data = await response.json();
       if (data.link_token) {
         setPlaidLinkToken(data.link_token);
-        // Initialize Plaid Link
-        initializePlaidLink(data.link_token);
+        setPlaidSuccess('Plaid Link token created successfully! Click "Open Plaid Link" to connect your bank account.');
       } else {
         throw new Error('No link token received from server');
       }
@@ -7567,7 +7566,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        �� Refresh
+                        ���� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
