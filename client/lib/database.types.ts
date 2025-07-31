@@ -429,11 +429,11 @@ export type Database = {
           created_at?: string;
         };
       };
-      // Provider documents
-      provider_documents: {
+      // Business documents
+      business_documents: {
         Row: {
           id: string;
-          provider_id: string;
+          business_id: string;
           document_type: string;
           document_name: string;
           file_url: string;
@@ -447,7 +447,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          provider_id: string;
+          business_id: string;
           document_type: string;
           document_name: string;
           file_url: string;
