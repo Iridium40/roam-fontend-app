@@ -47,7 +47,9 @@ export const handler: Handler = async (event, context) => {
     const { action, business_id, user_id, business_name } = body;
 
     if (action === 'create_plaid_link_token') {
-      // Create Plaid Link Token
+      console.log('Creating Plaid link token for:', { business_id, user_id, business_name });
+
+      // Create Plaid Link Token with Stripe integration
       const linkTokenRequest = {
         client_id: PLAID_CLIENT_ID,
         secret: PLAID_SECRET,
@@ -55,16 +57,25 @@ export const handler: Handler = async (event, context) => {
         country_codes: ['US'],
         language: 'en',
         user: {
-          client_user_id: user_id,
+          client_user_id: user_id || `user_${business_id}`,
         },
-        products: ['auth', 'identity'],
+        products: ['auth'],
+        required_if_supported_products: ['identity'],
         account_filters: {
           depository: {
             account_subtypes: ['checking', 'savings'],
           },
         },
-        redirect_uri: null, // For mobile apps
+        redirect_uri: null,
+        // Add Stripe integration parameters
+        auth: {
+          automated_microdeposits_enabled: true,
+          same_day_microdeposits_enabled: true,
+          instant_match_enabled: true,
+        },
       };
+
+      console.log('Sending request to Plaid:', JSON.stringify(linkTokenRequest, null, 2));
 
       // Call Plaid API to create link token
       const plaidResponse = await fetch('https://sandbox.plaid.com/link/token/create', {
@@ -75,20 +86,33 @@ export const handler: Handler = async (event, context) => {
         body: JSON.stringify(linkTokenRequest),
       });
 
+      console.log('Plaid response status:', plaidResponse.status);
+
       if (!plaidResponse.ok) {
-        const errorData = await plaidResponse.json();
-        console.error('Plaid API Error:', errorData);
+        const errorText = await plaidResponse.text();
+        console.error('Plaid API Error Response:', errorText);
+
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { error: errorText };
+        }
+
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             error: 'Failed to create Plaid link token',
-            details: errorData 
+            details: errorData,
+            status: plaidResponse.status,
+            statusText: plaidResponse.statusText
           }),
         };
       }
 
       const plaidData: PlaidLinkTokenResponse = await plaidResponse.json();
+      console.log('Plaid link token created successfully:', plaidData.request_id);
 
       return {
         statusCode: 200,
