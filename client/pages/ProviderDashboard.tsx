@@ -4353,7 +4353,7 @@ export default function ProviderDashboard() {
 
       console.log('Sending Plaid request:', requestBody);
 
-      const response = await fetch('/netlify/functions/plaid-integration', {
+      const response = await fetch('/api/plaid/create-link-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
