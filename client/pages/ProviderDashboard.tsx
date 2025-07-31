@@ -478,6 +478,9 @@ export default function ProviderDashboard() {
   const [businessDocumentsError, setBusinessDocumentsError] = useState("");
   const [documentUploading, setDocumentUploading] = useState(false);
   const [documentUploadError, setDocumentUploadError] = useState("");
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [selectedDocumentType, setSelectedDocumentType] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Providers state
   const [teamProviders, setTeamProviders] = useState([]);
