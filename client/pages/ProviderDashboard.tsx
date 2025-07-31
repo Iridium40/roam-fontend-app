@@ -8450,6 +8450,7 @@ export default function ProviderDashboard() {
                           </div>
                         </div>
                         <Button
+                          onClick={handleManagePayout}
                           variant="outline"
                           className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                         >
