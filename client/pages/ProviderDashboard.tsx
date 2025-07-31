@@ -7213,7 +7213,6 @@ export default function ProviderDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Roles</SelectItem>
-                            <SelectItem value="owner">Owner</SelectItem>
                             <SelectItem value="dispatcher">Dispatcher</SelectItem>
                             <SelectItem value="provider">Provider</SelectItem>
                           </SelectContent>
@@ -9852,7 +9851,7 @@ export default function ProviderDashboard() {
                                         )}
                                         {booking.customer_profiles?.phone && (
                                           <span>
-                                            • {booking.customer_profiles.phone}
+                                            �� {booking.customer_profiles.phone}
                                           </span>
                                         )}
                                       </div>
