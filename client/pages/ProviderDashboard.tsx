@@ -985,6 +985,55 @@ export default function ProviderDashboard() {
     }
   };
 
+  const getDocumentTypeFromName = (fileName: string): string => {
+    const lowerName = fileName.toLowerCase();
+    if (lowerName.includes('license') || lowerName.includes('permit')) {
+      return 'business_license';
+    } else if (lowerName.includes('insurance')) {
+      return 'insurance_certificate';
+    } else if (lowerName.includes('tax') || lowerName.includes('ein') || lowerName.includes('w9')) {
+      return 'tax_document';
+    } else if (lowerName.includes('contract') || lowerName.includes('agreement')) {
+      return 'contract';
+    } else if (lowerName.includes('certification') || lowerName.includes('certificate')) {
+      return 'certification';
+    } else {
+      return 'other';
+    }
+  };
+
+  const saveDocumentToDatabase = async ({
+    businessId,
+    documentName,
+    fileUrl,
+    fileSize,
+    documentType,
+  }: {
+    businessId: string;
+    documentName: string;
+    fileUrl: string;
+    fileSize: number;
+    documentType: string;
+  }) => {
+    const { data, error } = await supabase
+      .from("business_documents")
+      .insert({
+        business_id: businessId,
+        document_name: documentName,
+        file_url: fileUrl,
+        file_size_bytes: fileSize,
+        document_type: documentType,
+        verification_status: 'pending',
+      })
+      .select();
+
+    if (error) {
+      throw new Error(`Failed to save document to database: ${error.message}`);
+    }
+
+    return data;
+  };
+
   const handleFormChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear success/error messages when user starts typing
