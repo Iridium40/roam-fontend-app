@@ -953,6 +953,15 @@ export default function ProviderDashboard() {
     try {
       // Verify user is authenticated before upload
       console.log("Checking authentication status...");
+      console.log("Auth context state:", {
+        hasUser: !!user,
+        userId: user?.id,
+        userType: user?.userType,
+        isOwner,
+        isDispatcher,
+        isProvider
+      });
+
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
       console.log("Session debug:", {
