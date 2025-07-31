@@ -7242,60 +7242,114 @@ export default function ProviderDashboard() {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Locations Overview Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <MapPin className="w-5 h-5 text-roam-blue" />
-                        Locations Overview
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Total Locations
-                          </span>
-                          <span className="font-medium">
-                            {locations.length}
-                          </span>
+                {/* Full-width Locations Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-roam-blue" />
+                      Locations Overview
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      {/* Total Locations */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {locations.length}
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Active Locations
-                          </span>
-                          <span className="font-medium">
-                            {locations.filter((loc) => loc.is_active).length}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Mobile Service Areas
-                          </span>
-                          <span className="font-medium">
-                            {
-                              locations.filter(
-                                (loc) => loc.offers_mobile_services,
-                              ).length
-                            }
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-foreground/60">
-                            Primary Location
-                          </span>
-                          <span className="font-medium">
-                            {locations.find((loc) => loc.is_primary)
-                              ?.location_name || "None set"}
-                          </span>
+                        <div className="text-sm text-foreground/60">
+                          Total Locations
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
 
+                      {/* Active Locations */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {locations.filter((loc) => loc.is_active).length}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Active Locations
+                        </div>
+                      </div>
 
-                </div>
+                      {/* Mobile Service Areas */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {locations.filter((loc) => loc.offers_mobile_services).length}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Mobile Service Areas
+                        </div>
+                      </div>
+
+                      {/* Assigned Providers */}
+                      <div className="text-center p-4 bg-accent/20 rounded-lg">
+                        <div className="text-2xl font-bold text-roam-blue mb-1">
+                          {teamProviders.filter(p => p.location_id).length}
+                        </div>
+                        <div className="text-sm text-foreground/60">
+                          Assigned Providers
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Location Details */}
+                    <div className="mt-6 pt-6 border-t">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {locations.find((loc) => loc.is_primary)?.location_name || "None set"}
+                            </div>
+                            <div className="text-sm text-foreground/60">Primary Location</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <Building className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {locations.filter((loc) => !loc.offers_mobile_services).length}
+                            </div>
+                            <div className="text-sm text-foreground/60">Fixed Locations</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <MapPin className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {locations.filter((loc) => loc.service_radius).length}
+                            </div>
+                            <div className="text-sm text-foreground/60">With Service Radius</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <div className="mt-6 pt-6 border-t">
+                      <Button
+                        onClick={() => {
+                          setAddingLocation(true);
+                          setManagingLocations(true);
+                          resetLocationForm();
+                        }}
+                        className="w-full sm:w-auto bg-roam-blue hover:bg-roam-blue/90"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add New Location
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Locations List */}
                 <Card>
