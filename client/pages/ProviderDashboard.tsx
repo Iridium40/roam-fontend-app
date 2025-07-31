@@ -967,7 +967,7 @@ export default function ProviderDashboard() {
 
       // Upload file to Supabase storage
       const { publicUrl } = await directSupabaseAPI.uploadFile(
-        "roam-file-storage",
+        "roam-provider-documents",
         filePath,
         file
       );
