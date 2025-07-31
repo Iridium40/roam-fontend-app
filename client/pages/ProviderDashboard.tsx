@@ -7290,6 +7290,7 @@ export default function ProviderDashboard() {
                         )}
                         {teamProviders
                           .filter((teamProvider) =>
+                            teamProvider.provider_role !== "owner" &&
                             (selectedProviderRoleFilter === "all" ||
                             teamProvider.provider_role === selectedProviderRoleFilter) &&
                             (selectedVerificationStatusFilter === "all" ||
