@@ -10098,7 +10098,7 @@ export default function ProviderDashboard() {
                   Step 3: Management Settings
                 </h3>
                 <p className="text-sm text-foreground/60">
-                  Configure how this provider will be managed and what services
+                  Configure how this staff member will be managed and what services
                   they inherit.
                 </p>
 
