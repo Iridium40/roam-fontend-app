@@ -1586,6 +1586,12 @@ export default function ProviderDashboard() {
         throw new Error("No valid fields to update after validation");
       }
 
+      console.log("=== SENDING REQUEST ===");
+      console.log("URL:", `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`);
+      console.log("Method: PATCH");
+      console.log("Body:", JSON.stringify(updateData, null, 2));
+      console.log("Has access token:", !!directSupabaseAPI.currentAccessToken);
+
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`,
         {
@@ -1600,77 +1606,57 @@ export default function ProviderDashboard() {
         },
       );
 
-      // Clone response immediately to prevent body consumption issues
-      const responseClone = response.clone();
+      // Read response body immediately, regardless of success/failure
+      let responseBodyText = "";
+      let responseHeaders = {};
 
-      console.log("=== SENDING REQUEST ===");
-      console.log("URL:", `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`);
-      console.log("Method: PATCH");
-      console.log("Body:", JSON.stringify(updateData, null, 2));
-      console.log("Has access token:", !!directSupabaseAPI.currentAccessToken);
+      try {
+        responseHeaders = Object.fromEntries(response.headers.entries());
+        responseBodyText = await response.text();
+      } catch (readError) {
+        console.error("Could not read response:", readError);
+        responseBodyText = `Error reading response: ${readError.message}`;
+      }
+
+      console.log("=== RESPONSE RECEIVED ===");
+      console.log("Status:", response.status);
+      console.log("Status Text:", response.statusText);
+      console.log("Headers:", JSON.stringify(responseHeaders, null, 2));
+      console.log("Body:", responseBodyText);
 
       if (!response.ok) {
         console.error("=== REQUEST FAILED ===");
-        console.error("Response status:", response.status);
-        console.error("Response statusText:", response.statusText);
 
-        let errorText = "Unknown error";
         let errorDetails = "";
-        let responseHeaders = {};
 
-        try {
-          responseHeaders = Object.fromEntries(response.headers.entries());
-          console.error("Response headers:", JSON.stringify(responseHeaders, null, 2));
-        } catch (e) {
-          console.warn("Could not read headers:", e);
-        }
+        if (!responseBodyText || responseBodyText.trim() === '') {
+          errorDetails = `Empty response body with HTTP ${response.status}`;
+        } else {
+          // Try to parse error details from response
+          try {
+            const errorJson = JSON.parse(responseBodyText);
+            console.error("Parsed error JSON:", JSON.stringify(errorJson, null, 2));
 
-        // Read response body only once and handle all parsing from that
-        let responseBodyText = "";
-        try {
-          // Use the pre-cloned response to avoid "body stream already read" error
-          responseBodyText = await responseClone.text();
-          console.error("Raw error response text:", responseBodyText);
-          console.error("Error text length:", responseBodyText.length);
-          console.error("Error text type:", typeof responseBodyText);
-
-          if (!responseBodyText || responseBodyText.trim() === '') {
-            errorDetails = `Empty response body with HTTP ${response.status}`;
-            errorText = errorDetails;
-          } else {
-            errorText = responseBodyText;
-            // Try to parse error details from response
-            try {
-              const errorJson = JSON.parse(responseBodyText);
-              console.error("Parsed error JSON:", JSON.stringify(errorJson, null, 2));
-
-              // Extract error details with priority
-              if (errorJson.message) {
-                errorDetails = errorJson.message;
-              } else if (errorJson.error) {
-                errorDetails = errorJson.error;
-              } else if (errorJson.hint) {
-                errorDetails = errorJson.hint;
-              } else if (errorJson.details) {
-                errorDetails = errorJson.details;
-              } else if (errorJson.code) {
-                errorDetails = `Error code: ${errorJson.code}`;
-              } else if (Array.isArray(errorJson) && errorJson.length > 0) {
-                errorDetails = JSON.stringify(errorJson[0]);
-              } else {
-                errorDetails = JSON.stringify(errorJson);
-              }
-            } catch (parseError) {
-              console.error("Failed to parse error JSON:", parseError);
-              console.error("Parse error message:", parseError.message);
-              errorDetails = responseBodyText.substring(0, 500); // Limit length
+            // Extract error details with priority
+            if (errorJson.message) {
+              errorDetails = errorJson.message;
+            } else if (errorJson.error) {
+              errorDetails = errorJson.error;
+            } else if (errorJson.hint) {
+              errorDetails = errorJson.hint;
+            } else if (errorJson.details) {
+              errorDetails = errorJson.details;
+            } else if (errorJson.code) {
+              errorDetails = `Error code: ${errorJson.code}`;
+            } else if (Array.isArray(errorJson) && errorJson.length > 0) {
+              errorDetails = JSON.stringify(errorJson[0]);
+            } else {
+              errorDetails = JSON.stringify(errorJson);
             }
+          } catch (parseError) {
+            console.error("Failed to parse error JSON:", parseError);
+            errorDetails = responseBodyText.substring(0, 500); // Limit length
           }
-        } catch (readError) {
-          console.error("Could not read response text:", readError);
-          console.error("Read error details:", readError.message);
-          errorText = `HTTP ${response.status} - ${response.statusText}`;
-          errorDetails = `Could not read response: ${readError.message}`;
         }
 
         const debugInfo = {
@@ -1679,7 +1665,7 @@ export default function ProviderDashboard() {
           url: `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${managingProvider.id}`,
           method: "PATCH",
           requestBody: updateData,
-          responseText: errorText,
+          responseText: responseBodyText,
           errorDetails: errorDetails,
           providerId: managingProvider.id,
           responseHeaders: responseHeaders,
