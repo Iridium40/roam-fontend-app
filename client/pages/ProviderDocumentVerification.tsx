@@ -274,7 +274,7 @@ export default function ProviderDocumentVerification() {
       });
 
       const { error } = await supabase.from("business_documents").insert({
-        business_id: providerId, // This should actually be business_id now
+        business_id: businessId, // Using business_id for business-level verification
         document_type: documentType,
         document_name: documentName,
         file_url: fileUrl,
