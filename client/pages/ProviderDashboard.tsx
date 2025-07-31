@@ -1037,7 +1037,7 @@ export default function ProviderDashboard() {
         documentName: file.name,
         fileUrl: publicUrl,
         fileSize: file.size,
-        documentType: getDocumentTypeFromName(file.name),
+        documentType: selectedDocumentType,
       });
 
       // Reload business documents
