@@ -3513,7 +3513,7 @@ export default function ProviderDashboard() {
     }
   };
 
-  // Business Services & Add-ons Functions (Owner Only)
+  // Business Services Functions (Owner Only)
   const fetchBusinessServicesAndAddons = async () => {
     if (!provider?.business_id || (!isOwner && !isDispatcher)) {
       console.log(
