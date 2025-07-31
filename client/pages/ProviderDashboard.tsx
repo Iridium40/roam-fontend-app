@@ -7274,7 +7274,7 @@ export default function ProviderDashboard() {
                         <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                         <p>Loading team members...</p>
                       </div>
-                    ) : teamProviders.length > 0 ? (
+                    ) : teamProviders.filter(tp => tp.provider_role !== "owner").length > 0 ? (
                       <div className="space-y-4">
                         {/* Show filtered count */}
                         {(selectedProviderRoleFilter !== "all" || selectedVerificationStatusFilter !== "all" || selectedActiveStatusFilter !== "all" || teamProviders.some(tp => tp.provider_role === "owner")) && (
