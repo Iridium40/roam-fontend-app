@@ -1628,8 +1628,7 @@ export default function ProviderDashboard() {
         // Read response body only once and handle all parsing from that
         let responseBodyText = "";
         try {
-          // Clone the response to avoid "body stream already read" error
-          const responseClone = response.clone();
+          // Use the pre-cloned response to avoid "body stream already read" error
           responseBodyText = await responseClone.text();
           console.error("Raw error response text:", responseBodyText);
           console.error("Error text length:", responseBodyText.length);
