@@ -1084,7 +1084,11 @@ export default function ProviderDashboard() {
 
     setSelectedFile(file);
     setDocumentUploadError("");
-    setShowDocumentModal(true);
+
+    // Auto-populate document name with filename (without extension)
+    const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    setDocumentName(nameWithoutExt);
+
     // Reset file input
     event.target.value = "";
   };
