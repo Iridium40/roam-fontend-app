@@ -347,6 +347,8 @@ export default function ProviderDashboard() {
     useState<string>("provider");
   const [selectedVerificationStatusFilter, setSelectedVerificationStatusFilter] =
     useState<string>("all");
+  const [selectedActiveStatusFilter, setSelectedActiveStatusFilter] =
+    useState<string>("all");
 
   // Delete confirmation dialog state
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -9495,7 +9497,7 @@ export default function ProviderDashboard() {
                                 service.service_subcategories
                                   ?.service_categories
                                   ?.service_category_type}{" "}
-                              →{" "}
+                              ���{" "}
                               {service.service_subcategories?.description ||
                                 service.service_subcategories
                                   ?.service_subcategory_type}
