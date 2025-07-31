@@ -2114,6 +2114,7 @@ export default function ProviderDashboard() {
 
     const locationName = locationToDelete.location_name || "this location";
 
+    setDeleteConfirmOpen(false);
     setLocationsSaving(true);
 
     // Show deleting toast
@@ -2127,7 +2128,7 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations?id=eq.${locationId}`,
+        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/business_locations?id=eq.${locationToDelete.id}`,
         {
           method: "DELETE",
           headers: {
@@ -2159,6 +2160,7 @@ export default function ProviderDashboard() {
       setLocationsError(errorMessage);
     } finally {
       setLocationsSaving(false);
+      setLocationToDelete(null);
     }
   };
 
