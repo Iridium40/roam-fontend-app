@@ -9946,9 +9946,9 @@ export default function ProviderDashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="provider_phone">Phone Number</Label>
+                    <Label htmlFor="staff_phone">Phone Number</Label>
                     <Input
-                      id="provider_phone"
+                      id="staff_phone"
                       type="tel"
                       value={providerForm.phone}
                       onChange={(e) =>
