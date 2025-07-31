@@ -2168,35 +2168,14 @@ export default function ProviderDashboard() {
     setProviderActionLoading(true);
 
     try {
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      const { error } = await supabase
+        .from("providers")
+        .update(updates)
+        .eq("id", providerId);
 
-      // Get current access token
-      const accessToken = directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
-
-      const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${providerId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${accessToken}`,
-            Prefer: "return=minimal"
-          },
-          body: JSON.stringify(updates),
-        }
-      );
-
-      if (!response.ok) {
-        let errorText = "";
-        try {
-          errorText = await response.text();
-        } catch (readError) {
-          console.warn("Could not read error response:", readError);
-          errorText = response.statusText || "Unknown error";
-        }
-        console.error("Provider update error response:", errorText);
-        throw new Error(`Failed to update provider: ${response.status} ${errorText}`);
+      if (error) {
+        console.error("Provider update error:", error);
+        throw new Error(`Failed to update provider: ${error.message}`);
       }
 
       toast({
