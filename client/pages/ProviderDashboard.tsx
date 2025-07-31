@@ -957,19 +957,25 @@ export default function ProviderDashboard() {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Upload file using regular Supabase client (same as ProviderDocumentVerification.tsx)
-      const { data, error } = await supabase.storage
-        .from("roam-file-storage")
-        .upload(filePath, file);
+      // Use Netlify function to upload (bypasses RLS policies)
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folderPath", "business-documents");
+      formData.append("providerId", provider?.id || "");
+      formData.append("businessId", business?.id || "");
 
-      if (error) {
-        throw new Error(`Upload failed: ${error.message}`);
+      const uploadResponse = await fetch("/.netlify/functions/upload-document", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        throw new Error(`Upload failed: ${errorText}`);
       }
 
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
+      const uploadResult = await uploadResponse.json();
+      const publicUrl = uploadResult.publicUrl;
 
       // Save document metadata to database
       await saveDocumentToDatabase({
