@@ -10794,6 +10794,217 @@ export default function ProviderDashboard() {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Provider Modal */}
+      <Dialog open={editProviderModal} onOpenChange={setEditProviderModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Provider</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="first_name">First Name *</Label>
+                <Input
+                  id="first_name"
+                  value={editProviderForm.first_name}
+                  onChange={(e) => setEditProviderForm(prev => ({
+                    ...prev,
+                    first_name: e.target.value
+                  }))}
+                  placeholder="First name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="last_name">Last Name *</Label>
+                <Input
+                  id="last_name"
+                  value={editProviderForm.last_name}
+                  onChange={(e) => setEditProviderForm(prev => ({
+                    ...prev,
+                    last_name: e.target.value
+                  }))}
+                  placeholder="Last name"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={editProviderForm.email}
+                onChange={(e) => setEditProviderForm(prev => ({
+                  ...prev,
+                  email: e.target.value
+                }))}
+                placeholder="Email address"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone *</Label>
+              <Input
+                id="phone"
+                value={editProviderForm.phone}
+                onChange={(e) => setEditProviderForm(prev => ({
+                  ...prev,
+                  phone: e.target.value
+                }))}
+                placeholder="Phone number"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="provider_role">Provider Role</Label>
+              <Select
+                value={editProviderForm.provider_role}
+                onValueChange={(value) => setEditProviderForm(prev => ({
+                  ...prev,
+                  provider_role: value
+                }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="owner">Owner</SelectItem>
+                  <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                  <SelectItem value="provider">Provider</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location_id">Location</Label>
+              <Select
+                value={editProviderForm.location_id}
+                onValueChange={(value) => setEditProviderForm(prev => ({
+                  ...prev,
+                  location_id: value
+                }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select location" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locations.map((location) => (
+                    <SelectItem key={location.id} value={location.id}>
+                      {location.location_name} {location.is_primary && "(Primary)"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="experience_years">Experience (Years)</Label>
+              <Input
+                id="experience_years"
+                type="number"
+                min="0"
+                max="50"
+                value={editProviderForm.experience_years}
+                onChange={(e) => setEditProviderForm(prev => ({
+                  ...prev,
+                  experience_years: e.target.value
+                }))}
+                placeholder="Years of experience"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="verification_status">Verification Status</Label>
+                <Select
+                  value={editProviderForm.verification_status}
+                  onValueChange={(value) => setEditProviderForm(prev => ({
+                    ...prev,
+                    verification_status: value
+                  }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="documents_submitted">Documents Submitted</SelectItem>
+                    <SelectItem value="under_review">Under Review</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="background_check_status">Background Check</Label>
+                <Select
+                  value={editProviderForm.background_check_status}
+                  onValueChange={(value) => setEditProviderForm(prev => ({
+                    ...prev,
+                    background_check_status: value
+                  }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="under_review">Under Review</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="failed">Failed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="business_managed"
+                checked={editProviderForm.business_managed}
+                onChange={(e) => setEditProviderForm(prev => ({
+                  ...prev,
+                  business_managed: e.target.checked
+                }))}
+                className="rounded"
+              />
+              <Label htmlFor="business_managed">Business Managed</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="is_active"
+                checked={editProviderForm.is_active}
+                onChange={(e) => setEditProviderForm(prev => ({
+                  ...prev,
+                  is_active: e.target.checked
+                }))}
+                className="rounded"
+              />
+              <Label htmlFor="is_active">Active</Label>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setEditProviderModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveProvider}
+                disabled={providerActionLoading}
+                className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+              >
+                {providerActionLoading ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete Location Confirmation Dialog */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogTrigger asChild>
