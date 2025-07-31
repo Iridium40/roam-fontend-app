@@ -5688,7 +5688,7 @@ export default function ProviderDashboard() {
               )}
             </TabsContent>
 
-            {/* Services & Add-Ons Tab - Owner and Dispatcher */}
+            {/* Services Tab - Owner and Dispatcher */}
             {(isOwner || isDispatcher) && (
               <TabsContent value="services-addons" className="space-y-6">
                 <div className="flex items-center justify-between">
