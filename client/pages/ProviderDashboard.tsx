@@ -969,12 +969,21 @@ export default function ProviderDashboard() {
         body: formData,
       });
 
+      // Read response body once
+      const responseText = await uploadResponse.text();
+
       if (!uploadResponse.ok) {
-        const errorText = await uploadResponse.text();
-        throw new Error(`Upload failed: ${errorText}`);
+        throw new Error(`Upload failed: ${responseText}`);
       }
 
-      const uploadResult = await uploadResponse.json();
+      // Parse the response as JSON
+      let uploadResult;
+      try {
+        uploadResult = JSON.parse(responseText);
+      } catch (parseError) {
+        throw new Error(`Invalid response format: ${responseText}`);
+      }
+
       const publicUrl = uploadResult.publicUrl;
 
       // Save document metadata to database
