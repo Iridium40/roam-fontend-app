@@ -9,12 +9,12 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Configure multer for file upload
-const upload = multer({ 
+const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
 });
 
-export const handleFileUpload = upload.single('file');
+export const handleFileUpload = upload.single("file");
 
 export const uploadDocument = async (req: Request, res: Response) => {
   try {
@@ -32,8 +32,8 @@ export const uploadDocument = async (req: Request, res: Response) => {
       .from("roam-file-storage")
       .upload(filePath, req.file.buffer, {
         contentType: req.file.mimetype,
-        cacheControl: '3600',
-        upsert: false
+        cacheControl: "3600",
+        upsert: false,
       });
 
     if (error) {
@@ -42,9 +42,9 @@ export const uploadDocument = async (req: Request, res: Response) => {
     }
 
     // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from("roam-file-storage")
-      .getPublicUrl(filePath);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
 
     res.json({
       success: true,
