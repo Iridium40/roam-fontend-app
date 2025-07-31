@@ -2153,7 +2153,7 @@ export default function ProviderDashboard() {
   };
 
   const handleToggleBackgroundApproval = async (provider: any) => {
-    const newStatus = provider.background_check_status === 'approved' ? 'pending' : 'approved';
+    const newStatus = provider.background_check_status === 'approved' ? 'under_review' : 'approved';
     await updateProviderStatus(provider.id, { background_check_status: newStatus });
   };
 
