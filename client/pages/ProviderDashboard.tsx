@@ -8425,6 +8425,8 @@ export default function ProviderDashboard() {
                               <Input
                                 id="tax_contact_phone"
                                 type="tel"
+                                value={taxInfo.tax_contact_phone}
+                                onChange={(e) => handleTaxInfoChange("tax_contact_phone", e.target.value)}
                                 placeholder="(XXX) XXX-XXXX"
                                 disabled={taxInfoSaving}
                               />
