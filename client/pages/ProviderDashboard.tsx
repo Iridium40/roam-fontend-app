@@ -7291,16 +7291,12 @@ export default function ProviderDashboard() {
                                   <span className="capitalize">
                                     {teamProvider.provider_role || "Provider"}
                                   </span>
-                                  {teamProvider.business_locations ? (
+                                  {teamProvider.business_locations && teamProvider.location_id ? (
                                     <div className="flex items-center gap-1">
                                       <MapPin className="w-3 h-3" />
                                       <span>
-                                        {
-                                          teamProvider.business_locations
-                                            .location_name
-                                        }
-                                        {teamProvider.business_locations
-                                          .is_primary && (
+                                        {teamProvider.business_locations.location_name}
+                                        {teamProvider.business_locations.is_primary && (
                                           <Badge
                                             variant="secondary"
                                             className="ml-1 text-xs"
