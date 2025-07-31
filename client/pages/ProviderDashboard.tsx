@@ -1009,43 +1009,24 @@ export default function ProviderDashboard() {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Use Netlify function to upload (bypasses RLS with service role)
-      console.log("Attempting upload via Netlify function");
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folderPath", "business-documents");
-      formData.append("providerId", provider?.id || "");
-      formData.append("businessId", business?.id || "");
+      // Use direct API approach (same as avatar upload)
+      console.log("Attempting upload using directSupabaseAPI");
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
-      const uploadResponse = await fetch("/.netlify/functions/upload-document", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!uploadResponse.ok) {
-        // Use cloned response for error case
-        let errorMessage = `Upload failed with status ${uploadResponse.status}`;
-        try {
-          const errorResponse = uploadResponse.clone();
-          const errorText = await errorResponse.text();
-          errorMessage = `Upload failed: ${errorText}`;
-        } catch (readError) {
-          console.warn("Could not read error response:", readError);
-        }
-        throw new Error(errorMessage);
+      // Ensure we have a valid access token
+      const storedToken = localStorage.getItem("roam_access_token");
+      if (storedToken) {
+        directSupabaseAPI.currentAccessToken = storedToken;
       }
 
-      // Parse the successful response directly as JSON
-      let uploadResult;
-      try {
-        uploadResult = await uploadResponse.json();
-      } catch (parseError) {
-        console.error("JSON parse error:", parseError);
-        throw new Error("Invalid response format from upload service");
-      }
+      // Upload file to a working folder structure (similar to avatar-provider-user)
+      const { publicUrl } = await directSupabaseAPI.uploadFile(
+        "roam-file-storage",
+        filePath,
+        file
+      );
 
-      console.log("Upload successful:", uploadResult);
-      const publicUrl = uploadResult.publicUrl;
+      console.log("Upload successful, public URL:", publicUrl);
 
       // Save document metadata to database
       await saveDocumentToDatabase({
