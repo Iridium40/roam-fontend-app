@@ -4497,11 +4497,20 @@ export default function ProviderDashboard() {
 
     try {
       const handler = await createPlaidLinkHandler(plaidLinkToken);
-      handler.open();
+
+      // Ensure the document has focus before opening
+      if (document.activeElement) {
+        (document.activeElement as HTMLElement).blur();
+      }
+
+      // Wait a moment then open
+      setTimeout(() => {
+        handler.open();
+        setPlaidLoading(false);
+      }, 200);
     } catch (error) {
       console.error('Error opening Plaid Link:', error);
       setPlaidError('Failed to load Plaid Link. Please try again.');
-    } finally {
       setPlaidLoading(false);
     }
   };
