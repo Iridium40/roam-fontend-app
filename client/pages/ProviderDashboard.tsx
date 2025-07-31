@@ -978,9 +978,14 @@ export default function ProviderDashboard() {
       }
 
       if (!session) {
-        console.error('No session found - user not authenticated');
-        setDocumentUploadError("Please log in to upload documents");
-        return;
+        // Fallback: check if we have a user in auth context
+        if (user && user.id) {
+          console.log("No session but auth context has user - proceeding with upload");
+        } else {
+          console.error('No session and no user in context - user not authenticated');
+          setDocumentUploadError("Please log in to upload documents");
+          return;
+        }
       }
 
       console.log("Authentication verified - proceeding with upload");
