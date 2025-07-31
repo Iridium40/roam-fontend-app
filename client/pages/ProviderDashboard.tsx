@@ -8329,6 +8329,8 @@ export default function ProviderDashboard() {
                               </Label>
                               <Input
                                 id="legal_business_name"
+                                value={taxInfo.legal_business_name}
+                                onChange={(e) => handleTaxInfoChange("legal_business_name", e.target.value)}
                                 placeholder="Business legal name for tax purposes"
                                 disabled={taxInfoSaving}
                               />
