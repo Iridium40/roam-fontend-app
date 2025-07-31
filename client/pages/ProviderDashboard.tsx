@@ -9793,7 +9793,7 @@ export default function ProviderDashboard() {
                   Step 1: Create User Account
                 </h3>
                 <p className="text-sm text-foreground/60">
-                  Create a new user account for the provider. They will receive
+                  Create a new user account for the staff member. They will receive
                   a verification email.
                 </p>
 
