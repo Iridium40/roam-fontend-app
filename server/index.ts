@@ -25,5 +25,8 @@ export function createServer() {
   app.post("/api/plaid/create-link-token", handleCreateLinkToken);
   app.post("/api/plaid/exchange-token", handleExchangeToken);
 
+  // File upload route
+  app.post("/api/upload-document", handleFileUpload, uploadDocument);
+
   return app;
 }
