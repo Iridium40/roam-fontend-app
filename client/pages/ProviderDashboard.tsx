@@ -5224,14 +5224,14 @@ export default function ProviderDashboard() {
   // Load business documents when business tab is active
   useEffect(() => {
     if (
-      provider?.id &&
+      business?.id &&
       activeTab === "business" &&
       !businessDocumentsLoading &&
       (isOwner || isDispatcher)
     ) {
       loadBusinessDocuments();
     }
-  }, [provider, activeTab]);
+  }, [business, activeTab]);
 
   const fetchDashboardData = async () => {
     if (!user) return;
