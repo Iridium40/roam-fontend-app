@@ -8368,7 +8368,7 @@ export default function ProviderDashboard() {
                               <Label htmlFor="business_entity_type">
                                 Business Entity Type *
                               </Label>
-                              <Select>
+                              <Select value={taxInfo.business_entity_type} onValueChange={(value) => handleTaxInfoChange("business_entity_type", value)}>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select entity type" />
                                 </SelectTrigger>
