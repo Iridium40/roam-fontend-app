@@ -9907,7 +9907,7 @@ export default function ProviderDashboard() {
             <div className="space-y-6">
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">
-                  Step 2: Provider Profile
+                  Step 2: Staff Profile
                 </h3>
                 <p className="text-sm text-foreground/60">
                   Complete the provider's profile information.
