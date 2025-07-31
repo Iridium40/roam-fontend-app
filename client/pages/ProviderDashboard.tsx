@@ -4440,14 +4440,17 @@ export default function ProviderDashboard() {
     if (user) {
       fetchDashboardData();
       loadServiceCategoriesAndSubcategories();
-
-      // Load providers and all bookings for owners/dispatchers
-      if (isOwner || isDispatcher) {
-        loadAllProviders();
-        loadAllBookings();
-      }
     }
   }, [user]);
+
+  // Load providers and bookings when provider context is available
+  useEffect(() => {
+    if (provider && (isOwner || isDispatcher)) {
+      console.log("Provider context available, loading providers and bookings...");
+      loadAllProviders();
+      loadAllBookings();
+    }
+  }, [provider, isOwner, isDispatcher]);
 
   // Update filtered providers when location selection changes
   useEffect(() => {
