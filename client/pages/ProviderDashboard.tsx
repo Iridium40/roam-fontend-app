@@ -8412,6 +8412,8 @@ export default function ProviderDashboard() {
                               <Input
                                 id="tax_contact_email"
                                 type="email"
+                                value={taxInfo.tax_contact_email}
+                                onChange={(e) => handleTaxInfoChange("tax_contact_email", e.target.value)}
                                 placeholder="tax@yourbusiness.com"
                                 disabled={taxInfoSaving}
                               />
