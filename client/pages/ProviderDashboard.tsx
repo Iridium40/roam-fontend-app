@@ -10105,7 +10105,7 @@ export default function ProviderDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-base">
-                      Provider Management
+                      Staff Management
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
