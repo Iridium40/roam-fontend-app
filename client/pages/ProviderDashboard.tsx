@@ -473,7 +473,8 @@ export default function ProviderDashboard() {
 
   // Business Documents state
   const [businessDocuments, setBusinessDocuments] = useState([]);
-  const [businessDocumentsLoading, setBusinessDocumentsLoading] = useState(false);
+  const [businessDocumentsLoading, setBusinessDocumentsLoading] =
+    useState(false);
   const [businessDocumentsError, setBusinessDocumentsError] = useState("");
   const [documentUploading, setDocumentUploading] = useState(false);
   const [documentUploadError, setDocumentUploadError] = useState("");
@@ -934,15 +935,17 @@ export default function ProviderDashboard() {
 
     // Validate file type
     const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'image/jpeg',
-      'image/jpg',
-      'image/png'
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
     ];
     if (!allowedTypes.includes(file.type)) {
-      setDocumentUploadError("Invalid file type. Please upload PDF, DOC, DOCX, JPG, JPEG, or PNG files.");
+      setDocumentUploadError(
+        "Invalid file type. Please upload PDF, DOC, DOCX, JPG, JPEG, or PNG files.",
+      );
       event.target.value = "";
       return;
     }
@@ -959,30 +962,41 @@ export default function ProviderDashboard() {
         userType: user?.userType,
         isOwner,
         isDispatcher,
-        isProvider
+        isProvider,
       });
 
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
       console.log("Session debug:", {
         hasSession: !!session,
         sessionError: sessionError,
         user: session?.user || null,
-        accessToken: session?.access_token ? `${session.access_token.substring(0, 20)}...` : null
+        accessToken: session?.access_token
+          ? `${session.access_token.substring(0, 20)}...`
+          : null,
       });
 
       if (sessionError) {
-        console.error('Session error:', sessionError);
-        setDocumentUploadError("Authentication error. Please try logging in again.");
+        console.error("Session error:", sessionError);
+        setDocumentUploadError(
+          "Authentication error. Please try logging in again.",
+        );
         return;
       }
 
       if (!session) {
         // Fallback: check if we have a user in auth context
         if (user && user.id) {
-          console.log("No session but auth context has user - proceeding with upload");
+          console.log(
+            "No session but auth context has user - proceeding with upload",
+          );
         } else {
-          console.error('No session and no user in context - user not authenticated');
+          console.error(
+            "No session and no user in context - user not authenticated",
+          );
           setDocumentUploadError("Please log in to upload documents");
           return;
         }
@@ -1012,12 +1026,11 @@ export default function ProviderDashboard() {
         }
       }
 
-      const { data, error } = await authenticatedSupabase
-        .storage
-        .from('roam-file-storage')
+      const { data, error } = await authenticatedSupabase.storage
+        .from("roam-file-storage")
         .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
+          cacheControl: "3600",
+          upsert: false,
         });
 
       if (error) {
@@ -1026,7 +1039,7 @@ export default function ProviderDashboard() {
           details: error.details,
           hint: error.hint,
           code: error.code,
-          statusCode: error.statusCode
+          statusCode: error.statusCode,
         });
         console.error("Full error object:", error);
         throw new Error(`Upload failed: ${error.message}`);
@@ -1037,7 +1050,7 @@ export default function ProviderDashboard() {
       // Get public URL
       const {
         data: { publicUrl },
-      } = supabase.storage.from('roam-file-storage').getPublicUrl(filePath);
+      } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
 
       console.log("Public URL:", publicUrl);
 
@@ -1087,18 +1100,28 @@ export default function ProviderDashboard() {
 
   const getDocumentTypeFromName = (fileName: string): string => {
     const lowerName = fileName.toLowerCase();
-    if (lowerName.includes('license') || lowerName.includes('permit')) {
-      return 'business_license';
-    } else if (lowerName.includes('insurance')) {
-      return 'insurance_certificate';
-    } else if (lowerName.includes('tax') || lowerName.includes('ein') || lowerName.includes('w9')) {
-      return 'tax_document';
-    } else if (lowerName.includes('contract') || lowerName.includes('agreement')) {
-      return 'contract';
-    } else if (lowerName.includes('certification') || lowerName.includes('certificate')) {
-      return 'certification';
+    if (lowerName.includes("license") || lowerName.includes("permit")) {
+      return "business_license";
+    } else if (lowerName.includes("insurance")) {
+      return "insurance_certificate";
+    } else if (
+      lowerName.includes("tax") ||
+      lowerName.includes("ein") ||
+      lowerName.includes("w9")
+    ) {
+      return "tax_document";
+    } else if (
+      lowerName.includes("contract") ||
+      lowerName.includes("agreement")
+    ) {
+      return "contract";
+    } else if (
+      lowerName.includes("certification") ||
+      lowerName.includes("certificate")
+    ) {
+      return "certification";
     } else {
-      return 'other';
+      return "other";
     }
   };
 
@@ -1123,7 +1146,7 @@ export default function ProviderDashboard() {
         file_url: fileUrl,
         file_size_bytes: fileSize,
         document_type: documentType,
-        verification_status: 'pending',
+        verification_status: "pending",
       })
       .select();
 
@@ -4568,7 +4591,8 @@ export default function ProviderDashboard() {
     try {
       const { data, error } = await supabase
         .from("business_documents")
-        .select(`
+        .select(
+          `
           id,
           document_type,
           document_name,
@@ -4579,7 +4603,8 @@ export default function ProviderDashboard() {
           rejection_reason,
           expiry_date,
           created_at
-        `)
+        `,
+        )
         .eq("business_id", business.id)
         .order("created_at", { ascending: false });
 
@@ -4599,25 +4624,25 @@ export default function ProviderDashboard() {
   // Get document status badge color
   const getDocumentStatusBadge = (status: string) => {
     switch (status) {
-      case 'approved':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'rejected':
-        return 'bg-red-100 text-red-800';
-      case 'expired':
-        return 'bg-gray-100 text-gray-800';
+      case "approved":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "rejected":
+        return "bg-red-100 text-red-800";
+      case "expired":
+        return "bg-gray-100 text-gray-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   // Format file size
   const formatFileSize = (bytes: number) => {
-    if (!bytes) return 'Unknown size';
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    if (!bytes) return "Unknown size";
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
   };
 
   // Create Plaid Link Token using actual Plaid API
@@ -7928,7 +7953,9 @@ export default function ProviderDashboard() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => document.getElementById("document-upload")?.click()}
+                          onClick={() =>
+                            document.getElementById("document-upload")?.click()
+                          }
                           disabled={documentUploading}
                           className="flex items-center gap-2"
                         >
@@ -7960,12 +7987,16 @@ export default function ProviderDashboard() {
                       <div className="text-center py-8 text-foreground/60">
                         <Upload className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
                         <p>No documents have been uploaded yet.</p>
-                        <p className="text-sm mt-2">Use the "Add Document" button above to upload business documents.</p>
+                        <p className="text-sm mt-2">
+                          Use the "Add Document" button above to upload business
+                          documents.
+                        </p>
                       </div>
                     ) : (
                       <div className="space-y-4">
                         <p className="text-sm text-foreground/60 mb-4">
-                          View and download documents you submitted during the business verification process.
+                          View and download documents you submitted during the
+                          business verification process.
                         </p>
 
                         <div className="grid gap-4">
@@ -7983,12 +8014,21 @@ export default function ProviderDashboard() {
                                         {document.document_name}
                                       </h4>
                                     </div>
-                                    <Badge className={getDocumentStatusBadge(document.verification_status)}>
-                                      {document.verification_status === 'approved' && 'Approved'}
-                                      {document.verification_status === 'pending' && 'Pending Review'}
-                                      {document.verification_status === 'rejected' && 'Rejected'}
-                                      {document.verification_status === 'expired' && 'Expired'}
-                                      {!document.verification_status && 'Submitted'}
+                                    <Badge
+                                      className={getDocumentStatusBadge(
+                                        document.verification_status,
+                                      )}
+                                    >
+                                      {document.verification_status ===
+                                        "approved" && "Approved"}
+                                      {document.verification_status ===
+                                        "pending" && "Pending Review"}
+                                      {document.verification_status ===
+                                        "rejected" && "Rejected"}
+                                      {document.verification_status ===
+                                        "expired" && "Expired"}
+                                      {!document.verification_status &&
+                                        "Submitted"}
                                     </Badge>
                                   </div>
 
@@ -7996,7 +8036,11 @@ export default function ProviderDashboard() {
                                     <div>
                                       <span className="font-medium">Type:</span>
                                       <br />
-                                      {document.document_type?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                      {document.document_type
+                                        ?.replace(/_/g, " ")
+                                        .replace(/\b\w/g, (l) =>
+                                          l.toUpperCase(),
+                                        )}
                                     </div>
                                     <div>
                                       <span className="font-medium">Size:</span>
@@ -8004,44 +8048,64 @@ export default function ProviderDashboard() {
                                       {formatFileSize(document.file_size_bytes)}
                                     </div>
                                     <div>
-                                      <span className="font-medium">Submitted:</span>
+                                      <span className="font-medium">
+                                        Submitted:
+                                      </span>
                                       <br />
-                                      {new Date(document.created_at).toLocaleDateString()}
+                                      {new Date(
+                                        document.created_at,
+                                      ).toLocaleDateString()}
                                     </div>
                                     <div>
-                                      <span className="font-medium">Status Updated:</span>
+                                      <span className="font-medium">
+                                        Status Updated:
+                                      </span>
                                       <br />
                                       {document.verified_at
-                                        ? new Date(document.verified_at).toLocaleDateString()
-                                        : 'Not reviewed'
-                                      }
+                                        ? new Date(
+                                            document.verified_at,
+                                          ).toLocaleDateString()
+                                        : "Not reviewed"}
                                     </div>
                                   </div>
 
                                   {document.expiry_date && (
                                     <div className="mt-2 text-sm">
-                                      <span className="font-medium text-foreground/60">Expires:</span>{' '}
-                                      <span className={
-                                        new Date(document.expiry_date) < new Date()
-                                          ? 'text-red-600 font-medium'
-                                          : 'text-foreground/60'
-                                      }>
-                                        {new Date(document.expiry_date).toLocaleDateString()}
+                                      <span className="font-medium text-foreground/60">
+                                        Expires:
+                                      </span>{" "}
+                                      <span
+                                        className={
+                                          new Date(document.expiry_date) <
+                                          new Date()
+                                            ? "text-red-600 font-medium"
+                                            : "text-foreground/60"
+                                        }
+                                      >
+                                        {new Date(
+                                          document.expiry_date,
+                                        ).toLocaleDateString()}
                                       </span>
                                     </div>
                                   )}
 
                                   {document.rejection_reason && (
                                     <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded text-sm">
-                                      <span className="font-medium text-red-800">Rejection Reason:</span>
-                                      <p className="text-red-700 mt-1">{document.rejection_reason}</p>
+                                      <span className="font-medium text-red-800">
+                                        Rejection Reason:
+                                      </span>
+                                      <p className="text-red-700 mt-1">
+                                        {document.rejection_reason}
+                                      </p>
                                     </div>
                                   )}
                                 </div>
 
                                 <div className="ml-4">
                                   <Button
-                                    onClick={() => window.open(document.file_url, '_blank')}
+                                    onClick={() =>
+                                      window.open(document.file_url, "_blank")
+                                    }
                                     variant="outline"
                                     size="sm"
                                     className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
