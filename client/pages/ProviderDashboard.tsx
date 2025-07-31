@@ -10178,7 +10178,7 @@ export default function ProviderDashboard() {
                     {!managementSettings.business_managed && (
                       <div className="p-3 bg-yellow-50 border border-yellow-200 rounded">
                         <p className="text-sm text-yellow-800">
-                          <strong>Self-Managed Provider:</strong> This provider
+                          <strong>Self-Managed Staff:</strong> This staff member
                           will have full control over their services and
                           settings. They can still choose to inherit business
                           services and later modify them.
