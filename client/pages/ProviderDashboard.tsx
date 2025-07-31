@@ -8438,6 +8438,7 @@ export default function ProviderDashboard() {
                               Cancel
                             </Button>
                             <Button
+                              onClick={handleSaveTaxInfo}
                               className="bg-roam-blue hover:bg-roam-blue/90"
                               disabled={taxInfoSaving}
                             >
