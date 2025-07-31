@@ -10855,20 +10855,20 @@ export default function ProviderDashboard() {
             <AlertDialogTitle>Delete Location</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete "{locationToDelete?.location_name}"?
-              {locationToDelete?.is_primary && (
-                <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
-                  <p className="text-amber-800 font-medium">
-                    ⚠️ Warning: This is your primary location
-                  </p>
-                  <p className="text-amber-700 text-sm mt-1">
-                    Deleting it will leave your business without a primary location.
-                  </p>
-                </div>
-              )}
-              <div className="mt-3 text-foreground/80">
-                This action cannot be undone. Any bookings or assignments to this location may be affected.
-              </div>
             </AlertDialogDescription>
+            {locationToDelete?.is_primary && (
+              <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <p className="text-amber-800 font-medium">
+                  ⚠️ Warning: This is your primary location
+                </p>
+                <p className="text-amber-700 text-sm mt-1">
+                  Deleting it will leave your business without a primary location.
+                </p>
+              </div>
+            )}
+            <div className="mt-3 text-sm text-foreground/80">
+              This action cannot be undone. Any bookings or assignments to this location may be affected.
+            </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setLocationToDelete(null)}>
