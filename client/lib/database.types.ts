@@ -954,8 +954,8 @@ export type BusinessAddon =
 export type Booking = Database["public"]["Tables"]["bookings"]["Row"];
 export type BookingAction =
   Database["public"]["Tables"]["booking_actions"]["Row"];
-export type ProviderDocument =
-  Database["public"]["Tables"]["provider_documents"]["Row"];
+export type BusinessDocument =
+  Database["public"]["Tables"]["business_documents"]["Row"];
 export type CalendarConnection =
   Database["public"]["Tables"]["provider_calendar_connections"]["Row"];
 export type PushSubscription =
