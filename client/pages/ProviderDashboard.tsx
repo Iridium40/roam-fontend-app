@@ -8643,12 +8643,13 @@ export default function ProviderDashboard() {
 
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
-              <h2 className="text-2xl font-bold">Account Settings</h2>
+              <h2 className="text-2xl font-bold">
+                <span style={{letterSpacing: '-0.6px', backgroundColor: 'rgb(255, 255, 255)'}}>
+                  Notification Preferences
+                </span>
+              </h2>
 
               <Card className="max-w-6xl">
-                <CardHeader>
-                  <CardTitle>Notification Preferences</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Notification Contact Details */}
                   <div className="space-y-4 pb-4 border-b">
