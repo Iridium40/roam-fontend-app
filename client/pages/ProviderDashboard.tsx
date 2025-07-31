@@ -7085,7 +7085,7 @@ export default function ProviderDashboard() {
             {(isOwner || isDispatcher) && (
               <TabsContent value="providers" className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold">Provider Management</h2>
+                  <h2 className="text-2xl font-bold">Staff Management</h2>
                   <Button
                     className="bg-roam-blue hover:bg-roam-blue/90"
                     onClick={handleStartAddProvider}
