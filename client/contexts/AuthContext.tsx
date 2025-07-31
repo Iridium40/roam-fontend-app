@@ -186,10 +186,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log("AuthContext signIn: Starting authentication...");
 
       // Use standard Supabase client for authentication
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
       if (authError) {
         console.error("AuthContext signIn: Auth error:", authError);
@@ -230,7 +231,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
       setUserType("provider");
       localStorage.setItem("roam_user", JSON.stringify(userData));
-      localStorage.setItem("roam_access_token", authData.session?.access_token || "");
+      localStorage.setItem(
+        "roam_access_token",
+        authData.session?.access_token || "",
+      );
       localStorage.setItem("roam_user_type", "provider");
 
       console.log(
@@ -250,10 +254,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log("AuthContext signInCustomer: Starting authentication...");
 
       // Use standard Supabase client for authentication
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
       if (authError) {
         console.error("AuthContext signInCustomer: Auth error:", authError);
@@ -287,7 +292,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setCustomer(customerData);
       setUserType("customer");
       localStorage.setItem("roam_customer", JSON.stringify(customerData));
-      localStorage.setItem("roam_access_token", authData.session?.access_token || "");
+      localStorage.setItem(
+        "roam_access_token",
+        authData.session?.access_token || "",
+      );
       localStorage.setItem("roam_user_type", "customer");
 
       console.log(

@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleCreateLinkToken, handleExchangeToken } from "./routes/plaid";
+import { handleFileUpload, uploadDocument } from "./routes/upload";
 
 export function createServer() {
   const app = express();
@@ -23,6 +24,9 @@ export function createServer() {
   // Plaid integration routes
   app.post("/api/plaid/create-link-token", handleCreateLinkToken);
   app.post("/api/plaid/exchange-token", handleExchangeToken);
+
+  // File upload route
+  app.post("/api/upload-document", handleFileUpload, uploadDocument);
 
   return app;
 }

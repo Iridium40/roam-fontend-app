@@ -1009,50 +1009,24 @@ export default function ProviderDashboard() {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Create authenticated Supabase client for upload
-      console.log("Attempting upload to:", filePath);
+      // Use server endpoint to upload (bypasses RLS with service role)
+      console.log("Attempting upload via server endpoint");
+      const formData = new FormData();
+      formData.append("file", file);
 
-      // Get the current session and create an authenticated client
-      let authenticatedSupabase = supabase;
-      if (session?.access_token) {
-        console.log("Using session access token for upload");
-        authenticatedSupabase = supabase;
-        // The session should already be set in the global supabase client
-      } else if (user?.id) {
-        console.log("No session but user exists, checking stored token");
-        const storedToken = localStorage.getItem("roam_access_token");
-        if (storedToken) {
-          console.log("Found stored token, will use it");
-        }
+      const uploadResponse = await fetch("/api/upload-document", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        throw new Error(`Upload failed: ${errorText}`);
       }
 
-      const { data, error } = await authenticatedSupabase.storage
-        .from("roam-file-storage")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (error) {
-        console.error("Supabase upload error details:", {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-          statusCode: error.statusCode,
-        });
-        console.error("Full error object:", error);
-        throw new Error(`Upload failed: ${error.message}`);
-      }
-
-      console.log("Upload successful:", data);
-
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
-
-      console.log("Public URL:", publicUrl);
+      const uploadResult = await uploadResponse.json();
+      console.log("Upload successful:", uploadResult);
+      const publicUrl = uploadResult.publicUrl;
 
       // Save document metadata to database
       await saveDocumentToDatabase({
