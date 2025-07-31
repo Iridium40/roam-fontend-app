@@ -4344,7 +4344,7 @@ export default function ProviderDashboard() {
     try {
       // Create link token by calling Plaid's API through our backend
       // The backend will use the secret: b5caf79d242c0fd40a939924c8ef96
-      const response = await fetch('/netlify/functions/api', {
+      const response = await fetch('/netlify/functions/plaid-integration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
