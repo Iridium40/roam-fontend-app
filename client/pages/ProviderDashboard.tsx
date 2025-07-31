@@ -2235,47 +2235,28 @@ export default function ProviderDashboard() {
     setProviderActionLoading(true);
 
     try {
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      const updateData = {
+        first_name: editProviderForm.first_name.trim(),
+        last_name: editProviderForm.last_name.trim(),
+        email: editProviderForm.email.trim(),
+        phone: editProviderForm.phone.trim(),
+        provider_role: editProviderForm.provider_role,
+        business_managed: editProviderForm.business_managed,
+        is_active: editProviderForm.is_active,
+        verification_status: editProviderForm.verification_status,
+        background_check_status: editProviderForm.background_check_status,
+        location_id: editProviderForm.location_id || null,
+        experience_years: editProviderForm.experience_years ? parseInt(editProviderForm.experience_years) : null
+      };
 
-      // Get current access token
-      const accessToken = directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+      const { error } = await supabase
+        .from("providers")
+        .update(updateData)
+        .eq("id", editingProvider.id);
 
-      const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${editingProvider.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${accessToken}`,
-            Prefer: "return=minimal"
-          },
-          body: JSON.stringify({
-            first_name: editProviderForm.first_name.trim(),
-            last_name: editProviderForm.last_name.trim(),
-            email: editProviderForm.email.trim(),
-            phone: editProviderForm.phone.trim(),
-            provider_role: editProviderForm.provider_role,
-            business_managed: editProviderForm.business_managed,
-            is_active: editProviderForm.is_active,
-            verification_status: editProviderForm.verification_status,
-            background_check_status: editProviderForm.background_check_status,
-            location_id: editProviderForm.location_id || null,
-            experience_years: editProviderForm.experience_years ? parseInt(editProviderForm.experience_years) : null
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        let errorText = "";
-        try {
-          errorText = await response.text();
-        } catch (readError) {
-          console.warn("Could not read error response:", readError);
-          errorText = response.statusText || "Unknown error";
-        }
-        console.error("Provider save error response:", errorText);
-        throw new Error(`Failed to save provider: ${response.status} ${errorText}`);
+      if (error) {
+        console.error("Provider save error:", error);
+        throw new Error(`Failed to save provider: ${error.message}`);
       }
 
       toast({
@@ -7239,7 +7220,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        🔄 Refresh
+                        �� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
