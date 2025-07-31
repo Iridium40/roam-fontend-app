@@ -7383,7 +7383,7 @@ export default function ProviderDashboard() {
                                     : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"}
                                 >
                                   <CheckCircle className="w-4 h-4 mr-1" />
-                                  {teamProvider.background_check_status === 'approved' ? 'Background ✓' : 'Background'}
+                                  {teamProvider.background_check_status === 'approved' ? 'Background ✓' : 'Approve BG'}
                                 </Button>
 
                                 {/* Verification Approval Toggle */}
