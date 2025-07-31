@@ -351,6 +351,11 @@ export default function ProviderDashboard() {
   // Delete confirmation dialog state
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<any>(null);
+
+  // Edit provider modal state
+  const [editProviderModal, setEditProviderModal] = useState(false);
+  const [editingProvider, setEditingProvider] = useState<any>(null);
+  const [providerActionLoading, setProviderActionLoading] = useState(false);
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
   const [editingService, setEditingService] = useState<any>(null);
