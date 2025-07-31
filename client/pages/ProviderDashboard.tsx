@@ -7278,11 +7278,12 @@ export default function ProviderDashboard() {
                     ) : teamProviders.length > 0 ? (
                       <div className="space-y-4">
                         {/* Show filtered count */}
-                        {(selectedProviderRoleFilter !== "all" || selectedVerificationStatusFilter !== "all") && (
+                        {(selectedProviderRoleFilter !== "all" || selectedVerificationStatusFilter !== "all" || selectedActiveStatusFilter !== "all") && (
                           <div className="text-sm text-foreground/60 pb-2 border-b">
                             Showing {teamProviders.filter(tp =>
                               (selectedProviderRoleFilter === "all" || tp.provider_role === selectedProviderRoleFilter) &&
-                              (selectedVerificationStatusFilter === "all" || tp.verification_status === selectedVerificationStatusFilter)
+                              (selectedVerificationStatusFilter === "all" || tp.verification_status === selectedVerificationStatusFilter) &&
+                              (selectedActiveStatusFilter === "all" || tp.is_active.toString() === selectedActiveStatusFilter)
                             ).length} of {teamProviders.length} team members
                           </div>
                         )}
