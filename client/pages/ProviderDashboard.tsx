@@ -2214,10 +2214,34 @@ export default function ProviderDashboard() {
   const handleSaveProvider = async () => {
     if (!editingProvider) return;
 
+    // Validate required fields
+    if (!editProviderForm.first_name || !editProviderForm.last_name || !editProviderForm.email || !editProviderForm.phone) {
+      toast({
+        title: "Validation Error",
+        description: "First name, last name, email, and phone are required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Ensure location_id is provided (NOT NULL in schema)
+    if (!editProviderForm.location_id && locations.length > 0) {
+      // Auto-assign to primary location if available
+      const primaryLocation = locations.find(loc => loc.is_primary);
+      if (primaryLocation) {
+        setEditProviderForm(prev => ({ ...prev, location_id: primaryLocation.id }));
+      } else if (locations.length > 0) {
+        setEditProviderForm(prev => ({ ...prev, location_id: locations[0].id }));
+      }
+    }
+
     setProviderActionLoading(true);
 
     try {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Get fresh access token
+      const accessToken = await directSupabaseAPI.getCurrentAccessToken();
 
       const response = await fetch(
         `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/providers?id=eq.${editingProvider.id}`,
@@ -2226,26 +2250,29 @@ export default function ProviderDashboard() {
           headers: {
             "Content-Type": "application/json",
             apikey: import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${directSupabaseAPI.currentAccessToken || import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY}`,
+            Authorization: `Bearer ${accessToken}`,
+            Prefer: "return=minimal"
           },
           body: JSON.stringify({
-            first_name: editProviderForm.first_name,
-            last_name: editProviderForm.last_name,
-            email: editProviderForm.email,
-            phone: editProviderForm.phone,
+            first_name: editProviderForm.first_name.trim(),
+            last_name: editProviderForm.last_name.trim(),
+            email: editProviderForm.email.trim(),
+            phone: editProviderForm.phone.trim(),
             provider_role: editProviderForm.provider_role,
-            hourly_rate: editProviderForm.hourly_rate ? parseFloat(editProviderForm.hourly_rate) : null,
             business_managed: editProviderForm.business_managed,
             is_active: editProviderForm.is_active,
             verification_status: editProviderForm.verification_status,
             background_check_status: editProviderForm.background_check_status,
-            location_id: editProviderForm.location_id || null
+            location_id: editProviderForm.location_id || (locations.length > 0 ? locations[0].id : null),
+            experience_years: editProviderForm.experience_years ? parseInt(editProviderForm.experience_years) : null
           }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update provider");
+        const errorText = await response.text();
+        console.error("Provider save error response:", errorText);
+        throw new Error(`Failed to save provider: ${response.status} ${errorText}`);
       }
 
       toast({
