@@ -8468,6 +8468,8 @@ export default function ProviderDashboard() {
                             </Label>
                             <Input
                               id="tax_address_line1"
+                              value={taxInfo.tax_address_line1}
+                              onChange={(e) => handleTaxInfoChange("tax_address_line1", e.target.value)}
                               placeholder="Street address"
                               disabled={taxInfoSaving}
                             />
