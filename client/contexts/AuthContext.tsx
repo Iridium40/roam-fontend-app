@@ -287,7 +287,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setCustomer(customerData);
       setUserType("customer");
       localStorage.setItem("roam_customer", JSON.stringify(customerData));
-      localStorage.setItem("roam_access_token", authData.access_token);
+      localStorage.setItem("roam_access_token", authData.session?.access_token || "");
       localStorage.setItem("roam_user_type", "customer");
 
       console.log(
