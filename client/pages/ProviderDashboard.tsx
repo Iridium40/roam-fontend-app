@@ -10113,7 +10113,7 @@ export default function ProviderDashboard() {
                       <div>
                         <Label>Managed by Business</Label>
                         <p className="text-sm text-foreground/60">
-                          Business controls this provider's services and
+                          Business controls this staff member's services and
                           settings
                         </p>
                       </div>
