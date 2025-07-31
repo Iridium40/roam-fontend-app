@@ -5189,7 +5189,7 @@ export default function ProviderDashboard() {
                   value="services-addons"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
                 >
-                  Services & Add-Ons
+                  Services
                 </TabsTrigger>
               )}
               {(isOwner || isDispatcher) && (
