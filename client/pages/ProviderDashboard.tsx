@@ -4397,7 +4397,18 @@ export default function ProviderDashboard() {
       const data = await response.json();
       if (data.link_token) {
         setPlaidLinkToken(data.link_token);
-        setPlaidSuccess('Plaid Link token created successfully! Click "Open Plaid Link" to connect your bank account.');
+        setPlaidSuccess('Plaid Link token created successfully! Opening Plaid Link...');
+
+        // Automatically open Plaid Link after a short delay
+        setTimeout(async () => {
+          try {
+            const handler = await createPlaidLinkHandler(data.link_token);
+            handler.open();
+          } catch (error) {
+            console.error('Error auto-opening Plaid Link:', error);
+            setPlaidError('Link token created but failed to open Plaid Link. Please try the "Open Plaid Link" button.');
+          }
+        }, 1000);
       } else {
         throw new Error('No link token received from server');
       }
