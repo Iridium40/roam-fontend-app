@@ -185,13 +185,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log("AuthContext signIn: Starting authentication...");
 
-      // Use direct API to bypass hanging Supabase client
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
-
-      const authData = await directSupabaseAPI.signInWithPassword(
+      // Use standard Supabase client for authentication
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
-      );
+      });
+
+      if (authError) {
+        console.error("AuthContext signIn: Auth error:", authError);
+        throw new Error(`Authentication failed: ${authError.message}`);
+      }
 
       if (!authData.user) {
         console.error("AuthContext signIn: No user returned");
