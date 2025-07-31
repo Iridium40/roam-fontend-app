@@ -995,35 +995,24 @@ export default function ProviderDashboard() {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `business-documents/${fileName}`;
 
-      // Upload file using Supabase client directly
-      console.log("Attempting upload to:", filePath);
-      const { data, error } = await supabase
-        .storage
-        .from('roam-file-storage')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
+      // Use server endpoint to upload (bypasses RLS with service role)
+      console.log("Attempting upload via server endpoint");
+      const formData = new FormData();
+      formData.append("file", file);
 
-      if (error) {
-        console.error("Supabase upload error details:", {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-          fullError: error
-        });
-        throw new Error(`Upload failed: ${error.message}`);
+      const uploadResponse = await fetch("/api/upload-document", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        throw new Error(`Upload failed: ${errorText}`);
       }
 
-      console.log("Upload successful:", data);
-
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from('roam-file-storage').getPublicUrl(filePath);
-
-      console.log("Public URL:", publicUrl);
+      const uploadResult = await uploadResponse.json();
+      console.log("Upload successful:", uploadResult);
+      const publicUrl = uploadResult.publicUrl;
 
       // Save document metadata to database
       await saveDocumentToDatabase({
