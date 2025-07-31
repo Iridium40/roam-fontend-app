@@ -10865,18 +10865,19 @@ export default function ProviderDashboard() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="location_id">Location</Label>
+              <Label htmlFor="location_id">Location (Optional)</Label>
               <Select
                 value={editProviderForm.location_id}
                 onValueChange={(value) => setEditProviderForm(prev => ({
                   ...prev,
-                  location_id: value
+                  location_id: value === "none" ? "" : value
                 }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select location" />
+                  <SelectValue placeholder="Select location (optional)" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="none">No Location Assigned</SelectItem>
                   {locations.map((location) => (
                     <SelectItem key={location.id} value={location.id}>
                       {location.location_name} {location.is_primary && "(Primary)"}
