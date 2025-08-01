@@ -2658,24 +2658,30 @@ export default function ProviderDashboard() {
     setSubscriptionLoading(true);
 
     try {
-      // TODO: Integrate with Stripe
       // Create Stripe checkout session for the selected plan
-      // const response = await fetch('/.netlify/functions/create-checkout-session', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     planId: planId,
-      //     businessId: business?.id,
-      //     customerId: provider?.id
-      //   })
-      // });
-      // const { url } = await response.json();
-      // window.location.href = url;
+      const response = await fetch('/.netlify/functions/create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId: planId,
+          businessId: business?.id,
+          customerId: provider?.email
+        })
+      });
 
-      console.log(`Selected plan: ${planId}`);
-      alert(`Stripe integration coming soon! Selected plan: ${planId}`);
-    } catch (error) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create subscription');
+      }
+
+      const { url } = await response.json();
+
+      // Redirect to Stripe checkout
+      window.location.href = url;
+
+    } catch (error: any) {
       console.error('Error selecting plan:', error);
+      alert(`Error: ${error.message}`);
     } finally {
       setSubscriptionLoading(false);
       setSelectedPlan(null);
