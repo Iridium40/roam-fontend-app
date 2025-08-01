@@ -2640,7 +2640,7 @@ export default function ProviderDashboard() {
         from: "provider",
         body: messageText,
         timestamp: new Date().toISOString(),
-        author: provider?.first_name || "You"
+        author: `${provider?.first_name || "You"} (${provider?.provider_role || 'Staff'})`
       };
 
       setConversationHistory(prev => [...prev, newMessage]);
