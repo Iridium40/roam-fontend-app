@@ -2686,17 +2686,49 @@ export default function ProviderDashboard() {
     if (!business?.id) return;
 
     try {
-      // TODO: Load current subscription from database
-      // const { data } = await supabase
-      //   .from('subscriptions')
-      //   .select('*')
-      //   .eq('business_id', business.id)
-      //   .single();
-      // setCurrentSubscription(data);
+      const { data, error } = await supabase
+        .from('business_subscriptions')
+        .select(`
+          id,
+          device_type,
+          start_date,
+          end_date,
+          is_active,
+          stripe_subscription_id,
+          stripe_customer_id,
+          stripe_price_id,
+          subscription_status
+        `)
+        .eq('business_id', business.id)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
 
-      console.log('Loading subscription for business:', business.id);
+      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+        throw error;
+      }
+
+      if (data) {
+        // Map the subscription data to include plan details
+        const planDetails = subscriptionPlans.find(plan =>
+          data.stripe_price_id?.includes(plan.id) ||
+          data.device_type === plan.id
+        );
+
+        setCurrentSubscription({
+          ...data,
+          plan_name: planDetails?.name || 'Unknown Plan',
+          price: planDetails?.price || 0
+        });
+      } else {
+        setCurrentSubscription(null);
+      }
+
+      console.log('Current subscription loaded:', data);
     } catch (error) {
       console.error('Error loading subscription:', error);
+      setCurrentSubscription(null);
     }
   };
 
