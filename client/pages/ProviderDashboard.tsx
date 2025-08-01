@@ -12326,11 +12326,14 @@ export default function ProviderDashboard() {
 
       {/* Edit Provider Modal */}
       <Dialog open={editProviderModal} onOpenChange={setEditProviderModal}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-6xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle>Edit Provider</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto max-h-[75vh]">
+            {/* Basic Provider Information */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold border-b pb-2">Provider Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="first_name">First Name *</Label>
@@ -12543,7 +12546,81 @@ export default function ProviderDashboard() {
               <Label htmlFor="is_active">Active</Label>
             </div>
 
-            <div className="flex gap-2 pt-4">
+            </div>
+
+            {/* Service & Addon Assignment */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold border-b pb-2">Service & Addon Assignment</h3>
+
+              {/* Services Section */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm">Assigned Services</h4>
+                <div className="max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-50">
+                  {businessServicesData.length > 0 ? (
+                    <div className="space-y-2">
+                      {businessServicesData.map((service) => (
+                        <div key={service.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                          <div className="flex-1">
+                            <span className="text-sm font-medium">{service.services?.name || 'Unknown Service'}</span>
+                            <p className="text-xs text-gray-500">${service.services?.min_price || 0}</p>
+                          </div>
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              className="mr-2"
+                              defaultChecked={false}
+                              onChange={(e) => {
+                                // Handle service assignment
+                                console.log('Service assignment:', service.id, e.target.checked);
+                              }}
+                            />
+                            <span className="text-xs">Assign</span>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">No business services available</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Addons Section */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm">Available Addons</h4>
+                <div className="max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-50">
+                  {businessAddonsData.length > 0 ? (
+                    <div className="space-y-2">
+                      {businessAddonsData.map((addon) => (
+                        <div key={addon.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                          <div className="flex-1">
+                            <span className="text-sm font-medium">{addon.service_addons?.name || 'Unknown Addon'}</span>
+                            <p className="text-xs text-gray-500">${addon.custom_price || 'No price set'}</p>
+                          </div>
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              className="mr-2"
+                              defaultChecked={false}
+                              onChange={(e) => {
+                                // Handle addon assignment
+                                console.log('Addon assignment:', addon.id, e.target.checked);
+                              }}
+                            />
+                            <span className="text-xs">Assign</span>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">No business addons available</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons - spans both columns */}
+            <div className="lg:col-span-2 flex gap-2 pt-4 border-t">
               <Button
                 variant="outline"
                 onClick={() => setEditProviderModal(false)}
