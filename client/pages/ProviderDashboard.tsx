@@ -4428,15 +4428,10 @@ export default function ProviderDashboard() {
         const addon = allServiceAddons.find((a) => a.id === addonId);
         if (!addon) throw new Error("Add-on not found");
 
-        // Validate that a price is provided when adding new addon
-        if (!customPrice || customPrice <= 0) {
-          throw new Error("A valid price must be set for the addon before adding it to your business.");
-        }
-
         const newAddonData = {
           business_id: provider.business_id,
           addon_id: addonId,
-          custom_price: customPrice,
+          custom_price: customPrice || null, // Allow null price initially
           is_available: true,
         };
 
