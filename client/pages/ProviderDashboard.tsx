@@ -9056,11 +9056,11 @@ export default function ProviderDashboard() {
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <Plus className="w-5 h-5 text-blue-600" />
-                          My Add-ons ({providerAddons.length})
+                          My Add-ons ({assignedProviderAddons.length})
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        {providerAddons.length === 0 ? (
+                        {assignedProviderAddons.length === 0 ? (
                           <div className="text-center py-8 text-foreground/60">
                             <Plus className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
                             <p>No add-ons assigned yet.</p>
@@ -9068,7 +9068,7 @@ export default function ProviderDashboard() {
                           </div>
                         ) : (
                           <div className="grid gap-4">
-                            {providerAddons.map((addon: any) => (
+                            {assignedProviderAddons.map((addon: any) => (
                               <div key={addon.id} className="border rounded-lg p-4">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
