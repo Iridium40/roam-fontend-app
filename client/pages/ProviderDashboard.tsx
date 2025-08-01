@@ -2588,6 +2588,8 @@ export default function ProviderDashboard() {
     setMessagingLoading(true);
     try {
       // TODO: Replace with actual Twilio API call
+      // This will load conversation history for the booking
+      // Available to all staff roles: owner, dispatcher, provider
       // const response = await fetch(`/api/twilio/conversations/${bookingId}`);
       // const messages = await response.json();
 
