@@ -4752,7 +4752,8 @@ export default function ProviderDashboard() {
 
     } catch (error: any) {
       console.error("Error loading provider services:", error);
-      setProviderServicesError("Failed to load provider services");
+      const errorMessage = error?.message || error?.error?.message || JSON.stringify(error) || "Failed to load provider services";
+      setProviderServicesError(`Failed to load provider services: ${errorMessage}`);
     } finally {
       setProviderServicesLoading(false);
     }
