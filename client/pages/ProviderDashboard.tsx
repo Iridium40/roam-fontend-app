@@ -978,10 +978,10 @@ export default function ProviderDashboard() {
 
       console.log("Authentication verified - proceeding with upload");
 
-      // Generate unique filename
+      // Generate unique filename (using provider-specific folder like avatar uploads)
       const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `business-documents/${fileName}`;
+      const fileName = `${provider?.id || business?.id}-${Date.now()}.${fileExt}`;
+      const filePath = `business-documents-provider/${fileName}`;
 
       // Use direct API approach (same as avatar upload)
       console.log("Attempting upload using directSupabaseAPI");
@@ -6614,7 +6614,7 @@ export default function ProviderDashboard() {
                                     </p>
                                     {booking.customer_profiles?.email && (
                                       <span className="text-xs text-foreground/40">
-                                        ���� {booking.customer_profiles.email}
+                                        ��� {booking.customer_profiles.email}
                                       </span>
                                     )}
                                   </div>
