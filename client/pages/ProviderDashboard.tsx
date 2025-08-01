@@ -989,12 +989,11 @@ export default function ProviderDashboard() {
       console.log("File details:", {
         name: file.name,
         type: file.type,
-        size: file.size
+        size: file.size,
       });
 
       // Upload file using standard Supabase client
-      const { data, error } = await supabase
-        .storage
+      const { data, error } = await supabase.storage
         .from("roam-file-storage")
         .upload(filePath, file, {
           cacheControl: "3600",
@@ -1099,7 +1098,8 @@ export default function ProviderDashboard() {
     setDocumentUploadError("");
 
     // Auto-populate document name with filename (without extension)
-    const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    const nameWithoutExt =
+      file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
     setDocumentName(nameWithoutExt);
 
     // Reset file input
@@ -6067,7 +6067,6 @@ export default function ProviderDashboard() {
             </div>
 
             <div className="flex items-center space-x-4">
-
               <Button variant="ghost" size="sm">
                 <Bell className="w-4 h-4" />
               </Button>
@@ -8136,7 +8135,10 @@ export default function ProviderDashboard() {
                 </Card>
 
                 {/* Document Upload Modal */}
-                <Dialog open={showDocumentModal} onOpenChange={setShowDocumentModal}>
+                <Dialog
+                  open={showDocumentModal}
+                  onOpenChange={setShowDocumentModal}
+                >
                   <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
                       <DialogTitle>Upload Document</DialogTitle>
@@ -8151,9 +8153,12 @@ export default function ProviderDashboard() {
                               <div className="flex items-center justify-center">
                                 <Upload className="w-8 h-8 text-green-500" />
                               </div>
-                              <p className="text-sm font-medium">{selectedFile.name}</p>
+                              <p className="text-sm font-medium">
+                                {selectedFile.name}
+                              </p>
                               <p className="text-xs text-foreground/60">
-                                {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                                {(selectedFile.size / 1024 / 1024).toFixed(2)}{" "}
+                                MB
                               </p>
                               <Button
                                 variant="outline"
@@ -8182,7 +8187,9 @@ export default function ProviderDashboard() {
                               <Button
                                 variant="outline"
                                 onClick={() =>
-                                  document.getElementById("modal-file-upload")?.click()
+                                  document
+                                    .getElementById("modal-file-upload")
+                                    ?.click()
                                 }
                               >
                                 Choose File
@@ -8206,13 +8213,19 @@ export default function ProviderDashboard() {
                       {/* Document Type Field */}
                       <div className="space-y-2">
                         <Label htmlFor="document-type">Document Type *</Label>
-                        <Select value={selectedDocumentType} onValueChange={setSelectedDocumentType}>
+                        <Select
+                          value={selectedDocumentType}
+                          onValueChange={setSelectedDocumentType}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select document type" />
                           </SelectTrigger>
                           <SelectContent>
                             {documentTypeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
                                 {option.label}
                               </SelectItem>
                             ))}
@@ -8242,7 +8255,12 @@ export default function ProviderDashboard() {
                       </Button>
                       <Button
                         onClick={handleDocumentSubmit}
-                        disabled={!selectedFile || !selectedDocumentType || !documentName || documentUploading}
+                        disabled={
+                          !selectedFile ||
+                          !selectedDocumentType ||
+                          !documentName ||
+                          documentUploading
+                        }
                       >
                         {documentUploading ? "Uploading..." : "Upload Document"}
                       </Button>

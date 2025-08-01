@@ -121,7 +121,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // If no stored session, try to get current session from Supabase
         try {
-          const { data: { session } } = await supabase.auth.getSession();
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
           if (session?.user) {
             console.log(
               "AuthContext: Found active Supabase session, fetching provider...",
