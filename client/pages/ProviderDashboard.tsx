@@ -12831,10 +12831,7 @@ export default function ProviderDashboard() {
                             </div>
                             <button
                               className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded"
-                              onClick={() => {
-                                console.log('Add addon assignment:', addon.id);
-                                // TODO: Implement add assignment
-                              }}
+                              onClick={() => assignAddonToProvider(editingProvider?.id, addon.service_addons?.id)}
                             >
                               Assign
                             </button>
