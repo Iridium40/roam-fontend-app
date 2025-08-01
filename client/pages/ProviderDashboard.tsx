@@ -4746,7 +4746,7 @@ export default function ProviderDashboard() {
       if (businessAddonsError) throw businessAddonsError;
 
       setProviderServices(assignedServices || []);
-      setAvailableServices(businessServices || []);
+      setAvailableServices(availableServicesData || []);
       setProviderAddons(assignedAddons || []);
       setAvailableAddons(businessAddons || []);
 
