@@ -2658,12 +2658,11 @@ export default function ProviderDashboard() {
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to send message");
-      }
-
       const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to send message");
+      }
 
       // Add message to local conversation history
       const newMessage = {
