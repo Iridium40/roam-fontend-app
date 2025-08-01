@@ -9333,6 +9333,11 @@ export default function ProviderDashboard() {
                                       {addon.service_addons.description}
                                     </p>
                                     <div className="flex justify-between items-center mt-3">
+                                      <div className="text-sm">
+                                        <span className="font-medium text-green-700">
+                                          Business Price: ${addon.custom_price || 'Not set'}
+                                        </span>
+                                      </div>
                                       <Badge variant={addon.is_active ? "default" : "secondary"}>
                                         {addon.is_active ? "Active" : "Inactive"}
                                       </Badge>
