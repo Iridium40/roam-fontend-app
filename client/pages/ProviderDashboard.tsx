@@ -8979,6 +8979,183 @@ export default function ProviderDashboard() {
               </TabsContent>
             )}
 
+            {/* Provider Services Tab */}
+            {(isProvider && !isOwner && !isDispatcher) && (
+              <TabsContent value="provider-services" className="space-y-6">
+                <h2 className="text-2xl font-bold">My Services</h2>
+
+                {providerServicesError && (
+                  <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                    {providerServicesError}
+                  </div>
+                )}
+
+                {providerServicesLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="w-6 h-6 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Loading services...
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Assigned Services */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          My Assigned Services ({providerServices.length})
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {providerServices.length === 0 ? (
+                          <div className="text-center py-8 text-foreground/60">
+                            <Star className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
+                            <p>No services assigned yet.</p>
+                            <p className="text-sm mt-2">Contact your manager to get services assigned.</p>
+                          </div>
+                        ) : (
+                          <div className="grid gap-4">
+                            {providerServices.map((service: any) => (
+                              <div key={service.id} className="border rounded-lg p-4">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <h4 className="font-medium text-foreground">
+                                      {service.business_services.service_name}
+                                    </h4>
+                                    <p className="text-sm text-foreground/60 mt-1">
+                                      {service.business_services.service_description}
+                                    </p>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-foreground/60 mt-3">
+                                      <div>
+                                        <span className="font-medium">Base Price:</span>
+                                        <br />
+                                        ${service.business_services.base_price}
+                                      </div>
+                                      <div>
+                                        <span className="font-medium">My Price:</span>
+                                        <br />
+                                        ${service.custom_price || service.business_services.base_price}
+                                      </div>
+                                      <div>
+                                        <span className="font-medium">Status:</span>
+                                        <br />
+                                        <Badge variant={service.is_active ? "default" : "secondary"}>
+                                          {service.is_active ? "Active" : "Inactive"}
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Assigned Add-ons */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Plus className="w-5 h-5 text-blue-600" />
+                          My Add-ons ({providerAddons.length})
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {providerAddons.length === 0 ? (
+                          <div className="text-center py-8 text-foreground/60">
+                            <Plus className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
+                            <p>No add-ons assigned yet.</p>
+                            <p className="text-sm mt-2">Contact your manager to get add-ons assigned.</p>
+                          </div>
+                        ) : (
+                          <div className="grid gap-4">
+                            {providerAddons.map((addon: any) => (
+                              <div key={addon.id} className="border rounded-lg p-4">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <h4 className="font-medium text-foreground">
+                                      {addon.service_addons.name}
+                                    </h4>
+                                    <p className="text-sm text-foreground/60 mt-1">
+                                      {addon.service_addons.description}
+                                    </p>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-foreground/60 mt-3">
+                                      <div>
+                                        <span className="font-medium">Base Price:</span>
+                                        <br />
+                                        ${addon.service_addons.base_price}
+                                      </div>
+                                      <div>
+                                        <span className="font-medium">My Price:</span>
+                                        <br />
+                                        ${addon.custom_price || addon.service_addons.base_price}
+                                      </div>
+                                      <div>
+                                        <span className="font-medium">Status:</span>
+                                        <br />
+                                        <Badge variant={addon.is_active ? "default" : "secondary"}>
+                                          {addon.is_active ? "Active" : "Inactive"}
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Available Services */}
+                    {availableServices.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Star className="w-5 h-5 text-yellow-600" />
+                            Available Business Services ({availableServices.length})
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-foreground/60 mb-4">
+                            These services are available from your business but not yet assigned to you.
+                          </p>
+                          <div className="grid gap-4">
+                            {availableServices.map((service: any) => (
+                              <div key={service.id} className="border rounded-lg p-4 bg-muted/20">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <h4 className="font-medium text-foreground">
+                                      {service.service_name}
+                                    </h4>
+                                    <p className="text-sm text-foreground/60 mt-1">
+                                      {service.service_description}
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
+                                      <div>
+                                        <span className="font-medium">Category:</span>
+                                        <br />
+                                        {service.service_categories?.service_category_type || 'Uncategorized'}
+                                      </div>
+                                      <div>
+                                        <span className="font-medium">Base Price:</span>
+                                        <br />
+                                        ${service.base_price}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                )}
+              </TabsContent>
+            )}
+
             {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
               <h2 className="text-2xl font-bold">Provider Profile</h2>
