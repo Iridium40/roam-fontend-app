@@ -4694,12 +4694,19 @@ export default function ProviderDashboard() {
         .eq("provider_id", provider.id);
 
       if (servicesError) {
-        console.error("Error loading assigned services:", servicesError);
-        throw servicesError;
+        console.error("Error loading assigned services:", {
+          error: servicesError,
+          message: servicesError.message,
+          details: servicesError.details,
+          hint: servicesError.hint,
+          code: servicesError.code
+        });
+        throw new Error(`Failed to load assigned services: ${servicesError.message || JSON.stringify(servicesError)}`);
       }
       console.log("Assigned services loaded:", assignedServices);
 
       // Load available services that could be assigned (from the services table)
+      console.log("Attempting to load available services...");
       const { data: availableServicesData, error: servicesListError } = await supabase
         .from("services")
         .select(`
@@ -4716,8 +4723,14 @@ export default function ProviderDashboard() {
         .eq("is_active", true);
 
       if (servicesListError) {
-        console.error("Error loading available services:", servicesListError);
-        throw servicesListError;
+        console.error("Error loading available services:", {
+          error: servicesListError,
+          message: servicesListError.message,
+          details: servicesListError.details,
+          hint: servicesListError.hint,
+          code: servicesListError.code
+        });
+        throw new Error(`Failed to load available services: ${servicesListError.message || JSON.stringify(servicesListError)}`);
       }
       console.log("Available services loaded:", availableServicesData);
 
