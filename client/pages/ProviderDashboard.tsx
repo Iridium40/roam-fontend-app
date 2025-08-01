@@ -2556,6 +2556,11 @@ export default function ProviderDashboard() {
     // Load business services and addons for assignment
     fetchBusinessServicesAndAddons();
 
+    // Load provider's current assignments if they are a provider role
+    if (provider.provider_role === "provider") {
+      loadProviderAssignments(provider.id);
+    }
+
     setEditProviderModal(true);
   };
 
@@ -11421,7 +11426,7 @@ export default function ProviderDashboard() {
                                         )}
                                         {booking.customer_profiles?.phone && (
                                           <span>
-                                            �� {booking.customer_profiles.phone}
+                                            ���� {booking.customer_profiles.phone}
                                           </span>
                                         )}
                                       </div>
