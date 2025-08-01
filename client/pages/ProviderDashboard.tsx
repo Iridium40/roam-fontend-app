@@ -6071,9 +6071,6 @@ export default function ProviderDashboard() {
               <Button variant="ghost" size="sm">
                 <Bell className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm">
-                <Settings className="w-4 h-4" />
-              </Button>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />
                 Sign Out
