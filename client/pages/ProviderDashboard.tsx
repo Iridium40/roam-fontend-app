@@ -11209,6 +11209,201 @@ export default function ProviderDashboard() {
               </TabsContent>
             )}
 
+            {/* Share Tab */}
+            <TabsContent value="share" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Share Your Booking Page</h2>
+                <Badge variant="outline" className="text-green-600 border-green-200">
+                  Public Booking Page
+                </Badge>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Share2 className="w-5 h-5 text-roam-blue" />
+                    Customer Booking URL
+                  </CardTitle>
+                  <p className="text-foreground/60">
+                    Share this link with customers so they can book your services directly
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Your Public Booking Page</Label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={`${window.location.origin}/book/${provider?.business_id}`}
+                        readOnly
+                        className="font-mono text-sm"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(`${window.location.origin}/book/${provider?.business_id}`);
+                            toast({
+                              title: "Link copied!",
+                              description: "Booking page URL has been copied to your clipboard",
+                            });
+                          } catch (err) {
+                            toast({
+                              title: "Copy failed",
+                              description: "Please manually copy the URL",
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          window.open(`${window.location.origin}/book/${provider?.business_id}`, '_blank');
+                        }}
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h4 className="font-medium text-blue-900 mb-2">What customers will see:</h4>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>• Your business information and description</li>
+                      <li>• All available services with pricing</li>
+                      <li>• Available add-ons and extras</li>
+                      <li>• Easy booking form to request appointments</li>
+                      <li>• Your contact information and location</li>
+                    </ul>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardContent className="p-4">
+                        <h4 className="font-medium mb-2">Share via Social Media</h4>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const url = `${window.location.origin}/book/${provider?.business_id}`;
+                              const text = `Book services with ${business?.business_name}!`;
+                              window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+                            }}
+                          >
+                            Twitter
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const url = `${window.location.origin}/book/${provider?.business_id}`;
+                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                            }}
+                          >
+                            Facebook
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const url = `${window.location.origin}/book/${provider?.business_id}`;
+                              const text = `Book services with ${business?.business_name}! ${url}`;
+                              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                            }}
+                          >
+                            WhatsApp
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <h4 className="font-medium mb-2">QR Code</h4>
+                        <div className="text-center space-y-2">
+                          <div className="w-32 h-32 mx-auto bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="text-xs text-gray-500 mb-1">QR Code</div>
+                              <div className="text-xs text-gray-400">Coming Soon</div>
+                            </div>
+                          </div>
+                          <p className="text-xs text-foreground/60">
+                            QR code for easy mobile sharing
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <h4 className="font-medium mb-2">How to use your booking page:</h4>
+                    <div className="space-y-2 text-sm text-foreground/70">
+                      <p>1. <strong>Share the link</strong> - Send the URL to customers via email, text, or social media</p>
+                      <p>2. <strong>Add to your website</strong> - Link to this page from your website or business cards</p>
+                      <p>3. <strong>Print materials</strong> - Include the URL or QR code on flyers, business cards, or signage</p>
+                      <p>4. <strong>Receive bookings</strong> - Customers fill out the booking form and you'll receive notifications</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {business && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Preview Your Business Information</CardTitle>
+                    <p className="text-foreground/60">
+                      This is what customers will see on your booking page
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="border rounded-lg p-4 bg-gray-50">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                          {business.logo_url || business.image_url ? (
+                            <img
+                              src={business.logo_url || business.image_url}
+                              alt={business.business_name}
+                              className="w-16 h-16 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="text-2xl font-bold text-gray-500">
+                              {business.business_name.substring(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold">{business.business_name}</h3>
+                          <Badge variant="secondary" className="mb-2">{business.business_type}</Badge>
+                          {business.business_description && (
+                            <p className="text-foreground/70">{business.business_description}</p>
+                          )}
+                          <div className="mt-2 space-y-1 text-sm text-foreground/60">
+                            {business.contact_email && (
+                              <div className="flex items-center gap-2">
+                                <Mail className="w-4 h-4" />
+                                <span>{business.contact_email}</span>
+                              </div>
+                            )}
+                            {business.phone && (
+                              <div className="flex items-center gap-2">
+                                <Phone className="w-4 h-4" />
+                                <span>{business.phone}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
               <h2 className="text-2xl font-bold">
