@@ -7264,20 +7264,46 @@ export default function ProviderDashboard() {
                                             formatBookingLocation(booking);
                                           if (typeof location === "string") {
                                             return (
-                                              <span className="text-sm">
-                                                {location}
-                                              </span>
+                                              <div className="flex items-center gap-2">
+                                                <span className="text-sm">
+                                                  {location}
+                                                </span>
+                                                <button
+                                                  onClick={() =>
+                                                    openGoogleMaps(location)
+                                                  }
+                                                  className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                                                  title="Open in Google Maps for directions"
+                                                >
+                                                  <MapPin className="w-4 h-4" />
+                                                </button>
+                                              </div>
                                             );
                                           } else {
                                             return (
-                                              <div>
-                                                <span className="text-sm font-medium">
-                                                  {location.name}
-                                                </span>
-                                                {location.address && (
-                                                  <span className="text-xs text-foreground/50 block max-w-48 truncate">
-                                                    {location.address}
+                                              <div className="flex items-start gap-2">
+                                                <div className="flex-1 min-w-0">
+                                                  <span className="text-sm font-medium">
+                                                    {location.name}
                                                   </span>
+                                                  {location.address && (
+                                                    <span className="text-xs text-foreground/50 block max-w-44 truncate">
+                                                      {location.address}
+                                                    </span>
+                                                  )}
+                                                </div>
+                                                {location.address && (
+                                                  <button
+                                                    onClick={() =>
+                                                      openGoogleMaps(
+                                                        location.address,
+                                                      )
+                                                    }
+                                                    className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                                                    title="Open in Google Maps for directions"
+                                                  >
+                                                    <MapPin className="w-4 h-4" />
+                                                  </button>
                                                 )}
                                               </div>
                                             );
