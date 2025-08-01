@@ -4664,6 +4664,101 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Load provider services and addons (for regular providers)
+  const loadProviderServices = async () => {
+    if (!provider?.id || !business?.id) return;
+
+    setProviderServicesLoading(true);
+    setProviderServicesError("");
+
+    try {
+      // Load assigned provider services
+      const { data: assignedServices, error: servicesError } = await supabase
+        .from("provider_services")
+        .select(`
+          *,
+          business_services!inner(
+            id,
+            service_name,
+            base_price,
+            service_description,
+            is_available,
+            service_categories(service_category_type),
+            service_subcategories(service_subcategory_type)
+          )
+        `)
+        .eq("provider_id", provider.id);
+
+      if (servicesError) throw servicesError;
+
+      // Load available business services that could be assigned
+      const { data: businessServices, error: businessError } = await supabase
+        .from("business_services")
+        .select(`
+          id,
+          service_name,
+          base_price,
+          service_description,
+          is_available,
+          service_categories(service_category_type),
+          service_subcategories(service_subcategory_type)
+        `)
+        .eq("business_id", business.id)
+        .eq("is_available", true);
+
+      if (businessError) throw businessError;
+
+      // Load assigned provider addons
+      const { data: assignedAddons, error: addonsError } = await supabase
+        .from("provider_addons")
+        .select(`
+          *,
+          service_addons!inner(
+            id,
+            name,
+            description,
+            base_price,
+            is_available
+          )
+        `)
+        .eq("provider_id", provider.id);
+
+      if (addonsError) throw addonsError;
+
+      // Load available business addons that could be assigned
+      const { data: businessAddons, error: businessAddonsError } = await supabase
+        .from("business_addons")
+        .select(`
+          id,
+          addon_id,
+          custom_price,
+          is_available,
+          service_addons!inner(
+            id,
+            name,
+            description,
+            base_price,
+            is_available
+          )
+        `)
+        .eq("business_id", business.id)
+        .eq("is_available", true);
+
+      if (businessAddonsError) throw businessAddonsError;
+
+      setProviderServices(assignedServices || []);
+      setAvailableServices(businessServices || []);
+      setProviderAddons(assignedAddons || []);
+      setAvailableAddons(businessAddons || []);
+
+    } catch (error: any) {
+      console.error("Error loading provider services:", error);
+      setProviderServicesError("Failed to load provider services");
+    } finally {
+      setProviderServicesLoading(false);
+    }
+  };
+
   // Get document status badge color
   const getDocumentStatusBadge = (status: string) => {
     switch (status) {
