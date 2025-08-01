@@ -989,9 +989,26 @@ export default function ProviderDashboard() {
 
       // Ensure we have a valid access token
       const storedToken = localStorage.getItem("roam_access_token");
+      console.log("Token check:", {
+        hasStoredToken: !!storedToken,
+        tokenLength: storedToken?.length,
+        tokenStart: storedToken?.substring(0, 20)
+      });
+
       if (storedToken) {
         directSupabaseAPI.currentAccessToken = storedToken;
+        console.log("Access token set for directSupabaseAPI");
+      } else {
+        console.warn("No access token found - this may cause upload to fail");
+        throw new Error("No authentication token found. Please log in again.");
       }
+
+      console.log("Uploading to path:", filePath);
+      console.log("File details:", {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
 
       // Upload file to a working folder structure (similar to avatar-provider-user)
       const { publicUrl } = await directSupabaseAPI.uploadFile(
@@ -6597,7 +6614,7 @@ export default function ProviderDashboard() {
                                     </p>
                                     {booking.customer_profiles?.email && (
                                       <span className="text-xs text-foreground/40">
-                                        ��� {booking.customer_profiles.email}
+                                        ���� {booking.customer_profiles.email}
                                       </span>
                                     )}
                                   </div>
