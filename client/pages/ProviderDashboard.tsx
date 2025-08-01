@@ -2632,7 +2632,9 @@ export default function ProviderDashboard() {
       //   body: JSON.stringify({
       //     bookingId: selectedBookingForMessaging.id,
       //     message: messageText,
-      //     fromProvider: true
+      //     fromStaff: true,
+      //     staffRole: provider?.provider_role || 'staff',
+      //     staffName: provider?.first_name || 'Staff'
       //   })
       // });
 
