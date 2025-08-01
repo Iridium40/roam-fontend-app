@@ -180,6 +180,11 @@ const App = () => (
                 element={<ProviderProfile />}
               />
 
+              <Route
+                path="/book/:businessId"
+                element={<ProviderBooking />}
+              />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
