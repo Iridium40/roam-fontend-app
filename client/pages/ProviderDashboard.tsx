@@ -7063,9 +7063,18 @@ export default function ProviderDashboard() {
                                                   typeof location === "string"
                                                 ) {
                                                   return (
-                                                    <span className="text-sm">
-                                                      {location}
-                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                      <span className="text-sm">
+                                                        {location}
+                                                      </span>
+                                                      <button
+                                                        onClick={() => openGoogleMaps(location)}
+                                                        className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                                                        title="Open in Google Maps for directions"
+                                                      >
+                                                        <MapPin className="w-4 h-4" />
+                                                      </button>
+                                                    </div>
                                                   );
                                                 } else {
                                                   return (
