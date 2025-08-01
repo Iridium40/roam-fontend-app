@@ -6988,6 +6988,14 @@ export default function ProviderDashboard() {
                                   provider?.business_managed
                                 }
                                 onCheckedChange={(checked) => {
+                                  console.log("Service toggle clicked:", {
+                                    serviceId: businessService.service_id,
+                                    checked,
+                                    isProvider,
+                                    isOwner,
+                                    isDispatcher,
+                                    businessManaged: provider?.business_managed
+                                  });
                                   // Toggle business service active status
                                   handleToggleBusinessService(
                                     businessService.service_id,
