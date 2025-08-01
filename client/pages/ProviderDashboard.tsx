@@ -6846,6 +6846,14 @@ export default function ProviderDashboard() {
                   Financial
                 </TabsTrigger>
               )}
+              {isOwner && (
+                <TabsTrigger
+                  value="subscription"
+                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+                >
+                  Subscription
+                </TabsTrigger>
+              )}
               <TabsTrigger
                 value="settings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
