@@ -7451,7 +7451,7 @@ export default function ProviderDashboard() {
                                       );
                                     }}
                                     disabled={
-                                      businessDetailsSaving || categoriesLoading
+                                      businessDetailsSaving || categoriesLoading || isDispatcher
                                     }
                                     className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
                                   />
