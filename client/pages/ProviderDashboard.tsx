@@ -9041,21 +9041,21 @@ export default function ProviderDashboard() {
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h4 className="font-medium text-foreground">
-                                      {service.services.service_name}
+                                      {service.services.name}
                                     </h4>
                                     <p className="text-sm text-foreground/60 mt-1">
-                                      {service.services.service_description}
+                                      {service.services.description}
                                     </p>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-foreground/60 mt-3">
                                       <div>
                                         <span className="font-medium">Base Price:</span>
                                         <br />
-                                        ${service.services.base_price}
+                                        ${service.services.min_price}
                                       </div>
                                       <div>
                                         <span className="font-medium">My Price:</span>
                                         <br />
-                                        ${service.custom_price || service.services.base_price}
+                                        ${service.custom_price || service.services.min_price}
                                       </div>
                                       <div>
                                         <span className="font-medium">Status:</span>
