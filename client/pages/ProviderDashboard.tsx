@@ -12639,35 +12639,71 @@ export default function ProviderDashboard() {
                 <h3 className="text-lg font-semibold border-b pb-2">Service & Addon Assignment</h3>
 
               {/* Services Section */}
-              <div className="space-y-3">
-                <h4 className="font-medium text-sm">Assigned Services</h4>
-                <div className="max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-50">
-                  {businessServicesData.length > 0 ? (
-                    <div className="space-y-2">
-                      {businessServicesData.map((service) => (
-                        <div key={service.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                          <div className="flex-1">
-                            <span className="text-sm font-medium">{service.services?.name || 'Unknown Service'}</span>
-                            <p className="text-xs text-gray-500">${service.services?.min_price || 0}</p>
-                          </div>
-                          <label className="flex items-center">
-                            <input
-                              type="checkbox"
-                              className="mr-2"
-                              defaultChecked={false}
-                              onChange={(e) => {
-                                // Handle service assignment
-                                console.log('Service assignment:', service.id, e.target.checked);
+              <div className="space-y-4">
+                <h4 className="font-medium">Services</h4>
+
+                {/* Currently Assigned Services */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium text-green-700">Currently Assigned Services</h5>
+                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-green-50">
+                    {editAssignmentsLoading ? (
+                      <p className="text-sm text-gray-500">Loading assignments...</p>
+                    ) : editProviderServices.length > 0 ? (
+                      <div className="space-y-2">
+                        {editProviderServices.map((providerService: any) => (
+                          <div key={providerService.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">{providerService.services?.name || 'Unknown Service'}</span>
+                              <p className="text-xs text-gray-500">${providerService.services?.min_price || 0}</p>
+                            </div>
+                            <button
+                              className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
+                              onClick={() => {
+                                console.log('Remove service assignment:', providerService.id);
+                                // TODO: Implement remove assignment
                               }}
-                            />
-                            <span className="text-xs">Assign</span>
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500">No business services available</p>
-                  )}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">No services currently assigned</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Available to Assign Services */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium text-blue-700">Available to Assign</h5>
+                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-blue-50">
+                    {businessServicesData.length > 0 ? (
+                      <div className="space-y-2">
+                        {businessServicesData
+                          .filter(service => !editProviderServices.some(ps => ps.services?.id === service.services?.id))
+                          .map((service) => (
+                          <div key={service.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">{service.services?.name || 'Unknown Service'}</span>
+                              <p className="text-xs text-gray-500">${service.services?.min_price || 0}</p>
+                            </div>
+                            <button
+                              className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded"
+                              onClick={() => {
+                                console.log('Add service assignment:', service.id);
+                                // TODO: Implement add assignment
+                              }}
+                            >
+                              Assign
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">No business services available for assignment</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
