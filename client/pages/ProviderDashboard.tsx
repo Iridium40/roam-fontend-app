@@ -4711,7 +4711,11 @@ export default function ProviderDashboard() {
         `)
         .eq("is_available", true);
 
-      if (servicesListError) throw servicesListError;
+      if (servicesListError) {
+        console.error("Error loading available services:", servicesListError);
+        throw servicesListError;
+      }
+      console.log("Available services loaded:", availableServicesData);
 
       // Load assigned provider addons
       const { data: assignedAddons, error: addonsError } = await supabase
@@ -8726,7 +8730,7 @@ export default function ProviderDashboard() {
                                     <CheckCircle className="w-4 h-4 mr-1" />
                                     {teamProvider.background_check_status ===
                                     "approved"
-                                      ? "Background ✓"
+                                      ? "Background ��"
                                       : "Approve BG"}
                                   </Button>
 
