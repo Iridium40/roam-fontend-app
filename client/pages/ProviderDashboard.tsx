@@ -4740,7 +4740,7 @@ export default function ProviderDashboard() {
         .from("provider_addons")
         .select(`
           *,
-          service_addons!inner(
+          service_addons(
             id,
             name,
             description,
