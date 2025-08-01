@@ -9295,14 +9295,9 @@ export default function ProviderDashboard() {
                                     <p className="text-sm text-foreground/60 mt-1">
                                       {service.services.description}
                                     </p>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-foreground/60 mt-3">
+                                    <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
                                       <div>
-                                        <span className="font-medium">Base Price:</span>
-                                        <br />
-                                        ${service.services.min_price}
-                                      </div>
-                                      <div>
-                                        <span className="font-medium">My Price:</span>
+                                        <span className="font-medium text-green-700">Business Price:</span>
                                         <br />
                                         ${service.custom_price || service.services.min_price}
                                       </div>
