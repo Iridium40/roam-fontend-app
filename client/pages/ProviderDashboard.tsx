@@ -983,26 +983,8 @@ export default function ProviderDashboard() {
       const fileName = `${provider?.id || business?.id}-${Date.now()}.${fileExt}`;
       const filePath = `business-documents-provider/${fileName}`;
 
-      // Use direct API approach (same as avatar upload)
-      console.log("Attempting upload using directSupabaseAPI");
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
-
-      // Ensure we have a valid access token
-      const storedToken = localStorage.getItem("roam_access_token");
-      console.log("Token check:", {
-        hasStoredToken: !!storedToken,
-        tokenLength: storedToken?.length,
-        tokenStart: storedToken?.substring(0, 20)
-      });
-
-      if (storedToken) {
-        directSupabaseAPI.currentAccessToken = storedToken;
-        console.log("Access token set for directSupabaseAPI");
-      } else {
-        console.warn("No access token found - this may cause upload to fail");
-        throw new Error("No authentication token found. Please log in again.");
-      }
-
+      // Use standard Supabase client (same as authentication)
+      console.log("Attempting upload using standard Supabase client");
       console.log("Uploading to path:", filePath);
       console.log("File details:", {
         name: file.name,
@@ -1010,14 +992,28 @@ export default function ProviderDashboard() {
         size: file.size
       });
 
-      // Upload file to a working folder structure (similar to avatar-provider-user)
-      const { publicUrl } = await directSupabaseAPI.uploadFile(
-        "roam-file-storage",
-        filePath,
-        file
-      );
+      // Upload file using standard Supabase client
+      const { data, error } = await supabase
+        .storage
+        .from("roam-file-storage")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
 
-      console.log("Upload successful, public URL:", publicUrl);
+      if (error) {
+        console.error("Supabase upload error:", error);
+        throw new Error(`Upload failed: ${error.message}`);
+      }
+
+      console.log("Upload successful:", data);
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
+
+      console.log("Public URL:", publicUrl);
 
       // Save document metadata to database
       await saveDocumentToDatabase({
