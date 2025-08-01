@@ -4732,7 +4732,11 @@ export default function ProviderDashboard() {
         `)
         .eq("provider_id", provider.id);
 
-      if (addonsError) throw addonsError;
+      if (addonsError) {
+        console.error("Error loading assigned addons:", addonsError);
+        throw addonsError;
+      }
+      console.log("Assigned addons loaded:", assignedAddons);
 
       // Load available business addons that could be assigned
       const { data: businessAddons, error: businessAddonsError } = await supabase
@@ -4753,7 +4757,11 @@ export default function ProviderDashboard() {
         .eq("business_id", business.id)
         .eq("is_available", true);
 
-      if (businessAddonsError) throw businessAddonsError;
+      if (businessAddonsError) {
+        console.error("Error loading available business addons:", businessAddonsError);
+        throw businessAddonsError;
+      }
+      console.log("Available business addons loaded:", businessAddons);
 
       setProviderServices(assignedServices || []);
       setAvailableProviderServices(availableServicesData || []);
@@ -8730,7 +8738,7 @@ export default function ProviderDashboard() {
                                     <CheckCircle className="w-4 h-4 mr-1" />
                                     {teamProvider.background_check_status ===
                                     "approved"
-                                      ? "Background ��"
+                                      ? "Background ✓"
                                       : "Approve BG"}
                                   </Button>
 
