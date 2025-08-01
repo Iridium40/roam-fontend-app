@@ -978,10 +978,10 @@ export default function ProviderDashboard() {
 
       console.log("Authentication verified - proceeding with upload");
 
-      // Generate unique filename (using provider-specific folder like avatar uploads)
+      // Generate unique filename
       const fileExt = file.name.split(".").pop();
-      const fileName = `${provider?.id || business?.id}-${Date.now()}.${fileExt}`;
-      const filePath = `business-documents-provider/${fileName}`;
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `business-documents/${fileName}`;
 
       // Use standard Supabase client (same as authentication)
       console.log("Attempting upload using standard Supabase client");
