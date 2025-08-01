@@ -4677,7 +4677,7 @@ export default function ProviderDashboard() {
         .from("provider_services")
         .select(`
           *,
-          business_services!inner(
+          services!inner(
             id,
             service_name,
             base_price,
@@ -4691,9 +4691,9 @@ export default function ProviderDashboard() {
 
       if (servicesError) throw servicesError;
 
-      // Load available business services that could be assigned
-      const { data: businessServices, error: businessError } = await supabase
-        .from("business_services")
+      // Load available services that could be assigned (from the services table)
+      const { data: availableServicesData, error: servicesListError } = await supabase
+        .from("services")
         .select(`
           id,
           service_name,
@@ -4703,10 +4703,9 @@ export default function ProviderDashboard() {
           service_categories(service_category_type),
           service_subcategories(service_subcategory_type)
         `)
-        .eq("business_id", business.id)
         .eq("is_available", true);
 
-      if (businessError) throw businessError;
+      if (servicesListError) throw servicesListError;
 
       // Load assigned provider addons
       const { data: assignedAddons, error: addonsError } = await supabase
