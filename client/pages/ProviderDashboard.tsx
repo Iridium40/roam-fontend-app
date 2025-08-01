@@ -486,8 +486,8 @@ export default function ProviderDashboard() {
   // Provider Services state (for regular providers)
   const [providerServices, setProviderServices] = useState([]);
   const [availableProviderServices, setAvailableProviderServices] = useState([]);
-  const [providerAddons, setProviderAddons] = useState([]);
-  const [availableAddons, setAvailableAddons] = useState([]);
+  const [assignedProviderAddons, setAssignedProviderAddons] = useState([]);
+  const [availableProviderAddons, setAvailableProviderAddons] = useState([]);
   const [providerServicesLoading, setProviderServicesLoading] = useState(false);
   const [providerServicesError, setProviderServicesError] = useState("");
 
