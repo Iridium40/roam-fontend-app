@@ -7603,7 +7603,7 @@ export default function ProviderDashboard() {
                                 )
                               }
                               placeholder="https://"
-                              disabled={businessDetailsSaving}
+                              disabled={businessDetailsSaving || isDispatcher}
                             />
                           </div>
                         </div>
