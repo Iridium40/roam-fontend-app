@@ -9107,20 +9107,20 @@ export default function ProviderDashboard() {
                     </Card>
 
                     {/* Available Services */}
-                    {availableServices.length > 0 && (
+                    {availableProviderServices.length > 0 && (
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
                             <Star className="w-5 h-5 text-yellow-600" />
-                            Available Business Services ({availableServices.length})
+                            Available Services ({availableProviderServices.length})
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <p className="text-sm text-foreground/60 mb-4">
-                            These services are available from your business but not yet assigned to you.
+                            These services are available but not yet assigned to you.
                           </p>
                           <div className="grid gap-4">
-                            {availableServices.map((service: any) => (
+                            {availableProviderServices.map((service: any) => (
                               <div key={service.id} className="border rounded-lg p-4 bg-muted/20">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
