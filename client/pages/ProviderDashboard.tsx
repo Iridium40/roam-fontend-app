@@ -9130,19 +9130,10 @@ export default function ProviderDashboard() {
                                     <p className="text-sm text-foreground/60 mt-1">
                                       {addon.service_addons.description}
                                     </p>
-                                    <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
-                                      <div>
-                                        <span className="font-medium">My Price:</span>
-                                        <br />
-                                        ${addon.custom_price || "Not set"}
-                                      </div>
-                                      <div>
-                                        <span className="font-medium">Status:</span>
-                                        <br />
-                                        <Badge variant={addon.is_active ? "default" : "secondary"}>
-                                          {addon.is_active ? "Active" : "Inactive"}
-                                        </Badge>
-                                      </div>
+                                    <div className="flex justify-between items-center mt-3">
+                                      <Badge variant={addon.is_active ? "default" : "secondary"}>
+                                        {addon.is_active ? "Active" : "Inactive"}
+                                      </Badge>
                                     </div>
                                   </div>
                                 </div>
