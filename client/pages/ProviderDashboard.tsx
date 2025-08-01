@@ -396,6 +396,12 @@ export default function ProviderDashboard() {
   const [messagingLoading, setMessagingLoading] = useState(false);
   const [selectedAttachments, setSelectedAttachments] = useState([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
+
+  // Subscription states
+  const [currentSubscription, setCurrentSubscription] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
