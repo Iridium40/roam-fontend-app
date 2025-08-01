@@ -381,6 +381,11 @@ export default function ProviderDashboard() {
   });
   const [allProviders, setAllProviders] = useState<any[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<any[]>([]);
+
+  // Provider assignment states for Edit Provider modal
+  const [editProviderServices, setEditProviderServices] = useState([]);
+  const [editProviderAddons, setEditProviderAddons] = useState([]);
+  const [editAssignmentsLoading, setEditAssignmentsLoading] = useState(false);
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
