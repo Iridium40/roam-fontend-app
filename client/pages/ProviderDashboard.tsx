@@ -7718,7 +7718,7 @@ export default function ProviderDashboard() {
                                   checked,
                                 )
                               }
-                              disabled={businessDetailsSaving}
+                              disabled={businessDetailsSaving || isDispatcher}
                               className="data-[state=checked]:bg-roam-blue"
                             />
                           </div>
