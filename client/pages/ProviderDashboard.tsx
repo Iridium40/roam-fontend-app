@@ -4672,6 +4672,8 @@ export default function ProviderDashboard() {
     setProviderServicesError("");
 
     try {
+      console.log("Loading provider services for provider:", provider.id);
+
       // Load assigned provider services
       const { data: assignedServices, error: servicesError } = await supabase
         .from("provider_services")
@@ -4689,7 +4691,11 @@ export default function ProviderDashboard() {
         `)
         .eq("provider_id", provider.id);
 
-      if (servicesError) throw servicesError;
+      if (servicesError) {
+        console.error("Error loading assigned services:", servicesError);
+        throw servicesError;
+      }
+      console.log("Assigned services loaded:", assignedServices);
 
       // Load available services that could be assigned (from the services table)
       const { data: availableServicesData, error: servicesListError } = await supabase
