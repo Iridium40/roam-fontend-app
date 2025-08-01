@@ -393,6 +393,8 @@ export default function ProviderDashboard() {
   const [messageText, setMessageText] = useState("");
   const [conversationHistory, setConversationHistory] = useState([]);
   const [messagingLoading, setMessagingLoading] = useState(false);
+  const [selectedAttachments, setSelectedAttachments] = useState([]);
+  const [attachmentPreviews, setAttachmentPreviews] = useState([]);
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
@@ -7277,7 +7279,7 @@ export default function ProviderDashboard() {
                                   businessService.services
                                     ?.service_subcategories?.service_categories
                                     ?.service_category_type}{" "}
-                                �����{" "}
+                                ����{" "}
                                 {
                                   businessService.services
                                     ?.service_subcategories
