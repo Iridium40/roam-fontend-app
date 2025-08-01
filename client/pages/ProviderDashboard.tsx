@@ -4704,14 +4704,16 @@ export default function ProviderDashboard() {
         .from("services")
         .select(`
           id,
-          service_name,
-          base_price,
-          service_description,
-          is_available,
-          service_categories(service_category_type),
-          service_subcategories(service_subcategory_type)
+          name,
+          min_price,
+          description,
+          is_active,
+          service_subcategories(
+            service_subcategory_type,
+            service_categories(service_category_type)
+          )
         `)
-        .eq("is_available", true);
+        .eq("is_active", true);
 
       if (servicesListError) {
         console.error("Error loading available services:", servicesListError);
