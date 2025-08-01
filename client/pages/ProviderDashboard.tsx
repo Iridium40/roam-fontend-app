@@ -3917,6 +3917,15 @@ export default function ProviderDashboard() {
           console.error("Error reading response text:", readError);
           errorText = `HTTP ${response.status} ${response.statusText}`;
         }
+
+        // Check for specific constraint violations
+        if (errorText.includes("check constraint") || errorText.includes("violates check constraint") ||
+            errorText.includes("business_price") || errorText.includes("minimum price")) {
+          throw new Error("The business price cannot be lower than the service's minimum price. Please enter a higher amount.");
+        } else if (errorText.includes("constraint") && errorText.includes("price")) {
+          throw new Error("Invalid price value. Please check the pricing constraints and try again.");
+        }
+
         throw new Error(`Failed to update service: ${errorText}`);
       }
 
