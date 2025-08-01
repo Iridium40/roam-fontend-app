@@ -386,6 +386,13 @@ export default function ProviderDashboard() {
   const [editProviderServices, setEditProviderServices] = useState([]);
   const [editProviderAddons, setEditProviderAddons] = useState([]);
   const [editAssignmentsLoading, setEditAssignmentsLoading] = useState(false);
+
+  // Messaging states
+  const [messagingModal, setMessagingModal] = useState(false);
+  const [selectedBookingForMessaging, setSelectedBookingForMessaging] = useState(null);
+  const [messageText, setMessageText] = useState("");
+  const [conversationHistory, setConversationHistory] = useState([]);
+  const [messagingLoading, setMessagingLoading] = useState(false);
   const [editingService, setEditingService] = useState<any>(null);
   const [serviceForm, setServiceForm] = useState({
     delivery_type: "business_location",
