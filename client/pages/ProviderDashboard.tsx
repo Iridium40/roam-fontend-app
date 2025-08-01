@@ -9144,8 +9144,8 @@ export default function ProviderDashboard() {
                       </CardContent>
                     </Card>
 
-                    {/* Available Services */}
-                    {availableProviderServices.length > 0 && (
+                    {/* Available Services - only show for non-provider roles */}
+                    {availableProviderServices.length > 0 && provider?.provider_role !== "provider" && (
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
