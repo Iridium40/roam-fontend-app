@@ -6232,6 +6232,18 @@ export default function ProviderDashboard() {
     }
   }, [business, activeTab]);
 
+  // Load subscription data when subscription tab is active
+  useEffect(() => {
+    if (
+      provider?.business_id &&
+      isOwner &&
+      (document.querySelector('[data-state="active"][value="subscription"]') ||
+        window.location.hash === '#subscription')
+    ) {
+      loadCurrentSubscription();
+    }
+  }, [provider?.business_id, isOwner]);
+
   // Load provider services when provider-services tab is active
   useEffect(() => {
     if (
