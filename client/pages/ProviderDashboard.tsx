@@ -5614,6 +5614,19 @@ export default function ProviderDashboard() {
     }
   }, [business, activeTab]);
 
+  // Load provider services when provider-services tab is active
+  useEffect(() => {
+    if (
+      provider?.id &&
+      business?.id &&
+      activeTab === "provider-services" &&
+      !providerServicesLoading &&
+      (isProvider && !isOwner && !isDispatcher)
+    ) {
+      loadProviderServices();
+    }
+  }, [provider, business, activeTab]);
+
   const fetchDashboardData = async () => {
     if (!user) return;
 
