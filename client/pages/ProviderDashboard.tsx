@@ -4776,8 +4776,7 @@ export default function ProviderDashboard() {
               id,
               name,
               description,
-              base_price,
-              is_available
+              is_active
             )
           `)
           .eq("business_id", business.id)
