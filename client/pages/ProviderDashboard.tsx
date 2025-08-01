@@ -12740,10 +12740,7 @@ export default function ProviderDashboard() {
                             </div>
                             <button
                               className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
-                              onClick={() => {
-                                console.log('Remove service assignment:', providerService.id);
-                                // TODO: Implement remove assignment
-                              }}
+                              onClick={() => removeServiceFromProvider(providerService.id, editingProvider?.id)}
                             >
                               Remove
                             </button>
