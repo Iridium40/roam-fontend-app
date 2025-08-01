@@ -4741,7 +4741,11 @@ export default function ProviderDashboard() {
         const { data: addonData, error: addonsError } = await supabase
           .from("provider_addons")
           .select(`
-            *,
+            id,
+            provider_id,
+            addon_id,
+            is_active,
+            created_at,
             service_addons(
               id,
               name,
