@@ -57,6 +57,9 @@ import {
   Download,
   Upload,
   Shield,
+  Share2,
+  Copy,
+  ExternalLink,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
