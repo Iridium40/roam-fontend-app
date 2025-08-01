@@ -2496,6 +2496,10 @@ export default function ProviderDashboard() {
         ? provider.experience_years.toString()
         : "",
     });
+
+    // Load business services and addons for assignment
+    fetchBusinessServicesAndAddons();
+
     setEditProviderModal(true);
   };
 
