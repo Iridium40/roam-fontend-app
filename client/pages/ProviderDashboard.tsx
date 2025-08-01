@@ -4734,65 +4734,65 @@ export default function ProviderDashboard() {
       }
       console.log("Available services loaded:", availableServicesData);
 
-      // Load assigned provider addons
-      console.log("Attempting to load assigned addons for provider:", provider.id);
-      const { data: assignedAddons, error: addonsError } = await supabase
-        .from("provider_addons")
-        .select(`
-          *,
-          service_addons(
-            id,
-            name,
-            description,
-            base_price,
-            is_available
-          )
-        `)
-        .eq("provider_id", provider.id);
+      // Load assigned provider addons (with fallback if table doesn't exist)
+      let assignedAddons = [];
+      try {
+        console.log("Attempting to load assigned addons for provider:", provider.id);
+        const { data: addonData, error: addonsError } = await supabase
+          .from("provider_addons")
+          .select(`
+            *,
+            service_addons(
+              id,
+              name,
+              description,
+              base_price,
+              is_available
+            )
+          `)
+          .eq("provider_id", provider.id);
 
-      if (addonsError) {
-        console.error("Error loading assigned addons:", {
-          error: addonsError,
-          message: addonsError.message,
-          details: addonsError.details,
-          hint: addonsError.hint,
-          code: addonsError.code
-        });
-        throw new Error(`Failed to load assigned addons: ${addonsError.message || JSON.stringify(addonsError)}`);
+        if (addonsError) {
+          console.warn("Could not load assigned addons (table may not exist):", addonsError);
+        } else {
+          assignedAddons = addonData || [];
+          console.log("Assigned addons loaded:", assignedAddons);
+        }
+      } catch (error) {
+        console.warn("Provider addons table not available:", error);
       }
-      console.log("Assigned addons loaded:", assignedAddons);
 
-      // Load available business addons that could be assigned
-      console.log("Attempting to load business addons for business:", business.id);
-      const { data: businessAddons, error: businessAddonsError } = await supabase
-        .from("business_addons")
-        .select(`
-          id,
-          addon_id,
-          custom_price,
-          is_available,
-          service_addons(
+      // Load available business addons that could be assigned (with fallback)
+      let businessAddons = [];
+      try {
+        console.log("Attempting to load business addons for business:", business.id);
+        const { data: bizAddonData, error: businessAddonsError } = await supabase
+          .from("business_addons")
+          .select(`
             id,
-            name,
-            description,
-            base_price,
-            is_available
-          )
-        `)
-        .eq("business_id", business.id)
-        .eq("is_available", true);
+            addon_id,
+            custom_price,
+            is_available,
+            service_addons(
+              id,
+              name,
+              description,
+              base_price,
+              is_available
+            )
+          `)
+          .eq("business_id", business.id)
+          .eq("is_available", true);
 
-      if (businessAddonsError) {
-        console.error("Error loading available business addons:", {
-          error: businessAddonsError,
-          message: businessAddonsError.message,
-          details: businessAddonsError.details,
-          hint: businessAddonsError.hint,
-          code: businessAddonsError.code
-        });
-        throw new Error(`Failed to load business addons: ${businessAddonsError.message || JSON.stringify(businessAddonsError)}`);
+        if (businessAddonsError) {
+          console.warn("Could not load business addons (table may not exist):", businessAddonsError);
+        } else {
+          businessAddons = bizAddonData || [];
+          console.log("Available business addons loaded:", businessAddons);
+        }
+      } catch (error) {
+        console.warn("Business addons table not available:", error);
       }
-      console.log("Available business addons loaded:", businessAddons);
 
       setProviderServices(assignedServices || []);
       setAvailableProviderServices(availableServicesData || []);
