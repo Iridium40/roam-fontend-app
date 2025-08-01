@@ -12708,35 +12708,70 @@ export default function ProviderDashboard() {
               </div>
 
               {/* Addons Section */}
-              <div className="space-y-3">
-                <h4 className="font-medium text-sm">Available Addons</h4>
-                <div className="max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-50">
-                  {businessAddonsData.length > 0 ? (
-                    <div className="space-y-2">
-                      {businessAddonsData.map((addon) => (
-                        <div key={addon.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                          <div className="flex-1">
-                            <span className="text-sm font-medium">{addon.service_addons?.name || 'Unknown Addon'}</span>
-                            <p className="text-xs text-gray-500">${addon.custom_price || 'No price set'}</p>
-                          </div>
-                          <label className="flex items-center">
-                            <input
-                              type="checkbox"
-                              className="mr-2"
-                              defaultChecked={false}
-                              onChange={(e) => {
-                                // Handle addon assignment
-                                console.log('Addon assignment:', addon.id, e.target.checked);
+              <div className="space-y-4">
+                <h4 className="font-medium">Addons</h4>
+
+                {/* Currently Assigned Addons */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium text-green-700">Currently Assigned Addons</h5>
+                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-green-50">
+                    {editAssignmentsLoading ? (
+                      <p className="text-sm text-gray-500">Loading assignments...</p>
+                    ) : editProviderAddons.length > 0 ? (
+                      <div className="space-y-2">
+                        {editProviderAddons.map((providerAddon: any) => (
+                          <div key={providerAddon.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">{providerAddon.service_addons?.name || 'Unknown Addon'}</span>
+                            </div>
+                            <button
+                              className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
+                              onClick={() => {
+                                console.log('Remove addon assignment:', providerAddon.id);
+                                // TODO: Implement remove assignment
                               }}
-                            />
-                            <span className="text-xs">Assign</span>
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500">No business addons available</p>
-                  )}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">No addons currently assigned</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Available to Assign Addons */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium text-blue-700">Available to Assign</h5>
+                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-blue-50">
+                    {businessAddonsData.length > 0 ? (
+                      <div className="space-y-2">
+                        {businessAddonsData
+                          .filter(addon => !editProviderAddons.some(pa => pa.service_addons?.id === addon.service_addons?.id))
+                          .map((addon) => (
+                          <div key={addon.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">{addon.service_addons?.name || 'Unknown Addon'}</span>
+                              <p className="text-xs text-gray-500">${addon.custom_price || 'No price set'}</p>
+                            </div>
+                            <button
+                              className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded"
+                              onClick={() => {
+                                console.log('Add addon assignment:', addon.id);
+                                // TODO: Implement add assignment
+                              }}
+                            >
+                              Assign
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">No business addons available for assignment</p>
+                    )}
+                  </div>
                 </div>
               </div>
               </div>
