@@ -11003,6 +11003,153 @@ export default function ProviderDashboard() {
               </TabsContent>
             )}
 
+            {/* Subscription Tab - Owner Only */}
+            {isOwner && (
+              <TabsContent value="subscription" className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Subscription Plans</h2>
+                  <Badge variant="outline" className="text-blue-600 border-blue-200">
+                    30-Day Free Trial Available
+                  </Badge>
+                </div>
+
+                {currentSubscription && (
+                  <Card className="border-blue-200 bg-blue-50/30">
+                    <CardHeader>
+                      <CardTitle className="text-blue-800">Current Subscription</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">{currentSubscription.plan_name}</p>
+                          <p className="text-sm text-foreground/60">
+                            Status: {currentSubscription.subscription_status}
+                          </p>
+                          <p className="text-sm text-foreground/60">
+                            Next billing: {currentSubscription.end_date}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-2xl font-bold text-blue-600">
+                            ${currentSubscription.price}/month
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {subscriptionPlans.map((plan) => (
+                    <Card
+                      key={plan.id}
+                      className={`relative ${plan.recommended ? 'border-blue-500 shadow-lg scale-105' : 'border-gray-200'}`}
+                    >
+                      {plan.recommended && (
+                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                          <Badge className="bg-blue-500 text-white">Recommended</Badge>
+                        </div>
+                      )}
+
+                      <CardHeader className="text-center">
+                        <CardTitle className="text-xl">{plan.name}</CardTitle>
+                        <div className="space-y-2">
+                          <div className="text-4xl font-bold text-roam-blue">
+                            ${plan.price}
+                            <span className="text-lg font-normal text-foreground/60">/month</span>
+                          </div>
+                          <p className="text-sm text-foreground/60">{plan.description}</p>
+                          <Badge variant="outline" className="text-xs">
+                            {plan.staffLimit}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+
+                      <CardContent className="space-y-4">
+                        <ul className="space-y-2 text-sm">
+                          {plan.features.map((feature, index) => (
+                            <li key={index} className="flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        <div className="pt-4">
+                          <Button
+                            onClick={() => handleSelectPlan(plan.id)}
+                            disabled={subscriptionLoading || selectedPlan === plan.id}
+                            className={`w-full ${plan.recommended ? 'bg-blue-500 hover:bg-blue-600' : 'bg-roam-blue hover:bg-roam-blue/90'}`}
+                          >
+                            {subscriptionLoading && selectedPlan === plan.id ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                Processing...
+                              </>
+                            ) : (
+                              <>
+                                Start Free Trial
+                                <span className="ml-2 text-xs opacity-80">30 days free</span>
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <Card className="bg-gray-50 border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-green-600" />
+                      What's Included in All Plans
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Core Features</h4>
+                        <ul className="space-y-1 text-foreground/70">
+                          <li>• SSL Security</li>
+                          <li>• 24/7 Support</li>
+                          <li>• Mobile Apps</li>
+                          <li>• Data Backup</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Business Tools</h4>
+                        <ul className="space-y-1 text-foreground/70">
+                          <li>• Online Booking</li>
+                          <li>• Payment Processing</li>
+                          <li>• Customer Management</li>
+                          <li>• Calendar Sync</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Growth Features</h4>
+                        <ul className="space-y-1 text-foreground/70">
+                          <li>• Analytics Dashboard</li>
+                          <li>• Marketing Tools</li>
+                          <li>• API Access</li>
+                          <li>• Integrations</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="text-center space-y-2 pt-4">
+                  <p className="text-sm text-foreground/60">
+                    All plans include a 30-day free trial. Cancel anytime.
+                  </p>
+                  <p className="text-xs text-foreground/50">
+                    Powered by Stripe. Secure and reliable payment processing.
+                  </p>
+                </div>
+              </TabsContent>
+            )}
+
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
               <h2 className="text-2xl font-bold">
@@ -13642,7 +13789,7 @@ export default function ProviderDashboard() {
             {locationToDelete?.is_primary && (
               <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
                 <p className="text-amber-800 font-medium">
-                  ⚠��� Warning: This is your primary location
+                  ⚠️ Warning: This is your primary location
                 </p>
                 <p className="text-amber-700 text-sm mt-1">
                   Deleting it will leave your business without a primary
