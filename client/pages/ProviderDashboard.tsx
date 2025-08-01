@@ -2572,6 +2572,93 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Messaging handlers (stubbed for Twilio integration)
+  const handleOpenMessaging = async (booking: any) => {
+    setSelectedBookingForMessaging(booking);
+    setMessagingModal(true);
+
+    // Stub: Load conversation history for this booking
+    // TODO: Replace with actual Twilio conversation API
+    await loadConversationHistory(booking.id);
+  };
+
+  const loadConversationHistory = async (bookingId: string) => {
+    setMessagingLoading(true);
+    try {
+      // TODO: Replace with actual Twilio API call
+      // const response = await fetch(`/api/twilio/conversations/${bookingId}`);
+      // const messages = await response.json();
+
+      // For now, stub with sample messages
+      const stubMessages = [
+        {
+          id: 1,
+          from: "customer",
+          body: "Hi, I have a question about tomorrow's appointment.",
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+          author: selectedBookingForMessaging?.customer_profiles?.first_name || "Customer"
+        },
+        {
+          id: 2,
+          from: "provider",
+          body: "Hi! I'd be happy to help. What would you like to know?",
+          timestamp: new Date(Date.now() - 1800000).toISOString(),
+          author: provider?.first_name || "You"
+        }
+      ];
+
+      setConversationHistory(stubMessages);
+    } catch (error) {
+      console.error("Error loading conversation:", error);
+      setConversationHistory([]);
+    } finally {
+      setMessagingLoading(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!messageText.trim() || !selectedBookingForMessaging) return;
+
+    setMessagingLoading(true);
+    try {
+      // TODO: Replace with actual Twilio API call
+      // const response = await fetch('/api/twilio/send-message', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     bookingId: selectedBookingForMessaging.id,
+      //     message: messageText,
+      //     fromProvider: true
+      //   })
+      // });
+
+      // For now, add message to local state
+      const newMessage = {
+        id: Date.now(),
+        from: "provider",
+        body: messageText,
+        timestamp: new Date().toISOString(),
+        author: provider?.first_name || "You"
+      };
+
+      setConversationHistory(prev => [...prev, newMessage]);
+      setMessageText("");
+
+      console.log("Message sent (stubbed):", messageText);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setMessagingLoading(false);
+    }
+  };
+
+  const handleCloseMessaging = () => {
+    setMessagingModal(false);
+    setSelectedBookingForMessaging(null);
+    setMessageText("");
+    setConversationHistory([]);
+  };
+
   // Load provider's current assignments for Edit Provider modal
   const loadProviderAssignments = async (providerId: string) => {
     setEditAssignmentsLoading(true);
