@@ -7586,7 +7586,7 @@ export default function ProviderDashboard() {
                                   e.target.value,
                                 )
                               }
-                              disabled={businessDetailsSaving}
+                              disabled={businessDetailsSaving || isDispatcher}
                             />
                           </div>
 
