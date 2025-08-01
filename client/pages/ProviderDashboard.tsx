@@ -2483,6 +2483,57 @@ export default function ProviderDashboard() {
     setDeleteConfirmOpen(true);
   };
 
+  // Load provider's current assignments for Edit Provider modal
+  const loadProviderAssignments = async (providerId: string) => {
+    setEditAssignmentsLoading(true);
+
+    try {
+      // Load provider's current services
+      const { data: providerServices, error: servicesError } = await supabase
+        .from("provider_services")
+        .select(`
+          *,
+          services(
+            id,
+            name,
+            min_price,
+            description
+          )
+        `)
+        .eq("provider_id", providerId);
+
+      if (servicesError) {
+        console.error("Error loading provider services:", servicesError);
+      } else {
+        setEditProviderServices(providerServices || []);
+      }
+
+      // Load provider's current addons
+      const { data: providerAddons, error: addonsError } = await supabase
+        .from("provider_addons")
+        .select(`
+          *,
+          service_addons(
+            id,
+            name,
+            description
+          )
+        `)
+        .eq("provider_id", providerId);
+
+      if (addonsError) {
+        console.error("Error loading provider addons:", addonsError);
+      } else {
+        setEditProviderAddons(providerAddons || []);
+      }
+
+    } catch (error) {
+      console.error("Error loading provider assignments:", error);
+    } finally {
+      setEditAssignmentsLoading(false);
+    }
+  };
+
   // Provider action handlers
   const handleEditProvider = (provider: any) => {
     setEditingProvider(provider);
