@@ -3984,10 +3984,22 @@ export default function ProviderDashboard() {
     setBusinessServicesError("");
 
     try {
+      // Validate that a price is set
+      if (!editAddonForm.custom_price || editAddonForm.custom_price.trim() === '') {
+        throw new Error("A price must be set for the addon before saving.");
+      }
+
+      const customPrice = parseFloat(editAddonForm.custom_price);
+
+      // Validate that the price is a positive number
+      if (isNaN(customPrice) || customPrice <= 0) {
+        throw new Error("Please enter a valid price greater than $0.");
+      }
+
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       const updateData = {
-        custom_price: parseFloat(editAddonForm.custom_price),
+        custom_price: customPrice,
       };
 
       const response = await fetch(
