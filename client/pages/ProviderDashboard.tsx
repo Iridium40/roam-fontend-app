@@ -4945,6 +4945,9 @@ export default function ProviderDashboard() {
               name,
               description,
               is_active
+            ),
+            business_addons!inner(
+              custom_price
             )
           `)
           .eq("provider_id", provider.id);
