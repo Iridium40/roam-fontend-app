@@ -2625,32 +2625,49 @@ export default function ProviderDashboard() {
 
     setMessagingLoading(true);
     try {
-      // TODO: Replace with actual Twilio API call
-      // const response = await fetch('/api/twilio/send-message', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     bookingId: selectedBookingForMessaging.id,
-      //     message: messageText,
-      //     fromStaff: true,
-      //     staffRole: provider?.provider_role || 'staff',
-      //     staffName: provider?.first_name || 'Staff'
-      //   })
-      // });
+      // Get customer phone number
+      const customerPhone = selectedBookingForMessaging.customer_profiles?.phone ||
+                           selectedBookingForMessaging.guest_phone;
 
-      // For now, add message to local state
+      if (!customerPhone) {
+        throw new Error("Customer phone number not available");
+      }
+
+      // Send message via Twilio API
+      const response = await fetch('/.netlify/functions/twilio-messaging', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send-message',
+          bookingId: selectedBookingForMessaging.id,
+          message: messageText,
+          customerPhone: customerPhone,
+          staffRole: provider?.provider_role || 'Staff',
+          staffName: provider?.first_name || 'Staff Member'
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send message');
+      }
+
+      const result = await response.json();
+
+      // Add message to local conversation history
       const newMessage = {
         id: Date.now(),
         from: "provider",
         body: messageText,
         timestamp: new Date().toISOString(),
-        author: `${provider?.first_name || "You"} (${provider?.provider_role || 'Staff'})`
+        author: `${provider?.first_name || "You"} (${provider?.provider_role || 'Staff'})`,
+        twilioSid: result.messageSid
       };
 
       setConversationHistory(prev => [...prev, newMessage]);
       setMessageText("");
 
-      console.log("Message sent (stubbed):", messageText);
+      console.log("Message sent via Twilio:", result);
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
