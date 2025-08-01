@@ -198,7 +198,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (authError) {
         console.error("AuthContext signIn: Auth error:", authError);
-        throw new Error(`Authentication failed: ${authError.message}`);
+
+        // Provide user-friendly error messages
+        if (authError.message === "Invalid login credentials") {
+          throw new Error("The email or password you entered is incorrect. Please check your credentials and try again.");
+        } else if (authError.message.includes("Email not confirmed")) {
+          throw new Error("Please check your email and click the confirmation link before signing in.");
+        } else if (authError.message.includes("Too many requests")) {
+          throw new Error("Too many login attempts. Please wait a few minutes before trying again.");
+        } else {
+          throw new Error(`Authentication failed: ${authError.message}`);
+        }
       }
 
       if (!authData.user) {
