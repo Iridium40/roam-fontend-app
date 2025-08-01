@@ -4016,7 +4016,19 @@ export default function ProviderDashboard() {
     businessPrice?: number,
     deliveryType?: string,
   ) => {
-    if (!provider?.business_id || (!isOwner && !isDispatcher)) return;
+    console.log("handleToggleBusinessService called:", {
+      serviceId,
+      isActive,
+      businessId: provider?.business_id,
+      isOwner,
+      isDispatcher,
+      willReturn: !provider?.business_id || (!isOwner && !isDispatcher)
+    });
+
+    if (!provider?.business_id || (!isOwner && !isDispatcher)) {
+      console.log("Exiting early - no business_id or not owner/dispatcher");
+      return;
+    }
 
     setBusinessServicesSaving(true);
     setBusinessServicesError("");
