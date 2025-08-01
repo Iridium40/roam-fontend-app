@@ -389,7 +389,8 @@ export default function ProviderDashboard() {
 
   // Messaging states
   const [messagingModal, setMessagingModal] = useState(false);
-  const [selectedBookingForMessaging, setSelectedBookingForMessaging] = useState(null);
+  const [selectedBookingForMessaging, setSelectedBookingForMessaging] =
+    useState(null);
   const [messageText, setMessageText] = useState("");
   const [conversationHistory, setConversationHistory] = useState([]);
   const [messagingLoading, setMessagingLoading] = useState(false);
@@ -499,7 +500,9 @@ export default function ProviderDashboard() {
 
   // Provider Services state (for regular providers)
   const [providerServices, setProviderServices] = useState([]);
-  const [availableProviderServices, setAvailableProviderServices] = useState([]);
+  const [availableProviderServices, setAvailableProviderServices] = useState(
+    [],
+  );
   const [assignedProviderAddons, setAssignedProviderAddons] = useState([]);
   const [availableProviderAddons, setAvailableProviderAddons] = useState([]);
   const [providerServicesLoading, setProviderServicesLoading] = useState(false);
@@ -2493,15 +2496,16 @@ export default function ProviderDashboard() {
   };
 
   // Assign service to provider
-  const assignServiceToProvider = async (providerId: string, serviceId: string) => {
+  const assignServiceToProvider = async (
+    providerId: string,
+    serviceId: string,
+  ) => {
     try {
-      const { error } = await supabase
-        .from("provider_services")
-        .insert({
-          provider_id: providerId,
-          service_id: serviceId,
-          is_active: true
-        });
+      const { error } = await supabase.from("provider_services").insert({
+        provider_id: providerId,
+        service_id: serviceId,
+        is_active: true,
+      });
 
       if (error) throw error;
 
@@ -2515,7 +2519,10 @@ export default function ProviderDashboard() {
   };
 
   // Remove service assignment from provider
-  const removeServiceFromProvider = async (providerServiceId: string, providerId: string) => {
+  const removeServiceFromProvider = async (
+    providerServiceId: string,
+    providerId: string,
+  ) => {
     try {
       const { error } = await supabase
         .from("provider_services")
@@ -2536,13 +2543,11 @@ export default function ProviderDashboard() {
   // Assign addon to provider
   const assignAddonToProvider = async (providerId: string, addonId: string) => {
     try {
-      const { error } = await supabase
-        .from("provider_addons")
-        .insert({
-          provider_id: providerId,
-          addon_id: addonId,
-          is_active: true
-        });
+      const { error } = await supabase.from("provider_addons").insert({
+        provider_id: providerId,
+        addon_id: addonId,
+        is_active: true,
+      });
 
       if (error) throw error;
 
@@ -2556,7 +2561,10 @@ export default function ProviderDashboard() {
   };
 
   // Remove addon assignment from provider
-  const removeAddonFromProvider = async (providerAddonId: string, providerId: string) => {
+  const removeAddonFromProvider = async (
+    providerAddonId: string,
+    providerId: string,
+  ) => {
     try {
       const { error } = await supabase
         .from("provider_addons")
@@ -2600,15 +2608,17 @@ export default function ProviderDashboard() {
           from: "customer",
           body: "Hi, I have a question about tomorrow's appointment.",
           timestamp: new Date(Date.now() - 3600000).toISOString(),
-          author: selectedBookingForMessaging?.customer_profiles?.first_name || "Customer"
+          author:
+            selectedBookingForMessaging?.customer_profiles?.first_name ||
+            "Customer",
         },
         {
           id: 2,
           from: "provider",
           body: "Hi! I'd be happy to help. What would you like to know?",
           timestamp: new Date(Date.now() - 1800000).toISOString(),
-          author: `${provider?.first_name || "You"} (${provider?.provider_role || 'Staff'})`
-        }
+          author: `${provider?.first_name || "You"} (${provider?.provider_role || "Staff"})`,
+        },
       ];
 
       setConversationHistory(stubMessages);
@@ -2626,30 +2636,31 @@ export default function ProviderDashboard() {
     setMessagingLoading(true);
     try {
       // Get customer phone number
-      const customerPhone = selectedBookingForMessaging.customer_profiles?.phone ||
-                           selectedBookingForMessaging.guest_phone;
+      const customerPhone =
+        selectedBookingForMessaging.customer_profiles?.phone ||
+        selectedBookingForMessaging.guest_phone;
 
       if (!customerPhone) {
         throw new Error("Customer phone number not available");
       }
 
       // Send message via Twilio API
-      const response = await fetch('/.netlify/functions/twilio-messaging', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/.netlify/functions/twilio-messaging", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: 'send-message',
+          action: "send-message",
           bookingId: selectedBookingForMessaging.id,
           message: messageText,
           customerPhone: customerPhone,
-          staffRole: provider?.provider_role || 'Staff',
-          staffName: provider?.first_name || 'Staff Member'
-        })
+          staffRole: provider?.provider_role || "Staff",
+          staffName: provider?.first_name || "Staff Member",
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send message');
+        throw new Error(errorData.error || "Failed to send message");
       }
 
       const result = await response.json();
@@ -2660,11 +2671,11 @@ export default function ProviderDashboard() {
         from: "provider",
         body: messageText,
         timestamp: new Date().toISOString(),
-        author: `${provider?.first_name || "You"} (${provider?.provider_role || 'Staff'})`,
-        twilioSid: result.messageSid
+        author: `${provider?.first_name || "You"} (${provider?.provider_role || "Staff"})`,
+        twilioSid: result.messageSid,
       };
 
-      setConversationHistory(prev => [...prev, newMessage]);
+      setConversationHistory((prev) => [...prev, newMessage]);
       setMessageText("");
 
       console.log("Message sent via Twilio:", result);
@@ -2690,7 +2701,8 @@ export default function ProviderDashboard() {
       // Load provider's current services
       const { data: providerServices, error: servicesError } = await supabase
         .from("provider_services")
-        .select(`
+        .select(
+          `
           *,
           services(
             id,
@@ -2698,7 +2710,8 @@ export default function ProviderDashboard() {
             min_price,
             description
           )
-        `)
+        `,
+        )
         .eq("provider_id", providerId);
 
       if (servicesError) {
@@ -2710,14 +2723,16 @@ export default function ProviderDashboard() {
       // Load provider's current addons
       const { data: providerAddons, error: addonsError } = await supabase
         .from("provider_addons")
-        .select(`
+        .select(
+          `
           *,
           service_addons(
             id,
             name,
             description
           )
-        `)
+        `,
+        )
         .eq("provider_id", providerId);
 
       if (addonsError) {
@@ -2725,7 +2740,6 @@ export default function ProviderDashboard() {
       } else {
         setEditProviderAddons(providerAddons || []);
       }
-
     } catch (error) {
       console.error("Error loading provider assignments:", error);
     } finally {
@@ -4010,7 +4024,9 @@ export default function ProviderDashboard() {
 
       // Client-side validation for minimum price
       if (businessPrice < minPrice) {
-        throw new Error(`Business price ($${businessPrice}) cannot be lower than the service's minimum price ($${minPrice})`);
+        throw new Error(
+          `Business price ($${businessPrice}) cannot be lower than the service's minimum price ($${minPrice})`,
+        );
       }
 
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
@@ -4044,11 +4060,22 @@ export default function ProviderDashboard() {
         }
 
         // Check for specific constraint violations
-        if (errorText.includes("check constraint") || errorText.includes("violates check constraint") ||
-            errorText.includes("business_price") || errorText.includes("minimum price")) {
-          throw new Error("The business price cannot be lower than the service's minimum price. Please enter a higher amount.");
-        } else if (errorText.includes("constraint") && errorText.includes("price")) {
-          throw new Error("Invalid price value. Please check the pricing constraints and try again.");
+        if (
+          errorText.includes("check constraint") ||
+          errorText.includes("violates check constraint") ||
+          errorText.includes("business_price") ||
+          errorText.includes("minimum price")
+        ) {
+          throw new Error(
+            "The business price cannot be lower than the service's minimum price. Please enter a higher amount.",
+          );
+        } else if (
+          errorText.includes("constraint") &&
+          errorText.includes("price")
+        ) {
+          throw new Error(
+            "Invalid price value. Please check the pricing constraints and try again.",
+          );
         }
 
         throw new Error(`Failed to update service: ${errorText}`);
@@ -4102,7 +4129,10 @@ export default function ProviderDashboard() {
 
     try {
       // Validate that a price is set
-      if (!editAddonForm.custom_price || editAddonForm.custom_price.trim() === '') {
+      if (
+        !editAddonForm.custom_price ||
+        editAddonForm.custom_price.trim() === ""
+      ) {
         throw new Error("A price must be set for the addon before saving.");
       }
 
@@ -4317,7 +4347,7 @@ export default function ProviderDashboard() {
       businessId: provider?.business_id,
       isOwner,
       isDispatcher,
-      willReturn: !provider?.business_id || (!isOwner && !isDispatcher)
+      willReturn: !provider?.business_id || (!isOwner && !isDispatcher),
     });
 
     if (!provider?.business_id || (!isOwner && !isDispatcher)) {
@@ -4988,7 +5018,8 @@ export default function ProviderDashboard() {
       // Load assigned provider services
       const { data: assignedServices, error: servicesError } = await supabase
         .from("provider_services")
-        .select(`
+        .select(
+          `
           *,
           services!inner(
             id,
@@ -5001,7 +5032,8 @@ export default function ProviderDashboard() {
               service_categories(service_category_type)
             )
           )
-        `)
+        `,
+        )
         .eq("provider_id", provider.id);
 
       if (servicesError) {
@@ -5010,17 +5042,21 @@ export default function ProviderDashboard() {
           message: servicesError.message,
           details: servicesError.details,
           hint: servicesError.hint,
-          code: servicesError.code
+          code: servicesError.code,
         });
-        throw new Error(`Failed to load assigned services: ${servicesError.message || JSON.stringify(servicesError)}`);
+        throw new Error(
+          `Failed to load assigned services: ${servicesError.message || JSON.stringify(servicesError)}`,
+        );
       }
       console.log("Assigned services loaded:", assignedServices);
 
       // Load available services that could be assigned (from the services table)
       console.log("Attempting to load available services...");
-      const { data: availableServicesData, error: servicesListError } = await supabase
-        .from("services")
-        .select(`
+      const { data: availableServicesData, error: servicesListError } =
+        await supabase
+          .from("services")
+          .select(
+            `
           id,
           name,
           min_price,
@@ -5030,8 +5066,9 @@ export default function ProviderDashboard() {
             service_subcategory_type,
             service_categories(service_category_type)
           )
-        `)
-        .eq("is_active", true);
+        `,
+          )
+          .eq("is_active", true);
 
       if (servicesListError) {
         console.error("Error loading available services:", {
@@ -5039,19 +5076,25 @@ export default function ProviderDashboard() {
           message: servicesListError.message,
           details: servicesListError.details,
           hint: servicesListError.hint,
-          code: servicesListError.code
+          code: servicesListError.code,
         });
-        throw new Error(`Failed to load available services: ${servicesListError.message || JSON.stringify(servicesListError)}`);
+        throw new Error(
+          `Failed to load available services: ${servicesListError.message || JSON.stringify(servicesListError)}`,
+        );
       }
       console.log("Available services loaded:", availableServicesData);
 
       // Load assigned provider addons (with fallback if table doesn't exist)
       let assignedAddons = [];
       try {
-        console.log("Attempting to load assigned addons for provider:", provider.id);
+        console.log(
+          "Attempting to load assigned addons for provider:",
+          provider.id,
+        );
         const { data: addonData, error: addonsError } = await supabase
           .from("provider_addons")
-          .select(`
+          .select(
+            `
             id,
             provider_id,
             addon_id,
@@ -5063,12 +5106,13 @@ export default function ProviderDashboard() {
               description,
               is_active
             )
-          `)
+          `,
+          )
           .eq("provider_id", provider.id);
 
         // If we have addon data, get the business custom prices separately
         if (addonData && addonData.length > 0 && business?.id) {
-          const addonIds = addonData.map(addon => addon.addon_id);
+          const addonIds = addonData.map((addon) => addon.addon_id);
           const { data: businessAddonsData } = await supabase
             .from("business_addons")
             .select("addon_id, custom_price")
@@ -5077,15 +5121,20 @@ export default function ProviderDashboard() {
 
           // Merge the custom prices into the addon data
           if (businessAddonsData) {
-            addonData.forEach(addon => {
-              const businessAddon = businessAddonsData.find(ba => ba.addon_id === addon.addon_id);
+            addonData.forEach((addon) => {
+              const businessAddon = businessAddonsData.find(
+                (ba) => ba.addon_id === addon.addon_id,
+              );
               addon.custom_price = businessAddon?.custom_price || null;
             });
           }
         }
 
         if (addonsError) {
-          console.warn("Could not load assigned addons (table may not exist):", addonsError);
+          console.warn(
+            "Could not load assigned addons (table may not exist):",
+            addonsError,
+          );
         } else {
           assignedAddons = addonData || [];
           console.log("Assigned addons loaded:", assignedAddons);
@@ -5097,10 +5146,15 @@ export default function ProviderDashboard() {
       // Load available business addons that could be assigned (with fallback)
       let businessAddons = [];
       try {
-        console.log("Attempting to load business addons for business:", business.id);
-        const { data: bizAddonData, error: businessAddonsError } = await supabase
-          .from("business_addons")
-          .select(`
+        console.log(
+          "Attempting to load business addons for business:",
+          business.id,
+        );
+        const { data: bizAddonData, error: businessAddonsError } =
+          await supabase
+            .from("business_addons")
+            .select(
+              `
             id,
             addon_id,
             custom_price,
@@ -5111,12 +5165,16 @@ export default function ProviderDashboard() {
               description,
               is_active
             )
-          `)
-          .eq("business_id", business.id)
-          .eq("is_available", true);
+          `,
+            )
+            .eq("business_id", business.id)
+            .eq("is_available", true);
 
         if (businessAddonsError) {
-          console.warn("Could not load business addons (table may not exist):", businessAddonsError);
+          console.warn(
+            "Could not load business addons (table may not exist):",
+            businessAddonsError,
+          );
         } else {
           businessAddons = bizAddonData || [];
           console.log("Available business addons loaded:", businessAddons);
@@ -5129,11 +5187,16 @@ export default function ProviderDashboard() {
       setAvailableProviderServices(availableServicesData || []);
       setAssignedProviderAddons(assignedAddons || []);
       setAvailableProviderAddons(businessAddons || []);
-
     } catch (error: any) {
       console.error("Error loading provider services:", error);
-      const errorMessage = error?.message || error?.error?.message || JSON.stringify(error) || "Failed to load provider services";
-      setProviderServicesError(`Failed to load provider services: ${errorMessage}`);
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        JSON.stringify(error) ||
+        "Failed to load provider services";
+      setProviderServicesError(
+        `Failed to load provider services: ${errorMessage}`,
+      );
     } finally {
       setProviderServicesLoading(false);
     }
@@ -6001,7 +6064,9 @@ export default function ProviderDashboard() {
       business?.id &&
       activeTab === "provider-services" &&
       !providerServicesLoading &&
-      (isProvider && !isOwner && !isDispatcher)
+      isProvider &&
+      !isOwner &&
+      !isDispatcher
     ) {
       loadProviderServices();
     }
@@ -6726,7 +6791,7 @@ export default function ProviderDashboard() {
                   Locations
                 </TabsTrigger>
               )}
-              {(isProvider && !isOwner && !isDispatcher) && (
+              {isProvider && !isOwner && !isDispatcher && (
                 <TabsTrigger
                   value="provider-services"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
@@ -7013,7 +7078,9 @@ export default function ProviderDashboard() {
                                         size="sm"
                                         variant="outline"
                                         className="mt-3 w-full border-blue-200 text-blue-600 hover:bg-blue-50"
-                                        onClick={() => handleOpenMessaging(booking)}
+                                        onClick={() =>
+                                          handleOpenMessaging(booking)
+                                        }
                                       >
                                         <MessageCircle className="w-4 h-4 mr-2" />
                                         Message Customer
@@ -7330,7 +7397,7 @@ export default function ProviderDashboard() {
                                     isProvider,
                                     isOwner,
                                     isDispatcher,
-                                    businessManaged: provider?.business_managed
+                                    businessManaged: provider?.business_managed,
                                   });
                                   // Toggle business service active status
                                   handleToggleBusinessService(
@@ -7832,7 +7899,8 @@ export default function ProviderDashboard() {
                   <CardContent>
                     {isDispatcher && (
                       <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded mb-4">
-                        <strong>View Only:</strong> As a dispatcher, you can view business details but cannot make changes.
+                        <strong>View Only:</strong> As a dispatcher, you can
+                        view business details but cannot make changes.
                       </div>
                     )}
 
@@ -7974,7 +8042,9 @@ export default function ProviderDashboard() {
                                       );
                                     }}
                                     disabled={
-                                      businessDetailsSaving || categoriesLoading || isDispatcher
+                                      businessDetailsSaving ||
+                                      categoriesLoading ||
+                                      isDispatcher
                                     }
                                     className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
                                   />
@@ -9379,7 +9449,7 @@ export default function ProviderDashboard() {
             )}
 
             {/* Provider Services Tab */}
-            {(isProvider && !isOwner && !isDispatcher) && (
+            {isProvider && !isOwner && !isDispatcher && (
               <TabsContent value="provider-services" className="space-y-6">
                 <h2 className="text-2xl font-bold">My Services</h2>
 
@@ -9409,12 +9479,17 @@ export default function ProviderDashboard() {
                           <div className="text-center py-8 text-foreground/60">
                             <Star className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
                             <p>No services assigned yet.</p>
-                            <p className="text-sm mt-2">Contact your manager to get services assigned.</p>
+                            <p className="text-sm mt-2">
+                              Contact your manager to get services assigned.
+                            </p>
                           </div>
                         ) : (
                           <div className="grid gap-4">
                             {providerServices.map((service: any) => (
-                              <div key={service.id} className="border rounded-lg p-4">
+                              <div
+                                key={service.id}
+                                className="border rounded-lg p-4"
+                              >
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h4 className="font-medium text-foreground">
@@ -9425,15 +9500,28 @@ export default function ProviderDashboard() {
                                     </p>
                                     <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
                                       <div>
-                                        <span className="font-medium text-green-700">Business Price:</span>
-                                        <br />
-                                        ${service.custom_price || service.services.min_price}
+                                        <span className="font-medium text-green-700">
+                                          Business Price:
+                                        </span>
+                                        <br />$
+                                        {service.custom_price ||
+                                          service.services.min_price}
                                       </div>
                                       <div>
-                                        <span className="font-medium">Status:</span>
+                                        <span className="font-medium">
+                                          Status:
+                                        </span>
                                         <br />
-                                        <Badge variant={service.is_active ? "default" : "secondary"}>
-                                          {service.is_active ? "Active" : "Inactive"}
+                                        <Badge
+                                          variant={
+                                            service.is_active
+                                              ? "default"
+                                              : "secondary"
+                                          }
+                                        >
+                                          {service.is_active
+                                            ? "Active"
+                                            : "Inactive"}
                                         </Badge>
                                       </div>
                                     </div>
@@ -9459,12 +9547,17 @@ export default function ProviderDashboard() {
                           <div className="text-center py-8 text-foreground/60">
                             <Plus className="w-12 h-12 mx-auto mb-4 text-foreground/30" />
                             <p>No add-ons assigned yet.</p>
-                            <p className="text-sm mt-2">Contact your manager to get add-ons assigned.</p>
+                            <p className="text-sm mt-2">
+                              Contact your manager to get add-ons assigned.
+                            </p>
                           </div>
                         ) : (
                           <div className="grid gap-4">
                             {assignedProviderAddons.map((addon: any) => (
-                              <div key={addon.id} className="border rounded-lg p-4">
+                              <div
+                                key={addon.id}
+                                className="border rounded-lg p-4"
+                              >
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h4 className="font-medium text-foreground">
@@ -9476,11 +9569,20 @@ export default function ProviderDashboard() {
                                     <div className="flex justify-between items-center mt-3">
                                       <div className="text-sm">
                                         <span className="font-medium text-green-700">
-                                          Business Price: ${addon.custom_price || 'Not set'}
+                                          Business Price: $
+                                          {addon.custom_price || "Not set"}
                                         </span>
                                       </div>
-                                      <Badge variant={addon.is_active ? "default" : "secondary"}>
-                                        {addon.is_active ? "Active" : "Inactive"}
+                                      <Badge
+                                        variant={
+                                          addon.is_active
+                                            ? "default"
+                                            : "secondary"
+                                        }
+                                      >
+                                        {addon.is_active
+                                          ? "Active"
+                                          : "Inactive"}
                                       </Badge>
                                     </div>
                                   </div>
@@ -9493,49 +9595,61 @@ export default function ProviderDashboard() {
                     </Card>
 
                     {/* Available Services - only show for non-provider roles */}
-                    {availableProviderServices.length > 0 && provider?.provider_role !== "provider" && (
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2">
-                            <Star className="w-5 h-5 text-yellow-600" />
-                            Available Services ({availableProviderServices.length})
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-foreground/60 mb-4">
-                            These services are available but not yet assigned to you.
-                          </p>
-                          <div className="grid gap-4">
-                            {availableProviderServices.map((service: any) => (
-                              <div key={service.id} className="border rounded-lg p-4 bg-muted/20">
-                                <div className="flex items-start justify-between">
-                                  <div className="flex-1">
-                                    <h4 className="font-medium text-foreground">
-                                      {service.name}
-                                    </h4>
-                                    <p className="text-sm text-foreground/60 mt-1">
-                                      {service.description}
-                                    </p>
-                                    <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
-                                      <div>
-                                        <span className="font-medium">Category:</span>
-                                        <br />
-                                        {service.service_subcategories?.service_categories?.service_category_type || 'Uncategorized'}
-                                      </div>
-                                      <div>
-                                        <span className="font-medium">Base Price:</span>
-                                        <br />
-                                        ${service.min_price}
+                    {availableProviderServices.length > 0 &&
+                      provider?.provider_role !== "provider" && (
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <Star className="w-5 h-5 text-yellow-600" />
+                              Available Services (
+                              {availableProviderServices.length})
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-sm text-foreground/60 mb-4">
+                              These services are available but not yet assigned
+                              to you.
+                            </p>
+                            <div className="grid gap-4">
+                              {availableProviderServices.map((service: any) => (
+                                <div
+                                  key={service.id}
+                                  className="border rounded-lg p-4 bg-muted/20"
+                                >
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <h4 className="font-medium text-foreground">
+                                        {service.name}
+                                      </h4>
+                                      <p className="text-sm text-foreground/60 mt-1">
+                                        {service.description}
+                                      </p>
+                                      <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
+                                        <div>
+                                          <span className="font-medium">
+                                            Category:
+                                          </span>
+                                          <br />
+                                          {service.service_subcategories
+                                            ?.service_categories
+                                            ?.service_category_type ||
+                                            "Uncategorized"}
+                                        </div>
+                                        <div>
+                                          <span className="font-medium">
+                                            Base Price:
+                                          </span>
+                                          <br />${service.min_price}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
                   </div>
                 )}
               </TabsContent>
@@ -11689,7 +11803,8 @@ export default function ProviderDashboard() {
                                         )}
                                         {booking.customer_profiles?.phone && (
                                           <span>
-                                            ���� {booking.customer_profiles.phone}
+                                            ����{" "}
+                                            {booking.customer_profiles.phone}
                                           </span>
                                         )}
                                       </div>
@@ -12681,350 +12796,438 @@ export default function ProviderDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto max-h-[75vh]">
             {/* Basic Provider Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold border-b pb-2">Staff Member Information</h3>
-            <div className="grid grid-cols-2 gap-4">
+              <h3 className="text-lg font-semibold border-b pb-2">
+                Staff Member Information
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="first_name">First Name *</Label>
+                  <Input
+                    id="first_name"
+                    value={editProviderForm.first_name}
+                    onChange={(e) =>
+                      setEditProviderForm((prev) => ({
+                        ...prev,
+                        first_name: e.target.value,
+                      }))
+                    }
+                    placeholder="First name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="last_name">Last Name *</Label>
+                  <Input
+                    id="last_name"
+                    value={editProviderForm.last_name}
+                    onChange={(e) =>
+                      setEditProviderForm((prev) => ({
+                        ...prev,
+                        last_name: e.target.value,
+                      }))
+                    }
+                    placeholder="Last name"
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
-                <Label htmlFor="first_name">First Name *</Label>
+                <Label htmlFor="email">Email *</Label>
                 <Input
-                  id="first_name"
-                  value={editProviderForm.first_name}
+                  id="email"
+                  type="email"
+                  value={editProviderForm.email}
                   onChange={(e) =>
                     setEditProviderForm((prev) => ({
                       ...prev,
-                      first_name: e.target.value,
+                      email: e.target.value,
                     }))
                   }
-                  placeholder="First name"
+                  placeholder="Email address"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="last_name">Last Name *</Label>
+                <Label htmlFor="phone">Phone *</Label>
                 <Input
-                  id="last_name"
-                  value={editProviderForm.last_name}
+                  id="phone"
+                  value={editProviderForm.phone}
                   onChange={(e) =>
                     setEditProviderForm((prev) => ({
                       ...prev,
-                      last_name: e.target.value,
+                      phone: e.target.value,
                     }))
                   }
-                  placeholder="Last name"
+                  placeholder="Phone number"
                 />
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={editProviderForm.email}
-                onChange={(e) =>
-                  setEditProviderForm((prev) => ({
-                    ...prev,
-                    email: e.target.value,
-                  }))
-                }
-                placeholder="Email address"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone *</Label>
-              <Input
-                id="phone"
-                value={editProviderForm.phone}
-                onChange={(e) =>
-                  setEditProviderForm((prev) => ({
-                    ...prev,
-                    phone: e.target.value,
-                  }))
-                }
-                placeholder="Phone number"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="provider_role">Provider Role</Label>
-              <Select
-                value={editProviderForm.provider_role}
-                onValueChange={(value) =>
-                  setEditProviderForm((prev) => ({
-                    ...prev,
-                    provider_role: value,
-                  }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="owner">Owner</SelectItem>
-                  <SelectItem value="dispatcher">Dispatcher</SelectItem>
-                  <SelectItem value="provider">Provider</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="location_id">Location (Optional)</Label>
-              <Select
-                value={editProviderForm.location_id}
-                onValueChange={(value) =>
-                  setEditProviderForm((prev) => ({
-                    ...prev,
-                    location_id: value === "none" ? "" : value,
-                  }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select location (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No Location Assigned</SelectItem>
-                  {locations.map((location) => (
-                    <SelectItem key={location.id} value={location.id}>
-                      {location.location_name}{" "}
-                      {location.is_primary && "(Primary)"}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="experience_years">Experience (Years)</Label>
-              <Input
-                id="experience_years"
-                type="number"
-                min="0"
-                max="50"
-                value={editProviderForm.experience_years}
-                onChange={(e) =>
-                  setEditProviderForm((prev) => ({
-                    ...prev,
-                    experience_years: e.target.value,
-                  }))
-                }
-                placeholder="Years of experience"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="verification_status">Verification Status</Label>
+                <Label htmlFor="provider_role">Provider Role</Label>
                 <Select
-                  value={editProviderForm.verification_status}
+                  value={editProviderForm.provider_role}
                   onValueChange={(value) =>
                     setEditProviderForm((prev) => ({
                       ...prev,
-                      verification_status: value,
+                      provider_role: value,
                     }))
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Select role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="documents_submitted">
-                      Documents Submitted
-                    </SelectItem>
-                    <SelectItem value="under_review">Under Review</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="owner">Owner</SelectItem>
+                    <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                    <SelectItem value="provider">Provider</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="background_check_status">
-                  Background Check
-                </Label>
+                <Label htmlFor="location_id">Location (Optional)</Label>
                 <Select
-                  value={editProviderForm.background_check_status}
+                  value={editProviderForm.location_id}
                   onValueChange={(value) =>
                     setEditProviderForm((prev) => ({
                       ...prev,
-                      background_check_status: value,
+                      location_id: value === "none" ? "" : value,
                     }))
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Select location (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="under_review">Under Review</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="failed">Failed</SelectItem>
+                    <SelectItem value="none">No Location Assigned</SelectItem>
+                    {locations.map((location) => (
+                      <SelectItem key={location.id} value={location.id}>
+                        {location.location_name}{" "}
+                        {location.is_primary && "(Primary)"}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="business_managed"
-                checked={editProviderForm.business_managed}
-                onChange={(e) =>
-                  setEditProviderForm((prev) => ({
-                    ...prev,
-                    business_managed: e.target.checked,
-                  }))
-                }
-                className="rounded"
-              />
-              <Label htmlFor="business_managed">Business Managed</Label>
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="experience_years">Experience (Years)</Label>
+                <Input
+                  id="experience_years"
+                  type="number"
+                  min="0"
+                  max="50"
+                  value={editProviderForm.experience_years}
+                  onChange={(e) =>
+                    setEditProviderForm((prev) => ({
+                      ...prev,
+                      experience_years: e.target.value,
+                    }))
+                  }
+                  placeholder="Years of experience"
+                />
+              </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="is_active"
-                checked={editProviderForm.is_active}
-                onChange={(e) =>
-                  setEditProviderForm((prev) => ({
-                    ...prev,
-                    is_active: e.target.checked,
-                  }))
-                }
-                className="rounded"
-              />
-              <Label htmlFor="is_active">Active</Label>
-            </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="verification_status">
+                    Verification Status
+                  </Label>
+                  <Select
+                    value={editProviderForm.verification_status}
+                    onValueChange={(value) =>
+                      setEditProviderForm((prev) => ({
+                        ...prev,
+                        verification_status: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="documents_submitted">
+                        Documents Submitted
+                      </SelectItem>
+                      <SelectItem value="under_review">Under Review</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="background_check_status">
+                    Background Check
+                  </Label>
+                  <Select
+                    value={editProviderForm.background_check_status}
+                    onValueChange={(value) =>
+                      setEditProviderForm((prev) => ({
+                        ...prev,
+                        background_check_status: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="under_review">Under Review</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="failed">Failed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="business_managed"
+                  checked={editProviderForm.business_managed}
+                  onChange={(e) =>
+                    setEditProviderForm((prev) => ({
+                      ...prev,
+                      business_managed: e.target.checked,
+                    }))
+                  }
+                  className="rounded"
+                />
+                <Label htmlFor="business_managed">Business Managed</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="is_active"
+                  checked={editProviderForm.is_active}
+                  onChange={(e) =>
+                    setEditProviderForm((prev) => ({
+                      ...prev,
+                      is_active: e.target.checked,
+                    }))
+                  }
+                  className="rounded"
+                />
+                <Label htmlFor="is_active">Active</Label>
+              </div>
             </div>
 
             {/* Service & Addon Assignment - Only for provider role */}
             {editProviderForm.provider_role === "provider" && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold border-b pb-2">Service & Addon Assignment</h3>
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Service & Addon Assignment
+                </h3>
 
-              {/* Services Section */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Services</h4>
+                {/* Services Section */}
+                <div className="space-y-4">
+                  <h4 className="font-medium">Services</h4>
 
-                {/* Currently Assigned Services */}
-                <div className="space-y-2">
-                  <h5 className="text-sm font-medium text-green-700">Currently Assigned Services</h5>
-                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-green-50">
-                    {editAssignmentsLoading ? (
-                      <p className="text-sm text-gray-500">Loading assignments...</p>
-                    ) : editProviderServices.length > 0 ? (
-                      <div className="space-y-2">
-                        {editProviderServices.map((providerService: any) => (
-                          <div key={providerService.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                            <div className="flex-1">
-                              <span className="text-sm font-medium">{providerService.services?.name || 'Unknown Service'}</span>
-                              <p className="text-xs text-gray-500">${providerService.services?.min_price || 0}</p>
-                            </div>
-                            <button
-                              className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
-                              onClick={() => removeServiceFromProvider(providerService.id, editingProvider?.id)}
+                  {/* Currently Assigned Services */}
+                  <div className="space-y-2">
+                    <h5 className="text-sm font-medium text-green-700">
+                      Currently Assigned Services
+                    </h5>
+                    <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-green-50">
+                      {editAssignmentsLoading ? (
+                        <p className="text-sm text-gray-500">
+                          Loading assignments...
+                        </p>
+                      ) : editProviderServices.length > 0 ? (
+                        <div className="space-y-2">
+                          {editProviderServices.map((providerService: any) => (
+                            <div
+                              key={providerService.id}
+                              className="flex items-center justify-between p-2 bg-white rounded border"
                             >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-500">No services currently assigned</p>
-                    )}
+                              <div className="flex-1">
+                                <span className="text-sm font-medium">
+                                  {providerService.services?.name ||
+                                    "Unknown Service"}
+                                </span>
+                                <p className="text-xs text-gray-500">
+                                  ${providerService.services?.min_price || 0}
+                                </p>
+                              </div>
+                              <button
+                                className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
+                                onClick={() =>
+                                  removeServiceFromProvider(
+                                    providerService.id,
+                                    editingProvider?.id,
+                                  )
+                                }
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">
+                          No services currently assigned
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Available to Assign Services */}
+                  <div className="space-y-2">
+                    <h5 className="text-sm font-medium text-blue-700">
+                      Available to Assign
+                    </h5>
+                    <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-blue-50">
+                      {businessServicesData.length > 0 ? (
+                        <div className="space-y-2">
+                          {businessServicesData
+                            .filter(
+                              (service) =>
+                                !editProviderServices.some(
+                                  (ps) =>
+                                    ps.services?.id === service.services?.id,
+                                ),
+                            )
+                            .map((service) => (
+                              <div
+                                key={service.id}
+                                className="flex items-center justify-between p-2 bg-white rounded border"
+                              >
+                                <div className="flex-1">
+                                  <span className="text-sm font-medium">
+                                    {service.services?.name ||
+                                      "Unknown Service"}
+                                  </span>
+                                  <p className="text-xs text-gray-500">
+                                    ${service.services?.min_price || 0}
+                                  </p>
+                                </div>
+                                <button
+                                  className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded"
+                                  onClick={() =>
+                                    assignServiceToProvider(
+                                      editingProvider?.id,
+                                      service.services?.id,
+                                    )
+                                  }
+                                >
+                                  Assign
+                                </button>
+                              </div>
+                            ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">
+                          No business services available for assignment
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Available to Assign Services */}
-                <div className="space-y-2">
-                  <h5 className="text-sm font-medium text-blue-700">Available to Assign</h5>
-                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-blue-50">
-                    {businessServicesData.length > 0 ? (
-                      <div className="space-y-2">
-                        {businessServicesData
-                          .filter(service => !editProviderServices.some(ps => ps.services?.id === service.services?.id))
-                          .map((service) => (
-                          <div key={service.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                            <div className="flex-1">
-                              <span className="text-sm font-medium">{service.services?.name || 'Unknown Service'}</span>
-                              <p className="text-xs text-gray-500">${service.services?.min_price || 0}</p>
-                            </div>
-                            <button
-                              className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded"
-                              onClick={() => assignServiceToProvider(editingProvider?.id, service.services?.id)}
+                {/* Addons Section */}
+                <div className="space-y-4">
+                  <h4 className="font-medium">Addons</h4>
+
+                  {/* Currently Assigned Addons */}
+                  <div className="space-y-2">
+                    <h5 className="text-sm font-medium text-green-700">
+                      Currently Assigned Addons
+                    </h5>
+                    <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-green-50">
+                      {editAssignmentsLoading ? (
+                        <p className="text-sm text-gray-500">
+                          Loading assignments...
+                        </p>
+                      ) : editProviderAddons.length > 0 ? (
+                        <div className="space-y-2">
+                          {editProviderAddons.map((providerAddon: any) => (
+                            <div
+                              key={providerAddon.id}
+                              className="flex items-center justify-between p-2 bg-white rounded border"
                             >
-                              Assign
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-500">No business services available for assignment</p>
-                    )}
+                              <div className="flex-1">
+                                <span className="text-sm font-medium">
+                                  {providerAddon.service_addons?.name ||
+                                    "Unknown Addon"}
+                                </span>
+                              </div>
+                              <button
+                                className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
+                                onClick={() =>
+                                  removeAddonFromProvider(
+                                    providerAddon.id,
+                                    editingProvider?.id,
+                                  )
+                                }
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">
+                          No addons currently assigned
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Available to Assign Addons */}
+                  <div className="space-y-2">
+                    <h5 className="text-sm font-medium text-blue-700">
+                      Available to Assign
+                    </h5>
+                    <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-blue-50">
+                      {businessAddonsData.length > 0 ? (
+                        <div className="space-y-2">
+                          {businessAddonsData
+                            .filter(
+                              (addon) =>
+                                !editProviderAddons.some(
+                                  (pa) =>
+                                    pa.service_addons?.id ===
+                                    addon.service_addons?.id,
+                                ),
+                            )
+                            .map((addon) => (
+                              <div
+                                key={addon.id}
+                                className="flex items-center justify-between p-2 bg-white rounded border"
+                              >
+                                <div className="flex-1">
+                                  <span className="text-sm font-medium">
+                                    {addon.service_addons?.name ||
+                                      "Unknown Addon"}
+                                  </span>
+                                  <p className="text-xs text-gray-500">
+                                    ${addon.custom_price || "No price set"}
+                                  </p>
+                                </div>
+                                <button
+                                  className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded"
+                                  onClick={() =>
+                                    assignAddonToProvider(
+                                      editingProvider?.id,
+                                      addon.service_addons?.id,
+                                    )
+                                  }
+                                >
+                                  Assign
+                                </button>
+                              </div>
+                            ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">
+                          No business addons available for assignment
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Addons Section */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Addons</h4>
-
-                {/* Currently Assigned Addons */}
-                <div className="space-y-2">
-                  <h5 className="text-sm font-medium text-green-700">Currently Assigned Addons</h5>
-                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-green-50">
-                    {editAssignmentsLoading ? (
-                      <p className="text-sm text-gray-500">Loading assignments...</p>
-                    ) : editProviderAddons.length > 0 ? (
-                      <div className="space-y-2">
-                        {editProviderAddons.map((providerAddon: any) => (
-                          <div key={providerAddon.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                            <div className="flex-1">
-                              <span className="text-sm font-medium">{providerAddon.service_addons?.name || 'Unknown Addon'}</span>
-                            </div>
-                            <button
-                              className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
-                              onClick={() => removeAddonFromProvider(providerAddon.id, editingProvider?.id)}
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-500">No addons currently assigned</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Available to Assign Addons */}
-                <div className="space-y-2">
-                  <h5 className="text-sm font-medium text-blue-700">Available to Assign</h5>
-                  <div className="max-h-32 overflow-y-auto border rounded-lg p-3 bg-blue-50">
-                    {businessAddonsData.length > 0 ? (
-                      <div className="space-y-2">
-                        {businessAddonsData
-                          .filter(addon => !editProviderAddons.some(pa => pa.service_addons?.id === addon.service_addons?.id))
-                          .map((addon) => (
-                          <div key={addon.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                            <div className="flex-1">
-                              <span className="text-sm font-medium">{addon.service_addons?.name || 'Unknown Addon'}</span>
-                              <p className="text-xs text-gray-500">${addon.custom_price || 'No price set'}</p>
-                            </div>
-                            <button
-                              className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded"
-                              onClick={() => assignAddonToProvider(editingProvider?.id, addon.service_addons?.id)}
-                            >
-                              Assign
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-500">No business addons available for assignment</p>
-                    )}
-                  </div>
-                </div>
-              </div>
               </div>
             )}
 
@@ -13060,11 +13263,18 @@ export default function ProviderDashboard() {
             {selectedBookingForMessaging && (
               <div className="space-y-1">
                 <p className="text-sm text-foreground/60">
-                  Conversation with {selectedBookingForMessaging.customer_profiles?.first_name || selectedBookingForMessaging.guest_name || "Customer"} -
-                  {selectedBookingForMessaging.services?.name} on {new Date(selectedBookingForMessaging.booking_date).toLocaleDateString()}
+                  Conversation with{" "}
+                  {selectedBookingForMessaging.customer_profiles?.first_name ||
+                    selectedBookingForMessaging.guest_name ||
+                    "Customer"}{" "}
+                  -{selectedBookingForMessaging.services?.name} on{" "}
+                  {new Date(
+                    selectedBookingForMessaging.booking_date,
+                  ).toLocaleDateString()}
                 </p>
                 <p className="text-xs text-blue-600">
-                  Available to all staff members (Owners, Dispatchers, and Providers)
+                  Available to all staff members (Owners, Dispatchers, and
+                  Providers)
                 </p>
               </div>
             )}
@@ -13074,21 +13284,33 @@ export default function ProviderDashboard() {
             {/* Conversation History */}
             <div className="flex-1 overflow-y-auto border rounded-lg p-4 bg-gray-50 mb-4">
               {messagingLoading ? (
-                <div className="text-center text-foreground/60">Loading conversation...</div>
+                <div className="text-center text-foreground/60">
+                  Loading conversation...
+                </div>
               ) : conversationHistory.length > 0 ? (
                 <div className="space-y-3">
                   {conversationHistory.map((message: any) => (
-                    <div key={message.id} className={`flex ${message.from === 'provider' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.from === 'provider'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-white border'
-                      }`}>
+                    <div
+                      key={message.id}
+                      className={`flex ${message.from === "provider" ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                          message.from === "provider"
+                            ? "bg-blue-500 text-white"
+                            : "bg-white border"
+                        }`}
+                      >
                         <p className="text-sm">{message.body}</p>
-                        <p className={`text-xs mt-1 ${
-                          message.from === 'provider' ? 'text-blue-100' : 'text-gray-500'
-                        }`}>
-                          {message.author} • {new Date(message.timestamp).toLocaleTimeString()}
+                        <p
+                          className={`text-xs mt-1 ${
+                            message.from === "provider"
+                              ? "text-blue-100"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {message.author} •{" "}
+                          {new Date(message.timestamp).toLocaleTimeString()}
                         </p>
                       </div>
                     </div>
@@ -13098,7 +13320,9 @@ export default function ProviderDashboard() {
                 <div className="text-center text-foreground/60">
                   <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p>No messages yet</p>
-                  <p className="text-sm">Start a conversation with your customer</p>
+                  <p className="text-sm">
+                    Start a conversation with your customer
+                  </p>
                 </div>
               )}
             </div>
@@ -13111,7 +13335,7 @@ export default function ProviderDashboard() {
                 onChange={(e) => setMessageText(e.target.value)}
                 className="flex-1 min-h-[80px] resize-none"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
+                  if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     handleSendMessage();
                   }
@@ -13122,11 +13346,13 @@ export default function ProviderDashboard() {
                 disabled={
                   !messageText.trim() ||
                   messagingLoading ||
-                  (!selectedBookingForMessaging?.customer_profiles?.phone && !selectedBookingForMessaging?.guest_phone)
+                  (!selectedBookingForMessaging?.customer_profiles?.phone &&
+                    !selectedBookingForMessaging?.guest_phone)
                 }
                 className="bg-blue-500 hover:bg-blue-600"
                 title={
-                  (!selectedBookingForMessaging?.customer_profiles?.phone && !selectedBookingForMessaging?.guest_phone)
+                  !selectedBookingForMessaging?.customer_profiles?.phone &&
+                  !selectedBookingForMessaging?.guest_phone
                     ? "Customer phone number not available"
                     : ""
                 }
@@ -13139,13 +13365,11 @@ export default function ProviderDashboard() {
             <div className="mt-2 flex justify-between items-center text-xs text-foreground/60">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>Live Twilio SMS Integration • Available to all staff members</span>
+                <span>
+                  Live Twilio SMS Integration • Available to all staff members
+                </span>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCloseMessaging}
-              >
+              <Button variant="ghost" size="sm" onClick={handleCloseMessaging}>
                 Close
               </Button>
             </div>
