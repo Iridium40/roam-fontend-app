@@ -12802,10 +12802,7 @@ export default function ProviderDashboard() {
                             </div>
                             <button
                               className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded"
-                              onClick={() => {
-                                console.log('Remove addon assignment:', providerAddon.id);
-                                // TODO: Implement remove assignment
-                              }}
+                              onClick={() => removeAddonFromProvider(providerAddon.id, editingProvider?.id)}
                             >
                               Remove
                             </button>
