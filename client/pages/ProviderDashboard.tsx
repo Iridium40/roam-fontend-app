@@ -13034,13 +13034,18 @@ export default function ProviderDashboard() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <MessageCircle className="w-5 h-5" />
-              Message Customer
+              Customer Communication
             </DialogTitle>
             {selectedBookingForMessaging && (
-              <p className="text-sm text-foreground/60">
-                Conversation with {selectedBookingForMessaging.customer_profiles?.first_name || selectedBookingForMessaging.guest_name || "Customer"} -
-                {selectedBookingForMessaging.services?.name} on {new Date(selectedBookingForMessaging.booking_date).toLocaleDateString()}
-              </p>
+              <div className="space-y-1">
+                <p className="text-sm text-foreground/60">
+                  Conversation with {selectedBookingForMessaging.customer_profiles?.first_name || selectedBookingForMessaging.guest_name || "Customer"} -
+                  {selectedBookingForMessaging.services?.name} on {new Date(selectedBookingForMessaging.booking_date).toLocaleDateString()}
+                </p>
+                <p className="text-xs text-blue-600">
+                  Available to all staff members (Owners, Dispatchers, and Providers)
+                </p>
+              </div>
             )}
           </DialogHeader>
 
