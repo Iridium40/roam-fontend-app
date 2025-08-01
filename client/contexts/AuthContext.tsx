@@ -201,7 +201,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Provide user-friendly error messages
         if (authError.message === "Invalid login credentials") {
-          throw new Error("The email or password you entered is incorrect. Please check your credentials and try again.");
+          throw new Error("Invalid email or password");
         } else if (authError.message.includes("Email not confirmed")) {
           throw new Error("Please check your email and click the confirmation link before signing in.");
         } else if (authError.message.includes("Too many requests")) {
@@ -282,7 +282,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Provide user-friendly error messages
         if (authError.message === "Invalid login credentials") {
-          throw new Error("The email or password you entered is incorrect. Please check your credentials and try again.");
+          throw new Error("Invalid email or password");
         } else if (authError.message.includes("Email not confirmed")) {
           throw new Error("Please check your email and click the confirmation link before signing in.");
         } else if (authError.message.includes("Too many requests")) {
