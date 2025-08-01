@@ -2588,6 +2588,118 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Subscription plans configuration
+  const subscriptionPlans = [
+    {
+      id: 'independent',
+      name: 'Independent',
+      price: 99,
+      description: 'Perfect for solo practitioners',
+      staffLimit: '1 staff member',
+      features: [
+        'Unlimited bookings',
+        'Customer messaging',
+        'Basic analytics',
+        'Payment processing',
+        'Mobile app access'
+      ],
+      recommended: false
+    },
+    {
+      id: 'small-business',
+      name: 'Small Business',
+      price: 399,
+      description: 'Ideal for small teams',
+      staffLimit: '2-6 staff members',
+      features: [
+        'Everything in Independent',
+        'Staff management',
+        'Advanced scheduling',
+        'Team analytics',
+        'Priority support'
+      ],
+      recommended: true
+    },
+    {
+      id: 'medium-business',
+      name: 'Medium Business',
+      price: 699,
+      description: 'Growing businesses',
+      staffLimit: '7-12 staff members',
+      features: [
+        'Everything in Small Business',
+        'Multi-location support',
+        'Advanced reporting',
+        'Custom integrations',
+        'Dedicated support'
+      ],
+      recommended: false
+    },
+    {
+      id: 'large-business',
+      name: 'Large Business',
+      price: 999,
+      description: 'Enterprise solutions',
+      staffLimit: '13+ staff members',
+      features: [
+        'Everything in Medium Business',
+        'Enterprise API access',
+        'Custom branding',
+        'Advanced security',
+        'White-label options'
+      ],
+      recommended: false
+    }
+  ];
+
+  // Subscription handlers
+  const handleSelectPlan = async (planId: string) => {
+    setSelectedPlan(planId);
+    setSubscriptionLoading(true);
+
+    try {
+      // TODO: Integrate with Stripe
+      // Create Stripe checkout session for the selected plan
+      // const response = await fetch('/.netlify/functions/create-checkout-session', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     planId: planId,
+      //     businessId: business?.id,
+      //     customerId: provider?.id
+      //   })
+      // });
+      // const { url } = await response.json();
+      // window.location.href = url;
+
+      console.log(`Selected plan: ${planId}`);
+      alert(`Stripe integration coming soon! Selected plan: ${planId}`);
+    } catch (error) {
+      console.error('Error selecting plan:', error);
+    } finally {
+      setSubscriptionLoading(false);
+      setSelectedPlan(null);
+    }
+  };
+
+  const loadCurrentSubscription = async () => {
+    if (!business?.id) return;
+
+    try {
+      // TODO: Load current subscription from database
+      // const { data } = await supabase
+      //   .from('subscriptions')
+      //   .select('*')
+      //   .eq('business_id', business.id)
+      //   .single();
+      // setCurrentSubscription(data);
+
+      console.log('Loading subscription for business:', business.id);
+    } catch (error) {
+      console.error('Error loading subscription:', error);
+    }
+  };
+
   // Google Maps navigation handler
   const openGoogleMaps = (address: string) => {
     if (!address) return;
@@ -13530,7 +13642,7 @@ export default function ProviderDashboard() {
             {locationToDelete?.is_primary && (
               <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
                 <p className="text-amber-800 font-medium">
-                  ⚠️ Warning: This is your primary location
+                  ⚠��� Warning: This is your primary location
                 </p>
                 <p className="text-amber-700 text-sm mt-1">
                   Deleting it will leave your business without a primary
