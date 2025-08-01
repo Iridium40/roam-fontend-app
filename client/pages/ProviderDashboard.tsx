@@ -7023,6 +7023,12 @@ export default function ProviderDashboard() {
                 </TabsTrigger>
               )}
               <TabsTrigger
+                value="share"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
+                Share
+              </TabsTrigger>
+              <TabsTrigger
                 value="settings"
                 className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
               >
