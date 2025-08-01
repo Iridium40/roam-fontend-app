@@ -3888,10 +3888,18 @@ export default function ProviderDashboard() {
     setBusinessServicesError("");
 
     try {
+      const businessPrice = parseFloat(editServiceForm.business_price);
+      const minPrice = editingBusinessService?.services?.min_price || 0;
+
+      // Client-side validation for minimum price
+      if (businessPrice < minPrice) {
+        throw new Error(`Business price ($${businessPrice}) cannot be lower than the service's minimum price ($${minPrice})`);
+      }
+
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       const updateData = {
-        business_price: parseFloat(editServiceForm.business_price),
+        business_price: businessPrice,
         delivery_type: editServiceForm.delivery_type,
       };
 
@@ -8977,7 +8985,7 @@ export default function ProviderDashboard() {
                                     <CheckCircle className="w-4 h-4 mr-1" />
                                     {teamProvider.verification_status ===
                                     "approved"
-                                      ? "Verified ✓"
+                                      ? "Verified ��"
                                       : "Verify"}
                                   </Button>
 
