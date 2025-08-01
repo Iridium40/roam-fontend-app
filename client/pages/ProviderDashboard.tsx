@@ -9353,7 +9353,7 @@ export default function ProviderDashboard() {
                                     <div className="flex justify-between items-center mt-3">
                                       <div className="text-sm">
                                         <span className="font-medium text-green-700">
-                                          Business Price: ${addon.business_addons?.custom_price || 'Not set'}
+                                          Business Price: ${addon.custom_price || 'Not set'}
                                         </span>
                                       </div>
                                       <Badge variant={addon.is_active ? "default" : "secondary"}>
