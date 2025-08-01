@@ -2605,7 +2605,7 @@ export default function ProviderDashboard() {
           from: "provider",
           body: "Hi! I'd be happy to help. What would you like to know?",
           timestamp: new Date(Date.now() - 1800000).toISOString(),
-          author: provider?.first_name || "You"
+          author: `${provider?.first_name || "You"} (${provider?.provider_role || 'Staff'})`
         }
       ];
 
