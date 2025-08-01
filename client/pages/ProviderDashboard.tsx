@@ -4681,12 +4681,14 @@ export default function ProviderDashboard() {
           *,
           services!inner(
             id,
-            service_name,
-            base_price,
-            service_description,
-            is_available,
-            service_categories(service_category_type),
-            service_subcategories(service_subcategory_type)
+            name,
+            min_price,
+            description,
+            is_active,
+            service_subcategories(
+              service_subcategory_type,
+              service_categories(service_category_type)
+            )
           )
         `)
         .eq("provider_id", provider.id);
