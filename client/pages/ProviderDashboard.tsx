@@ -2590,7 +2590,10 @@ export default function ProviderDashboard() {
     const encodedAddress = encodeURIComponent(address);
 
     // Check if user is on mobile device
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent,
+      );
 
     let mapsUrl;
     if (isMobile) {
@@ -2602,7 +2605,7 @@ export default function ProviderDashboard() {
     }
 
     // Open in new tab/window
-    window.open(mapsUrl, '_blank');
+    window.open(mapsUrl, "_blank");
   };
 
   // Messaging handlers (stubbed for Twilio integration)
@@ -7068,7 +7071,11 @@ export default function ProviderDashboard() {
                                                         {location}
                                                       </span>
                                                       <button
-                                                        onClick={() => openGoogleMaps(location)}
+                                                        onClick={() =>
+                                                          openGoogleMaps(
+                                                            location,
+                                                          )
+                                                        }
                                                         className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                                                         title="Open in Google Maps for directions"
                                                       >
@@ -7091,7 +7098,11 @@ export default function ProviderDashboard() {
                                                       </div>
                                                       {location.address && (
                                                         <button
-                                                          onClick={() => openGoogleMaps(location.address)}
+                                                          onClick={() =>
+                                                            openGoogleMaps(
+                                                              location.address,
+                                                            )
+                                                          }
                                                           className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                                                           title="Open in Google Maps for directions"
                                                         >
