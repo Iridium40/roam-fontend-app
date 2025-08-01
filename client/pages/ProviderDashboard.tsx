@@ -13111,7 +13111,7 @@ export default function ProviderDashboard() {
             </div>
 
             <div className="mt-2 flex justify-between items-center text-xs text-foreground/60">
-              <span>Messages are sent via Twilio SMS</span>
+              <span>Messages sent via Twilio SMS • Available to all staff members</span>
               <Button
                 variant="ghost"
                 size="sm"
