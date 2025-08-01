@@ -8616,7 +8616,7 @@ export default function ProviderDashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
-                      <span>Current Staff Members</span>
+                      <span>Manage Staff Members</span>
                       <Button
                         variant="outline"
                         onClick={fetchTeamProviders}
