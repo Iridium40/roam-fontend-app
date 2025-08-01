@@ -483,6 +483,14 @@ export default function ProviderDashboard() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documentName, setDocumentName] = useState("");
 
+  // Provider Services state (for regular providers)
+  const [providerServices, setProviderServices] = useState([]);
+  const [availableServices, setAvailableServices] = useState([]);
+  const [providerAddons, setProviderAddons] = useState([]);
+  const [availableAddons, setAvailableAddons] = useState([]);
+  const [providerServicesLoading, setProviderServicesLoading] = useState(false);
+  const [providerServicesError, setProviderServicesError] = useState("");
+
   // Providers state
   const [teamProviders, setTeamProviders] = useState([]);
   const [providersLoading, setProvidersLoading] = useState(false);
