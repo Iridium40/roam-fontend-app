@@ -9148,21 +9148,21 @@ export default function ProviderDashboard() {
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h4 className="font-medium text-foreground">
-                                      {service.service_name}
+                                      {service.name}
                                     </h4>
                                     <p className="text-sm text-foreground/60 mt-1">
-                                      {service.service_description}
+                                      {service.description}
                                     </p>
                                     <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
                                       <div>
                                         <span className="font-medium">Category:</span>
                                         <br />
-                                        {service.service_categories?.service_category_type || 'Uncategorized'}
+                                        {service.service_subcategories?.service_categories?.service_category_type || 'Uncategorized'}
                                       </div>
                                       <div>
                                         <span className="font-medium">Base Price:</span>
                                         <br />
-                                        ${service.base_price}
+                                        ${service.min_price}
                                       </div>
                                     </div>
                                   </div>
