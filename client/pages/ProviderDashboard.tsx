@@ -13119,8 +13119,17 @@ export default function ProviderDashboard() {
               />
               <Button
                 onClick={handleSendMessage}
-                disabled={!messageText.trim() || messagingLoading}
+                disabled={
+                  !messageText.trim() ||
+                  messagingLoading ||
+                  (!selectedBookingForMessaging?.customer_profiles?.phone && !selectedBookingForMessaging?.guest_phone)
+                }
                 className="bg-blue-500 hover:bg-blue-600"
+                title={
+                  (!selectedBookingForMessaging?.customer_profiles?.phone && !selectedBookingForMessaging?.guest_phone)
+                    ? "Customer phone number not available"
+                    : ""
+                }
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Send
