@@ -26,6 +26,7 @@ import ProviderPortal from "./pages/ProviderPortal";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderOnboarding from "./pages/ProviderOnboarding";
 import ProviderProfile from "./pages/ProviderProfile";
+import ProviderBooking from "./pages/ProviderBooking";
 import ProviderDocumentVerification from "./pages/ProviderDocumentVerification";
 import BusinessManagement from "./pages/BusinessManagement";
 import CustomerProfile from "./pages/CustomerProfile";
