@@ -6908,7 +6908,7 @@ export default function ProviderDashboard() {
                                   businessService.services
                                     ?.service_subcategories?.service_categories
                                     ?.service_category_type}{" "}
-                                ����{" "}
+                                �����{" "}
                                 {
                                   businessService.services
                                     ?.service_subcategories
@@ -9018,21 +9018,21 @@ export default function ProviderDashboard() {
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h4 className="font-medium text-foreground">
-                                      {service.business_services.service_name}
+                                      {service.services.service_name}
                                     </h4>
                                     <p className="text-sm text-foreground/60 mt-1">
-                                      {service.business_services.service_description}
+                                      {service.services.service_description}
                                     </p>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-foreground/60 mt-3">
                                       <div>
                                         <span className="font-medium">Base Price:</span>
                                         <br />
-                                        ${service.business_services.base_price}
+                                        ${service.services.base_price}
                                       </div>
                                       <div>
                                         <span className="font-medium">My Price:</span>
                                         <br />
-                                        ${service.custom_price || service.business_services.base_price}
+                                        ${service.custom_price || service.services.base_price}
                                       </div>
                                       <div>
                                         <span className="font-medium">Status:</span>
