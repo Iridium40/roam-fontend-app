@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "stripe": "^18.4.0",
     "twilio": "^5.8.0"
   }
 }
