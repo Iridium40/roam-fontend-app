@@ -2483,6 +2483,88 @@ export default function ProviderDashboard() {
     setDeleteConfirmOpen(true);
   };
 
+  // Assign service to provider
+  const assignServiceToProvider = async (providerId: string, serviceId: string) => {
+    try {
+      const { error } = await supabase
+        .from("provider_services")
+        .insert({
+          provider_id: providerId,
+          service_id: serviceId,
+          is_active: true
+        });
+
+      if (error) throw error;
+
+      // Reload assignments to update UI
+      loadProviderAssignments(providerId);
+
+      console.log("Service assigned successfully");
+    } catch (error) {
+      console.error("Error assigning service:", error);
+    }
+  };
+
+  // Remove service assignment from provider
+  const removeServiceFromProvider = async (providerServiceId: string, providerId: string) => {
+    try {
+      const { error } = await supabase
+        .from("provider_services")
+        .delete()
+        .eq("id", providerServiceId);
+
+      if (error) throw error;
+
+      // Reload assignments to update UI
+      loadProviderAssignments(providerId);
+
+      console.log("Service assignment removed successfully");
+    } catch (error) {
+      console.error("Error removing service assignment:", error);
+    }
+  };
+
+  // Assign addon to provider
+  const assignAddonToProvider = async (providerId: string, addonId: string) => {
+    try {
+      const { error } = await supabase
+        .from("provider_addons")
+        .insert({
+          provider_id: providerId,
+          addon_id: addonId,
+          is_active: true
+        });
+
+      if (error) throw error;
+
+      // Reload assignments to update UI
+      loadProviderAssignments(providerId);
+
+      console.log("Addon assigned successfully");
+    } catch (error) {
+      console.error("Error assigning addon:", error);
+    }
+  };
+
+  // Remove addon assignment from provider
+  const removeAddonFromProvider = async (providerAddonId: string, providerId: string) => {
+    try {
+      const { error } = await supabase
+        .from("provider_addons")
+        .delete()
+        .eq("id", providerAddonId);
+
+      if (error) throw error;
+
+      // Reload assignments to update UI
+      loadProviderAssignments(providerId);
+
+      console.log("Addon assignment removed successfully");
+    } catch (error) {
+      console.error("Error removing addon assignment:", error);
+    }
+  };
+
   // Load provider's current assignments for Edit Provider modal
   const loadProviderAssignments = async (providerId: string) => {
     setEditAssignmentsLoading(true);
