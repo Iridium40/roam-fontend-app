@@ -6890,6 +6890,17 @@ export default function ProviderDashboard() {
                                       <p className="text-lg font-semibold text-roam-blue mt-2">
                                         ${booking.total_amount || "0"}
                                       </p>
+
+                                      {/* Messaging Button */}
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="mt-3 w-full border-blue-200 text-blue-600 hover:bg-blue-50"
+                                        onClick={() => handleOpenMessaging(booking)}
+                                      >
+                                        <MessageCircle className="w-4 h-4 mr-2" />
+                                        Message Customer
+                                      </Button>
                                     </div>
                                   </div>
 
