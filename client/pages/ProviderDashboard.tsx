@@ -4722,6 +4722,7 @@ export default function ProviderDashboard() {
       console.log("Available services loaded:", availableServicesData);
 
       // Load assigned provider addons
+      console.log("Attempting to load assigned addons for provider:", provider.id);
       const { data: assignedAddons, error: addonsError } = await supabase
         .from("provider_addons")
         .select(`
@@ -4737,12 +4738,19 @@ export default function ProviderDashboard() {
         .eq("provider_id", provider.id);
 
       if (addonsError) {
-        console.error("Error loading assigned addons:", addonsError);
-        throw addonsError;
+        console.error("Error loading assigned addons:", {
+          error: addonsError,
+          message: addonsError.message,
+          details: addonsError.details,
+          hint: addonsError.hint,
+          code: addonsError.code
+        });
+        throw new Error(`Failed to load assigned addons: ${addonsError.message || JSON.stringify(addonsError)}`);
       }
       console.log("Assigned addons loaded:", assignedAddons);
 
       // Load available business addons that could be assigned
+      console.log("Attempting to load business addons for business:", business.id);
       const { data: businessAddons, error: businessAddonsError } = await supabase
         .from("business_addons")
         .select(`
@@ -4762,8 +4770,14 @@ export default function ProviderDashboard() {
         .eq("is_available", true);
 
       if (businessAddonsError) {
-        console.error("Error loading available business addons:", businessAddonsError);
-        throw businessAddonsError;
+        console.error("Error loading available business addons:", {
+          error: businessAddonsError,
+          message: businessAddonsError.message,
+          details: businessAddonsError.details,
+          hint: businessAddonsError.hint,
+          code: businessAddonsError.code
+        });
+        throw new Error(`Failed to load business addons: ${businessAddonsError.message || JSON.stringify(businessAddonsError)}`);
       }
       console.log("Available business addons loaded:", businessAddons);
 
