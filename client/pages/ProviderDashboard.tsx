@@ -12548,9 +12548,10 @@ export default function ProviderDashboard() {
 
             </div>
 
-            {/* Service & Addon Assignment */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold border-b pb-2">Service & Addon Assignment</h3>
+            {/* Service & Addon Assignment - Only for provider role */}
+            {editProviderForm.provider_role === "provider" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">Service & Addon Assignment</h3>
 
               {/* Services Section */}
               <div className="space-y-3">
@@ -12617,7 +12618,8 @@ export default function ProviderDashboard() {
                   )}
                 </div>
               </div>
-            </div>
+              </div>
+            )}
 
             {/* Action Buttons - spans both columns */}
             <div className="lg:col-span-2 flex gap-2 pt-4 border-t">
