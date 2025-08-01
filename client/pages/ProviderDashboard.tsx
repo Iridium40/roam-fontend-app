@@ -9126,16 +9126,11 @@ export default function ProviderDashboard() {
                                     <p className="text-sm text-foreground/60 mt-1">
                                       {addon.service_addons.description}
                                     </p>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-foreground/60 mt-3">
-                                      <div>
-                                        <span className="font-medium">Base Price:</span>
-                                        <br />
-                                        ${addon.service_addons.base_price}
-                                      </div>
+                                    <div className="grid grid-cols-2 gap-4 text-sm text-foreground/60 mt-3">
                                       <div>
                                         <span className="font-medium">My Price:</span>
                                         <br />
-                                        ${addon.custom_price || addon.service_addons.base_price}
+                                        ${addon.custom_price || "Not set"}
                                       </div>
                                       <div>
                                         <span className="font-medium">Status:</span>
