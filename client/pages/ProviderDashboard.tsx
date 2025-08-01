@@ -2582,6 +2582,29 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Google Maps navigation handler
+  const openGoogleMaps = (address: string) => {
+    if (!address) return;
+
+    // Encode the address for URL
+    const encodedAddress = encodeURIComponent(address);
+
+    // Check if user is on mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    let mapsUrl;
+    if (isMobile) {
+      // Use Google Maps app URL scheme for mobile
+      mapsUrl = `https://maps.google.com/maps?daddr=${encodedAddress}`;
+    } else {
+      // Use web Google Maps for desktop
+      mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+    }
+
+    // Open in new tab/window
+    window.open(mapsUrl, '_blank');
+  };
+
   // Messaging handlers (stubbed for Twilio integration)
   const handleOpenMessaging = async (booking: any) => {
     setSelectedBookingForMessaging(booking);
