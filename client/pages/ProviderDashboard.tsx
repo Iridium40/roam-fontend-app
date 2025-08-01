@@ -4771,7 +4771,7 @@ export default function ProviderDashboard() {
           addon_id,
           custom_price,
           is_available,
-          service_addons!inner(
+          service_addons(
             id,
             name,
             description,
