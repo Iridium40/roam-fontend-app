@@ -4747,8 +4747,8 @@ export default function ProviderDashboard() {
 
       setProviderServices(assignedServices || []);
       setAvailableProviderServices(availableServicesData || []);
-      setProviderAddons(assignedAddons || []);
-      setAvailableAddons(businessAddons || []);
+      setAssignedProviderAddons(assignedAddons || []);
+      setAvailableProviderAddons(businessAddons || []);
 
     } catch (error: any) {
       console.error("Error loading provider services:", error);
