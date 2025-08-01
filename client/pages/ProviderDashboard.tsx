@@ -1550,7 +1550,7 @@ export default function ProviderDashboard() {
         .select(
           `
           *,
-          business_locations (
+          business_locations!providers_location_id_fkey (
             id,
             location_name,
             address_line1,
