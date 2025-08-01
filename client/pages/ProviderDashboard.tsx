@@ -7307,6 +7307,12 @@ export default function ProviderDashboard() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
+                    {isDispatcher && (
+                      <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded mb-4">
+                        <strong>View Only:</strong> As a dispatcher, you can view business details but cannot make changes.
+                      </div>
+                    )}
+
                     {businessDetailsError && (
                       <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
                         {businessDetailsError}
