@@ -12413,12 +12413,12 @@ export default function ProviderDashboard() {
       <Dialog open={editProviderModal} onOpenChange={setEditProviderModal}>
         <DialogContent className="max-w-6xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>Edit Provider</DialogTitle>
+            <DialogTitle>Edit Staff Member</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto max-h-[75vh]">
             {/* Basic Provider Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold border-b pb-2">Provider Information</h3>
+              <h3 className="text-lg font-semibold border-b pb-2">Staff Member Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="first_name">First Name *</Label>
