@@ -13128,7 +13128,10 @@ export default function ProviderDashboard() {
             </div>
 
             <div className="mt-2 flex justify-between items-center text-xs text-foreground/60">
-              <span>Messages sent via Twilio SMS • Available to all staff members</span>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>Live Twilio SMS Integration • Available to all staff members</span>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
