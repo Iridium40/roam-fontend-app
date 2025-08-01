@@ -4945,12 +4945,27 @@ export default function ProviderDashboard() {
               name,
               description,
               is_active
-            ),
-            business_addons!inner(
-              custom_price
             )
           `)
           .eq("provider_id", provider.id);
+
+        // If we have addon data, get the business custom prices separately
+        if (addonData && addonData.length > 0 && business?.id) {
+          const addonIds = addonData.map(addon => addon.addon_id);
+          const { data: businessAddonsData } = await supabase
+            .from("business_addons")
+            .select("addon_id, custom_price")
+            .eq("business_id", business.id)
+            .in("addon_id", addonIds);
+
+          // Merge the custom prices into the addon data
+          if (businessAddonsData) {
+            addonData.forEach(addon => {
+              const businessAddon = businessAddonsData.find(ba => ba.addon_id === addon.addon_id);
+              addon.custom_price = businessAddon?.custom_price || null;
+            });
+          }
+        }
 
         if (addonsError) {
           console.warn("Could not load assigned addons (table may not exist):", addonsError);
