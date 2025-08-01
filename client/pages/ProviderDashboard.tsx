@@ -7749,25 +7749,27 @@ export default function ProviderDashboard() {
                       </div>
 
                       {/* Save Button */}
-                      <div className="pt-4 border-t">
-                        <Button
-                          onClick={handleSaveBusinessDetails}
-                          disabled={businessDetailsSaving}
-                          className="bg-roam-blue hover:bg-roam-blue/90"
-                        >
-                          {businessDetailsSaving ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                              Saving...
-                            </>
-                          ) : (
-                            <>
-                              <Building className="w-4 h-4 mr-2" />
-                              Save Business Details
-                            </>
-                          )}
-                        </Button>
-                      </div>
+                      {!isDispatcher && (
+                        <div className="pt-4 border-t">
+                          <Button
+                            onClick={handleSaveBusinessDetails}
+                            disabled={businessDetailsSaving}
+                            className="bg-roam-blue hover:bg-roam-blue/90"
+                          >
+                            {businessDetailsSaving ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                Saving...
+                              </>
+                            ) : (
+                              <>
+                                <Building className="w-4 h-4 mr-2" />
+                                Save Business Details
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
