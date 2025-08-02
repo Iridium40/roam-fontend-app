@@ -579,11 +579,13 @@ export default function CustomerLocations() {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="text-lg font-semibold">{location.location_name}</h3>
-                              <Badge 
-                                className={getLocationTypeColor(location.location_type)}
-                              >
-                                {location.location_type}
-                              </Badge>
+                              {location.location_type && (
+                                <Badge
+                                  className={getLocationTypeColor(location.location_type)}
+                                >
+                                  {location.location_type}
+                                </Badge>
+                              )}
                               {location.is_primary && (
                                 <Badge className="bg-roam-yellow text-gray-900">
                                   <Star className="w-3 h-3 mr-1" />
