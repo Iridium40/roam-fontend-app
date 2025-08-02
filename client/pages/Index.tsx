@@ -57,6 +57,12 @@ export default function Index() {
     "signin",
   );
 
+  // Database-driven state
+  const [featuredServices, setFeaturedServices] = useState<any[]>([]);
+  const [popularServices, setPopularServices] = useState<any[]>([]);
+  const [allProviders, setAllProviders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const handleProviderShare = (provider: any) => {
     setSelectedProvider(provider);
     setShareModalOpen(true);
