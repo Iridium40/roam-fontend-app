@@ -353,26 +353,29 @@ export function useFavorites() {
   }, [isCustomer, toast]);
 
   const isProviderFavorited = useCallback(async (providerId: string): Promise<boolean> => {
-    if (!isCustomer) {
+    if (!isCustomer || !customer?.id) {
       return false;
     }
 
     try {
-      const { data, error } = await supabase.rpc('is_provider_favorited', {
-        provider_id_param: providerId
-      });
+      const { data, error } = await supabase
+        .from('customer_favorite_providers')
+        .select('id')
+        .eq('customer_id', customer.id)
+        .eq('provider_id', providerId)
+        .maybeSingle();
 
       if (error) {
         console.error('Error checking if provider is favorited:', error?.message || error);
         return false;
       }
 
-      return data || false;
+      return !!data;
     } catch (error) {
       console.error('Error checking if provider is favorited:', error?.message || error);
       return false;
     }
-  }, [isCustomer]);
+  }, [isCustomer, customer?.id]);
 
   // Get favorites lists
   const getFavoriteServices = useCallback(async (): Promise<FavoriteService[]> => {
