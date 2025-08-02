@@ -64,11 +64,36 @@ export default function BusinessServiceBooking() {
   const [savedLocations, setSavedLocations] = useState<any[]>([]);
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
+  const fetchSavedLocations = async () => {
+    if (!customer?.customer_id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('customer_locations')
+        .select('*')
+        .eq('customer_id', customer.customer_id)
+        .eq('is_active', true)
+        .order('is_primary', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setSavedLocations(data || []);
+    } catch (error) {
+      console.error('Error fetching saved locations:', error);
+    }
+  };
+
   useEffect(() => {
     if (businessId) {
       fetchBusinessData();
     }
   }, [businessId]);
+
+  useEffect(() => {
+    if (customer?.customer_id) {
+      fetchSavedLocations();
+    }
+  }, [customer?.customer_id]);
 
   const fetchBusinessData = async () => {
     try {
