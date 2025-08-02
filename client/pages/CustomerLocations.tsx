@@ -318,10 +318,12 @@ export default function CustomerLocations() {
     }
   };
 
-  const getLocationIcon = (type: string) => {
+  const getLocationIcon = (type: string | null) => {
     switch (type) {
       case 'home': return Home;
-      case 'work': return Building;
+      case 'condo': return Building;
+      case 'hotel': return Building;
+      case 'other': return MapPin;
       default: return MapPin;
     }
   };
