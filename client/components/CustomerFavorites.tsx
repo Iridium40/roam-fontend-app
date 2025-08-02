@@ -275,7 +275,8 @@ export function CustomerFavorites() {
                             className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                           >
                             <Link to={`/business/${business.business_id}`}>
-                              View
+                              <Building className="w-4 h-4 mr-2" />
+                              View Business
                             </Link>
                           </Button>
                         </div>
