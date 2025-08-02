@@ -885,6 +885,19 @@ export default function Index() {
                             View Profile
                           </Link>
                         </Button>
+                        {provider.business_id && (
+                          <Button
+                            asChild
+                            size="sm"
+                            variant="outline"
+                            className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
+                          >
+                            <Link to={`/business/${provider.business_id}`}>
+                              <Building className="w-4 h-4 mr-2" />
+                              View Business
+                            </Link>
+                          </Button>
+                        )}
                         <FavoriteButton
                           type="provider"
                           itemId={provider.id}
