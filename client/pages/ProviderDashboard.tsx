@@ -7487,6 +7487,92 @@ export default function ProviderDashboard() {
               )}
             </TabsContent>
 
+            {/* Conversations Tab */}
+            <TabsContent value="conversations" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Conversations</h2>
+                <Button
+                  onClick={handleOpenConversationsList}
+                  className="bg-roam-blue hover:bg-roam-blue/90"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  View All Conversations
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">About Conversations</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-foreground/70">
+                      Use Twilio Conversations to communicate with customers directly in the app.
+                      All messages are secure and organized by booking.
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Real-time messaging with customers</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span>Organized by booking ID</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span>Available to all staff roles</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <span>Message history and attachments</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Quick Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button
+                      onClick={handleOpenConversationsList}
+                      variant="outline"
+                      className="w-full justify-start"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      View All Conversations
+                    </Button>
+                    <div className="text-sm text-foreground/60">
+                      <p className="mb-2">Start conversations from:</p>
+                      <ul className="space-y-1 ml-4">
+                        <li>• Booking cards (Message button)</li>
+                        <li>• Customer profile pages</li>
+                        <li>• Direct conversation creation</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Activity</CardTitle>
+                  <p className="text-sm text-foreground/60">
+                    Latest conversation updates will appear here
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8 text-foreground/50">
+                    <MessageCircle className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>No recent conversation activity</p>
+                    <p className="text-sm">Start messaging with customers to see activity here</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* Services Tab - Owner and Dispatcher */}
             {(isOwner || isDispatcher) && (
               <TabsContent value="services-addons" className="space-y-6">
