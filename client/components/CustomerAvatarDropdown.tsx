@@ -15,6 +15,7 @@ import {
   CreditCard,
   Calendar,
   Heart,
+  MapPin,
   LogOut,
   ChevronDown,
   Moon,
