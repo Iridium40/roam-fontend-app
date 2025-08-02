@@ -862,7 +862,7 @@ export default function Index() {
               >
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <div className="w-24 h-24 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
                       {business.image &&
                       business.image !== "/api/placeholder/80/80" ? (
                         <img
@@ -871,7 +871,7 @@ export default function Index() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Building className="w-8 h-8 text-white" />
+                        <Building className="w-12 h-12 text-white" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -888,9 +888,7 @@ export default function Index() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-foreground/60">
-                            {business.type}
-                          </p>
+
                           <p className="text-xs text-foreground/50">
                             {business.location}
                           </p>
@@ -913,9 +911,7 @@ export default function Index() {
                               ({business.reviews})
                             </span>
                           </div>
-                          <div className="text-sm font-semibold text-roam-blue">
-                            {business.price}
-                          </div>
+
                           {business.years_in_business && (
                             <div className="text-xs text-foreground/50">
                               {business.years_in_business} years
