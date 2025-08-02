@@ -214,7 +214,18 @@ export default function BusinessProfile() {
       });
       return;
     }
-    navigate(`/book/${businessId}?service=${service.id}`);
+    setSelectedService(service);
+    setProviderSelectorOpen(true);
+  };
+
+  const handleProviderSelection = (providerId: string | null) => {
+    setSelectedProviderId(providerId);
+    if (selectedService) {
+      const bookingUrl = `/book/${businessId}?service=${selectedService.id}${
+        providerId ? `&provider=${providerId}` : ''
+      }`;
+      navigate(bookingUrl);
+    }
   };
 
   const handleBookBusiness = () => {
