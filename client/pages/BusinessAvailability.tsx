@@ -107,7 +107,13 @@ export default function BusinessAvailability() {
 
       if (businessesError) {
         console.error('Error fetching businesses:', businessesError);
-        throw new Error('Failed to fetch available businesses');
+        console.error('Business query details:', {
+          serviceId,
+          selectedDate,
+          selectedTime,
+          dayOfWeek
+        });
+        throw new Error(`Failed to fetch available businesses: ${businessesError.message || businessesError}`);
       }
 
       // Filter businesses by time availability
