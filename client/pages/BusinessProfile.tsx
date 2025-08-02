@@ -112,6 +112,8 @@ export default function BusinessProfile() {
         .eq('business_id', businessId)
         .eq('is_active', true);
 
+      console.log('Services query result:', { services, servicesError });
+
       // Fetch business addons
       const { data: addons, error: addonsError } = await supabase
         .from('business_addons')
