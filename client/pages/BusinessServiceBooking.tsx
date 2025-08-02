@@ -359,7 +359,7 @@ export default function BusinessServiceBooking() {
                     </Avatar>
                     <div>
                       <h1 className="text-2xl font-bold">{business?.business_name}</h1>
-                      <p className="text-foreground/70">{business?.business_description}</p>
+                      <p className="text-foreground/70">Professional {business?.business_type?.replace('_', ' ')} services</p>
                       <div className="flex items-center gap-2 mt-2">
                         {business?.verification_status === 'approved' && (
                           <Badge className="bg-green-100 text-green-800">
