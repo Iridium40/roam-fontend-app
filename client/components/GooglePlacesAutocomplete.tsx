@@ -214,6 +214,19 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
         <div className="mt-1 text-xs text-muted-foreground">
           {!GOOGLE_MAPS_API_KEY ? (
             <>📍 Manual address entry (Google Maps API key not configured)</>
+          ) : billingError ? (
+            <div className="text-amber-600">
+              ⚠️ Google Maps requires billing to be enabled. Manual address entry only.
+              <br />
+              <a
+                href="https://console.cloud.google.com/project/_/billing/enable"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-amber-800"
+              >
+                Enable billing on Google Cloud
+              </a>
+            </div>
           ) : (
             <>⚠️ Google Maps not available. Manual address entry only.</>
           )}
