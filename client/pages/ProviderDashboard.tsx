@@ -392,15 +392,11 @@ export default function ProviderDashboard() {
   const [editProviderAddons, setEditProviderAddons] = useState([]);
   const [editAssignmentsLoading, setEditAssignmentsLoading] = useState(false);
 
-  // Messaging states
+  // Conversations states (Twilio Conversations API)
   const [messagingModal, setMessagingModal] = useState(false);
+  const [conversationsListModal, setConversationsListModal] = useState(false);
   const [selectedBookingForMessaging, setSelectedBookingForMessaging] =
     useState(null);
-  const [messageText, setMessageText] = useState("");
-  const [conversationHistory, setConversationHistory] = useState([]);
-  const [messagingLoading, setMessagingLoading] = useState(false);
-  const [selectedAttachments, setSelectedAttachments] = useState([]);
-  const [attachmentPreviews, setAttachmentPreviews] = useState([]);
 
   // Subscription states
   const [currentSubscription, setCurrentSubscription] = useState(null);
