@@ -68,7 +68,7 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error adding service to favorites:', error);
+        console.error('Error adding service to favorites:', error?.message || error);
         toast({
           title: "Error",
           description: "Failed to add service to favorites",
@@ -83,7 +83,7 @@ export function useFavorites() {
       });
       return true;
     } catch (error) {
-      console.error('Error adding service to favorites:', error);
+      console.error('Error adding service to favorites:', error?.message || error);
       toast({
         title: "Error",
         description: "Failed to add service to favorites",
@@ -107,7 +107,7 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error removing service from favorites:', error);
+        console.error('Error removing service from favorites:', error?.message || error);
         toast({
           title: "Error",
           description: "Failed to remove service from favorites",
@@ -122,7 +122,7 @@ export function useFavorites() {
       });
       return true;
     } catch (error) {
-      console.error('Error removing service from favorites:', error);
+      console.error('Error removing service from favorites:', error?.message || error);
       toast({
         title: "Error",
         description: "Failed to remove service from favorites",
@@ -174,7 +174,7 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error adding business to favorites:', error);
+        console.error('Error adding business to favorites:', error?.message || error);
         toast({
           title: "Error",
           description: "Failed to add business to favorites",
@@ -189,7 +189,7 @@ export function useFavorites() {
       });
       return true;
     } catch (error) {
-      console.error('Error adding business to favorites:', error);
+      console.error('Error adding business to favorites:', error?.message || error);
       toast({
         title: "Error",
         description: "Failed to add business to favorites",
@@ -213,7 +213,7 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error removing business from favorites:', error);
+        console.error('Error removing business from favorites:', error?.message || error);
         toast({
           title: "Error",
           description: "Failed to remove business from favorites",
@@ -228,7 +228,7 @@ export function useFavorites() {
       });
       return true;
     } catch (error) {
-      console.error('Error removing business from favorites:', error);
+      console.error('Error removing business from favorites:', error?.message || error);
       toast({
         title: "Error",
         description: "Failed to remove business from favorites",
@@ -280,7 +280,7 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error adding provider to favorites:', error);
+        console.error('Error adding provider to favorites:', error?.message || error);
         toast({
           title: "Error",
           description: "Failed to add provider to favorites",
@@ -295,7 +295,7 @@ export function useFavorites() {
       });
       return true;
     } catch (error) {
-      console.error('Error adding provider to favorites:', error);
+      console.error('Error adding provider to favorites:', error?.message || error);
       toast({
         title: "Error",
         description: "Failed to add provider to favorites",
@@ -319,7 +319,7 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error removing provider from favorites:', error);
+        console.error('Error removing provider from favorites:', error?.message || error);
         toast({
           title: "Error",
           description: "Failed to remove provider from favorites",
@@ -334,7 +334,7 @@ export function useFavorites() {
       });
       return true;
     } catch (error) {
-      console.error('Error removing provider from favorites:', error);
+      console.error('Error removing provider from favorites:', error?.message || error);
       toast({
         title: "Error",
         description: "Failed to remove provider from favorites",
@@ -381,13 +381,13 @@ export function useFavorites() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching favorite services:', error);
+        console.error('Error fetching favorite services:', error?.message || error);
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Error fetching favorite services:', error);
+      console.error('Error fetching favorite services:', error?.message || error);
       return [];
     }
   }, [isCustomer]);
@@ -404,13 +404,13 @@ export function useFavorites() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching favorite businesses:', error);
+        console.error('Error fetching favorite businesses:', error?.message || error);
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Error fetching favorite businesses:', error);
+      console.error('Error fetching favorite businesses:', error?.message || error);
       return [];
     }
   }, [isCustomer]);
@@ -427,13 +427,13 @@ export function useFavorites() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching favorite providers:', error);
+        console.error('Error fetching favorite providers:', error?.message || error);
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Error fetching favorite providers:', error);
+      console.error('Error fetching favorite providers:', error?.message || error);
       return [];
     }
   }, [isCustomer]);
