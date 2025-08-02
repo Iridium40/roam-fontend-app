@@ -96,18 +96,16 @@ export default function BusinessServiceBooking() {
           id,
           service_id,
           business_price,
-          custom_price,
           delivery_type,
           services (
             id,
             name,
             description,
-            duration_minutes,
-            image_url
+            duration_minutes
           )
         `)
         .eq('business_id', businessId)
-        .eq('is_available', true);
+        .eq('is_active', true);
 
       setServices(servicesData || []);
 
