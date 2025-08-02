@@ -70,53 +70,28 @@ export default function MyBookings() {
         let bookingsQuery = supabase
           .from('bookings')
           .select(`
-            id,
-            booking_date,
-            start_time,
-            total_amount,
-            delivery_type,
-            booking_status,
-            payment_status,
-            guest_name,
-            guest_email,
-            guest_phone,
-            admin_notes,
-            created_at,
-            services:service_id (
+            *,
+            services (
               id,
               name,
-              description,
-              estimated_duration
+              min_price
             ),
-            providers:provider_id (
+            customer_profiles (
               id,
               first_name,
               last_name,
-              phone,
-              profile_image_url,
-              business_locations:location_id (
-                location_name,
-                address,
-                city,
-                state,
-                postal_code
-              )
+              email,
+              image_url
             ),
-            business_locations:business_location_id (
-              location_name,
-              address,
-              city,
-              state,
-              postal_code
-            ),
-            customer_locations:customer_location_id (
-              address,
-              city,
-              state,
-              postal_code
+            providers (
+              id,
+              first_name,
+              last_name,
+              location_id
             )
           `)
-          .order('booking_date', { ascending: false });
+          .order('booking_date', { ascending: false })
+          .limit(50);
 
         // Query by customer_id if we found the customer, otherwise by guest_email
         if (customerData?.id) {
