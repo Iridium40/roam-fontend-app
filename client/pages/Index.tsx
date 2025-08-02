@@ -64,8 +64,8 @@ export default function Index() {
   const [featuredBusinesses, setFeaturedBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const handleProviderShare = (provider: any) => {
-    setSelectedProvider(provider);
+  const handleBusinessShare = (business: any) => {
+    setSelectedProvider(business);
     setShareModalOpen(true);
   };
 
