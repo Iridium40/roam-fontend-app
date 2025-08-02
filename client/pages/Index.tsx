@@ -568,9 +568,6 @@ export default function Index() {
                           <span className="text-2xl font-bold text-roam-blue">
                             {service.price}
                           </span>
-                          <span className="text-sm text-foreground/60 line-through">
-                            {service.originalPrice}
-                          </span>
                         </div>
                         <Badge
                           variant="outline"
