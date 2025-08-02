@@ -176,8 +176,11 @@ export default function CustomerLocations() {
     try {
       setSubmitting(true);
 
+      console.log('Submitting location with customer_id:', customer?.customer_id);
+      console.log('Form data:', formData);
+
       // Validate required fields
-      if (!formData.location_name.trim() || !formData.street_address.trim() || 
+      if (!formData.location_name.trim() || !formData.street_address.trim() ||
           !formData.city.trim() || !formData.state.trim() || !formData.zip_code.trim()) {
         toast({
           title: "Missing Information",
