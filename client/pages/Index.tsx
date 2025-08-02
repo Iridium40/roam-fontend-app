@@ -966,8 +966,8 @@ export default function Index() {
             Ready to Book Your Service?
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who trust ROAM for their
-            premium service needs.
+            Discover verified businesses and book premium services with
+            trusted professionals across Florida.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -986,8 +986,8 @@ export default function Index() {
               className="border-white text-white hover:bg-white hover:text-roam-blue text-lg px-8 py-6"
             >
               <Link to="/provider-portal">
-                <Users className="w-5 h-5 mr-2" />
-                Become a Provider
+                <Building className="w-5 h-5 mr-2" />
+                List Your Business
               </Link>
             </Button>
           </div>
