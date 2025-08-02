@@ -113,7 +113,7 @@ export default function CustomerLocations() {
       zip_code: '',
       is_primary: false,
       access_instructions: '',
-      location_type: 'home',
+      location_type: 'Home',
     });
     setEditingLocation(null);
   };
