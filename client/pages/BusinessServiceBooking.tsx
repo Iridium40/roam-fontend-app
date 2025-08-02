@@ -60,7 +60,8 @@ export default function BusinessServiceBooking() {
     useState<string>("no-preference");
   const [deliveryType, setDeliveryType] = useState<string>("");
   const [customerLocation, setCustomerLocation] = useState<string>("");
-  const [customerLocationData, setCustomerLocationData] = useState<google.maps.places.PlaceResult | null>(null);
+  const [customerLocationData, setCustomerLocationData] =
+    useState<google.maps.places.PlaceResult | null>(null);
   const [savedLocations, setSavedLocations] = useState<any[]>([]);
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
@@ -69,17 +70,17 @@ export default function BusinessServiceBooking() {
 
     try {
       const { data, error } = await supabase
-        .from('customer_locations')
-        .select('*')
-        .eq('customer_id', customer.customer_id)
-        .eq('is_active', true)
-        .order('is_primary', { ascending: false })
-        .order('created_at', { ascending: false });
+        .from("customer_locations")
+        .select("*")
+        .eq("customer_id", customer.customer_id)
+        .eq("is_active", true)
+        .order("is_primary", { ascending: false })
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setSavedLocations(data || []);
     } catch (error) {
-      console.error('Error fetching saved locations:', error);
+      console.error("Error fetching saved locations:", error);
     }
   };
 
@@ -317,7 +318,10 @@ export default function BusinessServiceBooking() {
     return serviceTotal + addonTotal;
   };
 
-  const handleLocationChange = (address: string, placeData?: google.maps.places.PlaceResult) => {
+  const handleLocationChange = (
+    address: string,
+    placeData?: google.maps.places.PlaceResult,
+  ) => {
     setCustomerLocation(address);
     if (placeData) {
       setCustomerLocationData(placeData);
@@ -356,7 +360,8 @@ export default function BusinessServiceBooking() {
         selectedProvider === "no-preference" ? null : selectedProvider,
       deliveryType,
       customerLocation: deliveryType === "mobile" ? customerLocation : null,
-      customerLocationData: deliveryType === "mobile" ? customerLocationData : null,
+      customerLocationData:
+        deliveryType === "mobile" ? customerLocationData : null,
       specialRequests,
       total: calculateTotal(),
     };
@@ -699,7 +704,7 @@ export default function BusinessServiceBooking() {
                                 key={location.id}
                                 variant="outline"
                                 onClick={() => {
-                                  const fullAddress = `${location.street_address}${location.unit_number ? `, ${location.unit_number}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`;
+                                  const fullAddress = `${location.street_address}${location.unit_number ? `, ${location.unit_number}` : ""}, ${location.city}, ${location.state} ${location.zip_code}`;
                                   setCustomerLocation(fullAddress);
                                   setCustomerLocationData(null);
                                 }}
@@ -707,11 +712,11 @@ export default function BusinessServiceBooking() {
                               >
                                 <div className="flex items-center gap-3">
                                   <div className="w-8 h-8 bg-roam-light-blue/20 rounded-full flex items-center justify-center flex-shrink-0">
-                                    {location.location_type === 'Home' ? (
+                                    {location.location_type === "Home" ? (
                                       <Home className="w-4 h-4 text-roam-blue" />
-                                    ) : location.location_type === 'Condo' ? (
+                                    ) : location.location_type === "Condo" ? (
                                       <Building className="w-4 h-4 text-roam-blue" />
-                                    ) : location.location_type === 'Hotel' ? (
+                                    ) : location.location_type === "Hotel" ? (
                                       <Building className="w-4 h-4 text-roam-blue" />
                                     ) : (
                                       <MapPin className="w-4 h-4 text-roam-blue" />
@@ -719,7 +724,9 @@ export default function BusinessServiceBooking() {
                                   </div>
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2">
-                                      <span className="font-medium">{location.location_name}</span>
+                                      <span className="font-medium">
+                                        {location.location_name}
+                                      </span>
                                       {location.is_primary && (
                                         <Badge className="bg-roam-yellow text-gray-900 text-xs">
                                           Primary
@@ -727,7 +734,8 @@ export default function BusinessServiceBooking() {
                                       )}
                                     </div>
                                     <div className="text-sm text-foreground/60">
-                                      {location.street_address}, {location.city}, {location.state}
+                                      {location.street_address}, {location.city}
+                                      , {location.state}
                                     </div>
                                   </div>
                                 </div>
@@ -741,7 +749,9 @@ export default function BusinessServiceBooking() {
                       <div>
                         <div className="flex items-center justify-between">
                           <Label htmlFor="location">
-                            {savedLocations.length > 0 ? 'Or Enter a New Address' : 'Your Address'}
+                            {savedLocations.length > 0
+                              ? "Or Enter a New Address"
+                              : "Your Address"}
                           </Label>
                           {savedLocations.length === 0 && (
                             <Button

@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,7 +30,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 import {
   MapPin,
   Home,
@@ -43,12 +43,12 @@ import {
   ChevronLeft,
   Shield,
   Clock,
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import GooglePlacesAutocomplete from '@/components/GooglePlacesAutocomplete';
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import GooglePlacesAutocomplete from "@/components/GooglePlacesAutocomplete";
 
 interface CustomerLocation {
   id: string;
@@ -65,7 +65,7 @@ interface CustomerLocation {
   is_active: boolean;
   access_instructions?: string;
   created_at: string;
-  location_type: 'Home' | 'Condo' | 'Hotel' | 'Other' | null;
+  location_type: "Home" | "Condo" | "Hotel" | "Other" | null;
 }
 
 interface LocationFormData {
@@ -79,41 +79,42 @@ interface LocationFormData {
   longitude?: number;
   is_primary: boolean;
   access_instructions: string;
-  location_type: 'Home' | 'Condo' | 'Hotel' | 'Other' | null;
+  location_type: "Home" | "Condo" | "Hotel" | "Other" | null;
 }
 
 export default function CustomerLocations() {
   const { customer } = useAuth();
   const { toast } = useToast();
-  
+
   const [locations, setLocations] = useState<CustomerLocation[]>([]);
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
-  const [editingLocation, setEditingLocation] = useState<CustomerLocation | null>(null);
+  const [editingLocation, setEditingLocation] =
+    useState<CustomerLocation | null>(null);
   const [formData, setFormData] = useState<LocationFormData>({
-    location_name: '',
-    street_address: '',
-    unit_number: '',
-    city: '',
-    state: '',
-    zip_code: '',
+    location_name: "",
+    street_address: "",
+    unit_number: "",
+    city: "",
+    state: "",
+    zip_code: "",
     is_primary: false,
-    access_instructions: '',
-    location_type: 'Home',
+    access_instructions: "",
+    location_type: "Home",
   });
   const [submitting, setSubmitting] = useState(false);
 
   const resetForm = () => {
     setFormData({
-      location_name: '',
-      street_address: '',
-      unit_number: '',
-      city: '',
-      state: '',
-      zip_code: '',
+      location_name: "",
+      street_address: "",
+      unit_number: "",
+      city: "",
+      state: "",
+      zip_code: "",
       is_primary: false,
-      access_instructions: '',
-      location_type: 'Home',
+      access_instructions: "",
+      location_type: "Home",
     });
     setEditingLocation(null);
   };
@@ -124,18 +125,19 @@ export default function CustomerLocations() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('customer_locations')
-        .select('*')
-        .eq('customer_id', customer.customer_id)
-        .eq('is_active', true)
-        .order('is_primary', { ascending: false })
-        .order('created_at', { ascending: false });
+        .from("customer_locations")
+        .select("*")
+        .eq("customer_id", customer.customer_id)
+        .eq("is_active", true)
+        .order("is_primary", { ascending: false })
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setLocations(data || []);
     } catch (error: any) {
-      console.error('Error fetching locations:', error);
-      const errorMessage = error?.message || error?.error?.message || 'Unknown error';
+      console.error("Error fetching locations:", error);
+      const errorMessage =
+        error?.message || error?.error?.message || "Unknown error";
       toast({
         title: "Error",
         description: `Failed to load your locations: ${errorMessage}`,
@@ -150,19 +152,22 @@ export default function CustomerLocations() {
     fetchLocations();
   }, [customer?.customer_id]);
 
-  const handleAddressChange = (address: string, placeData?: google.maps.places.PlaceResult) => {
-    setFormData(prev => ({ ...prev, street_address: address }));
-    
+  const handleAddressChange = (
+    address: string,
+    placeData?: google.maps.places.PlaceResult,
+  ) => {
+    setFormData((prev) => ({ ...prev, street_address: address }));
+
     if (placeData && placeData.address_components) {
       const components = placeData.address_components;
-      const getComponent = (type: string) => 
-        components.find(comp => comp.types.includes(type))?.long_name || '';
+      const getComponent = (type: string) =>
+        components.find((comp) => comp.types.includes(type))?.long_name || "";
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        city: getComponent('locality') || getComponent('sublocality'),
-        state: getComponent('administrative_area_level_1'),
-        zip_code: getComponent('postal_code'),
+        city: getComponent("locality") || getComponent("sublocality"),
+        state: getComponent("administrative_area_level_1"),
+        zip_code: getComponent("postal_code"),
         latitude: placeData.geometry?.location?.lat(),
         longitude: placeData.geometry?.location?.lng(),
       }));
@@ -176,12 +181,20 @@ export default function CustomerLocations() {
     try {
       setSubmitting(true);
 
-      console.log('Submitting location with customer_id:', customer?.customer_id);
-      console.log('Form data:', formData);
+      console.log(
+        "Submitting location with customer_id:",
+        customer?.customer_id,
+      );
+      console.log("Form data:", formData);
 
       // Validate required fields
-      if (!formData.location_name.trim() || !formData.street_address.trim() ||
-          !formData.city.trim() || !formData.state.trim() || !formData.zip_code.trim()) {
+      if (
+        !formData.location_name.trim() ||
+        !formData.street_address.trim() ||
+        !formData.city.trim() ||
+        !formData.state.trim() ||
+        !formData.zip_code.trim()
+      ) {
         toast({
           title: "Missing Information",
           description: "Please fill in all required fields",
@@ -193,9 +206,9 @@ export default function CustomerLocations() {
       // If setting as primary, update other locations first
       if (formData.is_primary) {
         await supabase
-          .from('customer_locations')
+          .from("customer_locations")
           .update({ is_primary: false })
-          .eq('customer_id', customer.customer_id);
+          .eq("customer_id", customer.customer_id);
       }
 
       const locationData = {
@@ -214,42 +227,43 @@ export default function CustomerLocations() {
       };
 
       let error, data;
-      console.log('Location data to save:', locationData);
+      console.log("Location data to save:", locationData);
 
       if (editingLocation) {
-        console.log('Updating existing location:', editingLocation.id);
+        console.log("Updating existing location:", editingLocation.id);
         ({ error, data } = await supabase
-          .from('customer_locations')
+          .from("customer_locations")
           .update(locationData)
-          .eq('id', editingLocation.id));
+          .eq("id", editingLocation.id));
       } else {
-        console.log('Inserting new location');
+        console.log("Inserting new location");
         ({ error, data } = await supabase
-          .from('customer_locations')
+          .from("customer_locations")
           .insert([locationData]));
       }
 
-      console.log('Database operation result:', { error, data });
+      console.log("Database operation result:", { error, data });
 
       if (error) {
-        console.error('Database error details:', error);
+        console.error("Database error details:", error);
         throw error;
       }
 
       toast({
         title: "Success",
-        description: `Location ${editingLocation ? 'updated' : 'added'} successfully`,
+        description: `Location ${editingLocation ? "updated" : "added"} successfully`,
       });
 
       setFormOpen(false);
       resetForm();
       fetchLocations();
     } catch (error: any) {
-      console.error('Error saving location:', error);
-      const errorMessage = error?.message || error?.error?.message || JSON.stringify(error);
+      console.error("Error saving location:", error);
+      const errorMessage =
+        error?.message || error?.error?.message || JSON.stringify(error);
       toast({
         title: "Error",
-        description: `Failed to ${editingLocation ? 'update' : 'add'} location: ${errorMessage}`,
+        description: `Failed to ${editingLocation ? "update" : "add"} location: ${errorMessage}`,
         variant: "destructive",
       });
     } finally {
@@ -262,14 +276,14 @@ export default function CustomerLocations() {
     setFormData({
       location_name: location.location_name,
       street_address: location.street_address,
-      unit_number: location.unit_number || '',
+      unit_number: location.unit_number || "",
       city: location.city,
       state: location.state,
       zip_code: location.zip_code,
       latitude: location.latitude,
       longitude: location.longitude,
       is_primary: location.is_primary,
-      access_instructions: location.access_instructions || '',
+      access_instructions: location.access_instructions || "",
       location_type: location.location_type,
     });
     setFormOpen(true);
@@ -278,9 +292,9 @@ export default function CustomerLocations() {
   const handleDelete = async (location: CustomerLocation) => {
     try {
       const { error } = await supabase
-        .from('customer_locations')
+        .from("customer_locations")
         .update({ is_active: false })
-        .eq('id', location.id);
+        .eq("id", location.id);
 
       if (error) throw error;
 
@@ -291,8 +305,9 @@ export default function CustomerLocations() {
 
       fetchLocations();
     } catch (error: any) {
-      console.error('Error deleting location:', error);
-      const errorMessage = error?.message || error?.error?.message || 'Unknown error';
+      console.error("Error deleting location:", error);
+      const errorMessage =
+        error?.message || error?.error?.message || "Unknown error";
       toast({
         title: "Error",
         description: `Failed to delete location: ${errorMessage}`,
@@ -305,15 +320,15 @@ export default function CustomerLocations() {
     try {
       // Remove primary from all locations
       await supabase
-        .from('customer_locations')
+        .from("customer_locations")
         .update({ is_primary: false })
-        .eq('customer_id', customer?.customer_id);
+        .eq("customer_id", customer?.customer_id);
 
       // Set this location as primary
       const { error } = await supabase
-        .from('customer_locations')
+        .from("customer_locations")
         .update({ is_primary: true })
-        .eq('id', location.id);
+        .eq("id", location.id);
 
       if (error) throw error;
 
@@ -324,8 +339,9 @@ export default function CustomerLocations() {
 
       fetchLocations();
     } catch (error: any) {
-      console.error('Error setting primary location:', error);
-      const errorMessage = error?.message || error?.error?.message || 'Unknown error';
+      console.error("Error setting primary location:", error);
+      const errorMessage =
+        error?.message || error?.error?.message || "Unknown error";
       toast({
         title: "Error",
         description: `Failed to update primary location: ${errorMessage}`,
@@ -336,21 +352,31 @@ export default function CustomerLocations() {
 
   const getLocationIcon = (type: string | null) => {
     switch (type) {
-      case 'Home': return Home;
-      case 'Condo': return Building;
-      case 'Hotel': return Building;
-      case 'Other': return MapPin;
-      default: return MapPin;
+      case "Home":
+        return Home;
+      case "Condo":
+        return Building;
+      case "Hotel":
+        return Building;
+      case "Other":
+        return MapPin;
+      default:
+        return MapPin;
     }
   };
 
   const getLocationTypeColor = (type: string | null) => {
     switch (type) {
-      case 'Home': return 'bg-green-100 text-green-800';
-      case 'Condo': return 'bg-blue-100 text-blue-800';
-      case 'Hotel': return 'bg-purple-100 text-purple-800';
-      case 'Other': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "Home":
+        return "bg-green-100 text-green-800";
+      case "Condo":
+        return "bg-blue-100 text-blue-800";
+      case "Hotel":
+        return "bg-purple-100 text-purple-800";
+      case "Other":
+        return "bg-orange-100 text-orange-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -411,7 +437,7 @@ export default function CustomerLocations() {
             </div>
             <Dialog open={formOpen} onOpenChange={setFormOpen}>
               <DialogTrigger asChild>
-                <Button 
+                <Button
                   className="bg-roam-blue hover:bg-roam-blue/90"
                   onClick={() => {
                     resetForm();
@@ -425,7 +451,7 @@ export default function CustomerLocations() {
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>
-                    {editingLocation ? 'Edit Location' : 'Add New Location'}
+                    {editingLocation ? "Edit Location" : "Add New Location"}
                   </DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -435,7 +461,12 @@ export default function CustomerLocations() {
                       <Input
                         id="location_name"
                         value={formData.location_name}
-                        onChange={(e) => setFormData(prev => ({ ...prev, location_name: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            location_name: e.target.value,
+                          }))
+                        }
                         placeholder="e.g., Home, Work, Mom's House"
                         className="mt-1"
                         required
@@ -445,8 +476,13 @@ export default function CustomerLocations() {
                       <Label htmlFor="location_type">Location Type *</Label>
                       <Select
                         value={formData.location_type || undefined}
-                        onValueChange={(value: 'Home' | 'Condo' | 'Hotel' | 'Other') =>
-                          setFormData(prev => ({ ...prev, location_type: value }))
+                        onValueChange={(
+                          value: "Home" | "Condo" | "Hotel" | "Other",
+                        ) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            location_type: value,
+                          }))
                         }
                       >
                         <SelectTrigger className="mt-1">
@@ -476,7 +512,12 @@ export default function CustomerLocations() {
                       <Input
                         id="unit_number"
                         value={formData.unit_number}
-                        onChange={(e) => setFormData(prev => ({ ...prev, unit_number: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            unit_number: e.target.value,
+                          }))
+                        }
                         placeholder="Apt 2B, Unit 5, etc."
                         className="mt-1"
                       />
@@ -486,7 +527,12 @@ export default function CustomerLocations() {
                       <Input
                         id="city"
                         value={formData.city}
-                        onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            city: e.target.value,
+                          }))
+                        }
                         placeholder="City"
                         className="mt-1"
                         required
@@ -497,7 +543,12 @@ export default function CustomerLocations() {
                       <Input
                         id="state"
                         value={formData.state}
-                        onChange={(e) => setFormData(prev => ({ ...prev, state: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            state: e.target.value,
+                          }))
+                        }
                         placeholder="State"
                         className="mt-1"
                         required
@@ -508,18 +559,30 @@ export default function CustomerLocations() {
                       <Input
                         id="zip_code"
                         value={formData.zip_code}
-                        onChange={(e) => setFormData(prev => ({ ...prev, zip_code: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            zip_code: e.target.value,
+                          }))
+                        }
                         placeholder="ZIP Code"
                         className="mt-1"
                         required
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor="access_instructions">Access Instructions</Label>
+                      <Label htmlFor="access_instructions">
+                        Access Instructions
+                      </Label>
                       <Textarea
                         id="access_instructions"
                         value={formData.access_instructions}
-                        onChange={(e) => setFormData(prev => ({ ...prev, access_instructions: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            access_instructions: e.target.value,
+                          }))
+                        }
                         placeholder="Gate code, parking instructions, how to find the entrance, etc."
                         className="mt-1"
                         rows={3}
@@ -529,9 +592,16 @@ export default function CustomerLocations() {
                       <Switch
                         id="is_primary"
                         checked={formData.is_primary}
-                        onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_primary: checked }))}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            is_primary: checked,
+                          }))
+                        }
                       />
-                      <Label htmlFor="is_primary">Set as primary location</Label>
+                      <Label htmlFor="is_primary">
+                        Set as primary location
+                      </Label>
                     </div>
                   </div>
                   <div className="flex gap-3 pt-4">
@@ -551,7 +621,11 @@ export default function CustomerLocations() {
                       disabled={submitting}
                       className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
                     >
-                      {submitting ? 'Saving...' : editingLocation ? 'Update Location' : 'Add Location'}
+                      {submitting
+                        ? "Saving..."
+                        : editingLocation
+                          ? "Update Location"
+                          : "Add Location"}
                     </Button>
                   </div>
                 </form>
@@ -585,7 +659,10 @@ export default function CustomerLocations() {
               {locations.map((location) => {
                 const IconComponent = getLocationIcon(location.location_type);
                 return (
-                  <Card key={location.id} className="hover:shadow-lg transition-shadow">
+                  <Card
+                    key={location.id}
+                    className="hover:shadow-lg transition-shadow"
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-4 flex-1">
@@ -594,10 +671,14 @@ export default function CustomerLocations() {
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-lg font-semibold">{location.location_name}</h3>
+                              <h3 className="text-lg font-semibold">
+                                {location.location_name}
+                              </h3>
                               {location.location_type && (
                                 <Badge
-                                  className={getLocationTypeColor(location.location_type)}
+                                  className={getLocationTypeColor(
+                                    location.location_type,
+                                  )}
                                 >
                                   {location.location_type}
                                 </Badge>
@@ -614,7 +695,10 @@ export default function CustomerLocations() {
                               {location.unit_number && (
                                 <p>Unit: {location.unit_number}</p>
                               )}
-                              <p>{location.city}, {location.state} {location.zip_code}</p>
+                              <p>
+                                {location.city}, {location.state}{" "}
+                                {location.zip_code}
+                              </p>
                               {location.access_instructions && (
                                 <p className="text-sm italic">
                                   Instructions: {location.access_instructions}
@@ -624,7 +708,10 @@ export default function CustomerLocations() {
                             <div className="flex items-center gap-4 mt-2 text-xs text-foreground/50">
                               <div className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                Added {new Date(location.created_at).toLocaleDateString()}
+                                Added{" "}
+                                {new Date(
+                                  location.created_at,
+                                ).toLocaleDateString()}
                               </div>
                             </div>
                           </div>
@@ -659,10 +746,13 @@ export default function CustomerLocations() {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Location</AlertDialogTitle>
+                                <AlertDialogTitle>
+                                  Delete Location
+                                </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Are you sure you want to delete "{location.location_name}"? 
-                                  This action cannot be undone.
+                                  Are you sure you want to delete "
+                                  {location.location_name}"? This action cannot
+                                  be undone.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
