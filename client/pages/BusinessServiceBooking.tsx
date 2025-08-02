@@ -396,7 +396,7 @@ export default function BusinessServiceBooking() {
                             </p>
                             <div className="flex items-center gap-4">
                               <span className="text-lg font-bold text-roam-blue">
-                                ${service.custom_price || service.business_price}
+                                ${service.business_price}
                               </span>
                               <Badge variant="outline">
                                 {service.services.duration_minutes} min
