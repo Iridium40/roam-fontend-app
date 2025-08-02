@@ -429,14 +429,25 @@ const ProviderBooking = () => {
                       <div key={service.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
-                            <h3 className="font-semibold">{(service as any).services.name}</h3>
-                            <p className="text-sm text-gray-600 mt-1">
-                              {(service as any).services.description}
-                            </p>
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h3 className="font-semibold">{(service as any).services.name}</h3>
+                                <p className="text-sm text-gray-600 mt-1">
+                                  {(service as any).services.description}
+                                </p>
+                              </div>
+                              <FavoriteButton
+                                type="service"
+                                itemId={service.service_id}
+                                size="sm"
+                                variant="ghost"
+                                className="ml-2"
+                              />
+                            </div>
                           </div>
                           {(service as any).services.image_url && (
-                            <img 
-                              src={(service as any).services.image_url} 
+                            <img
+                              src={(service as any).services.image_url}
                               alt={(service as any).services.name}
                               className="w-16 h-16 object-cover rounded ml-4"
                             />
