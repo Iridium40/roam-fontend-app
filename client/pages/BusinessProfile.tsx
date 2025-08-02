@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FavoriteButton } from '@/components/FavoriteButton';
+import { ProviderSelector } from '@/components/ProviderSelector';
 import {
   Star,
   MapPin,
@@ -26,6 +27,7 @@ import {
   Award,
   Heart,
   Share2,
+  UserCheck,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
