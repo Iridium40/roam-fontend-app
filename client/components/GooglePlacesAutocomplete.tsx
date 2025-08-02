@@ -37,6 +37,13 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
   const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
+      // Check if API key is available
+      if (!GOOGLE_MAPS_API_KEY) {
+        setIsLoading(false);
+        reject(new Error('Google Maps API key not configured'));
+        return;
+      }
+
       // Check if Google Maps is already loaded
       if (window.google && window.google.maps && window.google.maps.places) {
         setIsGoogleMapsLoaded(true);
