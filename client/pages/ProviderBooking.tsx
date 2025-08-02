@@ -35,6 +35,7 @@ import {
   Globe,
   Check,
   Building,
+  UserCheck,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
