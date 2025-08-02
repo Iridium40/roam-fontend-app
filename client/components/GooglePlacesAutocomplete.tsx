@@ -69,12 +69,14 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       script.defer = true;
 
       window.initGoogleMaps = () => {
+        console.log('Google Maps script loaded successfully');
         setIsGoogleMapsLoaded(true);
         setIsLoading(false);
         resolve();
       };
 
-      script.onerror = () => {
+      script.onerror = (error) => {
+        console.error('Failed to load Google Maps script:', error);
         setIsLoading(false);
         reject(new Error('Failed to load Google Maps'));
       };
