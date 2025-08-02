@@ -162,6 +162,33 @@ const ProviderBooking = () => {
         console.error('Error fetching location:', locationError);
       }
 
+      // Fetch business providers
+      const { data: providers, error: providersError } = await supabase
+        .from('providers')
+        .select(`
+          id,
+          first_name,
+          last_name,
+          bio,
+          experience_years,
+          specialties,
+          image_url,
+          average_rating,
+          total_reviews
+        `)
+        .eq('business_id', businessId)
+        .eq('is_active', true);
+
+      if (providersError) {
+        console.error('Error fetching providers:', providersError);
+      }
+
+      // Set preferred provider if specified in URL
+      if (preferredProviderId && providers) {
+        const preferred = providers.find(p => p.id === preferredProviderId);
+        setPreferredProvider(preferred);
+      }
+
       setProviderData({
         business,
         services: services || [],
