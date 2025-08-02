@@ -247,56 +247,7 @@ export default function Index() {
     },
   ];
 
-  const featuredProviders = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      service: "Licensed Massage Therapist",
-      rating: 4.9,
-      reviews: 127,
-      deliveryTypes: ["mobile", "business"],
-      price: "$80-120/hour",
-      image: "/api/placeholder/80/80",
-      specialties: ["Deep Tissue", "Swedish", "Sports Massage"],
-      location: "Miami, FL",
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      service: "Certified Personal Trainer",
-      rating: 5.0,
-      reviews: 89,
-      deliveryTypes: ["mobile", "virtual"],
-      price: "$60-100/hour",
-      image: "/api/placeholder/80/80",
-      specialties: ["Weight Training", "HIIT", "Nutrition"],
-      location: "Orlando, FL",
-    },
-    {
-      id: 3,
-      name: "Emily Rodriguez",
-      service: "Hair Stylist & Colorist",
-      rating: 4.8,
-      reviews: 203,
-      deliveryTypes: ["mobile", "business"],
-      price: "$75-200/service",
-      image: "/api/placeholder/80/80",
-      specialties: ["Color", "Cuts", "Extensions"],
-      location: "Tampa, FL",
-    },
-    {
-      id: 4,
-      name: "Dr. Amanda White",
-      service: "Telehealth Physician",
-      rating: 4.9,
-      reviews: 156,
-      deliveryTypes: ["virtual"],
-      price: "$100-150/consultation",
-      image: "/api/placeholder/80/80",
-      specialties: ["General Medicine", "Wellness", "Preventive Care"],
-      location: "Jacksonville, FL",
-    },
-  ];
+
 
   const featuredServices = [
     {
