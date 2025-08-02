@@ -401,7 +401,7 @@ const ProviderBooking = () => {
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-gray-500" />
                       <span className="text-sm">
-                        {location.address}, {location.city}, {location.state} {location.postal_code}
+                        {location.address_line1}, {location.city}, {location.state} {location.postal_code}
                       </span>
                     </div>
                   )}
