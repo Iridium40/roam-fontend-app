@@ -147,13 +147,18 @@ export default function BusinessProfile() {
           last_name,
           bio,
           experience_years,
-          specialties,
           image_url,
           average_rating,
-          total_reviews
+          total_reviews,
+          verification_status,
+          provider_role,
+          total_bookings,
+          completed_bookings
         `)
         .eq('business_id', businessId)
         .eq('is_active', true);
+
+      console.log('Providers query result:', { providers, providersError });
 
       // Mock reviews data (you can implement this based on your reviews table structure)
       const reviews = [
