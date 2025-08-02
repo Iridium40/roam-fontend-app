@@ -790,18 +790,18 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Featured Providers */}
+      {/* Featured Businesses */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold">
-              Featured <span className="text-roam-blue">Providers</span>
+              Featured <span className="text-roam-blue">Businesses</span>
             </h2>
             <Badge
               variant="outline"
               className="border-roam-blue text-roam-blue"
             >
-              {filteredProviders.length} providers available
+              {filteredBusinesses.length} businesses available
             </Badge>
           </div>
 
