@@ -1048,8 +1048,8 @@ export default function Index() {
           isOpen={shareModalOpen}
           onClose={() => setShareModalOpen(false)}
           providerName={selectedProvider.name}
-          providerTitle={selectedProvider.specialty}
-          pageUrl={`${window.location.origin}/provider/${selectedProvider.id}`}
+          providerTitle={selectedProvider.type || selectedProvider.description}
+          pageUrl={`${window.location.origin}/business/${selectedProvider.id}`}
         />
       )}
 
