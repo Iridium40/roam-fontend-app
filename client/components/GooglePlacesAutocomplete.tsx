@@ -16,6 +16,7 @@ declare global {
   interface Window {
     google?: typeof google;
     initGoogleMaps?: () => void;
+    gm_authFailure?: () => void;
   }
 }
 
