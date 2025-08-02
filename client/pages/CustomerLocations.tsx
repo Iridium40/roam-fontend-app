@@ -79,7 +79,7 @@ interface LocationFormData {
   longitude?: number;
   is_primary: boolean;
   access_instructions: string;
-  location_type: 'home' | 'condo' | 'hotel' | 'other' | null;
+  location_type: 'Home' | 'Condo' | 'Hotel' | 'Other' | null;
 }
 
 export default function CustomerLocations() {
