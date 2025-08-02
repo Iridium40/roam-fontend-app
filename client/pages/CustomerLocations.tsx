@@ -65,7 +65,7 @@ interface CustomerLocation {
   is_active: boolean;
   access_instructions?: string;
   created_at: string;
-  location_type: 'home' | 'work' | 'other';
+  location_type: 'home' | 'condo' | 'hotel' | 'other' | null;
 }
 
 interface LocationFormData {
