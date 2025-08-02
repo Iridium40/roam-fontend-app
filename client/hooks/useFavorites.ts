@@ -52,10 +52,27 @@ export function useFavorites() {
 
   // Service favorites
   const addServiceToFavorites = useCallback(async (serviceId: string) => {
-    if (!isCustomer) {
+    if (!isCustomer || !customer?.id) {
       toast({
         title: "Sign in required",
         description: "Please sign in to add favorites",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!serviceId || serviceId === 'undefined') {
+      console.warn('Invalid service ID provided');
+      return false;
+    }
+
+    // Validate UUIDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(customer.id) || !uuidRegex.test(serviceId)) {
+      console.warn('Invalid UUID format for customer ID or service ID');
+      toast({
+        title: "Error",
+        description: "Invalid service or customer information",
         variant: "destructive",
       });
       return false;
