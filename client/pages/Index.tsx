@@ -212,7 +212,7 @@ export default function Index() {
           const transformedBusinesses = businessesData.map((business: any) => ({
             id: business.id,
             name: business.business_name,
-            description: business.business_description,
+            description: `Professional ${business.business_type.replace('_', ' ')} services`,
             type: business.business_type,
             rating: 4.8, // Default rating
             reviews: Math.floor(Math.random() * 200) + 50, // Random review count
@@ -224,7 +224,7 @@ export default function Index() {
               `${business.business_locations.city}, ${business.business_locations.state}` :
               "Florida",
             verification_status: business.verification_status,
-            years_in_business: business.years_in_business,
+            is_featured: business.is_featured,
           }));
           setFeaturedBusinesses(transformedBusinesses);
         }
