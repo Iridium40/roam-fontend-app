@@ -66,6 +66,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import ConversationChat from "@/components/ConversationChat";
+import ConversationsList from "@/components/ConversationsList";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
 // Plaid configuration
