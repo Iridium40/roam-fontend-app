@@ -954,7 +954,7 @@ export default function Index() {
                           className="w-full bg-roam-blue hover:bg-roam-blue/90"
                           style={{ marginLeft: '-2px', paddingLeft: '9px', paddingRight: '12px' }}
                         >
-                          <Link to={`/book/${business.id}`}>
+                          <Link to={`/business/${business.id}?tab=services`}>
                             <Calendar className="w-4 h-4 mr-2" />
                             Book Services
                           </Link>
