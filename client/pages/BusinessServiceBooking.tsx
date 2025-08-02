@@ -664,13 +664,19 @@ export default function BusinessServiceBooking() {
                     <div className="space-y-4">
                       <div>
                         <Label htmlFor="location">Your Address</Label>
-                        <Input
-                          id="location"
-                          placeholder="Enter your full address"
-                          value={customerLocation}
-                          onChange={(e) => setCustomerLocation(e.target.value)}
-                          className="mt-1"
-                        />
+                        <div className="mt-1">
+                          <GooglePlacesAutocomplete
+                            value={customerLocation}
+                            onChange={handleLocationChange}
+                            placeholder="Start typing your address..."
+                            className="w-full"
+                          />
+                        </div>
+                        {customerLocationData && (
+                          <div className="mt-2 text-xs text-muted-foreground">
+                            ✓ Address validated with Google Maps
+                          </div>
+                        )}
                       </div>
                     </div>
                   </CardContent>
