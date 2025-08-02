@@ -270,6 +270,9 @@ export default function Index() {
 
 
 
+  // Temporary empty array for promotional deals (will implement later)
+  const promotionalDeals: any[] = [];
+
   const deliveryIcons = {
     mobile: Smartphone,
     business: Building,
