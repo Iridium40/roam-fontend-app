@@ -196,23 +196,7 @@ export default function MyBookings() {
     return configs[status as keyof typeof configs] || configs.pending;
   };
 
-  const getDeliveryIcon = (type: string) => {
-    const icons = {
-      mobile: Smartphone,
-      business_location: Building,
-      virtual: Video,
-    };
-    return icons[type as keyof typeof icons] || Smartphone;
-  };
 
-  const getDeliveryLabel = (type: string) => {
-    const labels = {
-      mobile: "Mobile Service",
-      business_location: "In-Studio",
-      virtual: "Virtual",
-    };
-    return labels[type as keyof typeof labels] || type;
-  };
 
   const upcomingBookings = bookings.filter(
     (b) => b.status === "confirmed" || b.status === "pending",
