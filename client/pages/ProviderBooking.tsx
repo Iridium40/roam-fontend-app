@@ -458,7 +458,7 @@ const ProviderBooking = () => {
                           <div className="text-sm text-gray-500 space-y-1">
                             <div className="flex items-center">
                               <DollarSign className="h-4 w-4 mr-1" />
-                              <span className="font-semibold">${service.custom_price}</span>
+                              <span className="font-semibold">${(service as any).custom_price || (service as any).business_price || 0}</span>
                             </div>
                             {(service as any).services.estimated_duration && (
                               <div className="flex items-center">
