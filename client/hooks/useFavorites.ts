@@ -261,7 +261,14 @@ export function useFavorites() {
   }, [isCustomer, toast]);
 
   const isBusinessFavorited = useCallback(async (businessId: string): Promise<boolean> => {
-    if (!isCustomer || !customer?.id) {
+    if (!isCustomer || !customer?.id || !businessId || businessId === 'undefined') {
+      return false;
+    }
+
+    // Validate UUIDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(customer.id) || !uuidRegex.test(businessId)) {
+      console.warn('Invalid UUID format for customer ID or business ID');
       return false;
     }
 
@@ -375,7 +382,14 @@ export function useFavorites() {
   }, [isCustomer, toast]);
 
   const isProviderFavorited = useCallback(async (providerId: string): Promise<boolean> => {
-    if (!isCustomer || !customer?.id) {
+    if (!isCustomer || !customer?.id || !providerId || providerId === 'undefined') {
+      return false;
+    }
+
+    // Validate UUIDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(customer.id) || !uuidRegex.test(providerId)) {
+      console.warn('Invalid UUID format for customer ID or provider ID');
       return false;
     }
 
