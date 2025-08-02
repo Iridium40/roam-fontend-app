@@ -96,9 +96,11 @@ export default function Index() {
         setLoading(true);
 
         // Fetch featured services using is_featured flag
-        const { data: featuredServicesData, error: featuredError } = await supabase
-          .from('services')
-          .select(`
+        const { data: featuredServicesData, error: featuredError } =
+          await supabase
+            .from("services")
+            .select(
+              `
             id,
             name,
             description,
@@ -116,32 +118,45 @@ export default function Index() {
                 service_category_type
               )
             )
-          `)
-          .eq('is_active', true)
-          .eq('is_featured', true)
-          .limit(6);
+          `,
+            )
+            .eq("is_active", true)
+            .eq("is_featured", true)
+            .limit(6);
 
-        console.log('Featured services query result:', { featuredServicesData, featuredError });
+        console.log("Featured services query result:", {
+          featuredServicesData,
+          featuredError,
+        });
 
         if (!featuredError && featuredServicesData) {
-          const transformedFeatured = featuredServicesData.map((service: any) => ({
-            id: service.id,
-            title: service.name,
-            category: service.service_subcategories?.service_categories?.service_category_type || 'General',
-            image: service.image_url || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop',
-            description: service.description || 'Professional featured service',
-            price: `$${service.min_price || 50}`,
-            rating: 4.8, // Default rating
-            duration: `${service.duration_minutes || 60} min`,
-          }));
-          console.log('Transformed featured services:', transformedFeatured);
+          const transformedFeatured = featuredServicesData.map(
+            (service: any) => ({
+              id: service.id,
+              title: service.name,
+              category:
+                service.service_subcategories?.service_categories
+                  ?.service_category_type || "General",
+              image:
+                service.image_url ||
+                "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop",
+              description:
+                service.description || "Professional featured service",
+              price: `$${service.min_price || 50}`,
+              rating: 4.8, // Default rating
+              duration: `${service.duration_minutes || 60} min`,
+            }),
+          );
+          console.log("Transformed featured services:", transformedFeatured);
           setFeaturedServices(transformedFeatured);
         }
 
         // Fetch popular services using is_popular flag
-        const { data: popularServicesData, error: popularError } = await supabase
-          .from('services')
-          .select(`
+        const { data: popularServicesData, error: popularError } =
+          await supabase
+            .from("services")
+            .select(
+              `
             id,
             name,
             description,
@@ -159,34 +174,46 @@ export default function Index() {
                 service_category_type
               )
             )
-          `)
-          .eq('is_active', true)
-          .eq('is_popular', true)
-          .limit(6);
+          `,
+            )
+            .eq("is_active", true)
+            .eq("is_popular", true)
+            .limit(6);
 
-        console.log('Popular services query result:', { popularServicesData, popularError });
+        console.log("Popular services query result:", {
+          popularServicesData,
+          popularError,
+        });
 
         if (!popularError && popularServicesData) {
-          const transformedPopular = popularServicesData.map((service: any) => ({
-            id: service.id,
-            title: service.name,
-            category: service.service_subcategories?.service_categories?.service_category_type || 'General',
-            image: service.image_url || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=300&fit=crop',
-            description: service.description || 'Popular professional service',
-            price: `$${service.min_price || 50}`,
-            rating: 4.9, // Default rating
-            duration: `${service.duration_minutes || 60} min`,
-            bookings: "Popular choice", // Placeholder for booking count
-            availability: "Available Today", // Placeholder
-          }));
-          console.log('Transformed popular services:', transformedPopular);
+          const transformedPopular = popularServicesData.map(
+            (service: any) => ({
+              id: service.id,
+              title: service.name,
+              category:
+                service.service_subcategories?.service_categories
+                  ?.service_category_type || "General",
+              image:
+                service.image_url ||
+                "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=300&fit=crop",
+              description:
+                service.description || "Popular professional service",
+              price: `$${service.min_price || 50}`,
+              rating: 4.9, // Default rating
+              duration: `${service.duration_minutes || 60} min`,
+              bookings: "Popular choice", // Placeholder for booking count
+              availability: "Available Today", // Placeholder
+            }),
+          );
+          console.log("Transformed popular services:", transformedPopular);
           setPopularServices(transformedPopular);
         }
 
         // Fetch featured businesses
         const { data: businessesData, error: businessesError } = await supabase
-          .from('business_profiles')
-          .select(`
+          .from("business_profiles")
+          .select(
+            `
             id,
             business_name,
             business_type,
@@ -202,37 +229,50 @@ export default function Index() {
               city,
               state
             )
-          `)
-          .eq('is_featured', true)
+          `,
+          )
+          .eq("is_featured", true)
           .limit(12);
 
-        console.log('Featured businesses query result:', { businessesData, businessesError });
+        console.log("Featured businesses query result:", {
+          businessesData,
+          businessesError,
+        });
 
         if (!businessesError && businessesData) {
           const transformedBusinesses = businessesData.map((business: any) => ({
             id: business.id,
             name: business.business_name,
-            description: `Professional ${business.business_type.replace('_', ' ')} services`,
+            description: `Professional ${business.business_type.replace("_", " ")} services`,
             type: business.business_type,
             rating: 4.8, // Default rating
             reviews: Math.floor(Math.random() * 200) + 50, // Random review count
             deliveryTypes: ["mobile", "business_location", "virtual"],
             price: "Starting at $50",
-            image: business.logo_url || business.image_url || "/api/placeholder/80/80",
-            specialties: business.service_categories || ["Professional Service", "Quality Care", "Experienced"],
-            location: business.business_locations?.city ?
-              `${business.business_locations.city}, ${business.business_locations.state}` :
-              "Florida",
+            image:
+              business.logo_url ||
+              business.image_url ||
+              "/api/placeholder/80/80",
+            specialties: business.service_categories || [
+              "Professional Service",
+              "Quality Care",
+              "Experienced",
+            ],
+            location: business.business_locations?.city
+              ? `${business.business_locations.city}, ${business.business_locations.state}`
+              : "Florida",
             verification_status: business.verification_status,
             is_featured: business.is_featured,
             years_in_business: 5, // Default years
           }));
-          console.log('Transformed featured businesses:', transformedBusinesses);
+          console.log(
+            "Transformed featured businesses:",
+            transformedBusinesses,
+          );
           setFeaturedBusinesses(transformedBusinesses);
         }
-
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -275,12 +315,6 @@ export default function Index() {
       description: "Medical services and health consultations",
     },
   ];
-
-
-
-
-
-
 
   // Temporary empty array for promotional deals (will implement later)
   const promotionalDeals: any[] = [];
@@ -328,7 +362,9 @@ export default function Index() {
     const matchesCategory =
       selectedCategory === "all" ||
       business.type.toLowerCase().includes(selectedCategory) ||
-      business.specialties.some((s) => s.toLowerCase().includes(selectedCategory));
+      business.specialties.some((s) =>
+        s.toLowerCase().includes(selectedCategory),
+      );
     const matchesDelivery =
       selectedDelivery === "all" ||
       business.deliveryTypes.includes(selectedDelivery);
@@ -827,8 +863,13 @@ export default function Index() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {business.image && business.image !== "/api/placeholder/80/80" ? (
-                        <img src={business.image} alt={business.name} className="w-full h-full object-cover" />
+                      {business.image &&
+                      business.image !== "/api/placeholder/80/80" ? (
+                        <img
+                          src={business.image}
+                          alt={business.name}
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
                         <Building className="w-8 h-8 text-white" />
                       )}
@@ -853,10 +894,12 @@ export default function Index() {
                           <p className="text-xs text-foreground/50">
                             {business.location}
                           </p>
-                          {business.verification_status === 'approved' && (
+                          {business.verification_status === "approved" && (
                             <div className="flex items-center gap-1 mt-1">
                               <Shield className="w-3 h-3 text-green-600" />
-                              <span className="text-xs text-green-600">Verified</span>
+                              <span className="text-xs text-green-600">
+                                Verified
+                              </span>
                             </div>
                           )}
                         </div>
@@ -960,9 +1003,12 @@ export default function Index() {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No featured businesses found</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No featured businesses found
+              </h3>
               <p className="text-foreground/60 mb-4">
-                No featured businesses match your search criteria. Try adjusting your search or browse all businesses.
+                No featured businesses match your search criteria. Try adjusting
+                your search or browse all businesses.
               </p>
               <Button
                 variant="outline"
@@ -987,8 +1033,8 @@ export default function Index() {
             Ready to Book Your Service?
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Discover verified businesses and book premium services with
-            trusted professionals across Florida.
+            Discover verified businesses and book premium services with trusted
+            professionals across Florida.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button

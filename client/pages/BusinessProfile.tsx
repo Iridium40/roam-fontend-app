@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FavoriteButton } from '@/components/FavoriteButton';
-import { ProviderSelector } from '@/components/ProviderSelector';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { ProviderSelector } from "@/components/ProviderSelector";
 import {
   Star,
   MapPin,
@@ -28,10 +28,10 @@ import {
   Heart,
   Share2,
   UserCheck,
-} from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface BusinessData {
   business: any;
@@ -54,13 +54,15 @@ export default function BusinessProfile() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
-  
+
   const [businessData, setBusinessData] = useState<BusinessData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const [selectedService, setSelectedService] = useState<any>(null);
   const [providerSelectorOpen, setProviderSelectorOpen] = useState(false);
-  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     if (businessId) {
@@ -74,20 +76,21 @@ export default function BusinessProfile() {
 
       // Fetch business profile
       const { data: business, error: businessError } = await supabase
-        .from('business_profiles')
-        .select('*')
-        .eq('id', businessId)
-        .eq('is_active', true)
+        .from("business_profiles")
+        .select("*")
+        .eq("id", businessId)
+        .eq("is_active", true)
         .single();
 
       if (businessError || !business) {
-        throw new Error('Business not found');
+        throw new Error("Business not found");
       }
 
       // Fetch business services with service details
       const { data: services, error: servicesError } = await supabase
-        .from('business_services')
-        .select(`
+        .from("business_services")
+        .select(
+          `
           id,
           business_price,
           delivery_type,
@@ -108,31 +111,34 @@ export default function BusinessProfile() {
               )
             )
           )
-        `)
-        .eq('business_id', businessId)
-        .eq('is_active', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_active", true);
 
-      console.log('Services query result:', { services, servicesError });
+      console.log("Services query result:", { services, servicesError });
 
       // Fetch business addons
       const { data: addons, error: addonsError } = await supabase
-        .from('business_addons')
-        .select(`
+        .from("business_addons")
+        .select(
+          `
           *,
           addons:addon_id (
             name,
             description,
             image_url
           )
-        `)
-        .eq('business_id', businessId)
-        .eq('is_available', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_available", true);
 
       // Fetch business location
       const { data: location, error: locationError } = await supabase
-        .from('business_locations')
-        .select('*')
-        .eq('business_id', businessId)
+        .from("business_locations")
+        .select("*")
+        .eq("business_id", businessId)
         .single();
 
       // Business hours are included in the business profile as JSONB
@@ -140,8 +146,9 @@ export default function BusinessProfile() {
 
       // Fetch providers
       const { data: providers, error: providersError } = await supabase
-        .from('providers')
-        .select(`
+        .from("providers")
+        .select(
+          `
           id,
           first_name,
           last_name,
@@ -154,30 +161,33 @@ export default function BusinessProfile() {
           provider_role,
           total_bookings,
           completed_bookings
-        `)
-        .eq('business_id', businessId)
-        .eq('is_active', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_active", true);
 
-      console.log('Providers query result:', { providers, providersError });
+      console.log("Providers query result:", { providers, providersError });
 
       // Mock reviews data (you can implement this based on your reviews table structure)
       const reviews = [
         {
           id: 1,
-          customer_name: 'Sarah Johnson',
+          customer_name: "Sarah Johnson",
           rating: 5,
-          comment: 'Amazing service! The staff was professional and the results exceeded my expectations.',
-          service_name: 'Hair Styling',
-          date: '2024-01-15',
+          comment:
+            "Amazing service! The staff was professional and the results exceeded my expectations.",
+          service_name: "Hair Styling",
+          date: "2024-01-15",
           verified: true,
         },
         {
           id: 2,
-          customer_name: 'Michael Chen',
+          customer_name: "Michael Chen",
           rating: 5,
-          comment: 'Great experience from start to finish. Will definitely be returning!',
-          service_name: 'Massage Therapy',
-          date: '2024-01-10',
+          comment:
+            "Great experience from start to finish. Will definitely be returning!",
+          service_name: "Massage Therapy",
+          date: "2024-01-10",
           verified: true,
         },
       ];
@@ -200,15 +210,14 @@ export default function BusinessProfile() {
         reviews,
         stats,
       });
-
     } catch (error: any) {
-      console.error('Error fetching business data:', error);
+      console.error("Error fetching business data:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to load business information",
         variant: "destructive",
       });
-      navigate('/');
+      navigate("/");
     } finally {
       setLoading(false);
     }
@@ -231,7 +240,7 @@ export default function BusinessProfile() {
     setSelectedProviderId(providerId);
     if (selectedService) {
       const bookingUrl = `/book/${businessId}?service=${selectedService.id}${
-        providerId ? `&provider=${providerId}` : ''
+        providerId ? `&provider=${providerId}` : ""
       }`;
       navigate(bookingUrl);
     }
@@ -242,20 +251,28 @@ export default function BusinessProfile() {
   };
 
   const formatBusinessHours = (hours: any) => {
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
 
-    return daysOfWeek.map(day => {
+    return daysOfWeek.map((day) => {
       const dayHours = hours[day];
       if (!dayHours || !dayHours.open || !dayHours.close) {
-        return { day, hours: 'Closed' };
+        return { day, hours: "Closed" };
       }
 
       // Convert 24-hour format to 12-hour format
       const formatTime = (time: string) => {
-        const [hours, minutes] = time.split(':');
+        const [hours, minutes] = time.split(":");
         const hour24 = parseInt(hours);
         const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
-        const period = hour24 >= 12 ? 'PM' : 'AM';
+        const period = hour24 >= 12 ? "PM" : "AM";
         return `${hour12}:${minutes} ${period}`;
       };
 
@@ -281,9 +298,16 @@ export default function BusinessProfile() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Business Not Found</h1>
-          <p className="text-foreground/60 mb-6">The business you're looking for could not be found.</p>
-          <Button onClick={() => navigate('/')} className="bg-roam-blue hover:bg-roam-blue/90">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            Business Not Found
+          </h1>
+          <p className="text-foreground/60 mb-6">
+            The business you're looking for could not be found.
+          </p>
+          <Button
+            onClick={() => navigate("/")}
+            className="bg-roam-blue hover:bg-roam-blue/90"
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
@@ -292,7 +316,16 @@ export default function BusinessProfile() {
     );
   }
 
-  const { business, services, addons, location, hours, providers, reviews, stats } = businessData;
+  const {
+    business,
+    services,
+    addons,
+    location,
+    hours,
+    providers,
+    reviews,
+    stats,
+  } = businessData;
   const formattedHours = formatBusinessHours(hours);
 
   return (
@@ -332,31 +365,31 @@ export default function BusinessProfile() {
 
       {/* Hero Section */}
       <section className="relative">
-        <div 
+        <div
           className="h-64 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: business.cover_image_url 
+            backgroundImage: business.cover_image_url
               ? `url(${business.cover_image_url})`
-              : `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1560472355-536de3962603?w=1200&h=400&fit=crop')`
+              : `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1560472355-536de3962603?w=1200&h=400&fit=crop')`,
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
-        
+
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative -mt-32 mb-8">
             <Card className="p-6 bg-background/95 backdrop-blur-sm border-border/50">
               <div className="flex flex-col md:flex-row items-start gap-6">
                 <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
-                  <AvatarImage 
-                    src={business.logo_url || business.image_url || undefined} 
+                  <AvatarImage
+                    src={business.logo_url || business.image_url || undefined}
                     alt={business.business_name}
                   />
                   <AvatarFallback className="text-2xl">
                     {business.business_name.substring(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                
+
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
@@ -370,7 +403,7 @@ export default function BusinessProfile() {
                         <Badge variant="secondary" className="text-sm">
                           {business.business_type}
                         </Badge>
-                        {business.verification_status === 'approved' && (
+                        {business.verification_status === "approved" && (
                           <Badge className="bg-green-100 text-green-800 border-green-200">
                             <Shield className="w-3 h-3 mr-1" />
                             Verified Business
@@ -378,14 +411,16 @@ export default function BusinessProfile() {
                         )}
                         <div className="flex items-center gap-1">
                           <Star className="w-4 h-4 text-roam-warning fill-current" />
-                          <span className="font-semibold">{stats.averageRating}</span>
+                          <span className="font-semibold">
+                            {stats.averageRating}
+                          </span>
                           <span className="text-foreground/60 text-sm">
                             ({stats.totalReviews} reviews)
                           </span>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
                       <FavoriteButton
                         type="business"
@@ -395,7 +430,11 @@ export default function BusinessProfile() {
                         showText={true}
                         className="border-gray-300 hover:border-red-300"
                       />
-                      <Button size="lg" className="bg-roam-blue hover:bg-roam-blue/90" onClick={handleBookBusiness}>
+                      <Button
+                        size="lg"
+                        className="bg-roam-blue hover:bg-roam-blue/90"
+                        onClick={handleBookBusiness}
+                      >
                         <Calendar className="w-5 h-5 mr-2" />
                         Book Now
                       </Button>
@@ -413,10 +452,14 @@ export default function BusinessProfile() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="services">Services ({services.length})</TabsTrigger>
+            <TabsTrigger value="services">
+              Services ({services.length})
+            </TabsTrigger>
             <TabsTrigger value="hours">Hours</TabsTrigger>
             <TabsTrigger value="team">Team ({providers.length})</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
+            <TabsTrigger value="reviews">
+              Reviews ({reviews.length})
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -432,30 +475,45 @@ export default function BusinessProfile() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-foreground/80 leading-relaxed">
-                    {business.business_description || 'Professional service provider offering quality services to the community.'}
+                    {business.business_description ||
+                      "Professional service provider offering quality services to the community."}
                   </p>
-                  
+
                   {business.specialties && (
                     <div>
                       <h4 className="font-semibold mb-2">Specialties</h4>
                       <div className="flex flex-wrap gap-2">
-                        {business.specialties.map((specialty: string, index: number) => (
-                          <Badge key={index} variant="outline" className="border-roam-blue text-roam-blue">
-                            {specialty}
-                          </Badge>
-                        ))}
+                        {business.specialties.map(
+                          (specialty: string, index: number) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="border-roam-blue text-roam-blue"
+                            >
+                              {specialty}
+                            </Badge>
+                          ),
+                        )}
                       </div>
                     </div>
                   )}
 
                   <div className="grid grid-cols-2 gap-4 pt-4">
                     <div className="text-center p-4 bg-roam-light-blue/10 rounded-lg">
-                      <div className="text-2xl font-bold text-roam-blue">{stats.totalBookings}+</div>
-                      <div className="text-sm text-foreground/60">Happy Clients</div>
+                      <div className="text-2xl font-bold text-roam-blue">
+                        {stats.totalBookings}+
+                      </div>
+                      <div className="text-sm text-foreground/60">
+                        Happy Clients
+                      </div>
                     </div>
                     <div className="text-center p-4 bg-green-50 rounded-lg">
-                      <div className="text-2xl font-bold text-green-600">{stats.yearsInBusiness}</div>
-                      <div className="text-sm text-foreground/60">Years Experience</div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {stats.yearsInBusiness}
+                      </div>
+                      <div className="text-sm text-foreground/60">
+                        Years Experience
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -480,15 +538,17 @@ export default function BusinessProfile() {
                     {business.contact_email && (
                       <div className="flex items-center gap-3">
                         <Mail className="w-4 h-4 text-foreground/60" />
-                        <span className="text-sm">{business.contact_email}</span>
+                        <span className="text-sm">
+                          {business.contact_email}
+                        </span>
                       </div>
                     )}
                     {business.website_url && (
                       <div className="flex items-center gap-3">
                         <Globe className="w-4 h-4 text-foreground/60" />
-                        <a 
-                          href={business.website_url} 
-                          target="_blank" 
+                        <a
+                          href={business.website_url}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-roam-blue hover:underline flex items-center gap-1"
                         >
@@ -502,8 +562,13 @@ export default function BusinessProfile() {
                         <MapPin className="w-4 h-4 text-foreground/60 mt-0.5" />
                         <div className="text-sm">
                           <div>{location.address_line1}</div>
-                          {location.address_line2 && <div>{location.address_line2}</div>}
-                          <div>{location.city}, {location.state} {location.postal_code}</div>
+                          {location.address_line2 && (
+                            <div>{location.address_line2}</div>
+                          )}
+                          <div>
+                            {location.city}, {location.state}{" "}
+                            {location.postal_code}
+                          </div>
                         </div>
                       </div>
                     )}
@@ -521,15 +586,20 @@ export default function BusinessProfile() {
                   <CardContent>
                     <div className="space-y-2">
                       {formattedHours.slice(0, 3).map((dayHours, index) => (
-                        <div key={index} className="flex justify-between text-sm">
+                        <div
+                          key={index}
+                          className="flex justify-between text-sm"
+                        >
                           <span className="font-medium">{dayHours.day}</span>
-                          <span className="text-foreground/60">{dayHours.hours}</span>
+                          <span className="text-foreground/60">
+                            {dayHours.hours}
+                          </span>
                         </div>
                       ))}
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => setActiveTab('hours')}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setActiveTab("hours")}
                         className="w-full mt-2 text-roam-blue hover:text-roam-blue"
                       >
                         View All Hours
@@ -545,7 +615,10 @@ export default function BusinessProfile() {
           <TabsContent value="services" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => (
-                <Card key={service.id} className="hover:shadow-lg transition-all duration-200 group">
+                <Card
+                  key={service.id}
+                  className="hover:shadow-lg transition-all duration-200 group"
+                >
                   <div className="relative">
                     {service.services?.image_url && (
                       <img
@@ -564,14 +637,16 @@ export default function BusinessProfile() {
                       />
                     </div>
                   </div>
-                  
+
                   <CardContent className="p-6">
                     <div className="mb-4">
-                      <h3 className="text-xl font-semibold mb-2">{service.services?.name}</h3>
+                      <h3 className="text-xl font-semibold mb-2">
+                        {service.services?.name}
+                      </h3>
                       <p className="text-foreground/70 text-sm mb-3 line-clamp-2">
                         {service.services?.description}
                       </p>
-                      
+
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                           <DollarSign className="w-4 h-4 text-roam-blue" />
@@ -580,20 +655,26 @@ export default function BusinessProfile() {
                           </span>
                         </div>
                         {service.services?.duration_minutes && (
-                          <Badge variant="outline" className="border-roam-blue text-roam-blue">
+                          <Badge
+                            variant="outline"
+                            className="border-roam-blue text-roam-blue"
+                          >
                             <Clock className="w-3 h-3 mr-1" />
                             {service.services.duration_minutes} min
                           </Badge>
                         )}
                       </div>
-                      
+
                       {service.services?.service_subcategories && (
                         <Badge variant="secondary" className="text-xs mb-4">
-                          {service.services.service_subcategories.service_categories?.service_category_type}
+                          {
+                            service.services.service_subcategories
+                              .service_categories?.service_category_type
+                          }
                         </Badge>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Button
                         className="w-full bg-roam-blue hover:bg-roam-blue/90"
@@ -613,13 +694,15 @@ export default function BusinessProfile() {
                 </Card>
               ))}
             </div>
-            
+
             {services.length === 0 && (
               <Card className="p-8 text-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Briefcase className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">No Services Available</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  No Services Available
+                </h3>
                 <p className="text-foreground/60">
                   This business hasn't added any services yet.
                 </p>
@@ -639,9 +722,14 @@ export default function BusinessProfile() {
               <CardContent>
                 <div className="space-y-3">
                   {formattedHours.map((dayHours, index) => (
-                    <div key={index} className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0">
+                    <div
+                      key={index}
+                      className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0"
+                    >
                       <span className="font-medium">{dayHours.day}</span>
-                      <span className={`${dayHours.hours === 'Closed' ? 'text-red-500' : 'text-foreground/80'}`}>
+                      <span
+                        className={`${dayHours.hours === "Closed" ? "text-red-500" : "text-foreground/80"}`}
+                      >
                         {dayHours.hours}
                       </span>
                     </div>
@@ -659,7 +747,15 @@ export default function BusinessProfile() {
                   <div className="flex items-center gap-2 text-green-700">
                     <UserCheck className="w-5 h-5" />
                     <span className="font-medium">
-                      {providers.find(p => p.id === selectedProviderId)?.first_name} {providers.find(p => p.id === selectedProviderId)?.last_name} is your preferred provider
+                      {
+                        providers.find((p) => p.id === selectedProviderId)
+                          ?.first_name
+                      }{" "}
+                      {
+                        providers.find((p) => p.id === selectedProviderId)
+                          ?.last_name
+                      }{" "}
+                      is your preferred provider
                     </span>
                     <Button
                       variant="ghost"
@@ -668,7 +764,8 @@ export default function BusinessProfile() {
                         setSelectedProviderId(null);
                         toast({
                           title: "Provider Preference Cleared",
-                          description: "No provider preference set. The business will assign the best available provider.",
+                          description:
+                            "No provider preference set. The business will assign the best available provider.",
                         });
                       }}
                       className="ml-auto text-green-600 hover:text-green-700"
@@ -685,8 +782,8 @@ export default function BusinessProfile() {
                   key={provider.id}
                   className={`hover:shadow-lg transition-shadow ${
                     selectedProviderId === provider.id
-                      ? 'ring-2 ring-green-500 bg-green-50'
-                      : ''
+                      ? "ring-2 ring-green-500 bg-green-50"
+                      : ""
                   }`}
                 >
                   <CardContent className="p-6 text-center relative">
@@ -701,42 +798,54 @@ export default function BusinessProfile() {
                     <Avatar className="h-20 w-20 mx-auto mb-4">
                       <AvatarImage src={provider.image_url || undefined} />
                       <AvatarFallback className="text-lg">
-                        {provider.first_name[0]}{provider.last_name[0]}
+                        {provider.first_name[0]}
+                        {provider.last_name[0]}
                       </AvatarFallback>
                     </Avatar>
-                    
+
                     <h3 className="text-lg font-semibold mb-2">
                       {provider.first_name} {provider.last_name}
                     </h3>
-                    
+
                     {provider.bio && (
                       <p className="text-sm text-foreground/70 mb-3 line-clamp-3">
                         {provider.bio}
                       </p>
                     )}
-                    
+
                     <div className="flex items-center justify-center gap-4 mb-4">
                       {provider.experience_years && (
                         <div className="text-center">
-                          <div className="text-lg font-bold text-roam-blue">{provider.experience_years}</div>
-                          <div className="text-xs text-foreground/60">Years Exp.</div>
+                          <div className="text-lg font-bold text-roam-blue">
+                            {provider.experience_years}
+                          </div>
+                          <div className="text-xs text-foreground/60">
+                            Years Exp.
+                          </div>
                         </div>
                       )}
                       {provider.average_rating && (
                         <div className="text-center">
                           <div className="flex items-center gap-1">
                             <Star className="w-4 h-4 text-roam-warning fill-current" />
-                            <span className="font-bold">{provider.average_rating}</span>
+                            <span className="font-bold">
+                              {provider.average_rating}
+                            </span>
                           </div>
-                          <div className="text-xs text-foreground/60">({provider.total_reviews || 0} reviews)</div>
+                          <div className="text-xs text-foreground/60">
+                            ({provider.total_reviews || 0} reviews)
+                          </div>
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-1 justify-center mb-4">
                       {provider.provider_role && (
-                        <Badge variant="outline" className="text-xs border-roam-blue text-roam-blue">
-                          {provider.provider_role.replace('_', ' ')}
+                        <Badge
+                          variant="outline"
+                          className="text-xs border-roam-blue text-roam-blue"
+                        >
+                          {provider.provider_role.replace("_", " ")}
                         </Badge>
                       )}
                       {provider.experience_years && (
@@ -744,13 +853,16 @@ export default function BusinessProfile() {
                           {provider.experience_years} years exp.
                         </Badge>
                       )}
-                      {provider.verification_status === 'verified' && (
-                        <Badge variant="outline" className="text-xs border-green-500 text-green-600">
+                      {provider.verification_status === "verified" && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs border-green-500 text-green-600"
+                        >
                           Verified
                         </Badge>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Button
                         asChild
@@ -774,7 +886,7 @@ export default function BusinessProfile() {
                 </Card>
               ))}
             </div>
-            
+
             {providers.length === 0 && (
               <Card className="p-8 text-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -797,16 +909,20 @@ export default function BusinessProfile() {
                   <CardTitle className="text-center">Overall Rating</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-4xl font-bold text-roam-blue mb-2">{stats.averageRating}</div>
+                  <div className="text-4xl font-bold text-roam-blue mb-2">
+                    {stats.averageRating}
+                  </div>
                   <div className="flex justify-center mb-2">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <Star 
-                        key={star} 
-                        className={`w-5 h-5 ${star <= stats.averageRating ? 'text-roam-warning fill-current' : 'text-gray-300'}`} 
+                      <Star
+                        key={star}
+                        className={`w-5 h-5 ${star <= stats.averageRating ? "text-roam-warning fill-current" : "text-gray-300"}`}
                       />
                     ))}
                   </div>
-                  <div className="text-sm text-foreground/60">{stats.totalReviews} reviews</div>
+                  <div className="text-sm text-foreground/60">
+                    {stats.totalReviews} reviews
+                  </div>
                 </CardContent>
               </Card>
 
@@ -818,9 +934,14 @@ export default function BusinessProfile() {
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="font-semibold">{review.customer_name}</span>
+                            <span className="font-semibold">
+                              {review.customer_name}
+                            </span>
                             {review.verified && (
-                              <Badge variant="outline" className="text-xs border-green-500 text-green-600">
+                              <Badge
+                                variant="outline"
+                                className="text-xs border-green-500 text-green-600"
+                              >
                                 <Check className="w-3 h-3 mr-1" />
                                 Verified
                               </Badge>
@@ -829,9 +950,9 @@ export default function BusinessProfile() {
                           <div className="flex items-center gap-2 mb-2">
                             <div className="flex">
                               {[1, 2, 3, 4, 5].map((star) => (
-                                <Star 
-                                  key={star} 
-                                  className={`w-4 h-4 ${star <= review.rating ? 'text-roam-warning fill-current' : 'text-gray-300'}`} 
+                                <Star
+                                  key={star}
+                                  className={`w-4 h-4 ${star <= review.rating ? "text-roam-warning fill-current" : "text-gray-300"}`}
                                 />
                               ))}
                             </div>
@@ -841,20 +962,24 @@ export default function BusinessProfile() {
                           </div>
                         </div>
                       </div>
-                      <p className="text-foreground/80 mb-2">{review.comment}</p>
+                      <p className="text-foreground/80 mb-2">
+                        {review.comment}
+                      </p>
                       <Badge variant="secondary" className="text-xs">
                         {review.service_name}
                       </Badge>
                     </CardContent>
                   </Card>
                 ))}
-                
+
                 {reviews.length === 0 && (
                   <Card className="p-8 text-center">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Star className="w-8 h-8 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">No Reviews Yet</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      No Reviews Yet
+                    </h3>
                     <p className="text-foreground/60">
                       Be the first to leave a review for this business!
                     </p>
@@ -871,7 +996,7 @@ export default function BusinessProfile() {
         isOpen={providerSelectorOpen}
         onClose={() => setProviderSelectorOpen(false)}
         providers={providers}
-        serviceName={selectedService?.services?.name || 'Service'}
+        serviceName={selectedService?.services?.name || "Service"}
         onConfirm={handleProviderSelection}
         selectedProviderId={selectedProviderId}
       />
