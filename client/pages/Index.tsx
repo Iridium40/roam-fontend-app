@@ -183,17 +183,21 @@ export default function Index() {
           setPopularServices(transformedPopular);
         }
 
-        // Fetch all providers
-        const { data: providersData, error: providersError } = await supabase
-          .from('providers')
+        // Fetch featured businesses
+        const { data: businessesData, error: businessesError } = await supabase
+          .from('business_profiles')
           .select(`
             id,
-            first_name,
-            last_name,
-            phone,
-            profile_image_url,
+            business_name,
+            business_description,
+            business_type,
+            logo_url,
+            image_url,
+            cover_image_url,
+            verification_status,
+            years_in_business,
+            service_categories,
             is_active,
-            business_id,
             business_locations (
               location_name,
               city,
@@ -201,25 +205,28 @@ export default function Index() {
             )
           `)
           .eq('is_active', true)
+          .eq('verification_status', 'approved')
           .limit(12);
 
-        if (!providersError && providersData) {
-          const transformedProviders = providersData.map((provider: any) => ({
-            id: provider.id,
-            business_id: provider.business_id,
-            name: `${provider.first_name} ${provider.last_name}`,
-            service: "Professional Service Provider",
+        if (!businessesError && businessesData) {
+          const transformedBusinesses = businessesData.map((business: any) => ({
+            id: business.id,
+            name: business.business_name,
+            description: business.business_description,
+            type: business.business_type,
             rating: 4.8, // Default rating
             reviews: Math.floor(Math.random() * 200) + 50, // Random review count
-            deliveryTypes: ["mobile", "business"],
-            price: "$50-150/hour",
-            image: provider.profile_image_url || "/api/placeholder/80/80",
-            specialties: ["Professional Service", "Quality Care", "Experienced"],
-            location: provider.business_locations?.city ?
-              `${provider.business_locations.city}, ${provider.business_locations.state}` :
+            deliveryTypes: ["mobile", "business_location", "virtual"],
+            price: "Starting at $50",
+            image: business.logo_url || business.image_url || "/api/placeholder/80/80",
+            specialties: business.service_categories || ["Professional Service", "Quality Care", "Experienced"],
+            location: business.business_locations?.city ?
+              `${business.business_locations.city}, ${business.business_locations.state}` :
               "Florida",
+            verification_status: business.verification_status,
+            years_in_business: business.years_in_business,
           }));
-          setAllProviders(transformedProviders);
+          setFeaturedBusinesses(transformedBusinesses);
         }
 
       } catch (error) {
