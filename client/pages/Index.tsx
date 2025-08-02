@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import ShareModal from "@/components/ShareModal";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import {
   Select,
   SelectContent,
@@ -555,7 +556,14 @@ export default function Index() {
                           {service.category}
                         </Badge>
                       </div>
-                      <div className="absolute top-4 right-4">
+                      <div className="absolute top-4 right-4 flex gap-2">
+                        <FavoriteButton
+                          type="service"
+                          itemId={service.id}
+                          size="sm"
+                          variant="ghost"
+                          className="bg-white/90 hover:bg-white"
+                        />
                         <Badge
                           variant="secondary"
                           className="bg-white/90 text-gray-800"
@@ -711,7 +719,14 @@ export default function Index() {
                       Popular
                     </Badge>
                   </div>
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-3 right-3 flex gap-2">
+                    <FavoriteButton
+                      type="service"
+                      itemId={service.id}
+                      size="sm"
+                      variant="ghost"
+                      className="bg-white/90 hover:bg-white"
+                    />
                     <Badge
                       variant="secondary"
                       className="bg-white/90 text-gray-800"
@@ -868,6 +883,13 @@ export default function Index() {
                             View Profile
                           </Link>
                         </Button>
+                        <FavoriteButton
+                          type="provider"
+                          itemId={provider.id}
+                          size="sm"
+                          variant="outline"
+                          className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                        />
                         <Button
                           size="sm"
                           variant="outline"
