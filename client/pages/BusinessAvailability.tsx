@@ -114,13 +114,13 @@ export default function BusinessAvailability() {
         .eq('business_profiles.verification_status', 'approved');
 
       if (businessesError) {
-        console.error('Error fetching businesses:', businessesError);
-        console.error('Business query details:', {
+        console.error('Error fetching businesses:', JSON.stringify(businessesError, null, 2));
+        console.error('Business query details:', JSON.stringify({
           serviceId,
           selectedDate,
           selectedTime,
           dayOfWeek
-        });
+        }, null, 2));
 
         // Use fallback business data for testing
         const fallbackBusinesses = [{
