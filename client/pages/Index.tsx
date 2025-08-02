@@ -328,7 +328,7 @@ export default function Index() {
   const getDeliveryBadge = (type: string) => {
     const config = {
       mobile: { label: "Mobile", color: "bg-green-100 text-green-800" },
-      business: { label: "In-Studio", color: "bg-blue-100 text-blue-800" },
+      business: { label: "Business", color: "bg-blue-100 text-blue-800" },
       virtual: { label: "Virtual", color: "bg-purple-100 text-purple-800" },
     };
     return (
