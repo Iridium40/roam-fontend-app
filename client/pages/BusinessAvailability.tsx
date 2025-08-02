@@ -134,12 +134,12 @@ export default function BusinessAvailability() {
         location: item.business_profiles.business_locations?.city
           ? `${item.business_profiles.business_locations.city}, ${item.business_profiles.business_locations.state}`
           : 'Location not specified',
-        servicePrice: item.custom_price || item.business_price,
-        deliveryType: item.delivery_type,
+        servicePrice: item.business_price,
+        deliveryType: item.delivery_type || 'mobile',
         rating: 4.8, // Mock rating - replace with actual data
         reviewCount: Math.floor(Math.random() * 200) + 50,
-        openTime: item.business_hours.open_time,
-        closeTime: item.business_hours.close_time,
+        openTime: '9:00 AM', // Mock hours - replace with actual business hours parsing
+        closeTime: '5:00 PM',
       }));
 
       setAvailableBusinesses(transformedBusinesses);
