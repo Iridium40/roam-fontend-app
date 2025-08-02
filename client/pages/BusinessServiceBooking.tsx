@@ -216,11 +216,11 @@ export default function BusinessServiceBooking() {
   };
 
   const calculateTotal = () => {
-    const serviceTotal = selectedServices.reduce((sum, service) => 
-      sum + (service.custom_price || service.business_price) * service.quantity, 0
+    const serviceTotal = selectedServices.reduce((sum, service) =>
+      sum + service.business_price * service.quantity, 0
     );
-    const addonTotal = selectedAddons.reduce((sum, addon) => 
-      sum + (addon.custom_price || addon.business_price) * addon.quantity, 0
+    const addonTotal = selectedAddons.reduce((sum, addon) =>
+      sum + (addon.custom_price || addon.service_addons.base_price) * addon.quantity, 0
     );
     return serviceTotal + addonTotal;
   };
