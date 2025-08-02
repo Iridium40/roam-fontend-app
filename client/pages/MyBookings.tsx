@@ -30,6 +30,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+// Temporary import for debugging
+import "@/utils/testBookings";
 
 export default function MyBookings() {
   const { user, customer, userType, loading: authLoading } = useAuth();
