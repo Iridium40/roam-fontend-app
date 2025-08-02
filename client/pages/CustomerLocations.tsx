@@ -328,10 +328,12 @@ export default function CustomerLocations() {
     }
   };
 
-  const getLocationTypeColor = (type: string) => {
+  const getLocationTypeColor = (type: string | null) => {
     switch (type) {
       case 'home': return 'bg-green-100 text-green-800';
-      case 'work': return 'bg-blue-100 text-blue-800';
+      case 'condo': return 'bg-blue-100 text-blue-800';
+      case 'hotel': return 'bg-purple-100 text-purple-800';
+      case 'other': return 'bg-orange-100 text-orange-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
