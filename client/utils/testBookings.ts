@@ -42,13 +42,22 @@ export const testBookingQueries = async () => {
     console.log("Customer data:", customers);
   }
 
-  // Test 2: Check all bookings
-  console.log("2. Checking all bookings...");
+  // Test 2: Check current user session
+  console.log("2. Checking current user session...");
+  const { data: session, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) {
+    console.error("Session error:", sessionError);
+  } else {
+    console.log("Current session:", session?.session?.user?.email);
+  }
+
+  // Test 3: Check all bookings
+  console.log("3. Checking all bookings...");
   const { data: allBookings, error: allBookingsError } = await supabase
     .from('bookings')
     .select('*')
     .limit(10);
-  
+
   if (allBookingsError) {
     console.error("All bookings query error:", allBookingsError);
   } else {
