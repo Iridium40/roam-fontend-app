@@ -333,16 +333,28 @@ const ProviderBooking = () => {
               <AvatarFallback>{business.business_name.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900">{business.business_name}</h1>
-              <p className="text-gray-600">{business.business_description}</p>
-              <div className="flex items-center space-x-4 mt-2">
-                <Badge variant="secondary">{business.business_type}</Badge>
-                {business.verification_status === 'approved' && (
-                  <Badge variant="default" className="bg-green-100 text-green-800">
-                    <Check className="h-3 w-3 mr-1" />
-                    Verified
-                  </Badge>
-                )}
+              <div className="flex items-start justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">{business.business_name}</h1>
+                  <p className="text-gray-600">{business.business_description}</p>
+                  <div className="flex items-center space-x-4 mt-2">
+                    <Badge variant="secondary">{business.business_type}</Badge>
+                    {business.verification_status === 'approved' && (
+                      <Badge variant="default" className="bg-green-100 text-green-800">
+                        <Check className="h-3 w-3 mr-1" />
+                        Verified
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <FavoriteButton
+                  type="business"
+                  itemId={business.id}
+                  size="lg"
+                  variant="outline"
+                  showText={true}
+                  className="border-gray-300 hover:border-red-300"
+                />
               </div>
             </div>
           </div>
