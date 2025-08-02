@@ -466,6 +466,73 @@ const ProviderBooking = () => {
               </CardContent>
             </Card>
 
+            {/* Provider Preference */}
+            {preferredProvider && (
+              <Card className="bg-green-50 border-green-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-green-700">
+                    <UserCheck className="w-5 h-5" />
+                    Preferred Provider Selected
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center space-x-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={preferredProvider.image_url || undefined} />
+                      <AvatarFallback>
+                        {preferredProvider.first_name[0]}{preferredProvider.last_name[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="font-semibold text-green-800">
+                        {preferredProvider.first_name} {preferredProvider.last_name}
+                      </div>
+                      {preferredProvider.bio && (
+                        <p className="text-sm text-green-600 line-clamp-1">
+                          {preferredProvider.bio}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-4 mt-2">
+                        {preferredProvider.experience_years && (
+                          <span className="text-xs text-green-600">
+                            {preferredProvider.experience_years} years experience
+                          </span>
+                        )}
+                        {preferredProvider.average_rating && (
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-green-600 fill-current" />
+                            <span className="text-xs text-green-600">
+                              {preferredProvider.average_rating} ({preferredProvider.total_reviews || 0} reviews)
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-green-500 text-green-600 hover:bg-green-600 hover:text-white"
+                      onClick={() => {
+                        setPreferredProvider(null);
+                        // Update URL to remove provider parameter
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('provider');
+                        window.history.replaceState({}, '', url.toString());
+                      }}
+                    >
+                      Change Provider
+                    </Button>
+                  </div>
+                  <div className="mt-3 p-3 bg-green-100 rounded-md">
+                    <p className="text-sm text-green-700">
+                      <strong>Note:</strong> This is your preferred provider for this booking.
+                      The business will try to assign this provider, but final assignment depends on availability and business approval.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Services */}
             {services.length > 0 && (
               <Card>
