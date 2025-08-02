@@ -135,26 +135,29 @@ export function useFavorites() {
   }, [isCustomer, toast]);
 
   const isServiceFavorited = useCallback(async (serviceId: string): Promise<boolean> => {
-    if (!isCustomer) {
+    if (!isCustomer || !customer?.id) {
       return false;
     }
 
     try {
-      const { data, error } = await supabase.rpc('is_service_favorited', {
-        service_id_param: serviceId
-      });
+      const { data, error } = await supabase
+        .from('customer_favorite_services')
+        .select('id')
+        .eq('customer_id', customer.id)
+        .eq('service_id', serviceId)
+        .maybeSingle();
 
       if (error) {
         console.error('Error checking if service is favorited:', error?.message || error);
         return false;
       }
 
-      return data || false;
+      return !!data;
     } catch (error) {
       console.error('Error checking if service is favorited:', error?.message || error);
       return false;
     }
-  }, [isCustomer]);
+  }, [isCustomer, customer?.id]);
 
   // Business favorites
   const addBusinessToFavorites = useCallback(async (businessId: string) => {
