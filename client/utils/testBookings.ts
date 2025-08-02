@@ -64,39 +64,39 @@ export const testBookingQueries = async () => {
     console.log("All bookings:", allBookings);
   }
 
-  // Test 3: Check bookings by guest email
-  console.log("3. Checking bookings by guest email...");
+  // Test 4: Check bookings by guest email
+  console.log("4. Checking bookings by guest email...");
   const { data: guestBookings, error: guestError } = await supabase
     .from('bookings')
     .select('*')
     .eq('guest_email', 'customer@roamyourbestlife.com');
-  
+
   if (guestError) {
     console.error("Guest bookings query error:", guestError);
   } else {
     console.log("Guest bookings:", guestBookings);
   }
 
-  // Test 4: Check services table
-  console.log("4. Checking services table...");
+  // Test 5: Check services table
+  console.log("5. Checking services table...");
   const { data: services, error: servicesError } = await supabase
     .from('services')
     .select('*')
     .limit(5);
-  
+
   if (servicesError) {
     console.error("Services query error:", servicesError);
   } else {
     console.log("Services:", services);
   }
 
-  // Test 5: Check providers table
-  console.log("5. Checking providers table...");
+  // Test 6: Check providers table
+  console.log("6. Checking providers table...");
   const { data: providers, error: providersError } = await supabase
     .from('providers')
     .select('*')
     .limit(5);
-  
+
   if (providersError) {
     console.error("Providers query error:", providersError);
   } else {
