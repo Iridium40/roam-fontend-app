@@ -213,19 +213,28 @@ export default function CustomerLocations() {
         location_type: formData.location_type,
       };
 
-      let error;
+      let error, data;
+      console.log('Location data to save:', locationData);
+
       if (editingLocation) {
-        ({ error } = await supabase
+        console.log('Updating existing location:', editingLocation.id);
+        ({ error, data } = await supabase
           .from('customer_locations')
           .update(locationData)
           .eq('id', editingLocation.id));
       } else {
-        ({ error } = await supabase
+        console.log('Inserting new location');
+        ({ error, data } = await supabase
           .from('customer_locations')
           .insert([locationData]));
       }
 
-      if (error) throw error;
+      console.log('Database operation result:', { error, data });
+
+      if (error) {
+        console.error('Database error details:', error);
+        throw error;
+      }
 
       toast({
         title: "Success",
