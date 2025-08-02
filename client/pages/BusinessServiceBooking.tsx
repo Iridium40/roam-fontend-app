@@ -582,7 +582,7 @@ export default function BusinessServiceBooking() {
                           <span>
                             {service.services.name} × {service.quantity}
                           </span>
-                          <span>${(service.custom_price || service.business_price) * service.quantity}</span>
+                          <span>${service.business_price * service.quantity}</span>
                         </div>
                       ))}
                     </div>
