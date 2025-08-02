@@ -247,7 +247,7 @@ export default function ServiceBookingFlow() {
                       <div className="flex items-center gap-2">
                         <DollarSign className="w-4 h-4 text-roam-blue" />
                         <span className="text-lg font-bold text-roam-blue">
-                          Starting at ${service.base_price}
+                          Starting at ${service.min_price}
                         </span>
                       </div>
                       <Badge variant="outline" className="border-roam-blue text-roam-blue">
