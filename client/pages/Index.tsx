@@ -294,7 +294,7 @@ export default function Index() {
     );
   };
 
-  const filteredProviders = featuredProviders.filter((provider) => {
+  const filteredProviders = allProviders.filter((provider) => {
     const matchesSearch =
       searchQuery === "" ||
       provider.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
