@@ -444,12 +444,12 @@ export default function BusinessServiceBooking() {
                         <div key={addon.id} className="border rounded-lg p-4">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <h3 className="font-semibold">{addon.addons.name}</h3>
+                              <h3 className="font-semibold">{addon.service_addons.name}</h3>
                               <p className="text-sm text-foreground/70 mb-2">
-                                {addon.addons.description}
+                                {addon.service_addons.description}
                               </p>
                               <span className="text-lg font-bold text-roam-blue">
-                                ${addon.custom_price || addon.business_price}
+                                ${addon.custom_price || addon.service_addons.base_price}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
