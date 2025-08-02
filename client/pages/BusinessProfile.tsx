@@ -634,6 +634,32 @@ export default function BusinessProfile() {
 
           {/* Team Tab */}
           <TabsContent value="team" className="space-y-6">
+            {selectedProviderId && (
+              <Card className="bg-green-50 border-green-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2 text-green-700">
+                    <UserCheck className="w-5 h-5" />
+                    <span className="font-medium">
+                      {providers.find(p => p.id === selectedProviderId)?.first_name} {providers.find(p => p.id === selectedProviderId)?.last_name} is your preferred provider
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedProviderId(null);
+                        toast({
+                          title: "Provider Preference Cleared",
+                          description: "No provider preference set. The business will assign the best available provider.",
+                        });
+                      }}
+                      className="ml-auto text-green-600 hover:text-green-700"
+                    >
+                      Clear Preference
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {providers.map((provider) => (
                 <Card key={provider.id} className="hover:shadow-lg transition-shadow">
