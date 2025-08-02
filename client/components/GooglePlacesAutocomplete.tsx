@@ -130,10 +130,31 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     window.gm_authFailure = () => {
       console.error('Google Maps authentication failed - check API key');
       setIsLoading(false);
+      setBillingError(true);
+    };
+
+    // Check for billing errors
+    window.gm_authFailure = () => {
+      console.error('Google Maps billing not enabled');
+      setIsLoading(false);
+      setBillingError(true);
     };
 
     loadGoogleMapsScript().catch((error) => {
       console.error('Failed to load Google Maps:', error);
+      if (error.message.includes('billing') || error.message.includes('Billing')) {
+        setBillingError(true);
+      }
+    });
+
+    // Global error handler for Google Maps
+    window.addEventListener('error', (event) => {
+      if (event.message && (event.message.includes('BillingNotEnabledMapError') ||
+          event.message.includes('billing'))) {
+        console.error('Google Maps billing error detected');
+        setBillingError(true);
+        setIsLoading(false);
+      }
     });
 
     // Cleanup
