@@ -225,11 +225,12 @@ export default function BusinessAvailability() {
       }
 
       // Log the results for debugging
-      console.log('Businesses query result:', {
-        businessesData: businessesData?.length || 0,
-        filteredBusinesses: filteredBusinesses?.length || 0,
-        transformedBusinesses: transformedBusinesses?.length || 0
-      });
+      console.log('Businesses query result:', JSON.stringify({
+        businessesDataLength: businessesData?.length || 0,
+        filteredBusinessesLength: filteredBusinesses?.length || 0,
+        transformedBusinessesLength: transformedBusinesses?.length || 0,
+        businessesData: businessesData
+      }, null, 2));
 
     } catch (error: any) {
       console.error('Error fetching available businesses:', error);
