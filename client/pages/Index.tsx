@@ -313,21 +313,23 @@ export default function Index() {
     );
   };
 
-  const filteredProviders = allProviders.filter((provider) => {
+  const filteredBusinesses = featuredBusinesses.filter((business) => {
     const matchesSearch =
       searchQuery === "" ||
-      provider.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      provider.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      provider.specialties.some((s) =>
+      business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      business.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      business.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      business.specialties.some((s) =>
         s.toLowerCase().includes(searchQuery.toLowerCase()),
       );
 
     const matchesCategory =
       selectedCategory === "all" ||
-      provider.service.toLowerCase().includes(selectedCategory);
+      business.type.toLowerCase().includes(selectedCategory) ||
+      business.specialties.some((s) => s.toLowerCase().includes(selectedCategory));
     const matchesDelivery =
       selectedDelivery === "all" ||
-      provider.deliveryTypes.includes(selectedDelivery);
+      business.deliveryTypes.includes(selectedDelivery);
 
     return matchesSearch && matchesCategory && matchesDelivery;
   });
