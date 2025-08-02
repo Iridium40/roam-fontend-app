@@ -662,8 +662,23 @@ export default function BusinessProfile() {
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {providers.map((provider) => (
-                <Card key={provider.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 text-center">
+                <Card
+                  key={provider.id}
+                  className={`hover:shadow-lg transition-shadow ${
+                    selectedProviderId === provider.id
+                      ? 'ring-2 ring-green-500 bg-green-50'
+                      : ''
+                  }`}
+                >
+                  <CardContent className="p-6 text-center relative">
+                    {selectedProviderId === provider.id && (
+                      <div className="absolute top-2 right-2">
+                        <Badge className="bg-green-500 text-white">
+                          <UserCheck className="w-3 h-3 mr-1" />
+                          Preferred
+                        </Badge>
+                      </div>
+                    )}
                     <Avatar className="h-20 w-20 mx-auto mb-4">
                       <AvatarImage src={provider.image_url || undefined} />
                       <AvatarFallback className="text-lg">
