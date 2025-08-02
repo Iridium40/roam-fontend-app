@@ -35,6 +35,11 @@ import CustomerTransactions from "./pages/CustomerTransactions";
 import CustomerFavorites from "./pages/CustomerFavorites";
 import BusinessProfile from "./pages/BusinessProfile";
 import NotFound from "./pages/NotFound";
+import ServiceBookingFlow from "./pages/ServiceBookingFlow";
+import BusinessAvailability from "./pages/BusinessAvailability";
+import BusinessServiceBooking from "./pages/BusinessServiceBooking";
+import Checkout from "./pages/Checkout";
+import BookingConfirmation from "./pages/BookingConfirmation";
 
 const queryClient = new QueryClient();
 
