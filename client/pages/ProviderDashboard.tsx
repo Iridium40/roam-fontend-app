@@ -6869,6 +6869,12 @@ export default function ProviderDashboard() {
               >
                 Bookings
               </TabsTrigger>
+              <TabsTrigger
+                value="conversations"
+                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+              >
+                Messages
+              </TabsTrigger>
               {(isOwner || isDispatcher) && (
                 <TabsTrigger
                   value="services-addons"
