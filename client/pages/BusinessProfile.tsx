@@ -788,6 +788,16 @@ export default function BusinessProfile() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Provider Selection Modal */}
+      <ProviderSelector
+        isOpen={providerSelectorOpen}
+        onClose={() => setProviderSelectorOpen(false)}
+        providers={providers}
+        serviceName={selectedService?.services?.name || 'Service'}
+        onConfirm={handleProviderSelection}
+        selectedProviderId={selectedProviderId}
+      />
     </div>
   );
 }
