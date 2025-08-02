@@ -71,18 +71,13 @@ export default function BusinessServiceBooking() {
         .select(`
           id,
           business_name,
-          business_description,
           business_type,
           logo_url,
           image_url,
           verification_status,
-          years_in_business,
-          business_locations (
-            address_line1,
-            city,
-            state,
-            postal_code
-          )
+          contact_email,
+          phone,
+          website_url
         `)
         .eq('id', businessId)
         .eq('is_active', true)
