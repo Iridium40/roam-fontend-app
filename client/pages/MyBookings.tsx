@@ -48,24 +48,9 @@ export default function MyBookings() {
         setError(null);
 
         console.log("Fetching bookings for user:", currentUser.email);
-        console.log("User type:", userType);
-        console.log("Current user object:", currentUser);
 
-        // First, get the customer record for this user
-        const { data: customerData, error: customerError } = await supabase
-          .from('customers')
-          .select('id, email, first_name, last_name')
-          .eq('email', currentUser.email)
-          .single();
-
-        console.log("Customer lookup result:", { customerData, customerError });
-
-        if (customerError) {
-          console.error("Customer lookup error:", customerError);
-          // If no customer record found, still try to find bookings by guest email
-        }
-
-        let bookingsQuery = supabase
+        // Get bookings for this customer (both registered customer and guest bookings)
+        const { data: bookingsData, error: bookingsError } = await supabase
           .from('bookings')
           .select(`
             *,
@@ -88,29 +73,16 @@ export default function MyBookings() {
               location_id
             )
           `)
+          .or(`guest_email.eq.${currentUser.email},customer_profiles.email.eq.${currentUser.email}`)
           .order('booking_date', { ascending: false })
           .limit(50);
-
-        // Query by customer_id if we found the customer, otherwise by guest_email
-        if (customerData?.id) {
-          console.log("Querying by customer_id:", customerData.id);
-          bookingsQuery = bookingsQuery.eq('customer_id', customerData.id);
-        } else {
-          console.log("Querying by guest_email:", currentUser.email);
-          bookingsQuery = bookingsQuery.eq('guest_email', currentUser.email);
-        }
-
-        const { data: bookingsData, error: bookingsError } = await bookingsQuery;
-
-        console.log("Bookings query completed:", { bookingsData, bookingsError });
 
         if (bookingsError) {
           console.error("Bookings query error:", bookingsError);
           throw new Error("Failed to fetch bookings from database");
         }
 
-        console.log("Found bookings:", bookingsData);
-        console.log("Number of bookings found:", bookingsData?.length || 0);
+        console.log("Found bookings:", bookingsData?.length || 0);
 
         // Transform the database data to match the expected format
         const transformedBookings = (bookingsData || []).map((booking: any) => {
