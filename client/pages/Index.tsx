@@ -206,6 +206,7 @@ export default function Index() {
         if (!providersError && providersData) {
           const transformedProviders = providersData.map((provider: any) => ({
             id: provider.id,
+            business_id: provider.business_id,
             name: `${provider.first_name} ${provider.last_name}`,
             service: "Professional Service Provider",
             rating: 4.8, // Default rating
