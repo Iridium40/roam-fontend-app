@@ -572,10 +572,10 @@ export default function BusinessProfile() {
                             ${service.business_price || service.custom_price}
                           </span>
                         </div>
-                        {service.services?.estimated_duration && (
+                        {service.services?.duration_minutes && (
                           <Badge variant="outline" className="border-roam-blue text-roam-blue">
                             <Clock className="w-3 h-3 mr-1" />
-                            {service.services.estimated_duration} min
+                            {service.services.duration_minutes} min
                           </Badge>
                         )}
                       </div>
