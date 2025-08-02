@@ -53,20 +53,22 @@ export default function BusinessAvailability() {
           description,
           base_price,
           duration_minutes,
-          image_url,
-          service_subcategories (
-            service_subcategory_type,
-            service_categories (
-              service_category_type
-            )
-          )
+          image_url
         `)
         .eq('id', serviceId)
         .eq('is_active', true)
         .single();
 
-      if (serviceError || !serviceData) {
-        throw new Error('Service not found');
+      console.log('Service query result:', { serviceData, serviceError, serviceId });
+
+      if (serviceError) {
+        console.error('Service query error:', serviceError);
+        throw new Error(`Service query failed: ${serviceError.message}`);
+      }
+
+      if (!serviceData) {
+        console.error('No service found with ID:', serviceId);
+        throw new Error(`No service found with ID: ${serviceId}`);
       }
 
       setService(serviceData);
