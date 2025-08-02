@@ -88,6 +88,130 @@ export default function Index() {
     }
   };
 
+  // Fetch real data from Supabase
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch featured services (first 6 services with images)
+        const { data: featuredServicesData, error: featuredError } = await supabase
+          .from('services')
+          .select(`
+            id,
+            name,
+            description,
+            min_price,
+            estimated_duration,
+            image_url,
+            is_active,
+            service_subcategories (
+              service_subcategory_type,
+              service_categories (
+                service_category_type
+              )
+            )
+          `)
+          .eq('is_active', true)
+          .not('image_url', 'is', null)
+          .limit(6);
+
+        if (!featuredError && featuredServicesData) {
+          const transformedFeatured = featuredServicesData.map((service: any) => ({
+            id: service.id,
+            title: service.name,
+            category: service.service_subcategories?.service_categories?.service_category_type || 'General',
+            image: service.image_url || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop',
+            description: service.description || 'Professional service',
+            price: `$${service.min_price || 50}`,
+            rating: 4.8, // Default rating
+            duration: `${service.estimated_duration || 60} min`,
+          }));
+          setFeaturedServices(transformedFeatured);
+        }
+
+        // Fetch popular services (next 6 services)
+        const { data: popularServicesData, error: popularError } = await supabase
+          .from('services')
+          .select(`
+            id,
+            name,
+            description,
+            min_price,
+            estimated_duration,
+            image_url,
+            is_active,
+            service_subcategories (
+              service_subcategory_type,
+              service_categories (
+                service_category_type
+              )
+            )
+          `)
+          .eq('is_active', true)
+          .range(6, 11); // Get the next 6 services
+
+        if (!popularError && popularServicesData) {
+          const transformedPopular = popularServicesData.map((service: any) => ({
+            id: service.id,
+            title: service.name,
+            category: service.service_subcategories?.service_categories?.service_category_type || 'General',
+            image: service.image_url || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=300&fit=crop',
+            description: service.description || 'Professional service',
+            price: `$${service.min_price || 50}`,
+            rating: 4.9, // Default rating
+            duration: `${service.estimated_duration || 60} min`,
+          }));
+          setPopularServices(transformedPopular);
+        }
+
+        // Fetch all providers
+        const { data: providersData, error: providersError } = await supabase
+          .from('providers')
+          .select(`
+            id,
+            first_name,
+            last_name,
+            phone,
+            profile_image_url,
+            is_active,
+            business_locations (
+              location_name,
+              city,
+              state
+            )
+          `)
+          .eq('is_active', true)
+          .limit(12);
+
+        if (!providersError && providersData) {
+          const transformedProviders = providersData.map((provider: any) => ({
+            id: provider.id,
+            name: `${provider.first_name} ${provider.last_name}`,
+            service: "Professional Service Provider",
+            rating: 4.8, // Default rating
+            reviews: Math.floor(Math.random() * 200) + 50, // Random review count
+            deliveryTypes: ["mobile", "business"],
+            price: "$50-150/hour",
+            image: provider.profile_image_url || "/api/placeholder/80/80",
+            specialties: ["Professional Service", "Quality Care", "Experienced"],
+            location: provider.business_locations?.city ?
+              `${provider.business_locations.city}, ${provider.business_locations.state}` :
+              "Florida",
+          }));
+          setAllProviders(transformedProviders);
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const serviceCategories = [
     {
       id: "beauty",
