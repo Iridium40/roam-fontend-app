@@ -115,13 +115,12 @@ export default function BusinessServiceBooking() {
         .select(`
           id,
           addon_id,
-          business_price,
           custom_price,
-          addons (
+          service_addons (
             id,
             name,
             description,
-            image_url
+            base_price
           )
         `)
         .eq('business_id', businessId)
