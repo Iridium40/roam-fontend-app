@@ -206,6 +206,28 @@ const App = () => (
                 element={<BusinessProfile />}
               />
 
+              {/* Booking Flow Routes */}
+              <Route
+                path="/book-service/:serviceId"
+                element={<ServiceBookingFlow />}
+              />
+              <Route
+                path="/book-service/:serviceId/businesses"
+                element={<BusinessAvailability />}
+              />
+              <Route
+                path="/business/:businessId/book-service"
+                element={<BusinessServiceBooking />}
+              />
+              <Route
+                path="/checkout"
+                element={<Checkout />}
+              />
+              <Route
+                path="/booking-confirmation"
+                element={<BookingConfirmation />}
+              />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
