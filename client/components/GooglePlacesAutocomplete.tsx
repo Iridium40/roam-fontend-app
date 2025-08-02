@@ -31,6 +31,7 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
+  const [billingError, setBillingError] = useState(false);
 
   // Google Maps API key
   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyCo_xpvt_4a5383FSZ8qJo_2M4cGplpPk8";
