@@ -233,9 +233,10 @@ export default function CustomerLocations() {
       fetchLocations();
     } catch (error: any) {
       console.error('Error saving location:', error);
+      const errorMessage = error?.message || error?.error?.message || JSON.stringify(error);
       toast({
         title: "Error",
-        description: `Failed to ${editingLocation ? 'update' : 'add'} location`,
+        description: `Failed to ${editingLocation ? 'update' : 'add'} location: ${errorMessage}`,
         variant: "destructive",
       });
     } finally {
