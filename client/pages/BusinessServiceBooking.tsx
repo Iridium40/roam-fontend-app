@@ -1,14 +1,19 @@
-import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
+import { useState, useEffect } from "react";
+import {
+  useParams,
+  useSearchParams,
+  useNavigate,
+  Link,
+} from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft,
   Calendar as CalendarIcon,
@@ -25,10 +30,10 @@ import {
   Plus,
   Minus,
   CheckCircle,
-} from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function BusinessServiceBooking() {
   const { businessId } = useParams<{ businessId: string }>();
@@ -36,24 +41,25 @@ export default function BusinessServiceBooking() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
-  
-  const selectedDate = searchParams.get('date');
-  const selectedTime = searchParams.get('time');
-  const preSelectedServiceId = searchParams.get('serviceId');
-  
+
+  const selectedDate = searchParams.get("date");
+  const selectedTime = searchParams.get("time");
+  const preSelectedServiceId = searchParams.get("serviceId");
+
   const [business, setBusiness] = useState<any>(null);
   const [services, setServices] = useState<any[]>([]);
   const [addons, setAddons] = useState<any[]>([]);
   const [providers, setProviders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Booking state
   const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const [selectedAddons, setSelectedAddons] = useState<any[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState<string>('no-preference');
-  const [deliveryType, setDeliveryType] = useState<string>('');
-  const [customerLocation, setCustomerLocation] = useState<string>('');
-  const [specialRequests, setSpecialRequests] = useState<string>('');
+  const [selectedProvider, setSelectedProvider] =
+    useState<string>("no-preference");
+  const [deliveryType, setDeliveryType] = useState<string>("");
+  const [customerLocation, setCustomerLocation] = useState<string>("");
+  const [specialRequests, setSpecialRequests] = useState<string>("");
 
   useEffect(() => {
     if (businessId) {
@@ -67,8 +73,9 @@ export default function BusinessServiceBooking() {
 
       // Fetch business details
       const { data: businessData, error: businessError } = await supabase
-        .from('business_profiles')
-        .select(`
+        .from("business_profiles")
+        .select(
+          `
           id,
           business_name,
           business_type,
@@ -78,23 +85,28 @@ export default function BusinessServiceBooking() {
           contact_email,
           phone,
           website_url
-        `)
-        .eq('id', businessId)
-        .eq('is_active', true)
+        `,
+        )
+        .eq("id", businessId)
+        .eq("is_active", true)
         .single();
 
       if (businessError || !businessData) {
-        console.error('Business not found, using fallback data:', businessError);
+        console.error(
+          "Business not found, using fallback data:",
+          businessError,
+        );
         const fallbackBusiness = {
           id: businessId,
-          business_name: 'Smith Health & Wellness',
-          business_type: 'small_business',
-          logo_url: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop',
+          business_name: "Smith Health & Wellness",
+          business_type: "small_business",
+          logo_url:
+            "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop",
           image_url: null,
-          verification_status: 'approved',
-          contact_email: 'info@smithhealthwellness.com',
-          phone: '(555) 123-4567',
-          website_url: null
+          verification_status: "approved",
+          contact_email: "info@smithhealthwellness.com",
+          phone: "(555) 123-4567",
+          website_url: null,
         };
         setBusiness(fallbackBusiness);
       } else {
@@ -103,8 +115,9 @@ export default function BusinessServiceBooking() {
 
       // Fetch services
       const { data: servicesData, error: servicesError } = await supabase
-        .from('business_services')
-        .select(`
+        .from("business_services")
+        .select(
+          `
           id,
           service_id,
           business_price,
@@ -115,25 +128,28 @@ export default function BusinessServiceBooking() {
             description,
             duration_minutes
           )
-        `)
-        .eq('business_id', businessId)
-        .eq('is_active', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_active", true);
 
       // Use fallback service data if no services found
       if (!servicesData || servicesData.length === 0) {
-        console.log('No services found, using fallback data');
-        const fallbackServices = [{
-          id: 'fallback-service-1',
-          service_id: preSelectedServiceId || 'fallback-service-1',
-          business_price: 85,
-          delivery_type: 'mobile',
-          services: {
-            id: preSelectedServiceId || 'fallback-service-1',
-            name: '60 Minute Massage',
-            description: 'Relaxing full-body massage therapy session',
-            duration_minutes: 60
-          }
-        }];
+        console.log("No services found, using fallback data");
+        const fallbackServices = [
+          {
+            id: "fallback-service-1",
+            service_id: preSelectedServiceId || "fallback-service-1",
+            business_price: 85,
+            delivery_type: "mobile",
+            services: {
+              id: preSelectedServiceId || "fallback-service-1",
+              name: "60 Minute Massage",
+              description: "Relaxing full-body massage therapy session",
+              duration_minutes: 60,
+            },
+          },
+        ];
         setServices(fallbackServices);
       } else {
         setServices(servicesData);
@@ -141,8 +157,9 @@ export default function BusinessServiceBooking() {
 
       // Fetch addons
       const { data: addonsData, error: addonsError } = await supabase
-        .from('business_addons')
-        .select(`
+        .from("business_addons")
+        .select(
+          `
           id,
           addon_id,
           custom_price,
@@ -152,16 +169,18 @@ export default function BusinessServiceBooking() {
             description,
             base_price
           )
-        `)
-        .eq('business_id', businessId)
-        .eq('is_available', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_available", true);
 
       setAddons(addonsData || []);
 
       // Fetch providers
       const { data: providersData, error: providersError } = await supabase
-        .from('providers')
-        .select(`
+        .from("providers")
+        .select(
+          `
           id,
           first_name,
           last_name,
@@ -170,40 +189,44 @@ export default function BusinessServiceBooking() {
           image_url,
           average_rating,
           total_reviews
-        `)
-        .eq('business_id', businessId)
-        .eq('is_active', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_active", true);
 
       setProviders(providersData || []);
 
       // Auto-select service if specified
       if (preSelectedServiceId && servicesData) {
-        const preSelected = servicesData.find(s => s.service_id === preSelectedServiceId);
+        const preSelected = servicesData.find(
+          (s) => s.service_id === preSelectedServiceId,
+        );
         if (preSelected) {
           setSelectedServices([{ ...preSelected, quantity: 1 }]);
           setDeliveryType(preSelected.delivery_type);
         }
       }
-
     } catch (error: any) {
-      console.error('Error fetching business data:', error);
+      console.error("Error fetching business data:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to load business information",
         variant: "destructive",
       });
-      navigate('/');
+      navigate("/");
     } finally {
       setLoading(false);
     }
   };
 
   const addService = (service: any) => {
-    const existing = selectedServices.find(s => s.id === service.id);
+    const existing = selectedServices.find((s) => s.id === service.id);
     if (existing) {
-      setSelectedServices(selectedServices.map(s => 
-        s.id === service.id ? { ...s, quantity: s.quantity + 1 } : s
-      ));
+      setSelectedServices(
+        selectedServices.map((s) =>
+          s.id === service.id ? { ...s, quantity: s.quantity + 1 } : s,
+        ),
+      );
     } else {
       setSelectedServices([...selectedServices, { ...service, quantity: 1 }]);
       if (!deliveryType) {
@@ -213,44 +236,55 @@ export default function BusinessServiceBooking() {
   };
 
   const removeService = (serviceId: string) => {
-    const existing = selectedServices.find(s => s.id === serviceId);
+    const existing = selectedServices.find((s) => s.id === serviceId);
     if (existing && existing.quantity > 1) {
-      setSelectedServices(selectedServices.map(s => 
-        s.id === serviceId ? { ...s, quantity: s.quantity - 1 } : s
-      ));
+      setSelectedServices(
+        selectedServices.map((s) =>
+          s.id === serviceId ? { ...s, quantity: s.quantity - 1 } : s,
+        ),
+      );
     } else {
-      setSelectedServices(selectedServices.filter(s => s.id !== serviceId));
+      setSelectedServices(selectedServices.filter((s) => s.id !== serviceId));
     }
   };
 
   const addAddon = (addon: any) => {
-    const existing = selectedAddons.find(a => a.id === addon.id);
+    const existing = selectedAddons.find((a) => a.id === addon.id);
     if (existing) {
-      setSelectedAddons(selectedAddons.map(a => 
-        a.id === addon.id ? { ...a, quantity: a.quantity + 1 } : a
-      ));
+      setSelectedAddons(
+        selectedAddons.map((a) =>
+          a.id === addon.id ? { ...a, quantity: a.quantity + 1 } : a,
+        ),
+      );
     } else {
       setSelectedAddons([...selectedAddons, { ...addon, quantity: 1 }]);
     }
   };
 
   const removeAddon = (addonId: string) => {
-    const existing = selectedAddons.find(a => a.id === addonId);
+    const existing = selectedAddons.find((a) => a.id === addonId);
     if (existing && existing.quantity > 1) {
-      setSelectedAddons(selectedAddons.map(a => 
-        a.id === addonId ? { ...a, quantity: a.quantity - 1 } : a
-      ));
+      setSelectedAddons(
+        selectedAddons.map((a) =>
+          a.id === addonId ? { ...a, quantity: a.quantity - 1 } : a,
+        ),
+      );
     } else {
-      setSelectedAddons(selectedAddons.filter(a => a.id !== addonId));
+      setSelectedAddons(selectedAddons.filter((a) => a.id !== addonId));
     }
   };
 
   const calculateTotal = () => {
-    const serviceTotal = selectedServices.reduce((sum, service) =>
-      sum + service.business_price * service.quantity, 0
+    const serviceTotal = selectedServices.reduce(
+      (sum, service) => sum + service.business_price * service.quantity,
+      0,
     );
-    const addonTotal = selectedAddons.reduce((sum, addon) =>
-      sum + (addon.custom_price || addon.service_addons.base_price) * addon.quantity, 0
+    const addonTotal = selectedAddons.reduce(
+      (sum, addon) =>
+        sum +
+        (addon.custom_price || addon.service_addons.base_price) *
+          addon.quantity,
+      0,
     );
     return serviceTotal + addonTotal;
   };
@@ -265,7 +299,7 @@ export default function BusinessServiceBooking() {
       return;
     }
 
-    if (deliveryType === 'mobile' && !customerLocation.trim()) {
+    if (deliveryType === "mobile" && !customerLocation.trim()) {
       toast({
         title: "Location Required",
         description: "Please enter your location for mobile service",
@@ -281,24 +315,25 @@ export default function BusinessServiceBooking() {
       time: selectedTime,
       services: selectedServices,
       addons: selectedAddons,
-      providerId: selectedProvider === 'no-preference' ? null : selectedProvider,
+      providerId:
+        selectedProvider === "no-preference" ? null : selectedProvider,
       deliveryType,
-      customerLocation: deliveryType === 'mobile' ? customerLocation : null,
+      customerLocation: deliveryType === "mobile" ? customerLocation : null,
       specialRequests,
       total: calculateTotal(),
     };
 
     // Store in sessionStorage and navigate to checkout
-    sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
-    navigate('/checkout');
+    sessionStorage.setItem("bookingData", JSON.stringify(bookingData));
+    navigate("/checkout");
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -326,7 +361,9 @@ export default function BusinessServiceBooking() {
                 size="sm"
                 className="text-foreground hover:text-roam-blue"
               >
-                <Link to={`/book-service/${preSelectedServiceId}/businesses?date=${selectedDate}&time=${selectedTime}`}>
+                <Link
+                  to={`/book-service/${preSelectedServiceId}/businesses?date=${selectedDate}&time=${selectedTime}`}
+                >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Businesses
                 </Link>
@@ -350,21 +387,27 @@ export default function BusinessServiceBooking() {
                 <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                   ✓
                 </div>
-                <span className="ml-2 text-sm font-medium text-green-600">Date & Time</span>
+                <span className="ml-2 text-sm font-medium text-green-600">
+                  Date & Time
+                </span>
               </div>
               <ChevronRight className="w-4 h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                   ✓
                 </div>
-                <span className="ml-2 text-sm font-medium text-green-600">Business Selected</span>
+                <span className="ml-2 text-sm font-medium text-green-600">
+                  Business Selected
+                </span>
               </div>
               <ChevronRight className="w-4 h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-roam-blue text-white rounded-full flex items-center justify-center text-sm font-medium">
                   3
                 </div>
-                <span className="ml-2 text-sm font-medium text-roam-blue">Book Service</span>
+                <span className="ml-2 text-sm font-medium text-roam-blue">
+                  Book Service
+                </span>
               </div>
             </div>
           </div>
@@ -382,16 +425,25 @@ export default function BusinessServiceBooking() {
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16">
-                      <AvatarImage src={business?.logo_url || business?.image_url || undefined} />
+                      <AvatarImage
+                        src={
+                          business?.logo_url || business?.image_url || undefined
+                        }
+                      />
                       <AvatarFallback>
                         <Building className="w-8 h-8" />
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h1 className="text-2xl font-bold">{business?.business_name}</h1>
-                      <p className="text-foreground/70">Professional {business?.business_type?.replace('_', ' ')} services</p>
+                      <h1 className="text-2xl font-bold">
+                        {business?.business_name}
+                      </h1>
+                      <p className="text-foreground/70">
+                        Professional{" "}
+                        {business?.business_type?.replace("_", " ")} services
+                      </p>
                       <div className="flex items-center gap-2 mt-2">
-                        {business?.verification_status === 'approved' && (
+                        {business?.verification_status === "approved" && (
                           <Badge className="bg-green-100 text-green-800">
                             <Shield className="w-3 h-3 mr-1" />
                             Verified
@@ -399,7 +451,9 @@ export default function BusinessServiceBooking() {
                         )}
                         <div className="flex items-center gap-2 text-sm text-foreground/60">
                           <CalendarIcon className="w-4 h-4" />
-                          <span>{selectedDate ? formatDate(selectedDate) : ''}</span>
+                          <span>
+                            {selectedDate ? formatDate(selectedDate) : ""}
+                          </span>
                           <Clock className="w-4 h-4 ml-2" />
                           <span>{selectedTime}</span>
                         </div>
@@ -420,7 +474,9 @@ export default function BusinessServiceBooking() {
                       <div key={service.id} className="border rounded-lg p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="font-semibold">{service.services.name}</h3>
+                            <h3 className="font-semibold">
+                              {service.services.name}
+                            </h3>
                             <p className="text-sm text-foreground/70 mb-2">
                               {service.services.description}
                             </p>
@@ -434,7 +490,9 @@ export default function BusinessServiceBooking() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            {selectedServices.find(s => s.id === service.id) && (
+                            {selectedServices.find(
+                              (s) => s.id === service.id,
+                            ) && (
                               <>
                                 <Button
                                   size="sm"
@@ -444,7 +502,9 @@ export default function BusinessServiceBooking() {
                                   <Minus className="w-4 h-4" />
                                 </Button>
                                 <span className="w-8 text-center">
-                                  {selectedServices.find(s => s.id === service.id)?.quantity || 0}
+                                  {selectedServices.find(
+                                    (s) => s.id === service.id,
+                                  )?.quantity || 0}
                                 </span>
                               </>
                             )}
@@ -474,16 +534,22 @@ export default function BusinessServiceBooking() {
                         <div key={addon.id} className="border rounded-lg p-4">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <h3 className="font-semibold">{addon.service_addons.name}</h3>
+                              <h3 className="font-semibold">
+                                {addon.service_addons.name}
+                              </h3>
                               <p className="text-sm text-foreground/70 mb-2">
                                 {addon.service_addons.description}
                               </p>
                               <span className="text-lg font-bold text-roam-blue">
-                                ${addon.custom_price || addon.service_addons.base_price}
+                                $
+                                {addon.custom_price ||
+                                  addon.service_addons.base_price}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              {selectedAddons.find(a => a.id === addon.id) && (
+                              {selectedAddons.find(
+                                (a) => a.id === addon.id,
+                              ) && (
                                 <>
                                   <Button
                                     size="sm"
@@ -493,14 +559,13 @@ export default function BusinessServiceBooking() {
                                     <Minus className="w-4 h-4" />
                                   </Button>
                                   <span className="w-8 text-center">
-                                    {selectedAddons.find(a => a.id === addon.id)?.quantity || 0}
+                                    {selectedAddons.find(
+                                      (a) => a.id === addon.id,
+                                    )?.quantity || 0}
                                   </span>
                                 </>
                               )}
-                              <Button
-                                size="sm"
-                                onClick={() => addAddon(addon)}
-                              >
+                              <Button size="sm" onClick={() => addAddon(addon)}>
                                 <Plus className="w-4 h-4" />
                               </Button>
                             </div>
@@ -519,22 +584,43 @@ export default function BusinessServiceBooking() {
                     <CardTitle>Provider Preference (Optional)</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <RadioGroup value={selectedProvider} onValueChange={setSelectedProvider}>
+                    <RadioGroup
+                      value={selectedProvider}
+                      onValueChange={setSelectedProvider}
+                    >
                       <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                        <RadioGroupItem value="no-preference" id="no-preference" />
-                        <Label htmlFor="no-preference" className="flex items-center gap-2">
+                        <RadioGroupItem
+                          value="no-preference"
+                          id="no-preference"
+                        />
+                        <Label
+                          htmlFor="no-preference"
+                          className="flex items-center gap-2"
+                        >
                           <Shuffle className="w-4 h-4 text-roam-blue" />
                           No Preference (Business Choice)
                         </Label>
                       </div>
                       {providers.map((provider) => (
-                        <div key={provider.id} className="flex items-center space-x-2 p-3 border rounded-lg">
-                          <RadioGroupItem value={provider.id} id={provider.id} />
-                          <Label htmlFor={provider.id} className="flex items-center gap-3 flex-1">
+                        <div
+                          key={provider.id}
+                          className="flex items-center space-x-2 p-3 border rounded-lg"
+                        >
+                          <RadioGroupItem
+                            value={provider.id}
+                            id={provider.id}
+                          />
+                          <Label
+                            htmlFor={provider.id}
+                            className="flex items-center gap-3 flex-1"
+                          >
                             <Avatar className="h-8 w-8">
-                              <AvatarImage src={provider.image_url || undefined} />
+                              <AvatarImage
+                                src={provider.image_url || undefined}
+                              />
                               <AvatarFallback className="text-xs">
-                                {provider.first_name[0]}{provider.last_name[0]}
+                                {provider.first_name[0]}
+                                {provider.last_name[0]}
                               </AvatarFallback>
                             </Avatar>
                             <div>
@@ -558,7 +644,7 @@ export default function BusinessServiceBooking() {
               )}
 
               {/* Location Input for Mobile Services */}
-              {deliveryType === 'mobile' && (
+              {deliveryType === "mobile" && (
                 <Card>
                   <CardHeader>
                     <CardTitle>Service Location</CardTitle>
@@ -608,11 +694,16 @@ export default function BusinessServiceBooking() {
                     <div>
                       <h4 className="font-semibold mb-2">Services</h4>
                       {selectedServices.map((service) => (
-                        <div key={service.id} className="flex justify-between text-sm mb-1">
+                        <div
+                          key={service.id}
+                          className="flex justify-between text-sm mb-1"
+                        >
                           <span>
                             {service.services.name} × {service.quantity}
                           </span>
-                          <span>${service.business_price * service.quantity}</span>
+                          <span>
+                            ${service.business_price * service.quantity}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -623,11 +714,18 @@ export default function BusinessServiceBooking() {
                     <div>
                       <h4 className="font-semibold mb-2">Add-ons</h4>
                       {selectedAddons.map((addon) => (
-                        <div key={addon.id} className="flex justify-between text-sm mb-1">
+                        <div
+                          key={addon.id}
+                          className="flex justify-between text-sm mb-1"
+                        >
                           <span>
                             {addon.service_addons.name} × {addon.quantity}
                           </span>
-                          <span>${(addon.custom_price || addon.service_addons.base_price) * addon.quantity}</span>
+                          <span>
+                            $
+                            {(addon.custom_price ||
+                              addon.service_addons.base_price) * addon.quantity}
+                          </span>
                         </div>
                       ))}
                     </div>

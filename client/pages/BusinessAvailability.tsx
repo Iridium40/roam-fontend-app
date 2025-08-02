@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState, useEffect } from "react";
+import {
+  useParams,
+  useSearchParams,
+  useNavigate,
+  Link,
+} from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowLeft,
   Calendar as CalendarIcon,
@@ -15,10 +20,10 @@ import {
   Building,
   DollarSign,
   Users,
-} from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function BusinessAvailability() {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -26,10 +31,10 @@ export default function BusinessAvailability() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
-  
-  const selectedDate = searchParams.get('date');
-  const selectedTime = searchParams.get('time');
-  
+
+  const selectedDate = searchParams.get("date");
+  const selectedTime = searchParams.get("time");
+
   const [service, setService] = useState<any>(null);
   const [availableBusinesses, setAvailableBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,39 +51,50 @@ export default function BusinessAvailability() {
 
       // First fetch the service details
       const { data: serviceData, error: serviceError } = await supabase
-        .from('services')
-        .select(`
+        .from("services")
+        .select(
+          `
           id,
           name,
           description,
           min_price,
           duration_minutes,
           image_url
-        `)
-        .eq('id', serviceId)
-        .eq('is_active', true)
+        `,
+        )
+        .eq("id", serviceId)
+        .eq("is_active", true)
         .single();
 
-      console.log('Service query result:', JSON.stringify({ serviceData, serviceError, serviceId }, null, 2));
+      console.log(
+        "Service query result:",
+        JSON.stringify({ serviceData, serviceError, serviceId }, null, 2),
+      );
 
       if (serviceError) {
-        console.error('Service query error:', JSON.stringify(serviceError, null, 2));
-        throw new Error(`Service query failed: ${serviceError.message || JSON.stringify(serviceError)}`);
+        console.error(
+          "Service query error:",
+          JSON.stringify(serviceError, null, 2),
+        );
+        throw new Error(
+          `Service query failed: ${serviceError.message || JSON.stringify(serviceError)}`,
+        );
       }
 
       if (!serviceData) {
-        console.error('No service found with ID:', serviceId);
+        console.error("No service found with ID:", serviceId);
         // Use fallback service data for testing
         const fallbackService = {
           id: serviceId,
-          name: '60 Minute Massage',
-          description: 'Relaxing full-body massage therapy session',
+          name: "60 Minute Massage",
+          description: "Relaxing full-body massage therapy session",
           min_price: 85,
           duration_minutes: 60,
-          image_url: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop'
+          image_url:
+            "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop",
         };
         setService(fallbackService);
-        console.log('Using fallback service data:', fallbackService);
+        console.log("Using fallback service data:", fallbackService);
       } else {
         setService(serviceData);
       }
@@ -88,11 +104,12 @@ export default function BusinessAvailability() {
       const dayOfWeek = date.getDay();
 
       // Try a simpler business query first to debug
-      console.log('Attempting to fetch businesses for serviceId:', serviceId);
+      console.log("Attempting to fetch businesses for serviceId:", serviceId);
 
       const { data: businessesData, error: businessesError } = await supabase
-        .from('business_services')
-        .select(`
+        .from("business_services")
+        .select(
+          `
           business_id,
           business_price,
           delivery_type,
@@ -104,59 +121,81 @@ export default function BusinessAvailability() {
             verification_status,
             is_active
           )
-        `)
-        .eq('service_id', serviceId)
-        .eq('is_active', true);
+        `,
+        )
+        .eq("service_id", serviceId)
+        .eq("is_active", true);
 
       if (businessesError) {
-        console.error('Error fetching businesses:', JSON.stringify(businessesError, null, 2));
-        console.error('Business query details:', JSON.stringify({
-          serviceId,
-          selectedDate,
-          selectedTime,
-          dayOfWeek
-        }, null, 2));
+        console.error(
+          "Error fetching businesses:",
+          JSON.stringify(businessesError, null, 2),
+        );
+        console.error(
+          "Business query details:",
+          JSON.stringify(
+            {
+              serviceId,
+              selectedDate,
+              selectedTime,
+              dayOfWeek,
+            },
+            null,
+            2,
+          ),
+        );
 
         // Use fallback business data for testing
-        const fallbackBusinesses = [{
-          business_id: 'fallback-business-1',
-          business_price: 85,
-          delivery_type: 'mobile',
-          business_profiles: {
-            id: 'fallback-business-1',
-            business_name: 'Smith Health & Wellness',
-            business_type: 'small_business',
-            logo_url: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop',
-            image_url: null,
-            verification_status: 'approved',
-            is_active: true,
-            business_hours: {},
-            contact_email: 'info@smithhealthwellness.com',
-            phone: '(555) 123-4567',
-            website_url: null
-          }
-        }];
+        const fallbackBusinesses = [
+          {
+            business_id: "fallback-business-1",
+            business_price: 85,
+            delivery_type: "mobile",
+            business_profiles: {
+              id: "fallback-business-1",
+              business_name: "Smith Health & Wellness",
+              business_type: "small_business",
+              logo_url:
+                "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop",
+              image_url: null,
+              verification_status: "approved",
+              is_active: true,
+              business_hours: {},
+              contact_email: "info@smithhealthwellness.com",
+              phone: "(555) 123-4567",
+              website_url: null,
+            },
+          },
+        ];
 
-        console.log('Using fallback business data due to error:', businessesError);
-        setAvailableBusinesses(fallbackBusinesses.map((item: any) => ({
-          id: item.business_profiles.id,
-          name: item.business_profiles.business_name,
-          description: 'Professional health and wellness services with experienced therapists',
-          type: item.business_profiles.business_type,
-          logo: item.business_profiles.logo_url || item.business_profiles.image_url,
-          verification_status: item.business_profiles.verification_status,
-          years_in_business: null,
-          location: 'Orlando, FL',
-          servicePrice: item.business_price,
-          deliveryType: item.delivery_type || 'mobile',
-          rating: 4.8,
-          reviewCount: 127,
-          openTime: '9:00 AM',
-          closeTime: '5:00 PM',
-          email: item.business_profiles.contact_email,
-          phone: item.business_profiles.phone,
-          website: item.business_profiles.website_url
-        })));
+        console.log(
+          "Using fallback business data due to error:",
+          businessesError,
+        );
+        setAvailableBusinesses(
+          fallbackBusinesses.map((item: any) => ({
+            id: item.business_profiles.id,
+            name: item.business_profiles.business_name,
+            description:
+              "Professional health and wellness services with experienced therapists",
+            type: item.business_profiles.business_type,
+            logo:
+              item.business_profiles.logo_url ||
+              item.business_profiles.image_url,
+            verification_status: item.business_profiles.verification_status,
+            years_in_business: null,
+            location: "Orlando, FL",
+            servicePrice: item.business_price,
+            deliveryType: item.delivery_type || "mobile",
+            rating: 4.8,
+            reviewCount: 127,
+            openTime: "9:00 AM",
+            closeTime: "5:00 PM",
+            email: item.business_profiles.contact_email,
+            phone: item.business_profiles.phone,
+            website: item.business_profiles.website_url,
+          })),
+        );
 
         setLoading(false);
         return; // Exit early with fallback data
@@ -165,66 +204,78 @@ export default function BusinessAvailability() {
       // Filter businesses by active status and verification
       const filteredBusinesses = (businessesData || []).filter((item: any) => {
         // Only include active and approved businesses
-        return item.business_profiles &&
-               item.business_profiles.is_active &&
-               item.business_profiles.verification_status === 'approved';
+        return (
+          item.business_profiles &&
+          item.business_profiles.is_active &&
+          item.business_profiles.verification_status === "approved"
+        );
       });
 
       // Transform the data for display
       const transformedBusinesses = filteredBusinesses.map((item: any) => ({
         id: item.business_profiles.id,
         name: item.business_profiles.business_name,
-        description: `Professional ${item.business_profiles.business_type.replace('_', ' ')} services`,
+        description: `Professional ${item.business_profiles.business_type.replace("_", " ")} services`,
         type: item.business_profiles.business_type,
-        logo: item.business_profiles.logo_url || item.business_profiles.image_url,
+        logo:
+          item.business_profiles.logo_url || item.business_profiles.image_url,
         verification_status: item.business_profiles.verification_status,
         years_in_business: null, // Not available in schema
-        location: 'Florida', // Default location since business_locations is separate
+        location: "Florida", // Default location since business_locations is separate
         servicePrice: item.business_price,
-        deliveryType: item.delivery_type || 'mobile',
+        deliveryType: item.delivery_type || "mobile",
         rating: 4.8, // Mock rating - replace with actual data
         reviewCount: Math.floor(Math.random() * 200) + 50,
-        openTime: '9:00 AM', // Parse from business_hours JSON if needed
-        closeTime: '5:00 PM',
+        openTime: "9:00 AM", // Parse from business_hours JSON if needed
+        closeTime: "5:00 PM",
         email: item.business_profiles.contact_email,
         phone: item.business_profiles.phone,
-        website: item.business_profiles.website_url
+        website: item.business_profiles.website_url,
       }));
 
       // If no businesses found, use fallback data
       if (transformedBusinesses.length === 0) {
-        console.log('No businesses found in database, using fallback data');
-        const fallbackBusinesses = [{
-          id: 'fallback-business-1',
-          name: 'Smith Health & Wellness',
-          description: 'Professional health and wellness services with experienced therapists and practitioners.',
-          type: 'small_business',
-          logo: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop',
-          verification_status: 'approved',
-          years_in_business: 5,
-          location: 'Orlando, FL',
-          servicePrice: 85,
-          deliveryType: 'mobile',
-          rating: 4.8,
-          reviewCount: 127,
-          openTime: '9:00 AM',
-          closeTime: '5:00 PM',
-        }];
+        console.log("No businesses found in database, using fallback data");
+        const fallbackBusinesses = [
+          {
+            id: "fallback-business-1",
+            name: "Smith Health & Wellness",
+            description:
+              "Professional health and wellness services with experienced therapists and practitioners.",
+            type: "small_business",
+            logo: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop",
+            verification_status: "approved",
+            years_in_business: 5,
+            location: "Orlando, FL",
+            servicePrice: 85,
+            deliveryType: "mobile",
+            rating: 4.8,
+            reviewCount: 127,
+            openTime: "9:00 AM",
+            closeTime: "5:00 PM",
+          },
+        ];
         setAvailableBusinesses(fallbackBusinesses);
       } else {
         setAvailableBusinesses(transformedBusinesses);
       }
 
       // Log the results for debugging
-      console.log('Businesses query result:', JSON.stringify({
-        businessesDataLength: businessesData?.length || 0,
-        filteredBusinessesLength: filteredBusinesses?.length || 0,
-        transformedBusinessesLength: transformedBusinesses?.length || 0,
-        businessesData: businessesData
-      }, null, 2));
-
+      console.log(
+        "Businesses query result:",
+        JSON.stringify(
+          {
+            businessesDataLength: businessesData?.length || 0,
+            filteredBusinessesLength: filteredBusinesses?.length || 0,
+            transformedBusinessesLength: transformedBusinesses?.length || 0,
+            businessesData: businessesData,
+          },
+          null,
+          2,
+        ),
+      );
     } catch (error: any) {
-      console.error('Error fetching available businesses:', error);
+      console.error("Error fetching available businesses:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to load available businesses",
@@ -242,25 +293,35 @@ export default function BusinessAvailability() {
       businessId: business.id,
     });
 
-    navigate(`/business/${business.id}/book-service?${bookingParams.toString()}`);
+    navigate(
+      `/business/${business.id}/book-service?${bookingParams.toString()}`,
+    );
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const getDeliveryBadge = (type: string) => {
     const config = {
       mobile: { label: "Mobile Service", color: "bg-green-100 text-green-800" },
-      business_location: { label: "In-Studio", color: "bg-blue-100 text-blue-800" },
+      business_location: {
+        label: "In-Studio",
+        color: "bg-blue-100 text-blue-800",
+      },
       virtual: { label: "Virtual", color: "bg-purple-100 text-purple-800" },
     };
-    return config[type as keyof typeof config] || { label: type, color: "bg-gray-100 text-gray-800" };
+    return (
+      config[type as keyof typeof config] || {
+        label: type,
+        color: "bg-gray-100 text-gray-800",
+      }
+    );
   };
 
   if (loading) {
@@ -311,21 +372,27 @@ export default function BusinessAvailability() {
                 <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                   ✓
                 </div>
-                <span className="ml-2 text-sm font-medium text-green-600">Date & Time Selected</span>
+                <span className="ml-2 text-sm font-medium text-green-600">
+                  Date & Time Selected
+                </span>
               </div>
               <ChevronRight className="w-4 h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-roam-blue text-white rounded-full flex items-center justify-center text-sm font-medium">
                   2
                 </div>
-                <span className="ml-2 text-sm font-medium text-roam-blue">Choose Business</span>
+                <span className="ml-2 text-sm font-medium text-roam-blue">
+                  Choose Business
+                </span>
               </div>
               <ChevronRight className="w-4 h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-foreground/20 text-foreground/60 rounded-full flex items-center justify-center text-sm">
                   3
                 </div>
-                <span className="ml-2 text-sm text-foreground/60">Book Service</span>
+                <span className="ml-2 text-sm text-foreground/60">
+                  Book Service
+                </span>
               </div>
             </div>
           </div>
@@ -341,7 +408,7 @@ export default function BusinessAvailability() {
             <div className="flex items-center gap-6 text-sm text-foreground/70">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="w-4 h-4" />
-                <span>{selectedDate ? formatDate(selectedDate) : ''}</span>
+                <span>{selectedDate ? formatDate(selectedDate) : ""}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
@@ -357,7 +424,10 @@ export default function BusinessAvailability() {
           {availableBusinesses.length > 0 ? (
             <div className="grid grid-cols-1 gap-6">
               {availableBusinesses.map((business) => (
-                <Card key={business.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Card
+                  key={business.id}
+                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                >
                   <CardContent className="p-6">
                     <div className="flex items-start gap-6">
                       {/* Business Logo */}
@@ -372,21 +442,27 @@ export default function BusinessAvailability() {
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <h3 className="text-xl font-semibold mb-1">{business.name}</h3>
-                            <p className="text-foreground/70 mb-2">{business.description}</p>
+                            <h3 className="text-xl font-semibold mb-1">
+                              {business.name}
+                            </h3>
+                            <p className="text-foreground/70 mb-2">
+                              {business.description}
+                            </p>
                             <div className="flex items-center gap-4 text-sm text-foreground/60">
                               <div className="flex items-center gap-1">
                                 <MapPin className="w-4 h-4" />
                                 <span>{business.location}</span>
                               </div>
-                              {business.verification_status === 'approved' && (
+                              {business.verification_status === "approved" && (
                                 <div className="flex items-center gap-1 text-green-600">
                                   <Shield className="w-4 h-4" />
                                   <span>Verified</span>
                                 </div>
                               )}
                               {business.years_in_business && (
-                                <span>{business.years_in_business} years in business</span>
+                                <span>
+                                  {business.years_in_business} years in business
+                                </span>
                               )}
                             </div>
                           </div>
@@ -394,8 +470,12 @@ export default function BusinessAvailability() {
                           <div className="text-right">
                             <div className="flex items-center gap-1 mb-2">
                               <Star className="w-4 h-4 text-roam-warning fill-current" />
-                              <span className="font-semibold">{business.rating}</span>
-                              <span className="text-sm text-foreground/60">({business.reviewCount})</span>
+                              <span className="font-semibold">
+                                {business.rating}
+                              </span>
+                              <span className="text-sm text-foreground/60">
+                                ({business.reviewCount})
+                              </span>
                             </div>
                             <div className="text-lg font-bold text-roam-blue">
                               ${business.servicePrice}
@@ -406,9 +486,11 @@ export default function BusinessAvailability() {
                         {/* Service Details */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <Badge 
-                              variant="secondary" 
-                              className={getDeliveryBadge(business.deliveryType).color}
+                            <Badge
+                              variant="secondary"
+                              className={
+                                getDeliveryBadge(business.deliveryType).color
+                              }
                             >
                               {getDeliveryBadge(business.deliveryType).label}
                             </Badge>
@@ -436,9 +518,11 @@ export default function BusinessAvailability() {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Building className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No Available Businesses</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No Available Businesses
+              </h3>
               <p className="text-foreground/60 mb-4">
-                No businesses are available for the selected date and time. 
+                No businesses are available for the selected date and time.
                 Please try a different time slot.
               </p>
               <Button
