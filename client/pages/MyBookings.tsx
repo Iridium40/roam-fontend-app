@@ -49,7 +49,7 @@ export default function MyBookings() {
 
         console.log("Fetching bookings for user:", currentUser.email);
 
-        // Get bookings for this customer (both registered customer and guest bookings)
+        // Get bookings for this customer by guest email (simpler approach)
         const { data: bookingsData, error: bookingsError } = await supabase
           .from('bookings')
           .select(`
@@ -73,7 +73,7 @@ export default function MyBookings() {
               location_id
             )
           `)
-          .or(`guest_email.eq.${currentUser.email},customer_profiles.email.eq.${currentUser.email}`)
+          .eq('guest_email', currentUser.email)
           .order('booking_date', { ascending: false })
           .limit(50);
 
