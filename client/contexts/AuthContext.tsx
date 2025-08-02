@@ -298,23 +298,65 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       console.log(
-        "AuthContext signInCustomer: Auth successful, using auth user data...",
+        "AuthContext signInCustomer: Auth successful, fetching customer profile...",
       );
 
-      // For now, use the auth user data directly since customers table may not exist
-      // Extract name from email or use placeholder values
-      const emailParts = authData.user.email?.split("@")[0] || "";
-      const nameParts = emailParts.split(".");
+      // Fetch or create customer profile
+      const { data: customerProfile, error: profileError } = await supabase
+        .from('customer_profiles')
+        .select('*')
+        .eq('user_id', authData.user.id)
+        .single();
 
-      const customerData = {
-        id: authData.user.id,
-        email: authData.user.email || email,
-        customer_id: authData.user.id, // Use user ID as customer ID for now
-        first_name: nameParts[0] || "Customer",
-        last_name: nameParts[1] || "",
-        phone: null,
-        image_url: null,
-      };
+      if (profileError && profileError.code !== 'PGRST116') {
+        // PGRST116 is "not found" error
+        console.error('AuthContext signInCustomer: Error fetching customer profile:', profileError);
+        throw new Error('Failed to fetch customer profile');
+      }
+
+      let customerData;
+      if (!customerProfile) {
+        // Create customer profile if it doesn't exist
+        console.log('AuthContext signInCustomer: Creating customer profile...');
+        const emailParts = authData.user.email?.split("@")[0] || "";
+        const nameParts = emailParts.split(".");
+
+        const { data: newProfile, error: createError } = await supabase
+          .from('customer_profiles')
+          .insert({
+            user_id: authData.user.id,
+            email: authData.user.email || email,
+            first_name: nameParts[0] || "Customer",
+            last_name: nameParts[1] || "",
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('AuthContext signInCustomer: Error creating customer profile:', createError);
+          throw new Error('Failed to create customer profile');
+        }
+
+        customerData = {
+          id: newProfile.id,
+          email: newProfile.email,
+          customer_id: newProfile.id,
+          first_name: newProfile.first_name,
+          last_name: newProfile.last_name,
+          phone: newProfile.phone,
+          image_url: newProfile.image_url,
+        };
+      } else {
+        customerData = {
+          id: customerProfile.id,
+          email: customerProfile.email,
+          customer_id: customerProfile.id,
+          first_name: customerProfile.first_name,
+          last_name: customerProfile.last_name,
+          phone: customerProfile.phone,
+          image_url: customerProfile.image_url,
+        };
+      }
 
       setCustomer(customerData);
       setUserType("customer");
