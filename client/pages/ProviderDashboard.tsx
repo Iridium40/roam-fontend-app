@@ -6861,7 +6861,7 @@ export default function ProviderDashboard() {
             className="space-y-6"
           >
             <TabsList
-              className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-5" : isOwner ? "grid-cols-10" : "grid-cols-9"} lg:w-auto lg:inline-grid`}
+              className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-6" : isOwner ? "grid-cols-11" : "grid-cols-10"} lg:w-auto lg:inline-grid`}
             >
               <TabsTrigger
                 value="bookings"
