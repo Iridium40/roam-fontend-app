@@ -97,19 +97,15 @@ export default function BusinessAvailability() {
           business_profiles!inner (
             id,
             business_name,
-            business_description,
             business_type,
             logo_url,
             image_url,
             verification_status,
-            years_in_business,
             is_active,
             business_hours,
-            business_locations (
-              city,
-              state,
-              address_line_1
-            )
+            contact_email,
+            phone,
+            website_url
           )
         `)
         .eq('service_id', serviceId)
