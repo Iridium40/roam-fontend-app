@@ -140,7 +140,14 @@ export function useFavorites() {
   }, [isCustomer, toast]);
 
   const isServiceFavorited = useCallback(async (serviceId: string): Promise<boolean> => {
-    if (!isCustomer || !customer?.id) {
+    if (!isCustomer || !customer?.id || !serviceId || serviceId === 'undefined') {
+      return false;
+    }
+
+    // Validate UUIDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(customer.id) || !uuidRegex.test(serviceId)) {
+      console.warn('Invalid UUID format for customer ID or service ID');
       return false;
     }
 
