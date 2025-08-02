@@ -47,112 +47,141 @@ export default function MyBookings() {
         setLoading(true);
         setError(null);
 
-        // For now, we'll use the static data but with proper loading state
-        // In the future, this would call the actual API
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+        console.log("Fetching bookings for user:", currentUser.email);
 
-        const staticBookings = [
-          {
-            id: "B001",
-            status: "confirmed",
-            service: "Deep Tissue Massage",
-            provider: {
-              name: "Sarah Johnson",
-              rating: 4.9,
-              phone: "(305) 555-0123",
-              image: "/api/placeholder/60/60",
-            },
-            date: "2024-01-15",
-            time: "2:00 PM",
-            duration: "90 minutes",
-            deliveryType: "mobile",
-            location: "Your Home - 123 Ocean Dr, Miami, FL",
-            price: "$120",
-            notes: "Please bring your own massage table",
-            bookingDate: "2024-01-10",
-          },
-          {
-            id: "B002",
-            status: "in_progress",
-            service: "Personal Training Session",
-            provider: {
-              name: "Michael Chen",
-              rating: 5.0,
-              phone: "(407) 555-0456",
-              image: "/api/placeholder/60/60",
-            },
-            date: "2024-01-12",
-            time: "6:00 AM",
-            duration: "60 minutes",
-            deliveryType: "mobile",
-            location: "Your Home - 456 Park Ave, Orlando, FL",
-            price: "$80",
-            notes: "HIIT workout focus",
-            bookingDate: "2024-01-05",
-          },
-          {
-            id: "B003",
-            status: "pending",
-            service: "Hair Cut & Color",
-            provider: {
-              name: "Emily Rodriguez",
-              rating: 4.8,
-              phone: "(813) 555-0789",
-              image: "/api/placeholder/60/60",
-            },
-            date: "2024-01-20",
-            time: "10:00 AM",
-            duration: "3 hours",
-            deliveryType: "business",
-            location: "Beauty Studio - 789 Main St, Tampa, FL",
-            price: "$185",
-            notes: "Consultation for new color",
-            bookingDate: "2024-01-08",
-          },
-          {
-            id: "B004",
-            status: "completed",
-            service: "Telehealth Consultation",
-            provider: {
-              name: "Dr. Amanda White",
-              rating: 4.9,
-              phone: "(904) 555-0321",
-              image: "/api/placeholder/60/60",
-            },
-            date: "2024-01-05",
-            time: "3:00 PM",
-            duration: "30 minutes",
-            deliveryType: "virtual",
-            location: "Video Call",
-            price: "$125",
-            notes: "Annual wellness check",
-            bookingDate: "2024-01-02",
-          },
-          {
-            id: "B005",
-            status: "cancelled",
-            service: "Yoga Session",
-            provider: {
-              name: "Jessica Park",
-              rating: 4.7,
-              phone: "(561) 555-0654",
-              image: "/api/placeholder/60/60",
-            },
-            date: "2024-01-08",
-            time: "7:00 AM",
-            duration: "75 minutes",
-            deliveryType: "mobile",
-            location: "Your Home - 321 Beach Rd, West Palm Beach, FL",
-            price: "$90",
-            notes: "Cancelled due to weather",
-            bookingDate: "2024-01-03",
-          },
-        ];
+        // First, get the customer record for this user
+        const { data: customerData, error: customerError } = await supabase
+          .from('customers')
+          .select('id')
+          .eq('email', currentUser.email)
+          .single();
 
-        setBookings(staticBookings);
-      } catch (err) {
+        if (customerError) {
+          console.error("Customer lookup error:", customerError);
+          // If no customer record found, still try to find bookings by guest email
+        }
+
+        let bookingsQuery = supabase
+          .from('bookings')
+          .select(`
+            id,
+            booking_date,
+            start_time,
+            total_amount,
+            delivery_type,
+            booking_status,
+            payment_status,
+            guest_name,
+            guest_email,
+            guest_phone,
+            admin_notes,
+            created_at,
+            services:service_id (
+              id,
+              name,
+              description,
+              estimated_duration
+            ),
+            providers:provider_id (
+              id,
+              first_name,
+              last_name,
+              phone,
+              profile_image_url,
+              business_locations:location_id (
+                location_name,
+                address,
+                city,
+                state,
+                postal_code
+              )
+            ),
+            business_locations:business_location_id (
+              location_name,
+              address,
+              city,
+              state,
+              postal_code
+            ),
+            customer_locations:customer_location_id (
+              address,
+              city,
+              state,
+              postal_code
+            )
+          `)
+          .order('booking_date', { ascending: false });
+
+        // Query by customer_id if we found the customer, otherwise by guest_email
+        if (customerData?.id) {
+          bookingsQuery = bookingsQuery.eq('customer_id', customerData.id);
+        } else {
+          bookingsQuery = bookingsQuery.eq('guest_email', currentUser.email);
+        }
+
+        const { data: bookingsData, error: bookingsError } = await bookingsQuery;
+
+        if (bookingsError) {
+          console.error("Bookings query error:", bookingsError);
+          throw new Error("Failed to fetch bookings from database");
+        }
+
+        console.log("Found bookings:", bookingsData);
+
+        // Transform the database data to match the expected format
+        const transformedBookings = (bookingsData || []).map((booking: any) => {
+          const provider = booking.providers;
+          const service = booking.services;
+          const businessLocation = booking.business_locations;
+          const customerLocation = booking.customer_locations;
+
+          // Determine location string based on delivery type
+          let location = "Location TBD";
+          if (booking.delivery_type === "business_location" && businessLocation) {
+            location = `${businessLocation.location_name} - ${businessLocation.address}, ${businessLocation.city}, ${businessLocation.state}`;
+          } else if (booking.delivery_type === "customer_location" && customerLocation) {
+            location = `Your Location - ${customerLocation.address}, ${customerLocation.city}, ${customerLocation.state}`;
+          } else if (booking.delivery_type === "virtual") {
+            location = "Video Call";
+          } else if (booking.delivery_type === "mobile") {
+            location = customerLocation
+              ? `Your Location - ${customerLocation.address}, ${customerLocation.city}, ${customerLocation.state}`
+              : "Your Location";
+          }
+
+          return {
+            id: booking.id,
+            status: booking.booking_status || 'pending',
+            service: service?.name || 'Unknown Service',
+            provider: {
+              name: provider ? `${provider.first_name} ${provider.last_name}` : 'Unknown Provider',
+              rating: 4.9, // Default rating - would need to implement rating system
+              phone: provider?.phone || null,
+              image: provider?.profile_image_url || "/api/placeholder/60/60",
+            },
+            date: booking.booking_date,
+            time: booking.start_time ? new Date(`1970-01-01T${booking.start_time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : 'Time TBD',
+            duration: service?.estimated_duration ? `${service.estimated_duration} minutes` : 'Duration TBD',
+            deliveryType: booking.delivery_type || 'business_location',
+            location: location,
+            price: `$${booking.total_amount || 0}`,
+            notes: booking.admin_notes || '',
+            bookingDate: booking.created_at,
+            guestName: booking.guest_name,
+            guestEmail: booking.guest_email,
+            paymentStatus: booking.payment_status
+          };
+        });
+
+        setBookings(transformedBookings);
+
+        if (transformedBookings.length === 0) {
+          console.log("No bookings found for email:", currentUser.email);
+        }
+
+      } catch (err: any) {
         console.error("Error fetching bookings:", err);
-        setError("Failed to load bookings. Please try again.");
+        setError(err.message || "Failed to load bookings. Please try again.");
       } finally {
         setLoading(false);
       }
