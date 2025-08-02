@@ -168,6 +168,15 @@ const App = () => (
               />
 
               <Route
+                path="/customer/favorites"
+                element={
+                  <ProtectedRoute>
+                    <CustomerFavorites />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
                 path="/provider-onboarding"
                 element={
                   <ProtectedRoute>
