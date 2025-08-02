@@ -177,9 +177,12 @@ export function useFavorites() {
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.rpc('add_favorite_business', {
-        business_id_param: businessId
-      });
+      const { error } = await supabase
+        .from('customer_favorite_businesses')
+        .insert({
+          customer_id: customer.id,
+          business_id: businessId
+        });
 
       if (error) {
         console.error('Error adding business to favorites:', error?.message || error);
