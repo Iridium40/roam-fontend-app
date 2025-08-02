@@ -689,8 +689,73 @@ export default function BusinessServiceBooking() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
+                      {/* Saved Locations */}
+                      {savedLocations.length > 0 && (
+                        <div>
+                          <Label>Choose from Saved Locations</Label>
+                          <div className="grid grid-cols-1 gap-2 mt-2">
+                            {savedLocations.map((location) => (
+                              <Button
+                                key={location.id}
+                                variant="outline"
+                                onClick={() => {
+                                  const fullAddress = `${location.street_address}${location.unit_number ? `, ${location.unit_number}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`;
+                                  setCustomerLocation(fullAddress);
+                                  setCustomerLocationData(null);
+                                }}
+                                className="w-full justify-start text-left h-auto p-3"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 bg-roam-light-blue/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                    {location.location_type === 'home' ? (
+                                      <Home className="w-4 h-4 text-roam-blue" />
+                                    ) : location.location_type === 'work' ? (
+                                      <Building className="w-4 h-4 text-roam-blue" />
+                                    ) : (
+                                      <MapPin className="w-4 h-4 text-roam-blue" />
+                                    )}
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-medium">{location.location_name}</span>
+                                      {location.is_primary && (
+                                        <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                                          Primary
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    <div className="text-sm text-foreground/60">
+                                      {location.street_address}, {location.city}, {location.state}
+                                    </div>
+                                  </div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Manual Address Input */}
                       <div>
-                        <Label htmlFor="location">Your Address</Label>
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="location">
+                            {savedLocations.length > 0 ? 'Or Enter a New Address' : 'Your Address'}
+                          </Label>
+                          {savedLocations.length === 0 && (
+                            <Button
+                              type="button"
+                              variant="link"
+                              size="sm"
+                              asChild
+                              className="h-auto p-0 text-roam-blue"
+                            >
+                              <Link to="/customer/locations" target="_blank">
+                                <Plus className="w-3 h-3 mr-1" />
+                                Save locations for faster booking
+                              </Link>
+                            </Button>
+                          )}
+                        </div>
                         <div className="mt-1">
                           <GooglePlacesAutocomplete
                             value={customerLocation}
