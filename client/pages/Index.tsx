@@ -861,7 +861,7 @@ export default function Index() {
                 className="hover:shadow-lg transition-shadow border-border/50 hover:border-roam-light-blue/50"
               >
                 <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start">
                     <div className="w-24 h-24 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                       {business.image &&
                       business.image !== "/api/placeholder/80/80" ? (
