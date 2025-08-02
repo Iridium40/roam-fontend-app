@@ -45,6 +45,7 @@ interface ProviderData {
   services: BusinessService[];
   addons: BusinessAddon[];
   location: BusinessLocation;
+  providers: any[];
 }
 
 interface BookingItem {
