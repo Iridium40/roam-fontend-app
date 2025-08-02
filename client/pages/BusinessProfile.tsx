@@ -575,13 +575,21 @@ export default function BusinessProfile() {
                       )}
                     </div>
                     
-                    <Button 
-                      className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      onClick={() => handleBookService(service)}
-                    >
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Book This Service
-                    </Button>
+                    <div className="space-y-2">
+                      <Button
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                        onClick={() => handleBookService(service)}
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Book This Service
+                      </Button>
+                      {providers.length > 0 && (
+                        <div className="text-xs text-center text-foreground/60 flex items-center justify-center gap-1">
+                          <UserCheck className="w-3 h-3" />
+                          Choose your preferred provider during booking
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}
