@@ -31,9 +31,8 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
 
-  // Google Maps API key - Replace with your actual API key
-  // In production, use environment variables: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ""; // Add your Google Maps API key
+  // Google Maps API key
+  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyBBsITsUOg3Tr1OJcfPkojgSu-OujxR-xM";
 
   const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
