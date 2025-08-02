@@ -50,13 +50,17 @@ export default function MyBookings() {
         setError(null);
 
         console.log("Fetching bookings for user:", currentUser.email);
+        console.log("User type:", userType);
+        console.log("Current user object:", currentUser);
 
         // First, get the customer record for this user
         const { data: customerData, error: customerError } = await supabase
           .from('customers')
-          .select('id')
+          .select('id, email, first_name, last_name')
           .eq('email', currentUser.email)
           .single();
+
+        console.log("Customer lookup result:", { customerData, customerError });
 
         if (customerError) {
           console.error("Customer lookup error:", customerError);
