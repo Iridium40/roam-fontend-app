@@ -280,9 +280,10 @@ export default function CustomerLocations() {
       fetchLocations();
     } catch (error: any) {
       console.error('Error deleting location:', error);
+      const errorMessage = error?.message || error?.error?.message || 'Unknown error';
       toast({
         title: "Error",
-        description: "Failed to delete location",
+        description: `Failed to delete location: ${errorMessage}`,
         variant: "destructive",
       });
     }
