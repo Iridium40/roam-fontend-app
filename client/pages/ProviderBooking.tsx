@@ -34,6 +34,7 @@ import {
   DollarSign,
   Globe,
   Check,
+  Building,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
