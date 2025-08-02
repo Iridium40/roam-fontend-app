@@ -169,7 +169,11 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       
       {!isGoogleMapsLoaded && !isLoading && (
         <div className="mt-1 text-xs text-muted-foreground">
-          ⚠️ Google Maps not available. Manual address entry only.
+          {!GOOGLE_MAPS_API_KEY ? (
+            <>📍 Manual address entry (Google Maps API key not configured)</>
+          ) : (
+            <>⚠️ Google Maps not available. Manual address entry only.</>
+          )}
         </div>
       )}
     </div>
