@@ -130,19 +130,15 @@ export default function BusinessAvailability() {
           business_profiles: {
             id: 'fallback-business-1',
             business_name: 'Smith Health & Wellness',
-            business_description: 'Professional health and wellness services with experienced therapists',
             business_type: 'small_business',
             logo_url: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop',
             image_url: null,
             verification_status: 'approved',
-            years_in_business: 5,
             is_active: true,
             business_hours: {},
-            business_locations: {
-              city: 'Orlando',
-              state: 'FL',
-              address_line_1: '123 Wellness Dr'
-            }
+            contact_email: 'info@smithhealthwellness.com',
+            phone: '(555) 123-4567',
+            website_url: null
           }
         }];
 
