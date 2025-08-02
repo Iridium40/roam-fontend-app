@@ -12415,7 +12415,7 @@ export default function ProviderDashboard() {
                                         )}
                                         {booking.customer_profiles?.phone && (
                                           <span>
-                                            ����{" "}
+                                            ������{" "}
                                             {booking.customer_profiles.phone}
                                           </span>
                                         )}
@@ -13892,147 +13892,28 @@ export default function ProviderDashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Messaging Modal */}
-      <Dialog open={messagingModal} onOpenChange={setMessagingModal}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <MessageCircle className="w-5 h-5" />
-              Customer Communication
-            </DialogTitle>
-            {selectedBookingForMessaging && (
-              <div className="space-y-1">
-                <p className="text-sm text-foreground/60">
-                  Conversation with{" "}
-                  {selectedBookingForMessaging.customer_profiles?.first_name ||
-                    selectedBookingForMessaging.guest_name ||
-                    "Customer"}{" "}
-                  -{selectedBookingForMessaging.services?.name} on{" "}
-                  {new Date(
-                    selectedBookingForMessaging.booking_date,
-                  ).toLocaleDateString()}
-                </p>
-                <div className="space-y-1">
-                  <p className="text-xs text-blue-600">
-                    Available to all staff members (Owners, Dispatchers, and
-                    Providers)
-                  </p>
-                  {!selectedBookingForMessaging?.customer_profiles?.phone &&
-                    !selectedBookingForMessaging?.guest_phone && (
-                      <p className="text-xs text-red-600">
-                        ⚠️ Customer phone number not available - SMS messaging
-                        disabled
-                      </p>
-                    )}
-                  {(selectedBookingForMessaging?.customer_profiles?.phone ||
-                    selectedBookingForMessaging?.guest_phone) && (
-                    <p className="text-xs text-green-600">
-                      ✓ SMS will be sent to:{" "}
-                      {selectedBookingForMessaging?.customer_profiles?.phone ||
-                        selectedBookingForMessaging?.guest_phone}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-          </DialogHeader>
+      {/* Conversations Components */}
+      <ConversationChat
+        isOpen={messagingModal}
+        onClose={handleCloseMessaging}
+        booking={selectedBookingForMessaging ? {
+          id: selectedBookingForMessaging.id,
+          customer_name: selectedBookingForMessaging.customer_profiles?.first_name ||
+                        selectedBookingForMessaging.guest_name || 'Customer',
+          customer_email: selectedBookingForMessaging.customer_profiles?.email ||
+                         selectedBookingForMessaging.guest_email || '',
+          customer_phone: selectedBookingForMessaging.customer_profiles?.phone ||
+                         selectedBookingForMessaging.guest_phone || '',
+          service_name: selectedBookingForMessaging.services?.name || 'Service',
+          provider_name: `${provider?.first_name || ''} ${provider?.last_name || ''}`.trim() || 'Provider',
+          business_id: provider?.business_id || ''
+        } : undefined}
+      />
 
-          <div className="flex flex-col h-[60vh]">
-            {/* Conversation History */}
-            <div className="flex-1 overflow-y-auto border rounded-lg p-4 bg-gray-50 mb-4">
-              {messagingLoading ? (
-                <div className="text-center text-foreground/60">
-                  Loading conversation...
-                </div>
-              ) : conversationHistory.length > 0 ? (
-                <div className="space-y-3">
-                  {conversationHistory.map((message: any) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.from === "provider" ? "justify-end" : "justify-start"}`}
-                    >
-                      <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                          message.from === "provider"
-                            ? "bg-blue-500 text-white"
-                            : "bg-white border"
-                        }`}
-                      >
-                        <p className="text-sm">{message.body}</p>
-                        <p
-                          className={`text-xs mt-1 ${
-                            message.from === "provider"
-                              ? "text-blue-100"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {message.author} •{" "}
-                          {new Date(message.timestamp).toLocaleTimeString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center text-foreground/60">
-                  <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p>No messages yet</p>
-                  <p className="text-sm">
-                    Start a conversation with your customer
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Message Input */}
-            <div className="flex gap-2">
-              <Textarea
-                placeholder="Type your message..."
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-                className="flex-1 min-h-[80px] resize-none"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-              />
-              <Button
-                onClick={handleSendMessage}
-                disabled={
-                  !messageText.trim() ||
-                  messagingLoading ||
-                  (!selectedBookingForMessaging?.customer_profiles?.phone &&
-                    !selectedBookingForMessaging?.guest_phone)
-                }
-                className="bg-blue-500 hover:bg-blue-600"
-                title={
-                  !selectedBookingForMessaging?.customer_profiles?.phone &&
-                  !selectedBookingForMessaging?.guest_phone
-                    ? "Customer phone number not available"
-                    : ""
-                }
-              >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Send
-              </Button>
-            </div>
-
-            <div className="mt-2 flex justify-between items-center text-xs text-foreground/60">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>
-                  Live Twilio SMS Integration • Available to all staff members
-                </span>
-              </div>
-              <Button variant="ghost" size="sm" onClick={handleCloseMessaging}>
-                Close
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ConversationsList
+        isOpen={conversationsListModal}
+        onClose={handleCloseConversationsList}
+      />
 
       {/* Delete Location Confirmation Dialog */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
