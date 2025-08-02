@@ -203,10 +203,10 @@ export default function Index() {
               state
             )
           `)
-          .eq('is_active', true)
-          .eq('verification_status', 'approved')
           .eq('is_featured', true)
           .limit(12);
+
+        console.log('Featured businesses query result:', { businessesData, businessesError });
 
         if (!businessesError && businessesData) {
           const transformedBusinesses = businessesData.map((business: any) => ({
@@ -225,7 +225,9 @@ export default function Index() {
               "Florida",
             verification_status: business.verification_status,
             is_featured: business.is_featured,
+            years_in_business: 5, // Default years
           }));
+          console.log('Transformed featured businesses:', transformedBusinesses);
           setFeaturedBusinesses(transformedBusinesses);
         }
 
