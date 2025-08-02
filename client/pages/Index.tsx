@@ -249,56 +249,7 @@ export default function Index() {
 
 
 
-  const featuredServices = [
-    {
-      id: 1,
-      title: "Signature Deep Tissue Massage",
-      category: "Massage Therapy",
-      image:
-        "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop",
-      description: "90-minute therapeutic massage for ultimate relaxation",
-      price: "$120",
-      originalPrice: "$150",
-      rating: 4.9,
-      duration: "90 min",
-    },
-    {
-      id: 2,
-      title: "Personal Training Session",
-      category: "Fitness",
-      image:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=300&fit=crop",
-      description: "One-on-one fitness training at your location",
-      price: "$80",
-      originalPrice: "$100",
-      rating: 5.0,
-      duration: "60 min",
-    },
-    {
-      id: 3,
-      title: "Hair Cut & Style",
-      category: "Beauty",
-      image:
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=300&fit=crop",
-      description: "Professional haircut and styling service",
-      price: "$75",
-      originalPrice: "$95",
-      rating: 4.8,
-      duration: "75 min",
-    },
-    {
-      id: 4,
-      title: "Telehealth Consultation",
-      category: "Healthcare",
-      image:
-        "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=500&h=300&fit=crop",
-      description: "Virtual consultation with licensed physician",
-      price: "$125",
-      originalPrice: "$150",
-      rating: 4.9,
-      duration: "30 min",
-    },
-  ];
+
 
   const promotionalDeals = [
     {
