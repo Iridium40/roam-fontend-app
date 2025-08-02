@@ -94,7 +94,7 @@ export default function Index() {
       try {
         setLoading(true);
 
-        // Fetch featured services (first 6 services with images)
+        // Fetch featured services using is_featured flag
         const { data: featuredServicesData, error: featuredError } = await supabase
           .from('services')
           .select(`
@@ -102,18 +102,22 @@ export default function Index() {
             name,
             description,
             min_price,
-            estimated_duration,
+            duration_minutes,
             image_url,
             is_active,
-            service_subcategories (
+            is_featured,
+            service_subcategories!inner (
+              id,
               service_subcategory_type,
-              service_categories (
+              description,
+              service_categories!inner (
+                id,
                 service_category_type
               )
             )
           `)
           .eq('is_active', true)
-          .not('image_url', 'is', null)
+          .eq('is_featured', true)
           .limit(6);
 
         if (!featuredError && featuredServicesData) {
@@ -122,15 +126,15 @@ export default function Index() {
             title: service.name,
             category: service.service_subcategories?.service_categories?.service_category_type || 'General',
             image: service.image_url || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop',
-            description: service.description || 'Professional service',
+            description: service.description || 'Professional featured service',
             price: `$${service.min_price || 50}`,
             rating: 4.8, // Default rating
-            duration: `${service.estimated_duration || 60} min`,
+            duration: `${service.duration_minutes || 60} min`,
           }));
           setFeaturedServices(transformedFeatured);
         }
 
-        // Fetch popular services (next 6 services)
+        // Fetch popular services using is_popular flag
         const { data: popularServicesData, error: popularError } = await supabase
           .from('services')
           .select(`
@@ -138,18 +142,23 @@ export default function Index() {
             name,
             description,
             min_price,
-            estimated_duration,
+            duration_minutes,
             image_url,
             is_active,
-            service_subcategories (
+            is_popular,
+            service_subcategories!inner (
+              id,
               service_subcategory_type,
-              service_categories (
+              description,
+              service_categories!inner (
+                id,
                 service_category_type
               )
             )
           `)
           .eq('is_active', true)
-          .range(6, 11); // Get the next 6 services
+          .eq('is_popular', true)
+          .limit(6);
 
         if (!popularError && popularServicesData) {
           const transformedPopular = popularServicesData.map((service: any) => ({
@@ -157,10 +166,12 @@ export default function Index() {
             title: service.name,
             category: service.service_subcategories?.service_categories?.service_category_type || 'General',
             image: service.image_url || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=300&fit=crop',
-            description: service.description || 'Professional service',
+            description: service.description || 'Popular professional service',
             price: `$${service.min_price || 50}`,
             rating: 4.9, // Default rating
-            duration: `${service.estimated_duration || 60} min`,
+            duration: `${service.duration_minutes || 60} min`,
+            bookings: "Popular choice", // Placeholder for booking count
+            availability: "Available Today", // Placeholder
           }));
           setPopularServices(transformedPopular);
         }
