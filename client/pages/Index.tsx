@@ -958,9 +958,9 @@ export default function Index() {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No businesses found</h3>
+              <h3 className="text-lg font-semibold mb-2">No featured businesses found</h3>
               <p className="text-foreground/60 mb-4">
-                Try adjusting your search criteria or browse all categories.
+                No featured businesses match your search criteria. Try adjusting your search or browse all businesses.
               </p>
               <Button
                 variant="outline"
