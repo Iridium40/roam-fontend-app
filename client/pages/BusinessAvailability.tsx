@@ -51,7 +51,9 @@ export default function BusinessAvailability() {
           id,
           name,
           description,
-          duration_minutes
+          min_price,
+          duration_minutes,
+          image_url
         `)
         .eq('id', serviceId)
         .eq('is_active', true)
