@@ -291,9 +291,12 @@ export function useFavorites() {
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.rpc('add_favorite_provider', {
-        provider_id_param: providerId
-      });
+      const { error } = await supabase
+        .from('customer_favorite_providers')
+        .insert({
+          customer_id: customer.id,
+          provider_id: providerId
+        });
 
       if (error) {
         console.error('Error adding provider to favorites:', error?.message || error);
