@@ -347,14 +347,27 @@ const ProviderBooking = () => {
                     )}
                   </div>
                 </div>
-                <FavoriteButton
-                  type="business"
-                  itemId={business.id}
-                  size="lg"
-                  variant="outline"
-                  showText={true}
-                  className="border-gray-300 hover:border-red-300"
-                />
+                <div className="flex gap-3">
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                  >
+                    <Link to={`/business/${business.id}`}>
+                      <Building className="w-5 h-5 mr-2" />
+                      View Business Profile
+                    </Link>
+                  </Button>
+                  <FavoriteButton
+                    type="business"
+                    itemId={business.id}
+                    size="lg"
+                    variant="outline"
+                    showText={true}
+                    className="border-gray-300 hover:border-red-300"
+                  />
+                </div>
               </div>
             </div>
           </div>
