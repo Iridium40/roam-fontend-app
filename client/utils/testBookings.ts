@@ -2,14 +2,40 @@ import { supabase } from "@/lib/supabase";
 
 export const testBookingQueries = async () => {
   console.log("=== Testing Booking Queries ===");
-  
+
+  // Test 0: Check table existence with simple counts
+  console.log("0. Checking basic table access...");
+  try {
+    const { count: customerCount, error: customerCountError } = await supabase
+      .from('customers')
+      .select('*', { count: 'exact', head: true });
+    console.log("Customers table:", customerCountError ? customerCountError : `${customerCount} records`);
+
+    const { count: bookingCount, error: bookingCountError } = await supabase
+      .from('bookings')
+      .select('*', { count: 'exact', head: true });
+    console.log("Bookings table:", bookingCountError ? bookingCountError : `${bookingCount} records`);
+
+    const { count: serviceCount, error: serviceCountError } = await supabase
+      .from('services')
+      .select('*', { count: 'exact', head: true });
+    console.log("Services table:", serviceCountError ? serviceCountError : `${serviceCount} records`);
+
+    const { count: providerCount, error: providerCountError } = await supabase
+      .from('providers')
+      .select('*', { count: 'exact', head: true });
+    console.log("Providers table:", providerCountError ? providerCountError : `${providerCount} records`);
+  } catch (e) {
+    console.error("Table access error:", e);
+  }
+
   // Test 1: Check if customers table has the test customer
   console.log("1. Checking customers table...");
   const { data: customers, error: customerError } = await supabase
     .from('customers')
     .select('*')
     .eq('email', 'customer@roamyourbestlife.com');
-  
+
   if (customerError) {
     console.error("Customer query error:", customerError);
   } else {
