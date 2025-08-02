@@ -116,7 +116,19 @@ export function useFavorites() {
   }, [isCustomer, toast]);
 
   const removeServiceFromFavorites = useCallback(async (serviceId: string) => {
-    if (!isCustomer) {
+    if (!isCustomer || !customer?.id) {
+      return false;
+    }
+
+    if (!serviceId || serviceId === 'undefined') {
+      console.warn('Invalid service ID provided');
+      return false;
+    }
+
+    // Validate UUIDs
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(customer.id) || !uuidRegex.test(serviceId)) {
+      console.warn('Invalid UUID format for customer ID or service ID');
       return false;
     }
 
