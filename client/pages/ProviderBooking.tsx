@@ -191,6 +191,14 @@ const ProviderBooking = () => {
         setPreferredProvider(preferred);
       }
 
+      // Auto-select service if specified in URL
+      if (selectedServiceId && services) {
+        const serviceToAdd = services.find(s => s.id === selectedServiceId || s.service_id === selectedServiceId);
+        if (serviceToAdd) {
+          addItemToBooking(serviceToAdd, 'service');
+        }
+      }
+
       setProviderData({
         business,
         services: services || [],
