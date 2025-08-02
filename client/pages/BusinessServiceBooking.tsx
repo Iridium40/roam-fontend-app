@@ -60,6 +60,7 @@ export default function BusinessServiceBooking() {
     useState<string>("no-preference");
   const [deliveryType, setDeliveryType] = useState<string>("");
   const [customerLocation, setCustomerLocation] = useState<string>("");
+  const [customerLocationData, setCustomerLocationData] = useState<google.maps.places.PlaceResult | null>(null);
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
   useEffect(() => {
