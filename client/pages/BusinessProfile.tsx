@@ -733,15 +733,23 @@ export default function BusinessProfile() {
                       )}
                     </div>
                     
-                    {provider.specialties && (
-                      <div className="flex flex-wrap gap-1 justify-center mb-4">
-                        {provider.specialties.slice(0, 3).map((specialty: string, index: number) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {specialty}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
+                    <div className="flex flex-wrap gap-1 justify-center mb-4">
+                      {provider.provider_role && (
+                        <Badge variant="outline" className="text-xs border-roam-blue text-roam-blue">
+                          {provider.provider_role.replace('_', ' ')}
+                        </Badge>
+                      )}
+                      {provider.experience_years && (
+                        <Badge variant="outline" className="text-xs">
+                          {provider.experience_years} years exp.
+                        </Badge>
+                      )}
+                      {provider.verification_status === 'verified' && (
+                        <Badge variant="outline" className="text-xs border-green-500 text-green-600">
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
                     
                     <div className="space-y-2">
                       <Button
