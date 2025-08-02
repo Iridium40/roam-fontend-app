@@ -193,6 +193,7 @@ export default function Index() {
             phone,
             profile_image_url,
             is_active,
+            business_id,
             business_locations (
               location_name,
               city,
