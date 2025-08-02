@@ -51,7 +51,7 @@ export default function BusinessAvailability() {
           id,
           name,
           description,
-          min_price,
+          base_price,
           duration_minutes,
           image_url,
           service_subcategories (
