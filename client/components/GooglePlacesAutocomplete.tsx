@@ -85,10 +85,13 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
   const initializeAutocomplete = () => {
     if (!inputRef.current || !window.google || !window.google.maps || !window.google.maps.places) {
+      console.log('Google Maps not ready for autocomplete initialization');
       return;
     }
 
     try {
+      console.log('Initializing Google Places Autocomplete...');
+
       // Create autocomplete instance
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
         types: ['address'],
@@ -102,10 +105,13 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
         ]
       });
 
+      console.log('Google Places Autocomplete initialized successfully');
+
       // Listen for place selection
       autocompleteRef.current.addListener('place_changed', () => {
         const place = autocompleteRef.current?.getPlace();
-        
+        console.log('Place selected:', place);
+
         if (place && place.formatted_address) {
           onChange(place.formatted_address, place);
         }
