@@ -59,6 +59,8 @@ export default function BusinessProfile() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedService, setSelectedService] = useState<any>(null);
+  const [providerSelectorOpen, setProviderSelectorOpen] = useState(false);
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (businessId) {
