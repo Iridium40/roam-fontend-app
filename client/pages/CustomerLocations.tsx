@@ -336,10 +336,10 @@ export default function CustomerLocations() {
 
   const getLocationIcon = (type: string | null) => {
     switch (type) {
-      case 'home': return Home;
-      case 'condo': return Building;
-      case 'hotel': return Building;
-      case 'other': return MapPin;
+      case 'Home': return Home;
+      case 'Condo': return Building;
+      case 'Hotel': return Building;
+      case 'Other': return MapPin;
       default: return MapPin;
     }
   };
