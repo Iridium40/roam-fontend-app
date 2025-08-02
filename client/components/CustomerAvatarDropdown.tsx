@@ -109,6 +109,15 @@ export const CustomerAvatarDropdown: React.FC = () => {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
+            to="/customer/locations"
+            className="w-full flex items-center cursor-pointer"
+          >
+            <MapPin className="mr-2 h-4 w-4" />
+            <span>My Locations</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
             to="/customer/transactions"
             className="w-full flex items-center cursor-pointer"
           >
