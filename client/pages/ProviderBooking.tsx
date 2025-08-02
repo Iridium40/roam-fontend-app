@@ -70,11 +70,17 @@ const ProviderBooking = () => {
   const { businessId } = useParams<{ businessId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
+  // Get URL parameters for provider preference and service selection
+  const urlParams = new URLSearchParams(window.location.search);
+  const preferredProviderId = urlParams.get('provider');
+  const selectedServiceId = urlParams.get('service');
+
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
+  const [preferredProvider, setPreferredProvider] = useState<any>(null);
   const [bookingForm, setBookingForm] = useState<BookingForm>({
     customerName: '',
     customerEmail: '',
