@@ -54,10 +54,11 @@ export default function BusinessProfile() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [businessData, setBusinessData] = useState<BusinessData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || "overview");
   const [selectedService, setSelectedService] = useState<any>(null);
   const [providerSelectorOpen, setProviderSelectorOpen] = useState(false);
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
