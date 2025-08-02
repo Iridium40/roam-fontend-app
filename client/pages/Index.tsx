@@ -806,47 +806,62 @@ export default function Index() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-            {filteredProviders.map((provider) => (
+            {filteredBusinesses.map((business) => (
               <Card
-                key={provider.id}
+                key={business.id}
                 className="hover:shadow-lg transition-shadow border-border/50 hover:border-roam-light-blue/50"
               >
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0">
-                      <Users className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {business.image && business.image !== "/api/placeholder/80/80" ? (
+                        <img src={business.image} alt={business.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <Building className="w-8 h-8 text-white" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h3 className="font-semibold text-lg">
-                            {provider.name}
+                            {business.name}
                           </h3>
                           <p className="text-sm text-foreground/60">
-                            {provider.service}
+                            {business.type}
                           </p>
                           <p className="text-xs text-foreground/50">
-                            {provider.location}
+                            {business.location}
                           </p>
+                          {business.verification_status === 'approved' && (
+                            <div className="flex items-center gap-1 mt-1">
+                              <Shield className="w-3 h-3 text-green-600" />
+                              <span className="text-xs text-green-600">Verified</span>
+                            </div>
+                          )}
                         </div>
                         <div className="text-right flex-shrink-0">
                           <div className="flex items-center gap-1 mb-1">
                             <Star className="w-4 h-4 text-roam-warning fill-current" />
                             <span className="font-semibold">
-                              {provider.rating}
+                              {business.rating}
                             </span>
                             <span className="text-sm text-foreground/60">
-                              ({provider.reviews})
+                              ({business.reviews})
                             </span>
                           </div>
                           <div className="text-sm font-semibold text-roam-blue">
-                            {provider.price}
+                            {business.price}
                           </div>
+                          {business.years_in_business && (
+                            <div className="text-xs text-foreground/50">
+                              {business.years_in_business} years
+                            </div>
+                          )}
                         </div>
                       </div>
 
                       <div className="flex flex-wrap gap-1 mb-3">
-                        {provider.deliveryTypes.map((type) => {
+                        {business.deliveryTypes.map((type) => {
                           const badge = getDeliveryBadge(type);
                           return (
                             <Badge
@@ -861,7 +876,7 @@ export default function Index() {
                       </div>
 
                       <div className="flex flex-wrap gap-1 mb-4">
-                        {provider.specialties.slice(0, 3).map((specialty) => (
+                        {business.specialties.slice(0, 3).map((specialty) => (
                           <Badge
                             key={specialty}
                             variant="outline"
@@ -878,9 +893,9 @@ export default function Index() {
                           size="sm"
                           className="w-full bg-roam-blue hover:bg-roam-blue/90"
                         >
-                          <Link to={`/provider/${provider.id}?booking=true`}>
+                          <Link to={`/book/${business.id}`}>
                             <Calendar className="w-4 h-4 mr-2" />
-                            Book Now
+                            Book Services
                           </Link>
                         </Button>
                         <div className="flex gap-2">
@@ -890,27 +905,14 @@ export default function Index() {
                             variant="outline"
                             className="flex-1 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                           >
-                            <Link to={`/provider/${provider.id}`}>
+                            <Link to={`/business/${business.id}`}>
                               <BookOpen className="w-4 h-4 mr-2" />
-                              Profile
+                              View Business
                             </Link>
                           </Button>
-                          {provider.business_id && (
-                            <Button
-                              asChild
-                              size="sm"
-                              variant="outline"
-                              className="flex-1 border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
-                            >
-                              <Link to={`/business/${provider.business_id}`}>
-                                <Building className="w-4 h-4 mr-2" />
-                                Business
-                              </Link>
-                            </Button>
-                          )}
                           <FavoriteButton
-                            type="provider"
-                            itemId={provider.id}
+                            type="business"
+                            itemId={business.id}
                             size="sm"
                             variant="outline"
                             className="border-gray-300 text-gray-600 hover:bg-gray-50"
@@ -919,7 +921,7 @@ export default function Index() {
                             size="sm"
                             variant="outline"
                             className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                            onClick={() => handleProviderShare(provider)}
+                            onClick={() => handleBusinessShare(business)}
                           >
                             <QrCode className="w-4 h-4" />
                           </Button>
