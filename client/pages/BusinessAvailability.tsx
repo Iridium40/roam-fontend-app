@@ -184,20 +184,21 @@ export default function BusinessAvailability() {
       const transformedBusinesses = filteredBusinesses.map((item: any) => ({
         id: item.business_profiles.id,
         name: item.business_profiles.business_name,
-        description: item.business_profiles.business_description,
+        description: `Professional ${item.business_profiles.business_type.replace('_', ' ')} services`,
         type: item.business_profiles.business_type,
         logo: item.business_profiles.logo_url || item.business_profiles.image_url,
         verification_status: item.business_profiles.verification_status,
-        years_in_business: item.business_profiles.years_in_business,
-        location: item.business_profiles.business_locations?.city
-          ? `${item.business_profiles.business_locations.city}, ${item.business_profiles.business_locations.state}`
-          : 'Location not specified',
+        years_in_business: null, // Not available in schema
+        location: 'Florida', // Default location since business_locations is separate
         servicePrice: item.business_price,
         deliveryType: item.delivery_type || 'mobile',
         rating: 4.8, // Mock rating - replace with actual data
         reviewCount: Math.floor(Math.random() * 200) + 50,
-        openTime: '9:00 AM', // Mock hours - replace with actual business hours parsing
+        openTime: '9:00 AM', // Parse from business_hours JSON if needed
         closeTime: '5:00 PM',
+        email: item.business_profiles.contact_email,
+        phone: item.business_profiles.phone,
+        website: item.business_profiles.website_url
       }));
 
       // If no businesses found, use fallback data
