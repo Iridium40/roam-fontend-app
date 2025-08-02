@@ -120,12 +120,16 @@ export default function MyBookings() {
 
         // Query by customer_id if we found the customer, otherwise by guest_email
         if (customerData?.id) {
+          console.log("Querying by customer_id:", customerData.id);
           bookingsQuery = bookingsQuery.eq('customer_id', customerData.id);
         } else {
+          console.log("Querying by guest_email:", currentUser.email);
           bookingsQuery = bookingsQuery.eq('guest_email', currentUser.email);
         }
 
         const { data: bookingsData, error: bookingsError } = await bookingsQuery;
+
+        console.log("Bookings query completed:", { bookingsData, bookingsError });
 
         if (bookingsError) {
           console.error("Bookings query error:", bookingsError);
@@ -133,6 +137,7 @@ export default function MyBookings() {
         }
 
         console.log("Found bookings:", bookingsData);
+        console.log("Number of bookings found:", bookingsData?.length || 0);
 
         // Transform the database data to match the expected format
         const transformedBookings = (bookingsData || []).map((booking: any) => {
