@@ -862,7 +862,7 @@ export default function Index() {
               >
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-24 h-24 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <div className="w-24 h-24 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                       {business.image &&
                       business.image !== "/api/placeholder/80/80" ? (
                         <img
