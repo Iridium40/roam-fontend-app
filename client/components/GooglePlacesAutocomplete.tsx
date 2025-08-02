@@ -33,7 +33,7 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
 
   // Google Maps API key
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyBBsITsUOg3Tr1OJcfPkojgSu-OujxR-xM";
+  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyCo_xpvt_4a5383FSZ8qJo_2M4cGplpPk8";
 
   const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
