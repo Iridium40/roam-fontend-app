@@ -145,13 +145,13 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error checking if service is favorited:', error);
+        console.error('Error checking if service is favorited:', error?.message || error);
         return false;
       }
 
       return data || false;
     } catch (error) {
-      console.error('Error checking if service is favorited:', error);
+      console.error('Error checking if service is favorited:', error?.message || error);
       return false;
     }
   }, [isCustomer]);
@@ -251,13 +251,13 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error checking if business is favorited:', error);
+        console.error('Error checking if business is favorited:', error?.message || error);
         return false;
       }
 
       return data || false;
     } catch (error) {
-      console.error('Error checking if business is favorited:', error);
+      console.error('Error checking if business is favorited:', error?.message || error);
       return false;
     }
   }, [isCustomer]);
@@ -357,13 +357,13 @@ export function useFavorites() {
       });
 
       if (error) {
-        console.error('Error checking if provider is favorited:', error);
+        console.error('Error checking if provider is favorited:', error?.message || error);
         return false;
       }
 
       return data || false;
     } catch (error) {
-      console.error('Error checking if provider is favorited:', error);
+      console.error('Error checking if provider is favorited:', error?.message || error);
       return false;
     }
   }, [isCustomer]);
