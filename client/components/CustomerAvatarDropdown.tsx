@@ -14,6 +14,7 @@ import {
   Settings,
   CreditCard,
   Calendar,
+  Heart,
   LogOut,
   ChevronDown,
   Moon,
