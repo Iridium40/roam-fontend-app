@@ -444,17 +444,8 @@ function BookingCard({ booking }: { booking: any }) {
     },
   }[booking.status];
 
-  const DeliveryIcon = {
-    mobile: Smartphone,
-    business: Building,
-    virtual: Video,
-  }[booking.deliveryType];
-
-  const deliveryLabel = {
-    mobile: "Mobile Service",
-    business: "In-Studio",
-    virtual: "Virtual",
-  }[booking.deliveryType];
+  const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
+  const deliveryLabel = getDeliveryLabel(booking.deliveryType);
 
   return (
     <Card className="hover:shadow-md transition-shadow">
