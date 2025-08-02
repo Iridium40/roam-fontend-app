@@ -863,56 +863,58 @@ export default function Index() {
                         ))}
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="space-y-2">
                         <Button
                           asChild
                           size="sm"
-                          className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
+                          className="w-full bg-roam-blue hover:bg-roam-blue/90"
                         >
                           <Link to={`/provider/${provider.id}?booking=true`}>
                             <Calendar className="w-4 h-4 mr-2" />
                             Book Now
                           </Link>
                         </Button>
-                        <Button
-                          asChild
-                          size="sm"
-                          variant="outline"
-                          className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        >
-                          <Link to={`/provider/${provider.id}`}>
-                            <BookOpen className="w-4 h-4 mr-2" />
-                            View Profile
-                          </Link>
-                        </Button>
-                        {provider.business_id && (
+                        <div className="flex gap-2">
                           <Button
                             asChild
                             size="sm"
                             variant="outline"
-                            className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
+                            className="flex-1 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                           >
-                            <Link to={`/business/${provider.business_id}`}>
-                              <Building className="w-4 h-4 mr-2" />
-                              View Business
+                            <Link to={`/provider/${provider.id}`}>
+                              <BookOpen className="w-4 h-4 mr-2" />
+                              Profile
                             </Link>
                           </Button>
-                        )}
-                        <FavoriteButton
-                          type="provider"
-                          itemId={provider.id}
-                          size="sm"
-                          variant="outline"
-                          className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                        />
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                          onClick={() => handleProviderShare(provider)}
-                        >
-                          <QrCode className="w-4 h-4" />
-                        </Button>
+                          {provider.business_id && (
+                            <Button
+                              asChild
+                              size="sm"
+                              variant="outline"
+                              className="flex-1 border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
+                            >
+                              <Link to={`/business/${provider.business_id}`}>
+                                <Building className="w-4 h-4 mr-2" />
+                                Business
+                              </Link>
+                            </Button>
+                          )}
+                          <FavoriteButton
+                            type="provider"
+                            itemId={provider.id}
+                            size="sm"
+                            variant="outline"
+                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                            onClick={() => handleProviderShare(provider)}
+                          >
+                            <QrCode className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
