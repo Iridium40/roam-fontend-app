@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function MyBookings() {
   const { user, customer, userType, loading: authLoading } = useAuth();
