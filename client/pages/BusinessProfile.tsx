@@ -127,12 +127,8 @@ export default function BusinessProfile() {
         .eq('business_id', businessId)
         .single();
 
-      // Fetch business hours
-      const { data: hours, error: hoursError } = await supabase
-        .from('business_hours')
-        .select('*')
-        .eq('business_id', businessId)
-        .order('day_of_week');
+      // Business hours are included in the business profile as JSONB
+      const hours = business.business_hours || {};
 
       // Fetch providers
       const { data: providers, error: providersError } = await supabase
@@ -232,17 +228,27 @@ export default function BusinessProfile() {
     navigate(`/book/${businessId}`);
   };
 
-  const formatBusinessHours = (hours: any[]) => {
+  const formatBusinessHours = (hours: any) => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    
+
     return daysOfWeek.map(day => {
-      const dayHours = hours.find(h => h.day_of_week === daysOfWeek.indexOf(day));
-      if (!dayHours || !dayHours.is_open) {
+      const dayHours = hours[day];
+      if (!dayHours || !dayHours.open || !dayHours.close) {
         return { day, hours: 'Closed' };
       }
+
+      // Convert 24-hour format to 12-hour format
+      const formatTime = (time: string) => {
+        const [hours, minutes] = time.split(':');
+        const hour24 = parseInt(hours);
+        const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
+        const period = hour24 >= 12 ? 'PM' : 'AM';
+        return `${hour12}:${minutes} ${period}`;
+      };
+
       return {
         day,
-        hours: `${dayHours.open_time} - ${dayHours.close_time}`,
+        hours: `${formatTime(dayHours.open)} - ${formatTime(dayHours.close)}`,
       };
     });
   };
