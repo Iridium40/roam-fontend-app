@@ -445,7 +445,7 @@ export default function CustomerLocations() {
                       <Label htmlFor="location_type">Location Type *</Label>
                       <Select
                         value={formData.location_type || undefined}
-                        onValueChange={(value: 'home' | 'condo' | 'hotel' | 'other') =>
+                        onValueChange={(value: 'Home' | 'Condo' | 'Hotel' | 'Other') =>
                           setFormData(prev => ({ ...prev, location_type: value }))
                         }
                       >
@@ -453,10 +453,10 @@ export default function CustomerLocations() {
                           <SelectValue placeholder="Select location type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="home">Home</SelectItem>
-                          <SelectItem value="condo">Condo</SelectItem>
-                          <SelectItem value="hotel">Hotel</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="Home">Home</SelectItem>
+                          <SelectItem value="Condo">Condo</SelectItem>
+                          <SelectItem value="Hotel">Hotel</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
