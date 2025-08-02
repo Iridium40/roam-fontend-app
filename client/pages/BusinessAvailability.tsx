@@ -150,6 +150,13 @@ export default function BusinessAvailability() {
 
       setAvailableBusinesses(transformedBusinesses);
 
+      // Log the results for debugging
+      console.log('Businesses query result:', {
+        businessesData: businessesData?.length || 0,
+        filteredBusinesses: filteredBusinesses?.length || 0,
+        transformedBusinesses: transformedBusinesses?.length || 0
+      });
+
     } catch (error: any) {
       console.error('Error fetching available businesses:', error);
       toast({
