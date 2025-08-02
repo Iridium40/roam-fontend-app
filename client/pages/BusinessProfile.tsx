@@ -88,23 +88,29 @@ export default function BusinessProfile() {
       const { data: services, error: servicesError } = await supabase
         .from('business_services')
         .select(`
-          *,
+          id,
+          business_price,
+          delivery_type,
+          is_active,
           services:service_id (
             id,
             name,
             description,
             image_url,
-            estimated_duration,
-            service_subcategories (
+            duration_minutes,
+            min_price,
+            service_subcategories:subcategory_id (
+              id,
               service_subcategory_type,
               service_categories (
+                id,
                 service_category_type
               )
             )
           )
         `)
         .eq('business_id', businessId)
-        .eq('is_available', true);
+        .eq('is_active', true);
 
       // Fetch business addons
       const { data: addons, error: addonsError } = await supabase
