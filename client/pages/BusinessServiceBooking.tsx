@@ -709,7 +709,9 @@ export default function BusinessServiceBooking() {
                                   <div className="w-8 h-8 bg-roam-light-blue/20 rounded-full flex items-center justify-center flex-shrink-0">
                                     {location.location_type === 'home' ? (
                                       <Home className="w-4 h-4 text-roam-blue" />
-                                    ) : location.location_type === 'work' ? (
+                                    ) : location.location_type === 'condo' ? (
+                                      <Building className="w-4 h-4 text-roam-blue" />
+                                    ) : location.location_type === 'hotel' ? (
                                       <Building className="w-4 h-4 text-roam-blue" />
                                     ) : (
                                       <MapPin className="w-4 h-4 text-roam-blue" />
