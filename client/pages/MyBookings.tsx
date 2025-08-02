@@ -546,27 +546,11 @@ function BookingCard({ booking }: { booking: any }) {
               </Button>
             </>
           )}
-          {booking.status === "completed" && (
-            <>
-              <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
-                <Star className="w-4 h-4 mr-2" />
-                Leave Review
-              </Button>
-              {new Date(booking.date) < new Date() && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                  onClick={() => {
-                    // Navigate to book the same service again
-                    window.location.href = `/book-service/${booking.serviceId}`;
-                  }}
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Book Again
-                </Button>
-              )}
-            </>
+          {booking.status === "completed" && new Date(booking.date) >= new Date() && (
+            <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
+              <Star className="w-4 h-4 mr-2" />
+              Leave Review
+            </Button>
           )}
           {booking.status === "cancelled" && (
             <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
