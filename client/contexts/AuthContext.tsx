@@ -203,9 +203,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (authError.message === "Invalid login credentials") {
           throw new Error("Invalid email or password");
         } else if (authError.message.includes("Email not confirmed")) {
-          throw new Error("Please check your email and click the confirmation link before signing in.");
+          throw new Error(
+            "Please check your email and click the confirmation link before signing in.",
+          );
         } else if (authError.message.includes("Too many requests")) {
-          throw new Error("Too many login attempts. Please wait a few minutes before trying again.");
+          throw new Error(
+            "Too many login attempts. Please wait a few minutes before trying again.",
+          );
         } else {
           throw new Error(`Authentication failed: ${authError.message}`);
         }
@@ -284,9 +288,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (authError.message === "Invalid login credentials") {
           throw new Error("Invalid email or password");
         } else if (authError.message.includes("Email not confirmed")) {
-          throw new Error("Please check your email and click the confirmation link before signing in.");
+          throw new Error(
+            "Please check your email and click the confirmation link before signing in.",
+          );
         } else if (authError.message.includes("Too many requests")) {
-          throw new Error("Too many login attempts. Please wait a few minutes before trying again.");
+          throw new Error(
+            "Too many login attempts. Please wait a few minutes before trying again.",
+          );
         } else {
           throw new Error(`Authentication failed: ${authError.message}`);
         }
@@ -303,26 +311,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Fetch or create customer profile
       const { data: customerProfile, error: profileError } = await supabase
-        .from('customer_profiles')
-        .select('*')
-        .eq('user_id', authData.user.id)
+        .from("customer_profiles")
+        .select("*")
+        .eq("user_id", authData.user.id)
         .single();
 
-      if (profileError && profileError.code !== 'PGRST116') {
+      if (profileError && profileError.code !== "PGRST116") {
         // PGRST116 is "not found" error
-        console.error('AuthContext signInCustomer: Error fetching customer profile:', profileError);
-        throw new Error('Failed to fetch customer profile');
+        console.error(
+          "AuthContext signInCustomer: Error fetching customer profile:",
+          profileError,
+        );
+        throw new Error("Failed to fetch customer profile");
       }
 
       let customerData;
       if (!customerProfile) {
         // Create customer profile if it doesn't exist
-        console.log('AuthContext signInCustomer: Creating customer profile...');
+        console.log("AuthContext signInCustomer: Creating customer profile...");
         const emailParts = authData.user.email?.split("@")[0] || "";
         const nameParts = emailParts.split(".");
 
         const { data: newProfile, error: createError } = await supabase
-          .from('customer_profiles')
+          .from("customer_profiles")
           .insert({
             user_id: authData.user.id,
             email: authData.user.email || email,
@@ -333,8 +344,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           .single();
 
         if (createError) {
-          console.error('AuthContext signInCustomer: Error creating customer profile:', createError);
-          throw new Error('Failed to create customer profile');
+          console.error(
+            "AuthContext signInCustomer: Error creating customer profile:",
+            createError,
+          );
+          throw new Error("Failed to create customer profile");
         }
 
         customerData = {

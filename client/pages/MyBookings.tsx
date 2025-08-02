@@ -70,8 +70,9 @@ export default function MyBookings() {
 
         // Get bookings for this customer by guest email (simpler approach)
         const { data: bookingsData, error: bookingsError } = await supabase
-          .from('bookings')
-          .select(`
+          .from("bookings")
+          .select(
+            `
             *,
             services (
               id,
@@ -91,9 +92,10 @@ export default function MyBookings() {
               last_name,
               location_id
             )
-          `)
-          .eq('guest_email', currentUser.email)
-          .order('booking_date', { ascending: false })
+          `,
+          )
+          .eq("guest_email", currentUser.email)
+          .order("booking_date", { ascending: false })
           .limit(50);
 
         if (bookingsError) {
@@ -113,7 +115,10 @@ export default function MyBookings() {
           let location = "Location TBD";
           if (booking.delivery_type === "business_location") {
             location = "Provider Location";
-          } else if (booking.delivery_type === "customer_location" || booking.delivery_type === "mobile") {
+          } else if (
+            booking.delivery_type === "customer_location" ||
+            booking.delivery_type === "mobile"
+          ) {
             location = "Your Location";
           } else if (booking.delivery_type === "virtual") {
             location = "Video Call";
@@ -121,25 +126,32 @@ export default function MyBookings() {
 
           return {
             id: booking.id,
-            status: booking.booking_status || 'pending',
-            service: service?.name || 'Unknown Service',
+            status: booking.booking_status || "pending",
+            service: service?.name || "Unknown Service",
             provider: {
-              name: provider ? `${provider.first_name} ${provider.last_name}` : 'Unknown Provider',
+              name: provider
+                ? `${provider.first_name} ${provider.last_name}`
+                : "Unknown Provider",
               rating: 4.9, // Default rating - would need to implement rating system
               phone: null, // Don't expose provider phone to customer
               image: "/api/placeholder/60/60",
             },
             date: booking.booking_date,
-            time: booking.start_time ? new Date(`1970-01-01T${booking.start_time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : 'Time TBD',
+            time: booking.start_time
+              ? new Date(`1970-01-01T${booking.start_time}`).toLocaleTimeString(
+                  [],
+                  { hour: "numeric", minute: "2-digit" },
+                )
+              : "Time TBD",
             duration: "60 minutes", // Default duration
-            deliveryType: booking.delivery_type || 'business_location',
+            deliveryType: booking.delivery_type || "business_location",
             location: location,
             price: `$${booking.total_amount || 0}`,
-            notes: booking.admin_notes || '',
+            notes: booking.admin_notes || "",
             bookingDate: booking.created_at,
             guestName: booking.guest_name,
             guestEmail: booking.guest_email,
-            paymentStatus: booking.payment_status
+            paymentStatus: booking.payment_status,
           };
         });
 
@@ -148,7 +160,6 @@ export default function MyBookings() {
         if (transformedBookings.length === 0) {
           console.log("No bookings found for email:", currentUser.email);
         }
-
       } catch (err: any) {
         console.error("Error fetching bookings:", err);
         setError(err.message || "Failed to load bookings. Please try again.");
@@ -195,8 +206,6 @@ export default function MyBookings() {
     };
     return configs[status as keyof typeof configs] || configs.pending;
   };
-
-
 
   const upcomingBookings = bookings.filter(
     (b) => b.status === "confirmed" || b.status === "pending",
@@ -480,7 +489,8 @@ function BookingCard({ booking }: { booking: any }) {
               <statusConfig.icon className="w-3 h-3 mr-1" />
               {statusConfig.label}
             </Badge>
-            {booking.status === "completed" && new Date(booking.date) < new Date() ? (
+            {booking.status === "completed" &&
+            new Date(booking.date) < new Date() ? (
               <Button
                 size="sm"
                 variant="outline"
@@ -538,12 +548,13 @@ function BookingCard({ booking }: { booking: any }) {
               </Button>
             </>
           )}
-          {booking.status === "completed" && new Date(booking.date) >= new Date() && (
-            <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
-              <Star className="w-4 h-4 mr-2" />
-              Leave Review
-            </Button>
-          )}
+          {booking.status === "completed" &&
+            new Date(booking.date) >= new Date() && (
+              <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
+                <Star className="w-4 h-4 mr-2" />
+                Leave Review
+              </Button>
+            )}
           {booking.status === "cancelled" && (
             <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
               <RefreshCw className="w-4 h-4 mr-2" />
