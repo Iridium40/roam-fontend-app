@@ -59,11 +59,11 @@ export default function BusinessAvailability() {
         .eq('is_active', true)
         .single();
 
-      console.log('Service query result:', { serviceData, serviceError, serviceId });
+      console.log('Service query result:', JSON.stringify({ serviceData, serviceError, serviceId }, null, 2));
 
       if (serviceError) {
-        console.error('Service query error:', serviceError);
-        throw new Error(`Service query failed: ${serviceError.message}`);
+        console.error('Service query error:', JSON.stringify(serviceError, null, 2));
+        throw new Error(`Service query failed: ${serviceError.message || JSON.stringify(serviceError)}`);
       }
 
       if (!serviceData) {
