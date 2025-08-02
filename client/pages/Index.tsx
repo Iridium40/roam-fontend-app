@@ -120,6 +120,8 @@ export default function Index() {
           .eq('is_featured', true)
           .limit(6);
 
+        console.log('Featured services query result:', { featuredServicesData, featuredError });
+
         if (!featuredError && featuredServicesData) {
           const transformedFeatured = featuredServicesData.map((service: any) => ({
             id: service.id,
@@ -131,6 +133,7 @@ export default function Index() {
             rating: 4.8, // Default rating
             duration: `${service.duration_minutes || 60} min`,
           }));
+          console.log('Transformed featured services:', transformedFeatured);
           setFeaturedServices(transformedFeatured);
         }
 
