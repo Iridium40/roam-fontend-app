@@ -229,7 +229,7 @@ export default function MyBookings() {
   const getDeliveryIcon = (type: string) => {
     const icons = {
       mobile: Smartphone,
-      business: Building,
+      business_location: Building,
       virtual: Video,
     };
     return icons[type as keyof typeof icons] || Smartphone;
@@ -238,7 +238,7 @@ export default function MyBookings() {
   const getDeliveryLabel = (type: string) => {
     const labels = {
       mobile: "Mobile Service",
-      business: "In-Studio",
+      business_location: "In-Studio",
       virtual: "Virtual",
     };
     return labels[type as keyof typeof labels] || type;
