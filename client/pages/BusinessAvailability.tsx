@@ -119,7 +119,8 @@ export default function BusinessAvailability() {
             business_type,
             logo_url,
             verification_status,
-            is_active
+            is_active,
+            is_featured
           )
         `,
         )
