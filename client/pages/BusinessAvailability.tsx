@@ -87,31 +87,26 @@ export default function BusinessAvailability() {
       const date = new Date(selectedDate!);
       const dayOfWeek = date.getDay();
 
-      // Fetch businesses that offer this service
+      // Try a simpler business query first to debug
+      console.log('Attempting to fetch businesses for serviceId:', serviceId);
+
       const { data: businessesData, error: businessesError } = await supabase
         .from('business_services')
         .select(`
           business_id,
           business_price,
           delivery_type,
-          business_profiles!inner (
+          business_profiles (
             id,
             business_name,
             business_type,
             logo_url,
-            image_url,
             verification_status,
-            is_active,
-            business_hours,
-            contact_email,
-            phone,
-            website_url
+            is_active
           )
         `)
         .eq('service_id', serviceId)
-        .eq('is_active', true)
-        .eq('business_profiles.is_active', true)
-        .eq('business_profiles.verification_status', 'approved');
+        .eq('is_active', true);
 
       if (businessesError) {
         console.error('Error fetching businesses:', JSON.stringify(businessesError, null, 2));
