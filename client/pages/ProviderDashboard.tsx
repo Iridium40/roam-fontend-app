@@ -2769,107 +2769,14 @@ export default function ProviderDashboard() {
     window.open(mapsUrl, "_blank");
   };
 
-  // Messaging handlers (stubbed for Twilio integration)
+  // Conversations handlers (Twilio Conversations API)
   const handleOpenMessaging = async (booking: any) => {
     setSelectedBookingForMessaging(booking);
     setMessagingModal(true);
-
-    // Stub: Load conversation history for this booking
-    // TODO: Replace with actual Twilio conversation API
-    await loadConversationHistory(booking.id);
   };
 
-  const loadConversationHistory = async (bookingId: string) => {
-    setMessagingLoading(true);
-    try {
-      // TODO: Replace with actual Twilio API call
-      // This will load conversation history for the booking
-      // Available to all staff roles: owner, dispatcher, provider
-      // const response = await fetch(`/api/twilio/conversations/${bookingId}`);
-      // const messages = await response.json();
-
-      // For now, stub with sample messages
-      const stubMessages = [
-        {
-          id: 1,
-          from: "customer",
-          body: "Hi, I have a question about tomorrow's appointment.",
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          author:
-            selectedBookingForMessaging?.customer_profiles?.first_name ||
-            "Customer",
-        },
-        {
-          id: 2,
-          from: "provider",
-          body: "Hi! I'd be happy to help. What would you like to know?",
-          timestamp: new Date(Date.now() - 1800000).toISOString(),
-          author: `${provider?.first_name || "You"} (${provider?.provider_role || "Staff"})`,
-        },
-      ];
-
-      setConversationHistory(stubMessages);
-    } catch (error) {
-      console.error("Error loading conversation:", error);
-      setConversationHistory([]);
-    } finally {
-      setMessagingLoading(false);
-    }
-  };
-
-  const handleSendMessage = async () => {
-    if (!messageText.trim() || !selectedBookingForMessaging) return;
-
-    setMessagingLoading(true);
-    try {
-      // Get customer phone number
-      const customerPhone =
-        selectedBookingForMessaging.customer_profiles?.phone ||
-        selectedBookingForMessaging.guest_phone;
-
-      if (!customerPhone) {
-        throw new Error("Customer phone number not available");
-      }
-
-      // Send message via Twilio API
-      const response = await fetch("/.netlify/functions/twilio-messaging", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "send-message",
-          bookingId: selectedBookingForMessaging.id,
-          message: messageText,
-          customerPhone: customerPhone,
-          staffRole: provider?.provider_role || "Staff",
-          staffName: provider?.first_name || "Staff Member",
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to send message");
-      }
-
-      // Add message to local conversation history
-      const newMessage = {
-        id: Date.now(),
-        from: "provider",
-        body: messageText,
-        timestamp: new Date().toISOString(),
-        author: `${provider?.first_name || "You"} (${provider?.provider_role || "Staff"})`,
-        twilioSid: result.messageSid,
-      };
-
-      setConversationHistory((prev) => [...prev, newMessage]);
-      setMessageText("");
-
-      console.log("Message sent via Twilio:", result);
-    } catch (error) {
-      console.error("Error sending message:", error);
-    } finally {
-      setMessagingLoading(false);
-    }
+  const handleOpenConversationsList = () => {
+    setConversationsListModal(true);
   };
 
   const handleCloseMessaging = () => {
