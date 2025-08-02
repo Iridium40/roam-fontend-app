@@ -219,9 +219,11 @@ export function useFavorites() {
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.rpc('remove_favorite_business', {
-        business_id_param: businessId
-      });
+      const { error } = await supabase
+        .from('customer_favorite_businesses')
+        .delete()
+        .eq('customer_id', customer.id)
+        .eq('business_id', businessId);
 
       if (error) {
         console.error('Error removing business from favorites:', error?.message || error);
