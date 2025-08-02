@@ -120,8 +120,23 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
           onChange(place.formatted_address, place);
         }
       });
-    } catch (error) {
+
+      // Listen for autocomplete errors
+      autocompleteRef.current.addListener('error', (error: any) => {
+        console.error('Google Places Autocomplete error:', error);
+        if (error && (error.code === 'BILLING_NOT_ENABLED' ||
+            error.message?.includes('billing') ||
+            error.message?.includes('BillingNotEnabledMapError'))) {
+          setBillingError(true);
+        }
+      });
+
+    } catch (error: any) {
       console.error('Error initializing Google Places Autocomplete:', error);
+      if (error.message?.includes('billing') || error.message?.includes('BillingNotEnabledMapError')) {
+        setBillingError(true);
+        setIsLoading(false);
+      }
     }
   };
 
