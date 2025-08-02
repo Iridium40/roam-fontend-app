@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { MapPin, Loader2 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { MapPin, Loader2 } from "lucide-react";
 
 interface GooglePlacesAutocompleteProps {
   value: string;
@@ -25,7 +25,7 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   onChange,
   placeholder = "Enter your address",
   className,
-  disabled = false
+  disabled = false,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -34,14 +34,16 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   const [billingError, setBillingError] = useState(false);
 
   // Google Maps API key
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyCo_xpvt_4a5383FSZ8qJo_2M4cGplpPk8";
+  const GOOGLE_MAPS_API_KEY =
+    import.meta.env.VITE_GOOGLE_MAPS_API_KEY ||
+    "AIzaSyCo_xpvt_4a5383FSZ8qJo_2M4cGplpPk8";
 
   const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
       // Check if API key is available
       if (!GOOGLE_MAPS_API_KEY) {
         setIsLoading(false);
-        reject(new Error('Google Maps API key not configured'));
+        reject(new Error("Google Maps API key not configured"));
         return;
       }
 
@@ -65,22 +67,22 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       }
 
       // Create and load the script
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
       script.async = true;
       script.defer = true;
 
       window.initGoogleMaps = () => {
-        console.log('Google Maps script loaded successfully');
+        console.log("Google Maps script loaded successfully");
         setIsGoogleMapsLoaded(true);
         setIsLoading(false);
         resolve();
       };
 
       script.onerror = (error) => {
-        console.error('Failed to load Google Maps script:', error);
+        console.error("Failed to load Google Maps script:", error);
         setIsLoading(false);
-        reject(new Error('Failed to load Google Maps'));
+        reject(new Error("Failed to load Google Maps"));
       };
 
       document.head.appendChild(script);
@@ -88,33 +90,41 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   };
 
   const initializeAutocomplete = () => {
-    if (!inputRef.current || !window.google || !window.google.maps || !window.google.maps.places) {
-      console.log('Google Maps not ready for autocomplete initialization');
+    if (
+      !inputRef.current ||
+      !window.google ||
+      !window.google.maps ||
+      !window.google.maps.places
+    ) {
+      console.log("Google Maps not ready for autocomplete initialization");
       return;
     }
 
     try {
-      console.log('Initializing Google Places Autocomplete...');
+      console.log("Initializing Google Places Autocomplete...");
 
       // Create autocomplete instance
-      autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
-        types: ['address'],
-        componentRestrictions: { country: 'us' }, // Restrict to US addresses
-        fields: [
-          'address_components',
-          'formatted_address',
-          'geometry',
-          'place_id',
-          'name'
-        ]
-      });
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(
+        inputRef.current,
+        {
+          types: ["address"],
+          componentRestrictions: { country: "us" }, // Restrict to US addresses
+          fields: [
+            "address_components",
+            "formatted_address",
+            "geometry",
+            "place_id",
+            "name",
+          ],
+        },
+      );
 
-      console.log('Google Places Autocomplete initialized successfully');
+      console.log("Google Places Autocomplete initialized successfully");
 
       // Listen for place selection
-      autocompleteRef.current.addListener('place_changed', () => {
+      autocompleteRef.current.addListener("place_changed", () => {
         const place = autocompleteRef.current?.getPlace();
-        console.log('Place selected:', place);
+        console.log("Place selected:", place);
 
         if (place && place.formatted_address) {
           onChange(place.formatted_address, place);
@@ -122,18 +132,23 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       });
 
       // Listen for autocomplete errors
-      autocompleteRef.current.addListener('error', (error: any) => {
-        console.error('Google Places Autocomplete error:', error);
-        if (error && (error.code === 'BILLING_NOT_ENABLED' ||
-            error.message?.includes('billing') ||
-            error.message?.includes('BillingNotEnabledMapError'))) {
+      autocompleteRef.current.addListener("error", (error: any) => {
+        console.error("Google Places Autocomplete error:", error);
+        if (
+          error &&
+          (error.code === "BILLING_NOT_ENABLED" ||
+            error.message?.includes("billing") ||
+            error.message?.includes("BillingNotEnabledMapError"))
+        ) {
           setBillingError(true);
         }
       });
-
     } catch (error: any) {
-      console.error('Error initializing Google Places Autocomplete:', error);
-      if (error.message?.includes('billing') || error.message?.includes('BillingNotEnabledMapError')) {
+      console.error("Error initializing Google Places Autocomplete:", error);
+      if (
+        error.message?.includes("billing") ||
+        error.message?.includes("BillingNotEnabledMapError")
+      ) {
         setBillingError(true);
         setIsLoading(false);
       }
@@ -143,30 +158,36 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   useEffect(() => {
     // Check for Google Maps authentication errors
     window.gm_authFailure = () => {
-      console.error('Google Maps authentication failed - check API key');
+      console.error("Google Maps authentication failed - check API key");
       setIsLoading(false);
       setBillingError(true);
     };
 
     // Check for billing errors
     window.gm_authFailure = () => {
-      console.error('Google Maps billing not enabled');
+      console.error("Google Maps billing not enabled");
       setIsLoading(false);
       setBillingError(true);
     };
 
     loadGoogleMapsScript().catch((error) => {
-      console.error('Failed to load Google Maps:', error);
-      if (error.message.includes('billing') || error.message.includes('Billing')) {
+      console.error("Failed to load Google Maps:", error);
+      if (
+        error.message.includes("billing") ||
+        error.message.includes("Billing")
+      ) {
         setBillingError(true);
       }
     });
 
     // Global error handler for Google Maps
-    window.addEventListener('error', (event) => {
-      if (event.message && (event.message.includes('BillingNotEnabledMapError') ||
-          event.message.includes('billing'))) {
-        console.error('Google Maps billing error detected');
+    window.addEventListener("error", (event) => {
+      if (
+        event.message &&
+        (event.message.includes("BillingNotEnabledMapError") ||
+          event.message.includes("billing"))
+      ) {
+        console.error("Google Maps billing error detected");
         setBillingError(true);
         setIsLoading(false);
       }
@@ -190,7 +211,9 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   useEffect(() => {
     return () => {
       if (autocompleteRef.current) {
-        window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
+        window.google?.maps?.event?.clearInstanceListeners(
+          autocompleteRef.current,
+        );
       }
     };
   }, []);
@@ -224,14 +247,15 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
           <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
         )}
       </div>
-      
+
       {!isGoogleMapsLoaded && !isLoading && (
         <div className="mt-1 text-xs text-muted-foreground">
           {!GOOGLE_MAPS_API_KEY ? (
             <>📍 Manual address entry (Google Maps API key not configured)</>
           ) : billingError ? (
             <div className="text-amber-600">
-              ⚠️ Google Maps requires billing to be enabled. Manual address entry only.
+              ⚠️ Google Maps requires billing to be enabled. Manual address
+              entry only.
               <br />
               <a
                 href="https://console.cloud.google.com/project/_/billing/enable"
