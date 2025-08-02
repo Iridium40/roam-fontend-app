@@ -61,6 +61,7 @@ export default function BusinessServiceBooking() {
   const [deliveryType, setDeliveryType] = useState<string>("");
   const [customerLocation, setCustomerLocation] = useState<string>("");
   const [customerLocationData, setCustomerLocationData] = useState<google.maps.places.PlaceResult | null>(null);
+  const [savedLocations, setSavedLocations] = useState<any[]>([]);
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
   useEffect(() => {
