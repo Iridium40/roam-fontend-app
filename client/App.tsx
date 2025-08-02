@@ -33,6 +33,7 @@ import CustomerProfile from "./pages/CustomerProfile";
 import CustomerSettings from "./pages/CustomerSettings";
 import CustomerTransactions from "./pages/CustomerTransactions";
 import CustomerFavorites from "./pages/CustomerFavorites";
+import CustomerLocations from "./pages/CustomerLocations";
 import BusinessProfile from "./pages/BusinessProfile";
 import NotFound from "./pages/NotFound";
 import ServiceBookingFlow from "./pages/ServiceBookingFlow";
