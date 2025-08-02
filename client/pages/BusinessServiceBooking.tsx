@@ -291,6 +291,15 @@ export default function BusinessServiceBooking() {
     return serviceTotal + addonTotal;
   };
 
+  const handleLocationChange = (address: string, placeData?: google.maps.places.PlaceResult) => {
+    setCustomerLocation(address);
+    if (placeData) {
+      setCustomerLocationData(placeData);
+    } else {
+      setCustomerLocationData(null);
+    }
+  };
+
   const handleContinueToCheckout = () => {
     if (selectedServices.length === 0) {
       toast({
