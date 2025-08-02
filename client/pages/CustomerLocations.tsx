@@ -135,9 +135,10 @@ export default function CustomerLocations() {
       setLocations(data || []);
     } catch (error: any) {
       console.error('Error fetching locations:', error);
+      const errorMessage = error?.message || error?.error?.message || 'Unknown error';
       toast({
         title: "Error",
-        description: "Failed to load your locations",
+        description: `Failed to load your locations: ${errorMessage}`,
         variant: "destructive",
       });
     } finally {
