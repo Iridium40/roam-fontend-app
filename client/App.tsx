@@ -182,6 +182,15 @@ const App = () => (
               />
 
               <Route
+                path="/customer/locations"
+                element={
+                  <ProtectedRoute>
+                    <CustomerLocations />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
                 path="/provider-onboarding"
                 element={
                   <ProtectedRoute>
