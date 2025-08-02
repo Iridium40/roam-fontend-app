@@ -111,6 +111,7 @@ export default function BusinessServiceBooking() {
           logo_url,
           image_url,
           verification_status,
+          is_featured,
           contact_email,
           phone,
           website_url
