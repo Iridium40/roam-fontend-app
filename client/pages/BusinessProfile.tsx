@@ -683,16 +683,33 @@ export default function BusinessProfile() {
                       </div>
                     )}
                     
-                    <Button 
-                      asChild
-                      size="sm" 
-                      variant="outline" 
-                      className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                    >
-                      <Link to={`/provider/${provider.id}`}>
-                        View Profile
-                      </Link>
-                    </Button>
+                    <div className="space-y-2">
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="outline"
+                        className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
+                        <Link to={`/provider/${provider.id}`}>
+                          View Profile
+                        </Link>
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="w-full text-green-600 hover:text-green-700 hover:bg-green-50"
+                        onClick={() => {
+                          setSelectedProviderId(provider.id);
+                          toast({
+                            title: "Provider Preference Set",
+                            description: `${provider.first_name} ${provider.last_name} will be preferred for your next booking.`,
+                          });
+                        }}
+                      >
+                        <UserCheck className="w-4 h-4 mr-2" />
+                        Prefer This Provider
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
