@@ -330,6 +330,7 @@ export default function BusinessServiceBooking() {
         selectedProvider === "no-preference" ? null : selectedProvider,
       deliveryType,
       customerLocation: deliveryType === "mobile" ? customerLocation : null,
+      customerLocationData: deliveryType === "mobile" ? customerLocationData : null,
       specialRequests,
       total: calculateTotal(),
     };
