@@ -2778,6 +2778,15 @@ export default function ProviderDashboard() {
   const handleCloseMessaging = () => {
     setMessagingModal(false);
     setSelectedBookingForMessaging(null);
+  };
+
+  const handleCloseConversationsList = () => {
+    setConversationsListModal(false);
+  };
+
+  const handleCloseMessaging = () => {
+    setMessagingModal(false);
+    setSelectedBookingForMessaging(null);
     setMessageText("");
     setConversationHistory([]);
   };
