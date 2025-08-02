@@ -124,9 +124,22 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   };
 
   useEffect(() => {
+    // Check for Google Maps authentication errors
+    window.gm_authFailure = () => {
+      console.error('Google Maps authentication failed - check API key');
+      setIsLoading(false);
+    };
+
     loadGoogleMapsScript().catch((error) => {
       console.error('Failed to load Google Maps:', error);
     });
+
+    // Cleanup
+    return () => {
+      if (window.gm_authFailure) {
+        delete window.gm_authFailure;
+      }
+    };
   }, []);
 
   useEffect(() => {
