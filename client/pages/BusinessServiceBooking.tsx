@@ -595,9 +595,9 @@ export default function BusinessServiceBooking() {
                       {selectedAddons.map((addon) => (
                         <div key={addon.id} className="flex justify-between text-sm mb-1">
                           <span>
-                            {addon.addons.name} × {addon.quantity}
+                            {addon.service_addons.name} × {addon.quantity}
                           </span>
-                          <span>${(addon.custom_price || addon.business_price) * addon.quantity}</span>
+                          <span>${(addon.custom_price || addon.service_addons.base_price) * addon.quantity}</span>
                         </div>
                       ))}
                     </div>
