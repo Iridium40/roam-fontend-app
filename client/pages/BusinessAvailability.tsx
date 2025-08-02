@@ -162,16 +162,12 @@ export default function BusinessAvailability() {
         return; // Exit early with fallback data
       }
 
-      // Filter businesses by time availability
+      // Filter businesses by active status and verification
       const filteredBusinesses = (businessesData || []).filter((item: any) => {
-        // For now, assume all businesses are available at the requested time
-        // In a real implementation, you would parse the business_hours JSON
-        // and check if they're open on the selected day/time
-        const businessHours = item.business_profiles.business_hours;
-
-        // Simple availability check - assume businesses are generally available
-        // This would need to be replaced with actual business hours logic
-        return true;
+        // Only include active and approved businesses
+        return item.business_profiles &&
+               item.business_profiles.is_active &&
+               item.business_profiles.verification_status === 'approved';
       });
 
       // Transform the data for display
