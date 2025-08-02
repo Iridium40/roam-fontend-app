@@ -604,9 +604,14 @@ export default function Index() {
                           {service.duration}
                         </Badge>
                       </div>
-                      <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        Book This Service
+                      <Button
+                        asChild
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                      >
+                        <Link to={`/book-service/${service.id}`}>
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Book This Service
+                        </Link>
                       </Button>
                     </CardContent>
                   </Card>
