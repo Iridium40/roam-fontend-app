@@ -356,7 +356,7 @@ const ProviderBooking = () => {
     );
   }
 
-  const { business, services, addons, location } = providerData;
+  const { business, services, addons, location, providers } = providerData;
 
   return (
     <div className="min-h-screen bg-gray-50">
