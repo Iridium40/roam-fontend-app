@@ -2784,12 +2784,7 @@ export default function ProviderDashboard() {
     setConversationsListModal(false);
   };
 
-  const handleCloseMessaging = () => {
-    setMessagingModal(false);
-    setSelectedBookingForMessaging(null);
-    setMessageText("");
-    setConversationHistory([]);
-  };
+
 
   // Load provider's current assignments for Edit Provider modal
   const loadProviderAssignments = async (providerId: string) => {
