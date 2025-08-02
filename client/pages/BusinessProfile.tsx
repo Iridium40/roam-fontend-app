@@ -762,33 +762,13 @@ export default function BusinessProfile() {
                           View Profile
                         </Link>
                       </Button>
-                      <Button
+                      <FavoriteButton
+                        type="provider"
+                        itemId={provider.id}
+                        showText={true}
                         size="sm"
-                        variant={selectedProviderId === provider.id ? "default" : "ghost"}
-                        className={
-                          selectedProviderId === provider.id
-                            ? "w-full bg-green-600 hover:bg-green-700 text-white"
-                            : "w-full text-green-600 hover:text-green-700 hover:bg-green-50"
-                        }
-                        onClick={() => {
-                          if (selectedProviderId === provider.id) {
-                            setSelectedProviderId(null);
-                            toast({
-                              title: "Provider Preference Cleared",
-                              description: "No provider preference set.",
-                            });
-                          } else {
-                            setSelectedProviderId(provider.id);
-                            toast({
-                              title: "Provider Preference Set",
-                              description: `${provider.first_name} ${provider.last_name} will be preferred for your next booking.`,
-                            });
-                          }
-                        }}
-                      >
-                        <UserCheck className="w-4 h-4 mr-2" />
-                        {selectedProviderId === provider.id ? "Preferred ✓" : "Prefer This Provider"}
-                      </Button>
+                        className="w-full"
+                      />
                     </div>
                   </CardContent>
                 </Card>
