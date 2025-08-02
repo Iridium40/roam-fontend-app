@@ -196,6 +196,11 @@ const App = () => (
                 element={<ProviderBooking />}
               />
 
+              <Route
+                path="/business/:businessId"
+                element={<BusinessProfile />}
+              />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
