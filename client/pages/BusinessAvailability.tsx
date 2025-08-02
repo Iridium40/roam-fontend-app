@@ -221,6 +221,7 @@ export default function BusinessAvailability() {
         logo:
           item.business_profiles.logo_url || item.business_profiles.image_url,
         verification_status: item.business_profiles.verification_status,
+        is_featured: item.business_profiles.is_featured,
         years_in_business: null, // Not available in schema
         location: "Florida", // Default location since business_locations is separate
         servicePrice: item.business_price,
