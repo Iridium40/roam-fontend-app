@@ -63,9 +63,12 @@ export function useFavorites() {
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.rpc('add_favorite_service', {
-        service_id_param: serviceId
-      });
+      const { error } = await supabase
+        .from('customer_favorite_services')
+        .insert({
+          customer_id: customer.id,
+          service_id: serviceId
+        });
 
       if (error) {
         console.error('Error adding service to favorites:', error?.message || error);
@@ -102,9 +105,11 @@ export function useFavorites() {
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.rpc('remove_favorite_service', {
-        service_id_param: serviceId
-      });
+      const { error } = await supabase
+        .from('customer_favorite_services')
+        .delete()
+        .eq('customer_id', customer.id)
+        .eq('service_id', serviceId);
 
       if (error) {
         console.error('Error removing service from favorites:', error?.message || error);
