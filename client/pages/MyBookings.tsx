@@ -480,28 +480,20 @@ function BookingCard({ booking }: { booking: any }) {
               <statusConfig.icon className="w-3 h-3 mr-1" />
               {statusConfig.label}
             </Badge>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>View Details</DropdownMenuItem>
-                <DropdownMenuItem>Contact Provider</DropdownMenuItem>
-                {booking.status === "confirmed" && (
-                  <>
-                    <DropdownMenuItem>Reschedule</DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600">
-                      Cancel
-                    </DropdownMenuItem>
-                  </>
-                )}
-                {booking.status === "completed" && (
-                  <DropdownMenuItem>Leave Review</DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {booking.status === "completed" && new Date(booking.date) < new Date() ? (
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                onClick={() => {
+                  // Navigate to book the same service again
+                  window.location.href = `/book-service/${booking.serviceId}`;
+                }}
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Book Again
+              </Button>
+            ) : null}
           </div>
         </div>
 
