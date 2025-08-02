@@ -479,9 +479,17 @@ export default function BusinessServiceBooking() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h1 className="text-2xl font-bold">
-                        {business?.business_name}
-                      </h1>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h1 className="text-2xl font-bold">
+                          {business?.business_name}
+                        </h1>
+                        {business?.is_featured && (
+                          <Badge className="bg-roam-yellow text-gray-900">
+                            <Star className="w-4 h-4 mr-1" />
+                            Featured
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-foreground/70">
                         Professional{" "}
                         {business?.business_type?.replace("_", " ")} services
