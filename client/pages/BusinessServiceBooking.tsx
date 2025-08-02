@@ -34,6 +34,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import GooglePlacesAutocomplete from "@/components/GooglePlacesAutocomplete";
 
 export default function BusinessServiceBooking() {
   const { businessId } = useParams<{ businessId: string }>();
