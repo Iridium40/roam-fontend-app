@@ -244,26 +244,29 @@ export function useFavorites() {
   }, [isCustomer, toast]);
 
   const isBusinessFavorited = useCallback(async (businessId: string): Promise<boolean> => {
-    if (!isCustomer) {
+    if (!isCustomer || !customer?.id) {
       return false;
     }
 
     try {
-      const { data, error } = await supabase.rpc('is_business_favorited', {
-        business_id_param: businessId
-      });
+      const { data, error } = await supabase
+        .from('customer_favorite_businesses')
+        .select('id')
+        .eq('customer_id', customer.id)
+        .eq('business_id', businessId)
+        .maybeSingle();
 
       if (error) {
         console.error('Error checking if business is favorited:', error?.message || error);
         return false;
       }
 
-      return data || false;
+      return !!data;
     } catch (error) {
       console.error('Error checking if business is favorited:', error?.message || error);
       return false;
     }
-  }, [isCustomer]);
+  }, [isCustomer, customer?.id]);
 
   // Provider favorites
   const addProviderToFavorites = useCallback(async (providerId: string) => {
