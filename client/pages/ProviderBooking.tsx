@@ -180,7 +180,7 @@ const ProviderBooking = () => {
       type,
       id: item.id,
       name: type === 'service' ? (item as any).services.name : (item as any).addons.name,
-      price: item.custom_price || 0,
+      price: (item as any).custom_price || (item as any).business_price || 0,
       duration: type === 'service' ? (item as any).services.estimated_duration : undefined,
       quantity: 1
     };
