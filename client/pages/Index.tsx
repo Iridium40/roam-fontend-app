@@ -189,15 +189,14 @@ export default function Index() {
           .select(`
             id,
             business_name,
-            business_description,
             business_type,
             logo_url,
             image_url,
             cover_image_url,
             verification_status,
-            years_in_business,
             service_categories,
             is_active,
+            is_featured,
             business_locations (
               location_name,
               city,
@@ -206,6 +205,7 @@ export default function Index() {
           `)
           .eq('is_active', true)
           .eq('verification_status', 'approved')
+          .eq('is_featured', true)
           .limit(12);
 
         if (!businessesError && businessesData) {
