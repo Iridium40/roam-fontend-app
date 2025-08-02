@@ -194,7 +194,8 @@ const ProviderBooking = () => {
         business,
         services: services || [],
         addons: addons || [],
-        location: location || null
+        location: location || null,
+        providers: providers || []
       });
 
     } catch (error: any) {
