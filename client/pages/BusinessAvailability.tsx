@@ -73,7 +73,9 @@ export default function BusinessAvailability() {
           id: serviceId,
           name: '60 Minute Massage',
           description: 'Relaxing full-body massage therapy session',
-          duration_minutes: 60
+          min_price: 85,
+          duration_minutes: 60,
+          image_url: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop'
         };
         setService(fallbackService);
         console.log('Using fallback service data:', fallbackService);
