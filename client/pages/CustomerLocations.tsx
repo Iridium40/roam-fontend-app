@@ -313,9 +313,10 @@ export default function CustomerLocations() {
       fetchLocations();
     } catch (error: any) {
       console.error('Error setting primary location:', error);
+      const errorMessage = error?.message || error?.error?.message || 'Unknown error';
       toast({
         title: "Error",
-        description: "Failed to update primary location",
+        description: `Failed to update primary location: ${errorMessage}`,
         variant: "destructive",
       });
     }
