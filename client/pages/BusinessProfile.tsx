@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  Link,
+  useSearchParams,
+} from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +63,9 @@ export default function BusinessProfile() {
 
   const [businessData, setBusinessData] = useState<BusinessData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || "overview");
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("tab") || "overview",
+  );
   const [selectedService, setSelectedService] = useState<any>(null);
   const [providerSelectorOpen, setProviderSelectorOpen] = useState(false);
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(

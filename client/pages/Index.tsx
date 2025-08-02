@@ -952,7 +952,11 @@ export default function Index() {
                           asChild
                           size="sm"
                           className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                          style={{ marginLeft: '-2px', paddingLeft: '9px', paddingRight: '12px' }}
+                          style={{
+                            marginLeft: "-2px",
+                            paddingLeft: "9px",
+                            paddingRight: "12px",
+                          }}
                         >
                           <Link to={`/business/${business.id}?tab=services`}>
                             <Calendar className="w-4 h-4 mr-2" />
