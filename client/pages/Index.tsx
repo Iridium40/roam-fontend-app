@@ -163,6 +163,8 @@ export default function Index() {
           .eq('is_popular', true)
           .limit(6);
 
+        console.log('Popular services query result:', { popularServicesData, popularError });
+
         if (!popularError && popularServicesData) {
           const transformedPopular = popularServicesData.map((service: any) => ({
             id: service.id,
@@ -176,6 +178,7 @@ export default function Index() {
             bookings: "Popular choice", // Placeholder for booking count
             availability: "Available Today", // Placeholder
           }));
+          console.log('Transformed popular services:', transformedPopular);
           setPopularServices(transformedPopular);
         }
 
