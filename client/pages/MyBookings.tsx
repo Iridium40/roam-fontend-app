@@ -118,21 +118,16 @@ export default function MyBookings() {
         const transformedBookings = (bookingsData || []).map((booking: any) => {
           const provider = booking.providers;
           const service = booking.services;
-          const businessLocation = booking.business_locations;
-          const customerLocation = booking.customer_locations;
+          const customer = booking.customer_profiles;
 
           // Determine location string based on delivery type
           let location = "Location TBD";
-          if (booking.delivery_type === "business_location" && businessLocation) {
-            location = `${businessLocation.location_name} - ${businessLocation.address}, ${businessLocation.city}, ${businessLocation.state}`;
-          } else if (booking.delivery_type === "customer_location" && customerLocation) {
-            location = `Your Location - ${customerLocation.address}, ${customerLocation.city}, ${customerLocation.state}`;
+          if (booking.delivery_type === "business_location") {
+            location = "Provider Location";
+          } else if (booking.delivery_type === "customer_location" || booking.delivery_type === "mobile") {
+            location = "Your Location";
           } else if (booking.delivery_type === "virtual") {
             location = "Video Call";
-          } else if (booking.delivery_type === "mobile") {
-            location = customerLocation
-              ? `Your Location - ${customerLocation.address}, ${customerLocation.city}, ${customerLocation.state}`
-              : "Your Location";
           }
 
           return {
@@ -142,12 +137,12 @@ export default function MyBookings() {
             provider: {
               name: provider ? `${provider.first_name} ${provider.last_name}` : 'Unknown Provider',
               rating: 4.9, // Default rating - would need to implement rating system
-              phone: provider?.phone || null,
-              image: provider?.profile_image_url || "/api/placeholder/60/60",
+              phone: null, // Don't expose provider phone to customer
+              image: "/api/placeholder/60/60",
             },
             date: booking.booking_date,
             time: booking.start_time ? new Date(`1970-01-01T${booking.start_time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : 'Time TBD',
-            duration: service?.estimated_duration ? `${service.estimated_duration} minutes` : 'Duration TBD',
+            duration: "60 minutes", // Default duration
             deliveryType: booking.delivery_type || 'business_location',
             location: location,
             price: `$${booking.total_amount || 0}`,
