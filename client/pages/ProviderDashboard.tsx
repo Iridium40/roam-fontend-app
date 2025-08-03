@@ -4364,6 +4364,15 @@ export default function ProviderDashboard() {
         },
       );
 
+      // Check for authentication errors before processing
+      const authErrors = [servicesResponse, addonsResponse, businessServicesResponse, businessAddonsResponse, eligibilityResponse]
+        .filter(response => response.status === 401);
+
+      if (authErrors.length > 0) {
+        console.log("Authentication errors detected, throwing JWT error");
+        throw new Error("JWT expired - authentication required");
+      }
+
       // Process all responses
       const servicesData = servicesResponse.ok
         ? await servicesResponse.json()
