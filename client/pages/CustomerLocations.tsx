@@ -119,6 +119,37 @@ export default function CustomerLocations() {
     setEditingLocation(null);
   };
 
+  const createDefaultLocation = async () => {
+    try {
+      setLoading(true);
+      console.log('Creating default location...');
+
+      const { data: locationId, error } = await supabase
+        .rpc('ensure_customer_default_location');
+
+      console.log('Default location creation result:', { locationId, error });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Default location created successfully",
+      });
+
+      // Refresh locations
+      await fetchLocations();
+    } catch (error: any) {
+      console.error("Error creating default location:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create default location",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchLocations = async () => {
     if (!customer?.customer_id) return;
 
