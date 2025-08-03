@@ -377,17 +377,33 @@ export default function BusinessProfile() {
     }
   };
 
-  const handleBookService = (service: any) => {
-    if (!isCustomer) {
+  const handleBookService = async (service: any) => {
+    // Check if session is still valid and refresh if needed
+    try {
+      if (!isCustomer) {
+        // Try to refresh session first
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+
+        if (refreshError || !refreshData?.session) {
+          toast({
+            title: "Sign in required",
+            description: "Please sign in to book services",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      setSelectedService(service);
+      setProviderSelectorOpen(true);
+    } catch (error) {
+      console.error("Error handling book service:", error);
       toast({
-        title: "Sign in required",
-        description: "Please sign in to book services",
+        title: "Authentication Error",
+        description: "Please refresh the page and try again",
         variant: "destructive",
       });
-      return;
     }
-    setSelectedService(service);
-    setProviderSelectorOpen(true);
   };
 
   const handleProviderSelection = (providerId: string | null) => {
