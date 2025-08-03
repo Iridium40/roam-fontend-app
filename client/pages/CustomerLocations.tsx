@@ -124,13 +124,16 @@ export default function CustomerLocations() {
 
     try {
       setLoading(true);
+      console.log('Fetching locations for customer:', customer);
       const { data, error } = await supabase
         .from("customer_locations")
         .select("*")
-        .eq("customer_id", customer.customer_id)
+        .eq("customer_id", customer.id) // Use customer.id which is the auth user ID
         .eq("is_active", true)
         .order("is_primary", { ascending: false })
         .order("created_at", { ascending: false });
+
+      console.log('Customer locations query result:', { data, error });
 
       if (error) throw error;
       setLocations(data || []);
