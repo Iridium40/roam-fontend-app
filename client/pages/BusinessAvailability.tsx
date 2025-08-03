@@ -149,11 +149,11 @@ export default function BusinessAvailability() {
         // Use fallback business data for testing
         const fallbackBusinesses = [
           {
-            business_id: "11111111-1111-1111-1111-111111111111", // Placeholder - replace with actual Smith Health & Wellness ID
+            business_id: "c03666a3-6f9f-4cea-8645-419be0bbfbdb",
             business_price: 85,
             delivery_type: "mobile",
             business_profiles: {
-              id: "11111111-1111-1111-1111-111111111111", // Placeholder - replace with actual Smith Health & Wellness ID
+              id: "c03666a3-6f9f-4cea-8645-419be0bbfbdb",
               business_name: "Smith Health & Wellness",
               business_type: "small_business",
               logo_url:
@@ -240,7 +240,7 @@ export default function BusinessAvailability() {
         console.log("No businesses found in database, using fallback data");
         const fallbackBusinesses = [
           {
-            id: "11111111-1111-1111-1111-111111111111", // Placeholder - replace with actual Smith Health & Wellness ID
+            id: "c03666a3-6f9f-4cea-8645-419be0bbfbdb",
             name: "Smith Health & Wellness",
             description:
               "Professional health and wellness services with experienced therapists and practitioners.",
