@@ -4778,6 +4778,7 @@ export default function ProviderDashboard() {
         website_url: businessDetailsForm.website_url?.trim() || "",
         logo_url: businessDetailsForm.logo_url?.trim() || null,
         is_active: businessDetailsForm.is_active,
+        is_featured: businessDetailsForm.is_featured,
         service_categories:
           Array.isArray(businessDetailsForm.service_categories) &&
           businessDetailsForm.service_categories.length > 0
