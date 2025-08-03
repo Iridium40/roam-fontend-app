@@ -236,6 +236,29 @@ export default function BusinessAvailability() {
     }
   };
 
+  // Function to get display time for business hours
+  const getBusinessDisplayTime = (businessHours: any, selectedDate: string, timeType: "open" | "close") => {
+    if (!businessHours || !selectedDate) {
+      return timeType === "open" ? "9:00 AM" : "5:00 PM"; // Default times
+    }
+
+    const date = new Date(selectedDate);
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = dayNames[date.getDay()];
+    const dayHours = businessHours[dayName];
+
+    if (!dayHours || !dayHours[timeType]) {
+      return timeType === "open" ? "9:00 AM" : "5:00 PM"; // Default times
+    }
+
+    // Convert 24-hour format to 12-hour format
+    const [hours, minutes] = dayHours[timeType].split(':');
+    const hour24 = parseInt(hours);
+    const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
+    const period = hour24 >= 12 ? 'PM' : 'AM';
+    return `${hour12}:${minutes} ${period}`;
+  };
+
   // Function to check if business is open at requested time
   const isBusinessOpen = (businessHours: any, selectedDate: string, selectedTime: string) => {
     if (!businessHours || !selectedDate || !selectedTime) {
