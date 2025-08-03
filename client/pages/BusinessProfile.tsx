@@ -129,11 +129,12 @@ export default function BusinessProfile() {
         .single();
 
       if (businessError) {
-        console.error("Business profile query error:", businessError);
+        console.error("Business profile query error:", businessError?.message || businessError);
+        console.error("Business error details:", JSON.stringify(businessError, null, 2));
         if (businessError.code === 'PGRST116') {
           throw new Error(`Business with ID ${businessId} not found`);
         }
-        throw new Error(`Failed to fetch business: ${businessError.message}`);
+        throw new Error(`Failed to fetch business: ${businessError.message || 'Unknown error'}`);
       }
 
       if (!business) {
