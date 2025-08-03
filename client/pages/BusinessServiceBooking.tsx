@@ -73,7 +73,7 @@ export default function BusinessServiceBooking() {
       const { data, error } = await supabase
         .from("customer_locations")
         .select("*")
-        .eq("customer_id", customer.customer_id)
+        .eq("customer_id", customer.id)
         .eq("is_active", true)
         .order("is_primary", { ascending: false })
         .order("created_at", { ascending: false });
