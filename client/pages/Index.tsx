@@ -91,13 +91,12 @@ export default function Index() {
 
   // Fetch real data from Supabase
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (retryCount = 0) => {
       try {
         setLoading(true);
 
         // Fetch featured services using is_featured flag
-        const { data: featuredServicesData, error: featuredError } =
-          await supabase
+        const featuredServicesResponse = await supabase
             .from("services")
             .select(
               `
@@ -152,8 +151,7 @@ export default function Index() {
         }
 
         // Fetch popular services using is_popular flag
-        const { data: popularServicesData, error: popularError } =
-          await supabase
+        const popularServicesResponse = await supabase
             .from("services")
             .select(
               `
@@ -210,7 +208,7 @@ export default function Index() {
         }
 
         // Fetch featured businesses
-        const { data: businessesData, error: businessesError } = await supabase
+        const businessesResponse = await supabase
           .from("business_profiles")
           .select(
             `
@@ -233,6 +231,32 @@ export default function Index() {
           )
           .eq("is_featured", true)
           .limit(12);
+
+        // Check for authentication errors
+        const authErrors = [
+          featuredServicesResponse,
+          popularServicesResponse,
+          businessesResponse,
+        ].filter((response) => response.status === 401);
+
+        if (authErrors.length > 0 && retryCount === 0) {
+          console.log("JWT token expired, refreshing session...");
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (refreshError) {
+            console.error("Token refresh failed:", refreshError);
+            // For the index page, we can continue without authentication
+            console.log("Continuing without authentication for public content");
+          } else if (refreshData?.session) {
+            console.log("Session refreshed successfully, retrying...");
+            return await fetchData(1);
+          }
+        }
+
+        const { data: featuredServicesData, error: featuredError } = featuredServicesResponse;
+        const { data: popularServicesData, error: popularError } = popularServicesResponse;
+        const { data: businessesData, error: businessesError } = businessesResponse;
 
         console.log("Featured businesses query result:", {
           businessesData,
@@ -271,8 +295,32 @@ export default function Index() {
           );
           setFeaturedBusinesses(transformedBusinesses);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching data:", error);
+
+        // Check if this is a JWT expiration error and we haven't retried yet
+        if (
+          (error.message?.includes("JWT") ||
+            error.message?.includes("401") ||
+            error.status === 401) &&
+          retryCount === 0
+        ) {
+          console.log("JWT error detected, attempting token refresh...");
+          try {
+            const { data: refreshData, error: refreshError } =
+              await supabase.auth.refreshSession();
+
+            if (!refreshError && refreshData?.session) {
+              console.log("Session refreshed, retrying data fetch...");
+              return await fetchData(1);
+            }
+          } catch (refreshError) {
+            console.error("Token refresh failed:", refreshError);
+          }
+
+          // For index page, continue even if refresh fails since it has public content
+          console.log("Continuing with public content after auth error");
+        }
       } finally {
         setLoading(false);
       }
