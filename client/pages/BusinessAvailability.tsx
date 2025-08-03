@@ -150,36 +150,12 @@ export default function BusinessAvailability() {
         console.log("No businesses found for this service and date/time combination");
 
         console.log(
-          "Using fallback business data due to error:",
+          "No businesses found for this service:",
           businessesError,
         );
-        setAvailableBusinesses(
-          fallbackBusinesses.map((item: any) => ({
-            id: item.business_profiles.id,
-            name: item.business_profiles.business_name,
-            description:
-              "Professional health and wellness services with experienced therapists",
-            type: item.business_profiles.business_type,
-            logo:
-              item.business_profiles.logo_url ||
-              item.business_profiles.image_url,
-            verification_status: item.business_profiles.verification_status,
-            years_in_business: null,
-            location: "Orlando, FL",
-            servicePrice: item.business_price,
-            deliveryType: item.delivery_type || "mobile",
-            rating: 4.8,
-            reviewCount: 127,
-            openTime: "9:00 AM",
-            closeTime: "5:00 PM",
-            email: item.business_profiles.contact_email,
-            phone: item.business_profiles.phone,
-            website: item.business_profiles.website_url,
-          })),
-        );
-
+        setAvailableBusinesses([]);
         setLoading(false);
-        return; // Exit early with fallback data
+        return;
       }
 
       // Filter businesses by active status and verification
