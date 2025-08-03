@@ -66,7 +66,7 @@ export default function BusinessServiceBooking() {
   const [savedLocations, setSavedLocations] = useState<any[]>([]);
   const [specialRequests, setSpecialRequests] = useState<string>("");
 
-  const fetchSavedLocations = async () => {
+  const fetchSavedLocations = async (retryCount = 0) => {
     if (!customer?.customer_id) return;
 
     try {
@@ -78,7 +78,25 @@ export default function BusinessServiceBooking() {
         .order("is_primary", { ascending: false })
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        // Check if this is a JWT expiration error
+        if (
+          (error.message?.includes("JWT") ||
+            error.message?.includes("401") ||
+            error.code === "PGRST301") &&
+          retryCount === 0
+        ) {
+          console.log("JWT error in fetchSavedLocations, refreshing token...");
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (!refreshError && refreshData?.session) {
+            console.log("Session refreshed, retrying saved locations fetch...");
+            return await fetchSavedLocations(1);
+          }
+        }
+        throw error;
+      }
       setSavedLocations(data || []);
     } catch (error) {
       console.error("Error fetching saved locations:", error);
@@ -97,12 +115,12 @@ export default function BusinessServiceBooking() {
     }
   }, [customer?.customer_id]);
 
-  const fetchBusinessData = async () => {
+  const fetchBusinessData = async (retryCount = 0) => {
     try {
       setLoading(true);
 
       // Fetch business details
-      const { data: businessData, error: businessError } = await supabase
+      const businessResponse = await supabase
         .from("business_profiles")
         .select(
           `
@@ -122,6 +140,94 @@ export default function BusinessServiceBooking() {
         .eq("is_active", true)
         .single();
 
+      // Fetch services
+      const servicesResponse = await supabase
+        .from("business_services")
+        .select(
+          `
+          id,
+          service_id,
+          business_price,
+          delivery_type,
+          services (
+            id,
+            name,
+            description,
+            duration_minutes
+          )
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_active", true);
+
+      // Fetch addons
+      const addonsResponse = await supabase
+        .from("business_addons")
+        .select(
+          `
+          id,
+          addon_id,
+          custom_price,
+          service_addons (
+            id,
+            name,
+            description,
+            base_price
+          )
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_available", true);
+
+      // Fetch providers
+      const providersResponse = await supabase
+        .from("providers")
+        .select(
+          `
+          id,
+          first_name,
+          last_name,
+          bio,
+          experience_years,
+          image_url,
+          average_rating,
+          total_reviews
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_active", true);
+
+      // Check for authentication errors
+      const authErrors = [
+        businessResponse,
+        servicesResponse,
+        addonsResponse,
+        providersResponse,
+      ].filter((response) => response.status === 401);
+
+      if (authErrors.length > 0 && retryCount === 0) {
+        console.log("JWT token expired, refreshing session...");
+        const { data: refreshData, error: refreshError } =
+          await supabase.auth.refreshSession();
+
+        if (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          toast({
+            title: "Authentication Error",
+            description:
+              "Your session has expired. Please refresh the page and sign in again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (refreshData?.session) {
+          console.log("Session refreshed successfully, retrying...");
+          return await fetchBusinessData(1);
+        }
+      }
+
+      const { data: businessData, error: businessError } = businessResponse;
       if (businessError || !businessData) {
         console.error(
           "Business not found, using fallback data:",
@@ -144,26 +250,7 @@ export default function BusinessServiceBooking() {
         setBusiness(businessData);
       }
 
-      // Fetch services
-      const { data: servicesData, error: servicesError } = await supabase
-        .from("business_services")
-        .select(
-          `
-          id,
-          service_id,
-          business_price,
-          delivery_type,
-          services (
-            id,
-            name,
-            description,
-            duration_minutes
-          )
-        `,
-        )
-        .eq("business_id", businessId)
-        .eq("is_active", true);
-
+      const { data: servicesData, error: servicesError } = servicesResponse;
       // Use fallback service data if no services found
       if (!servicesData || servicesData.length === 0) {
         console.log("No services found, using fallback data");
@@ -186,45 +273,10 @@ export default function BusinessServiceBooking() {
         setServices(servicesData);
       }
 
-      // Fetch addons
-      const { data: addonsData, error: addonsError } = await supabase
-        .from("business_addons")
-        .select(
-          `
-          id,
-          addon_id,
-          custom_price,
-          service_addons (
-            id,
-            name,
-            description,
-            base_price
-          )
-        `,
-        )
-        .eq("business_id", businessId)
-        .eq("is_available", true);
-
+      const { data: addonsData, error: addonsError } = addonsResponse;
       setAddons(addonsData || []);
 
-      // Fetch providers
-      const { data: providersData, error: providersError } = await supabase
-        .from("providers")
-        .select(
-          `
-          id,
-          first_name,
-          last_name,
-          bio,
-          experience_years,
-          image_url,
-          average_rating,
-          total_reviews
-        `,
-        )
-        .eq("business_id", businessId)
-        .eq("is_active", true);
-
+      const { data: providersData, error: providersError } = providersResponse;
       setProviders(providersData || []);
 
       // Auto-select service if specified
@@ -239,6 +291,36 @@ export default function BusinessServiceBooking() {
       }
     } catch (error: any) {
       console.error("Error fetching business data:", error);
+
+      // Check if this is a JWT expiration error and we haven't retried yet
+      if (
+        (error.message?.includes("JWT") ||
+          error.message?.includes("401") ||
+          error.status === 401) &&
+        retryCount === 0
+      ) {
+        console.log("JWT error detected, attempting token refresh...");
+        try {
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (!refreshError && refreshData?.session) {
+            console.log("Session refreshed, retrying business data fetch...");
+            return await fetchBusinessData(1);
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+        }
+
+        toast({
+          title: "Authentication Error",
+          description:
+            "Your session has expired. Please refresh the page and sign in again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
         title: "Error",
         description: error.message || "Failed to load business information",
