@@ -136,6 +136,36 @@ export default function BusinessAvailability() {
         .eq("service_id", serviceId)
         .eq("is_active", true);
 
+      // Check for authentication errors
+      const authErrors = [serviceResponse, businessesResponse].filter(
+        (response) => response.status === 401
+      );
+
+      if (authErrors.length > 0 && retryCount === 0) {
+        console.log("JWT token expired, refreshing session...");
+        const { data: refreshData, error: refreshError } =
+          await supabase.auth.refreshSession();
+
+        if (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          toast({
+            title: "Authentication Error",
+            description:
+              "Your session has expired. Please refresh the page and sign in again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (refreshData?.session) {
+          console.log("Session refreshed successfully, retrying...");
+          return await fetchAvailableBusinesses(1);
+        }
+      }
+
+      const { data: serviceData, error: serviceError } = serviceResponse;
+      const { data: businessesData, error: businessesError } = businessesResponse;
+
       if (businessesError) {
         console.error(
           "Error fetching businesses:",
