@@ -121,6 +121,12 @@ export default function BusinessProfile() {
     try {
       setLoading(true);
 
+      // Validate business ID is a proper UUID
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!businessId || !uuidRegex.test(businessId)) {
+        throw new Error(`Invalid business ID format: ${businessId}`);
+      }
+
       // Fetch business profile
       const { data: business, error: businessError } = await supabase
         .from("business_profiles")
