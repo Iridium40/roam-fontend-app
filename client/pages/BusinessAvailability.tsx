@@ -289,14 +289,9 @@ export default function BusinessAvailability() {
   };
 
   const handleSelectBusiness = (business: any) => {
-    const bookingParams = new URLSearchParams({
-      date: selectedDate!,
-      time: selectedTime!,
-      businessId: business.id,
-    });
-
+    // Navigate to business profile with services tab active and service pre-selected
     navigate(
-      `/business/${business.id}/book-service?${bookingParams.toString()}`,
+      `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`,
     );
   };
 
