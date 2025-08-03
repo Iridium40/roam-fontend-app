@@ -211,11 +211,11 @@ export default function CustomerLocations() {
         await supabase
           .from("customer_locations")
           .update({ is_primary: false })
-          .eq("customer_id", customer.customer_id);
+          .eq("customer_id", customer.id);
       }
 
       const locationData = {
-        customer_id: customer.customer_id,
+        customer_id: customer.id,
         location_name: formData.location_name.trim(),
         street_address: formData.street_address.trim(),
         unit_number: formData.unit_number.trim() || null,
