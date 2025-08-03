@@ -6146,12 +6146,13 @@ export default function ProviderDashboard() {
       provider?.business_id &&
       activeTab === "services-addons" &&
       allServices.length === 0 &&
-      !businessServicesLoading
+      !businessServicesLoading &&
+      !businessServicesError.includes("session has expired")
     ) {
       console.log("Auto-fetching business services and add-ons for active tab");
       fetchBusinessServicesAndAddons();
     }
-  }, [provider, activeTab]);
+  }, [provider, activeTab, businessServicesError]);
 
   // Load tax info when financial tab is active
   useEffect(() => {
