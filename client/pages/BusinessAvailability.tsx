@@ -146,28 +146,8 @@ export default function BusinessAvailability() {
           ),
         );
 
-        // Use fallback business data for testing
-        const fallbackBusinesses = [
-          {
-            business_id: "c03666a3-6f9f-4cea-8645-419be0bbfbdb",
-            business_price: 85,
-            delivery_type: "mobile",
-            business_profiles: {
-              id: "c03666a3-6f9f-4cea-8645-419be0bbfbdb",
-              business_name: "Smith Health & Wellness",
-              business_type: "small_business",
-              logo_url:
-                "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=200&h=200&fit=crop",
-              image_url: null,
-              verification_status: "approved",
-              is_active: true,
-              business_hours: {},
-              contact_email: "info@smithhealthwellness.com",
-              phone: "(555) 123-4567",
-              website_url: null,
-            },
-          },
-        ];
+        // No fallback business data - let user know no businesses found
+        console.log("No businesses found for this service and date/time combination");
 
         console.log(
           "Using fallback business data due to error:",
