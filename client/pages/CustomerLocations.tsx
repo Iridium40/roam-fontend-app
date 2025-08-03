@@ -125,6 +125,14 @@ export default function CustomerLocations() {
     try {
       setLoading(true);
       console.log('Fetching locations for customer:', customer);
+
+      // First check if customer has locations using your function
+      const { data: hasLocationCheck, error: hasLocationError } = await supabase
+        .rpc('customer_has_location');
+
+      console.log('Customer has location check:', { hasLocationCheck, hasLocationError });
+
+      // Fetch customer locations
       const { data, error } = await supabase
         .from("customer_locations")
         .select("*")
