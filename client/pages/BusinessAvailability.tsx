@@ -110,7 +110,7 @@ export default function BusinessAvailability() {
         "a3b483e5-b375-4a83-8c1e-223452f23397",
       );
 
-      const { data: businessesData, error: businessesError } = await supabase
+      const businessesResponse = await supabase
         .from("business_services")
         .select(
           `
