@@ -6233,6 +6233,7 @@ export default function ProviderDashboard() {
           logo_url: businessData.logo_url || "",
           verification_status: businessData.verification_status || "",
           is_active: businessData.is_active !== false,
+          is_featured: businessData.is_featured || false,
           setup_completed: businessData.setup_completed || false,
           service_categories: businessData.service_categories || [],
           service_subcategories: businessData.service_subcategories || [],
