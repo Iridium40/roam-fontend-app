@@ -4423,9 +4423,35 @@ export default function ProviderDashboard() {
       setTimeout(() => setBusinessServicesSuccess(""), 3000);
     } catch (error: any) {
       console.error("fetchBusinessServicesAndAddons: Error:", error);
-      setBusinessServicesError(
-        `Failed to load services and add-ons: ${error.message}`,
-      );
+
+      // Check if it's an authentication error
+      if (error.message?.includes('JWT') || error.message?.includes('401') || error.status === 401) {
+        console.log("JWT expired, attempting to refresh token...");
+
+        try {
+          // Try to refresh the session
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+
+          if (!refreshError && refreshData.session) {
+            console.log("Session refreshed successfully, retrying request...");
+            // Retry the request with the new token
+            setTimeout(() => {
+              fetchBusinessServicesAndAddons();
+            }, 1000);
+            return;
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+        }
+
+        setBusinessServicesError(
+          "Your session has expired. Please refresh the page and sign in again."
+        );
+      } else {
+        setBusinessServicesError(
+          `Failed to load services and add-ons: ${error.message}`,
+        );
+      }
     } finally {
       setBusinessServicesLoading(false);
     }
