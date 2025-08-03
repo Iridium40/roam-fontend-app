@@ -4365,8 +4365,13 @@ export default function ProviderDashboard() {
       );
 
       // Check for authentication errors before processing
-      const authErrors = [servicesResponse, addonsResponse, businessServicesResponse, businessAddonsResponse, eligibilityResponse]
-        .filter(response => response.status === 401);
+      const authErrors = [
+        servicesResponse,
+        addonsResponse,
+        businessServicesResponse,
+        businessAddonsResponse,
+        eligibilityResponse,
+      ].filter((response) => response.status === 401);
 
       if (authErrors.length > 0) {
         console.log("Authentication errors detected, throwing JWT error");
@@ -4434,12 +4439,17 @@ export default function ProviderDashboard() {
       console.error("fetchBusinessServicesAndAddons: Error:", error);
 
       // Check if it's an authentication error
-      if (error.message?.includes('JWT') || error.message?.includes('401') || error.status === 401) {
+      if (
+        error.message?.includes("JWT") ||
+        error.message?.includes("401") ||
+        error.status === 401
+      ) {
         console.log("JWT expired, attempting to refresh token...");
 
         try {
           // Try to refresh the session
-          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
 
           if (!refreshError && refreshData.session) {
             console.log("Session refreshed successfully, retrying request...");
@@ -4454,7 +4464,7 @@ export default function ProviderDashboard() {
         }
 
         setBusinessServicesError(
-          "Your session has expired. Please refresh the page and sign in again."
+          "Your session has expired. Please refresh the page and sign in again.",
         );
       } else {
         setBusinessServicesError(
