@@ -69,7 +69,7 @@ export default function MyBookings() {
         console.log("Fetching bookings for user:", currentUser.email);
 
         // Get bookings for this customer by guest email (simpler approach)
-        const { data: bookingsData, error: bookingsError } = await supabase
+        const bookingsResponse = await supabase
           .from("bookings")
           .select(
             `
