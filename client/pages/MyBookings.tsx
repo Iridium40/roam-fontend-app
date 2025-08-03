@@ -98,6 +98,26 @@ export default function MyBookings() {
           .order("booking_date", { ascending: false })
           .limit(50);
 
+        // Check for authentication error
+        if (bookingsResponse.status === 401 && retryCount === 0) {
+          console.log("JWT token expired, refreshing session...");
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (refreshError) {
+            console.error("Token refresh failed:", refreshError);
+            setError("Your session has expired. Please refresh the page and sign in again.");
+            return;
+          }
+
+          if (refreshData?.session) {
+            console.log("Session refreshed successfully, retrying...");
+            return await fetchBookings(1);
+          }
+        }
+
+        const { data: bookingsData, error: bookingsError } = bookingsResponse;
+
         if (bookingsError) {
           console.error("Bookings query error:", bookingsError);
           throw new Error("Failed to fetch bookings from database");
