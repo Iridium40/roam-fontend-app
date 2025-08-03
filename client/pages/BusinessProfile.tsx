@@ -89,10 +89,30 @@ export default function BusinessProfile() {
   // Handle service pre-selection from URL parameters
   useEffect(() => {
     const serviceId = searchParams.get("service");
+    console.log('Looking for service ID:', serviceId);
+    console.log('Available services:', businessData?.services);
+
     if (serviceId && businessData?.services) {
-      const service = businessData.services.find(s => s.services?.id === serviceId);
+      console.log('Service structure check:', businessData.services.map(s => ({
+        businessServiceId: s.id,
+        serviceId: s.service_id,
+        serviceDetails: s.services?.id,
+        serviceName: s.services?.name
+      })));
+
+      // Try multiple ways to find the service
+      let service = businessData.services.find(s => s.services?.id === serviceId);
+      if (!service) {
+        service = businessData.services.find(s => s.service_id === serviceId);
+      }
+
+      console.log('Found service:', service);
+
       if (service) {
         setSelectedService(service);
+        console.log('Selected service:', service.services?.name);
+      } else {
+        console.log('Service not found in business services');
       }
     }
   }, [searchParams, businessData?.services]);
