@@ -358,6 +358,36 @@ export default function BusinessAvailability() {
       console.log("Expected business found in query:", expectedBusinessFound);
     } catch (error: any) {
       console.error("Error fetching available businesses:", error);
+
+      // Check if this is a JWT expiration error and we haven't retried yet
+      if (
+        (error.message?.includes("JWT") ||
+          error.message?.includes("401") ||
+          error.status === 401) &&
+        retryCount === 0
+      ) {
+        console.log("JWT error detected, attempting token refresh...");
+        try {
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (!refreshError && refreshData?.session) {
+            console.log("Session refreshed, retrying businesses fetch...");
+            return await fetchAvailableBusinesses(1);
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+        }
+
+        toast({
+          title: "Authentication Error",
+          description:
+            "Your session has expired. Please refresh the page and sign in again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
         title: "Error",
         description: error.message || "Failed to load available businesses",
