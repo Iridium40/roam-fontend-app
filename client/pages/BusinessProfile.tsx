@@ -98,11 +98,23 @@ export default function BusinessProfile() {
         .from("business_profiles")
         .select("*")
         .eq("id", businessId)
-        .eq("is_active", true)
         .single();
 
-      if (businessError || !business) {
-        throw new Error("Business not found");
+      if (businessError) {
+        console.error("Business profile query error:", businessError);
+        if (businessError.code === 'PGRST116') {
+          throw new Error(`Business with ID ${businessId} not found`);
+        }
+        throw new Error(`Failed to fetch business: ${businessError.message}`);
+      }
+
+      if (!business) {
+        throw new Error(`Business with ID ${businessId} not found`);
+      }
+
+      // Check if business is active and show warning if not
+      if (!business.is_active) {
+        console.warn("Business is not active:", business.business_name);
       }
 
       // Fetch business services with service details
