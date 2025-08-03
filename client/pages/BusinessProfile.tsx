@@ -78,6 +78,17 @@ export default function BusinessProfile() {
     }
   }, [businessId]);
 
+  // Handle service pre-selection from URL parameters
+  useEffect(() => {
+    const serviceId = searchParams.get("service");
+    if (serviceId && businessData?.services) {
+      const service = businessData.services.find(s => s.services?.id === serviceId);
+      if (service) {
+        setSelectedService(service);
+      }
+    }
+  }, [searchParams, businessData?.services]);
+
   const fetchBusinessData = async () => {
     try {
       setLoading(true);
