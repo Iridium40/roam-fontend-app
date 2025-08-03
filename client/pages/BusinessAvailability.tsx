@@ -149,7 +149,7 @@ export default function BusinessAvailability() {
         // Use fallback business data for testing
         const fallbackBusinesses = [
           {
-            business_id: "c03666a3-6f9f-4cea-8645-419be0bbfbdb",
+            business_id: "11111111-1111-1111-1111-111111111111", // Placeholder - replace with actual Smith Health & Wellness ID
             business_price: 85,
             delivery_type: "mobile",
             business_profiles: {
