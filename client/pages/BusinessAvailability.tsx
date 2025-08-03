@@ -45,7 +45,7 @@ export default function BusinessAvailability() {
     }
   }, [serviceId, selectedDate, selectedTime]);
 
-  const fetchAvailableBusinesses = async () => {
+  const fetchAvailableBusinesses = async (retryCount = 0) => {
     try {
       setLoading(true);
 
