@@ -59,7 +59,7 @@ export default function MyBookings() {
   const currentUser = user || customer;
   // Fetch bookings data on component mount
   useEffect(() => {
-    const fetchBookings = async () => {
+    const fetchBookings = async (retryCount = 0) => {
       if (!currentUser) return;
 
       try {
