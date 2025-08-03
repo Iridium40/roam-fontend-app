@@ -682,19 +682,30 @@ export default function CustomerLocations() {
                 <MapPin className="w-8 h-8 text-roam-blue" />
               </div>
               <h3 className="text-lg font-semibold mb-2">No Locations Saved</h3>
-              <p className="text-foreground/60 mb-4">
+              <p className="text-foreground/60 mb-6">
                 Add your first location to make booking mobile services easier
               </p>
-              <Button
-                onClick={() => {
-                  resetForm();
-                  setFormOpen(true);
-                }}
-                className="bg-roam-blue hover:bg-roam-blue/90"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Location
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={() => {
+                    resetForm();
+                    setFormOpen(true);
+                  }}
+                  className="bg-roam-blue hover:bg-roam-blue/90"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Your First Location
+                </Button>
+                <Button
+                  onClick={createDefaultLocation}
+                  variant="outline"
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                  disabled={loading}
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Create Default Location
+                </Button>
+              </div>
             </Card>
           ) : (
             <div className="grid grid-cols-1 gap-4">
