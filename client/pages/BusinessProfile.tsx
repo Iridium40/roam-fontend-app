@@ -89,30 +89,35 @@ export default function BusinessProfile() {
   // Handle service pre-selection from URL parameters
   useEffect(() => {
     const serviceId = searchParams.get("service");
-    console.log('Looking for service ID:', serviceId);
-    console.log('Available services:', businessData?.services);
+    console.log("Looking for service ID:", serviceId);
+    console.log("Available services:", businessData?.services);
 
     if (serviceId && businessData?.services) {
-      console.log('Service structure check:', businessData.services.map(s => ({
-        businessServiceId: s.id,
-        serviceId: s.service_id,
-        serviceDetails: s.services?.id,
-        serviceName: s.services?.name
-      })));
+      console.log(
+        "Service structure check:",
+        businessData.services.map((s) => ({
+          businessServiceId: s.id,
+          serviceId: s.service_id,
+          serviceDetails: s.services?.id,
+          serviceName: s.services?.name,
+        })),
+      );
 
       // Try multiple ways to find the service
-      let service = businessData.services.find(s => s.services?.id === serviceId);
+      let service = businessData.services.find(
+        (s) => s.services?.id === serviceId,
+      );
       if (!service) {
-        service = businessData.services.find(s => s.service_id === serviceId);
+        service = businessData.services.find((s) => s.service_id === serviceId);
       }
 
-      console.log('Found service:', service);
+      console.log("Found service:", service);
 
       if (service) {
         setSelectedService(service);
-        console.log('Selected service:', service.services?.name);
+        console.log("Selected service:", service.services?.name);
       } else {
-        console.log('Service not found in business services');
+        console.log("Service not found in business services");
       }
     }
   }, [searchParams, businessData?.services]);
@@ -122,7 +127,8 @@ export default function BusinessProfile() {
       setLoading(true);
 
       // Validate business ID is a proper UUID
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       if (!businessId || !uuidRegex.test(businessId)) {
         throw new Error(`Invalid business ID format: ${businessId}`);
       }
@@ -135,12 +141,20 @@ export default function BusinessProfile() {
         .single();
 
       if (businessError) {
-        console.error("Business profile query error:", businessError?.message || businessError);
-        console.error("Business error details:", JSON.stringify(businessError, null, 2));
-        if (businessError.code === 'PGRST116') {
+        console.error(
+          "Business profile query error:",
+          businessError?.message || businessError,
+        );
+        console.error(
+          "Business error details:",
+          JSON.stringify(businessError, null, 2),
+        );
+        if (businessError.code === "PGRST116") {
           throw new Error(`Business with ID ${businessId} not found`);
         }
-        throw new Error(`Failed to fetch business: ${businessError.message || 'Unknown error'}`);
+        throw new Error(
+          `Failed to fetch business: ${businessError.message || "Unknown error"}`,
+        );
       }
 
       if (!business) {
@@ -693,8 +707,8 @@ export default function BusinessProfile() {
                   key={service.id}
                   className={`hover:shadow-lg transition-all duration-200 group ${
                     selectedService?.id === service.id
-                      ? 'ring-2 ring-roam-blue border-roam-blue'
-                      : ''
+                      ? "ring-2 ring-roam-blue border-roam-blue"
+                      : ""
                   }`}
                 >
                   <div className="relative">

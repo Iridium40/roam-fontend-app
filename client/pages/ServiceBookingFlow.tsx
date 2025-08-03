@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { 
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   ArrowLeft,
   Calendar as CalendarIcon,
@@ -19,21 +19,23 @@ import {
   DollarSign,
   ChevronRight,
   MapPin,
-} from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ServiceBookingFlow() {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
-  
+
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date(),
+  );
+  const [selectedTime, setSelectedTime] = useState<string>("");
   const [step, setStep] = useState(1);
 
   // Generate time slots for booking
@@ -41,7 +43,7 @@ export default function ServiceBookingFlow() {
     const slots = [];
     for (let hour = 9; hour <= 17; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
-        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const timeString = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
         slots.push(timeString);
       }
     }
@@ -59,10 +61,11 @@ export default function ServiceBookingFlow() {
   const fetchServiceData = async () => {
     try {
       setLoading(true);
-      
+
       const { data: serviceData, error } = await supabase
-        .from('services')
-        .select(`
+        .from("services")
+        .select(
+          `
           id,
           name,
           description,
@@ -75,24 +78,25 @@ export default function ServiceBookingFlow() {
               service_category_type
             )
           )
-        `)
-        .eq('id', serviceId)
-        .eq('is_active', true)
+        `,
+        )
+        .eq("id", serviceId)
+        .eq("is_active", true)
         .single();
 
       if (error || !serviceData) {
-        throw new Error('Service not found');
+        throw new Error("Service not found");
       }
 
       setService(serviceData);
     } catch (error: any) {
-      console.error('Error fetching service:', error);
+      console.error("Error fetching service:", error);
       toast({
         title: "Error",
         description: "Failed to load service information",
         variant: "destructive",
       });
-      navigate('/');
+      navigate("/");
     } finally {
       setLoading(false);
     }
@@ -109,13 +113,15 @@ export default function ServiceBookingFlow() {
     }
 
     // Format the date and time for URL
-    const formattedDate = selectedDate.toISOString().split('T')[0];
+    const formattedDate = selectedDate.toISOString().split("T")[0];
     const bookingParams = new URLSearchParams({
       date: formattedDate,
       time: selectedTime,
     });
 
-    navigate(`/book-service/${serviceId}/businesses?${bookingParams.toString()}`);
+    navigate(
+      `/book-service/${serviceId}/businesses?${bookingParams.toString()}`,
+    );
   };
 
   const isDateDisabled = (date: Date) => {
@@ -140,8 +146,12 @@ export default function ServiceBookingFlow() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Service Not Found</h1>
-          <p className="text-foreground/60 mb-6">The service you're looking for could not be found.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            Service Not Found
+          </h1>
+          <p className="text-foreground/60 mb-6">
+            The service you're looking for could not be found.
+          </p>
           <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
             <Link to="/">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -197,21 +207,27 @@ export default function ServiceBookingFlow() {
                 <div className="w-8 h-8 bg-roam-blue text-white rounded-full flex items-center justify-center text-sm font-medium">
                   1
                 </div>
-                <span className="ml-2 text-sm font-medium text-roam-blue">Select Date & Time</span>
+                <span className="ml-2 text-sm font-medium text-roam-blue">
+                  Select Date & Time
+                </span>
               </div>
               <ChevronRight className="w-4 h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-foreground/20 text-foreground/60 rounded-full flex items-center justify-center text-sm">
                   2
                 </div>
-                <span className="ml-2 text-sm text-foreground/60">Choose Business</span>
+                <span className="ml-2 text-sm text-foreground/60">
+                  Choose Business
+                </span>
               </div>
               <ChevronRight className="w-4 h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-foreground/20 text-foreground/60 rounded-full flex items-center justify-center text-sm">
                   3
                 </div>
-                <span className="ml-2 text-sm text-foreground/60">Book Service</span>
+                <span className="ml-2 text-sm text-foreground/60">
+                  Book Service
+                </span>
               </div>
             </div>
           </div>
@@ -236,13 +252,15 @@ export default function ServiceBookingFlow() {
                       className="w-full h-32 object-cover rounded-lg"
                     />
                   )}
-                  
+
                   <div>
-                    <h3 className="font-semibold text-xl mb-2">{service.name}</h3>
+                    <h3 className="font-semibold text-xl mb-2">
+                      {service.name}
+                    </h3>
                     <p className="text-foreground/70 text-sm mb-3">
                       {service.description}
                     </p>
-                    
+
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <DollarSign className="w-4 h-4 text-roam-blue" />
@@ -250,14 +268,20 @@ export default function ServiceBookingFlow() {
                           Starting at ${service.min_price}
                         </span>
                       </div>
-                      <Badge variant="outline" className="border-roam-blue text-roam-blue">
+                      <Badge
+                        variant="outline"
+                        className="border-roam-blue text-roam-blue"
+                      >
                         <Clock className="w-3 h-3 mr-1" />
                         {service.duration_minutes} min
                       </Badge>
                     </div>
-                    
+
                     <Badge variant="secondary" className="text-xs">
-                      {service.service_subcategories?.service_categories?.service_category_type}
+                      {
+                        service.service_subcategories?.service_categories
+                          ?.service_category_type
+                      }
                     </Badge>
                   </div>
                 </CardContent>
@@ -293,7 +317,9 @@ export default function ServiceBookingFlow() {
                       {timeSlots.map((time) => (
                         <Button
                           key={time}
-                          variant={selectedTime === time ? "default" : "outline"}
+                          variant={
+                            selectedTime === time ? "default" : "outline"
+                          }
                           size="sm"
                           onClick={() => setSelectedTime(time)}
                           className={
@@ -311,7 +337,9 @@ export default function ServiceBookingFlow() {
                   {/* Selection Summary */}
                   {selectedDate && selectedTime && (
                     <div className="p-4 bg-roam-light-blue/10 rounded-lg">
-                      <h4 className="font-semibold mb-2 text-roam-blue">Your Selection</h4>
+                      <h4 className="font-semibold mb-2 text-roam-blue">
+                        Your Selection
+                      </h4>
                       <div className="flex items-center gap-4 text-sm">
                         <div className="flex items-center gap-2">
                           <CalendarIcon className="w-4 h-4" />
@@ -341,7 +369,9 @@ export default function ServiceBookingFlow() {
                   {/* Help Text */}
                   <div className="text-sm text-foreground/60 space-y-2">
                     <p>• Select your preferred date and time</p>
-                    <p>• We'll show you businesses available during this time</p>
+                    <p>
+                      • We'll show you businesses available during this time
+                    </p>
                     <p>• You can change this later if needed</p>
                   </div>
                 </CardContent>

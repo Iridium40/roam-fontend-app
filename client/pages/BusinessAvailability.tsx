@@ -105,7 +105,10 @@ export default function BusinessAvailability() {
 
       // Try a simpler business query first to debug
       console.log("Attempting to fetch businesses for serviceId:", serviceId);
-      console.log("Expected business ID for 60 Minute Massage:", "a3b483e5-b375-4a83-8c1e-223452f23397");
+      console.log(
+        "Expected business ID for 60 Minute Massage:",
+        "a3b483e5-b375-4a83-8c1e-223452f23397",
+      );
 
       const { data: businessesData, error: businessesError } = await supabase
         .from("business_services")
@@ -153,7 +156,9 @@ export default function BusinessAvailability() {
         );
 
         // No fallback business data - let user know no businesses found
-        console.log("No businesses found for this service and date/time combination");
+        console.log(
+          "No businesses found for this service and date/time combination",
+        );
 
         console.log(
           "No businesses found for this service, checking if we can fetch specific business:",
@@ -162,9 +167,11 @@ export default function BusinessAvailability() {
 
         // Try to fetch the specific business that offers 60 Minute Massage
         try {
-          const { data: specificBusiness, error: specificError } = await supabase
-            .from('business_profiles')
-            .select(`
+          const { data: specificBusiness, error: specificError } =
+            await supabase
+              .from("business_profiles")
+              .select(
+                `
               id,
               business_name,
               business_type,
@@ -177,41 +184,52 @@ export default function BusinessAvailability() {
               contact_email,
               phone,
               website_url
-            `)
-            .eq('id', 'a3b483e5-b375-4a83-8c1e-223452f23397')
-            .single();
+            `,
+              )
+              .eq("id", "a3b483e5-b375-4a83-8c1e-223452f23397")
+              .single();
 
           if (specificBusiness && !specificError) {
-            console.log('Found specific business:', specificBusiness);
+            console.log("Found specific business:", specificBusiness);
 
             // Check if this business is open at the requested time
             const isOpen = isBusinessOpen(
               specificBusiness.business_hours,
               selectedDate,
-              selectedTime
+              selectedTime,
             );
 
             if (isOpen) {
-              const fallbackBusiness = [{
-                id: specificBusiness.id,
-                name: specificBusiness.business_name,
-                description: `Professional ${specificBusiness.business_type.replace("_", " ")} services`,
-                type: specificBusiness.business_type,
-                logo: specificBusiness.logo_url || specificBusiness.image_url,
-                verification_status: specificBusiness.verification_status,
-                is_featured: specificBusiness.is_featured,
-                years_in_business: 5,
-                location: "Florida",
-                servicePrice: 85, // Default price for 60 minute massage
-                deliveryType: "mobile",
-                rating: 4.8,
-                reviewCount: 127,
-                openTime: getBusinessDisplayTime(specificBusiness.business_hours, selectedDate, "open"),
-                closeTime: getBusinessDisplayTime(specificBusiness.business_hours, selectedDate, "close"),
-                email: specificBusiness.contact_email,
-                phone: specificBusiness.phone,
-                website: specificBusiness.website_url,
-              }];
+              const fallbackBusiness = [
+                {
+                  id: specificBusiness.id,
+                  name: specificBusiness.business_name,
+                  description: `Professional ${specificBusiness.business_type.replace("_", " ")} services`,
+                  type: specificBusiness.business_type,
+                  logo: specificBusiness.logo_url || specificBusiness.image_url,
+                  verification_status: specificBusiness.verification_status,
+                  is_featured: specificBusiness.is_featured,
+                  years_in_business: 5,
+                  location: "Florida",
+                  servicePrice: 85, // Default price for 60 minute massage
+                  deliveryType: "mobile",
+                  rating: 4.8,
+                  reviewCount: 127,
+                  openTime: getBusinessDisplayTime(
+                    specificBusiness.business_hours,
+                    selectedDate,
+                    "open",
+                  ),
+                  closeTime: getBusinessDisplayTime(
+                    specificBusiness.business_hours,
+                    selectedDate,
+                    "close",
+                  ),
+                  email: specificBusiness.contact_email,
+                  phone: specificBusiness.phone,
+                  website: specificBusiness.website_url,
+                },
+              ];
 
               setAvailableBusinesses(fallbackBusiness);
               setLoading(false);
@@ -219,7 +237,7 @@ export default function BusinessAvailability() {
             }
           }
         } catch (fallbackError) {
-          console.error('Error fetching specific business:', fallbackError);
+          console.error("Error fetching specific business:", fallbackError);
         }
 
         setAvailableBusinesses([]);
@@ -230,20 +248,21 @@ export default function BusinessAvailability() {
       // Filter businesses by active status, verification, and business hours
       const filteredBusinesses = (businessesData || []).filter((item: any) => {
         // Only include active and approved businesses
-        const isActiveAndApproved = (
+        const isActiveAndApproved =
           item.business_profiles &&
           item.business_profiles.is_active &&
-          item.business_profiles.verification_status === "approved"
-        );
+          item.business_profiles.verification_status === "approved";
 
         // Check if business is open at requested time
         const isOpen = isBusinessOpen(
           item.business_profiles.business_hours,
           selectedDate,
-          selectedTime
+          selectedTime,
         );
 
-        console.log(`Business ${item.business_profiles?.business_name}: active=${isActiveAndApproved}, open=${isOpen}`);
+        console.log(
+          `Business ${item.business_profiles?.business_name}: active=${isActiveAndApproved}, open=${isOpen}`,
+        );
 
         return isActiveAndApproved && isOpen;
       });
@@ -264,8 +283,16 @@ export default function BusinessAvailability() {
         deliveryType: item.delivery_type || "mobile",
         rating: 4.8, // Mock rating - replace with actual data
         reviewCount: Math.floor(Math.random() * 200) + 50,
-        openTime: getBusinessDisplayTime(item.business_profiles.business_hours, selectedDate, "open"),
-        closeTime: getBusinessDisplayTime(item.business_profiles.business_hours, selectedDate, "close"),
+        openTime: getBusinessDisplayTime(
+          item.business_profiles.business_hours,
+          selectedDate,
+          "open",
+        ),
+        closeTime: getBusinessDisplayTime(
+          item.business_profiles.business_hours,
+          selectedDate,
+          "close",
+        ),
         email: item.business_profiles.contact_email,
         phone: item.business_profiles.phone,
         website: item.business_profiles.website_url,
@@ -294,10 +321,11 @@ export default function BusinessAvailability() {
       );
 
       // Check if the expected business ID is in the results
-      const expectedBusinessFound = businessesData?.find(item =>
-        item.business_profiles?.id === 'a3b483e5-b375-4a83-8c1e-223452f23397'
+      const expectedBusinessFound = businessesData?.find(
+        (item) =>
+          item.business_profiles?.id === "a3b483e5-b375-4a83-8c1e-223452f23397",
       );
-      console.log('Expected business found in query:', expectedBusinessFound);
+      console.log("Expected business found in query:", expectedBusinessFound);
     } catch (error: any) {
       console.error("Error fetching available businesses:", error);
       toast({
@@ -311,13 +339,25 @@ export default function BusinessAvailability() {
   };
 
   // Function to get display time for business hours
-  const getBusinessDisplayTime = (businessHours: any, selectedDate: string, timeType: "open" | "close") => {
+  const getBusinessDisplayTime = (
+    businessHours: any,
+    selectedDate: string,
+    timeType: "open" | "close",
+  ) => {
     if (!businessHours || !selectedDate) {
       return timeType === "open" ? "9:00 AM" : "5:00 PM"; // Default times
     }
 
     const date = new Date(selectedDate);
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     const dayName = dayNames[date.getDay()];
     const dayHours = businessHours[dayName];
 
@@ -326,22 +366,34 @@ export default function BusinessAvailability() {
     }
 
     // Convert 24-hour format to 12-hour format
-    const [hours, minutes] = dayHours[timeType].split(':');
+    const [hours, minutes] = dayHours[timeType].split(":");
     const hour24 = parseInt(hours);
     const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
-    const period = hour24 >= 12 ? 'PM' : 'AM';
+    const period = hour24 >= 12 ? "PM" : "AM";
     return `${hour12}:${minutes} ${period}`;
   };
 
   // Function to check if business is open at requested time
-  const isBusinessOpen = (businessHours: any, selectedDate: string, selectedTime: string) => {
+  const isBusinessOpen = (
+    businessHours: any,
+    selectedDate: string,
+    selectedTime: string,
+  ) => {
     if (!businessHours || !selectedDate || !selectedTime) {
       return true; // Default to open if no hours data
     }
 
     // Get day name from date
     const date = new Date(selectedDate);
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     const dayName = dayNames[date.getDay()];
 
     // Check if business has hours for this day
@@ -351,12 +403,12 @@ export default function BusinessAvailability() {
     }
 
     // Convert selected time to minutes for comparison
-    const [selectedHour, selectedMinute] = selectedTime.split(':').map(Number);
+    const [selectedHour, selectedMinute] = selectedTime.split(":").map(Number);
     const selectedMinutes = selectedHour * 60 + selectedMinute;
 
     // Convert business hours to minutes
-    const [openHour, openMinute] = dayHours.open.split(':').map(Number);
-    const [closeHour, closeMinute] = dayHours.close.split(':').map(Number);
+    const [openHour, openMinute] = dayHours.open.split(":").map(Number);
+    const [closeHour, closeMinute] = dayHours.close.split(":").map(Number);
     const openMinutes = openHour * 60 + openMinute;
     const closeMinutes = closeHour * 60 + closeMinute;
 
@@ -365,16 +417,16 @@ export default function BusinessAvailability() {
   };
 
   const handleSelectBusiness = (business: any) => {
-    console.log('Selecting business:', business.name);
-    console.log('Business object:', business);
-    console.log('Business ID:', business.id);
-    console.log('Service ID:', serviceId);
-    console.log('Selected date:', selectedDate);
-    console.log('Selected time:', selectedTime);
+    console.log("Selecting business:", business.name);
+    console.log("Business object:", business);
+    console.log("Business ID:", business.id);
+    console.log("Service ID:", serviceId);
+    console.log("Selected date:", selectedDate);
+    console.log("Selected time:", selectedTime);
 
     // Ensure we have a valid business ID
     if (!business.id) {
-      console.error('No business ID found in business object');
+      console.error("No business ID found in business object");
       toast({
         title: "Error",
         description: "Unable to select business - missing ID",
@@ -385,7 +437,7 @@ export default function BusinessAvailability() {
 
     // Navigate to business profile with services tab active and service pre-selected
     const targetUrl = `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`;
-    console.log('Navigating to:', targetUrl);
+    console.log("Navigating to:", targetUrl);
 
     navigate(targetUrl);
   };

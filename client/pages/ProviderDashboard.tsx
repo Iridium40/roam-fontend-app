@@ -2594,65 +2594,65 @@ export default function ProviderDashboard() {
   // Subscription plans configuration
   const subscriptionPlans = [
     {
-      id: 'independent',
-      name: 'Independent',
+      id: "independent",
+      name: "Independent",
       price: 99,
-      description: 'Perfect for solo practitioners',
-      staffLimit: '1 staff member',
+      description: "Perfect for solo practitioners",
+      staffLimit: "1 staff member",
       features: [
-        'Unlimited bookings',
-        'Customer messaging',
-        'Basic analytics',
-        'Payment processing',
-        'Mobile app access'
+        "Unlimited bookings",
+        "Customer messaging",
+        "Basic analytics",
+        "Payment processing",
+        "Mobile app access",
       ],
-      recommended: false
+      recommended: false,
     },
     {
-      id: 'small-business',
-      name: 'Small Business',
+      id: "small-business",
+      name: "Small Business",
       price: 399,
-      description: 'Ideal for small teams',
-      staffLimit: '2-6 staff members',
+      description: "Ideal for small teams",
+      staffLimit: "2-6 staff members",
       features: [
-        'Everything in Independent',
-        'Staff management',
-        'Advanced scheduling',
-        'Team analytics',
-        'Priority support'
+        "Everything in Independent",
+        "Staff management",
+        "Advanced scheduling",
+        "Team analytics",
+        "Priority support",
       ],
-      recommended: true
+      recommended: true,
     },
     {
-      id: 'medium-business',
-      name: 'Medium Business',
+      id: "medium-business",
+      name: "Medium Business",
       price: 699,
-      description: 'Growing businesses',
-      staffLimit: '7-12 staff members',
+      description: "Growing businesses",
+      staffLimit: "7-12 staff members",
       features: [
-        'Everything in Small Business',
-        'Multi-location support',
-        'Advanced reporting',
-        'Custom integrations',
-        'Dedicated support'
+        "Everything in Small Business",
+        "Multi-location support",
+        "Advanced reporting",
+        "Custom integrations",
+        "Dedicated support",
       ],
-      recommended: false
+      recommended: false,
     },
     {
-      id: 'large-business',
-      name: 'Large Business',
+      id: "large-business",
+      name: "Large Business",
       price: 999,
-      description: 'Enterprise solutions',
-      staffLimit: '13+ staff members',
+      description: "Enterprise solutions",
+      staffLimit: "13+ staff members",
       features: [
-        'Everything in Medium Business',
-        'Enterprise API access',
-        'Custom branding',
-        'Advanced security',
-        'White-label options'
+        "Everything in Medium Business",
+        "Enterprise API access",
+        "Custom branding",
+        "Advanced security",
+        "White-label options",
       ],
-      recommended: false
-    }
+      recommended: false,
+    },
   ];
 
   // Subscription handlers
@@ -2662,28 +2662,27 @@ export default function ProviderDashboard() {
 
     try {
       // Create Stripe checkout session for the selected plan
-      const response = await fetch('/.netlify/functions/create-subscription', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/.netlify/functions/create-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           planId: planId,
           businessId: business?.id,
-          customerId: provider?.email
-        })
+          customerId: provider?.email,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create subscription');
+        throw new Error(errorData.error || "Failed to create subscription");
       }
 
       const { url } = await response.json();
 
       // Redirect to Stripe checkout
       window.location.href = url;
-
     } catch (error: any) {
-      console.error('Error selecting plan:', error);
+      console.error("Error selecting plan:", error);
       alert(`Error: ${error.message}`);
     } finally {
       setSubscriptionLoading(false);
@@ -2696,8 +2695,9 @@ export default function ProviderDashboard() {
 
     try {
       const { data, error } = await supabase
-        .from('business_subscriptions')
-        .select(`
+        .from("business_subscriptions")
+        .select(
+          `
           id,
           device_type,
           start_date,
@@ -2707,36 +2707,39 @@ export default function ProviderDashboard() {
           stripe_customer_id,
           stripe_price_id,
           subscription_status
-        `)
-        .eq('business_id', business.id)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
+        `,
+        )
+        .eq("business_id", business.id)
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
         .limit(1)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 is "not found"
         throw error;
       }
 
       if (data) {
         // Map the subscription data to include plan details
-        const planDetails = subscriptionPlans.find(plan =>
-          data.stripe_price_id?.includes(plan.id) ||
-          data.device_type === plan.id
+        const planDetails = subscriptionPlans.find(
+          (plan) =>
+            data.stripe_price_id?.includes(plan.id) ||
+            data.device_type === plan.id,
         );
 
         setCurrentSubscription({
           ...data,
-          plan_name: planDetails?.name || 'Unknown Plan',
-          price: planDetails?.price || 0
+          plan_name: planDetails?.name || "Unknown Plan",
+          price: planDetails?.price || 0,
         });
       } else {
         setCurrentSubscription(null);
       }
 
-      console.log('Current subscription loaded:', data);
+      console.log("Current subscription loaded:", data);
     } catch (error) {
-      console.error('Error loading subscription:', error);
+      console.error("Error loading subscription:", error);
       setCurrentSubscription(null);
     }
   };
@@ -2785,8 +2788,6 @@ export default function ProviderDashboard() {
   const handleCloseConversationsList = () => {
     setConversationsListModal(false);
   };
-
-
 
   // Load provider's current assignments for Edit Provider modal
   const loadProviderAssignments = async (providerId: string) => {
@@ -6159,7 +6160,7 @@ export default function ProviderDashboard() {
       provider?.business_id &&
       isOwner &&
       (document.querySelector('[data-state="active"][value="subscription"]') ||
-        window.location.hash === '#subscription')
+        window.location.hash === "#subscription")
     ) {
       loadCurrentSubscription();
     }
@@ -7502,12 +7503,15 @@ export default function ProviderDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">About Conversations</CardTitle>
+                    <CardTitle className="text-lg">
+                      About Conversations
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <p className="text-sm text-foreground/70">
-                      Use Twilio Conversations to communicate with customers directly in the app.
-                      All messages are secure and organized by booking.
+                      Use Twilio Conversations to communicate with customers
+                      directly in the app. All messages are secure and organized
+                      by booking.
                     </p>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center gap-2">
@@ -7566,7 +7570,9 @@ export default function ProviderDashboard() {
                   <div className="text-center py-8 text-foreground/50">
                     <MessageCircle className="w-12 h-12 mx-auto mb-3 opacity-50" />
                     <p>No recent conversation activity</p>
-                    <p className="text-sm">Start messaging with customers to see activity here</p>
+                    <p className="text-sm">
+                      Start messaging with customers to see activity here
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -8250,12 +8256,17 @@ export default function ProviderDashboard() {
                                 }
                                 disabled={businessDetailsSaving || isDispatcher}
                               />
-                              <Label htmlFor="is_featured" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                              <Label
+                                htmlFor="is_featured"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
                                 Featured Business
                               </Label>
                             </div>
                             <p className="text-xs text-foreground/60">
-                              Featured businesses appear prominently on the homepage and get increased visibility to customers.
+                              Featured businesses appear prominently on the
+                              homepage and get increased visibility to
+                              customers.
                             </p>
                           </div>
                         </div>
@@ -11094,7 +11105,10 @@ export default function ProviderDashboard() {
               <TabsContent value="subscription" className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Subscription Plans</h2>
-                  <Badge variant="outline" className="text-blue-600 border-blue-200">
+                  <Badge
+                    variant="outline"
+                    className="text-blue-600 border-blue-200"
+                  >
                     30-Day Free Trial Available
                   </Badge>
                 </div>
@@ -11102,12 +11116,16 @@ export default function ProviderDashboard() {
                 {currentSubscription && (
                   <Card className="border-blue-200 bg-blue-50/30">
                     <CardHeader>
-                      <CardTitle className="text-blue-800">Current Subscription</CardTitle>
+                      <CardTitle className="text-blue-800">
+                        Current Subscription
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium">{currentSubscription.plan_name}</p>
+                          <p className="font-medium">
+                            {currentSubscription.plan_name}
+                          </p>
                           <p className="text-sm text-foreground/60">
                             Status: {currentSubscription.subscription_status}
                           </p>
@@ -11129,11 +11147,13 @@ export default function ProviderDashboard() {
                   {subscriptionPlans.map((plan) => (
                     <Card
                       key={plan.id}
-                      className={`relative ${plan.recommended ? 'border-blue-500 shadow-lg scale-105' : 'border-gray-200'}`}
+                      className={`relative ${plan.recommended ? "border-blue-500 shadow-lg scale-105" : "border-gray-200"}`}
                     >
                       {plan.recommended && (
                         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                          <Badge className="bg-blue-500 text-white">Recommended</Badge>
+                          <Badge className="bg-blue-500 text-white">
+                            Recommended
+                          </Badge>
                         </div>
                       )}
 
@@ -11142,9 +11162,13 @@ export default function ProviderDashboard() {
                         <div className="space-y-2">
                           <div className="text-4xl font-bold text-roam-blue">
                             ${plan.price}
-                            <span className="text-lg font-normal text-foreground/60">/month</span>
+                            <span className="text-lg font-normal text-foreground/60">
+                              /month
+                            </span>
                           </div>
-                          <p className="text-sm text-foreground/60">{plan.description}</p>
+                          <p className="text-sm text-foreground/60">
+                            {plan.description}
+                          </p>
                           <Badge variant="outline" className="text-xs">
                             {plan.staffLimit}
                           </Badge>
@@ -11164,8 +11188,10 @@ export default function ProviderDashboard() {
                         <div className="pt-4">
                           <Button
                             onClick={() => handleSelectPlan(plan.id)}
-                            disabled={subscriptionLoading || selectedPlan === plan.id}
-                            className={`w-full ${plan.recommended ? 'bg-blue-500 hover:bg-blue-600' : 'bg-roam-blue hover:bg-roam-blue/90'}`}
+                            disabled={
+                              subscriptionLoading || selectedPlan === plan.id
+                            }
+                            className={`w-full ${plan.recommended ? "bg-blue-500 hover:bg-blue-600" : "bg-roam-blue hover:bg-roam-blue/90"}`}
                           >
                             {subscriptionLoading && selectedPlan === plan.id ? (
                               <>
@@ -11175,7 +11201,9 @@ export default function ProviderDashboard() {
                             ) : (
                               <>
                                 Start Free Trial
-                                <span className="ml-2 text-xs opacity-80">30 days free</span>
+                                <span className="ml-2 text-xs opacity-80">
+                                  30 days free
+                                </span>
                               </>
                             )}
                           </Button>
@@ -11240,7 +11268,10 @@ export default function ProviderDashboard() {
             <TabsContent value="share" className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Share Your Booking Page</h2>
-                <Badge variant="outline" className="text-green-600 border-green-200">
+                <Badge
+                  variant="outline"
+                  className="text-green-600 border-green-200"
+                >
                   Public Booking Page
                 </Badge>
               </div>
@@ -11252,7 +11283,8 @@ export default function ProviderDashboard() {
                     Customer Booking URL
                   </CardTitle>
                   <p className="text-foreground/60">
-                    Share this link with customers so they can book your services directly
+                    Share this link with customers so they can book your
+                    services directly
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -11269,10 +11301,13 @@ export default function ProviderDashboard() {
                         size="sm"
                         onClick={async () => {
                           try {
-                            await navigator.clipboard.writeText(`${window.location.origin}/book/${provider?.business_id}`);
+                            await navigator.clipboard.writeText(
+                              `${window.location.origin}/book/${provider?.business_id}`,
+                            );
                             toast({
                               title: "Link copied!",
-                              description: "Booking page URL has been copied to your clipboard",
+                              description:
+                                "Booking page URL has been copied to your clipboard",
                             });
                           } catch (err) {
                             toast({
@@ -11289,7 +11324,10 @@ export default function ProviderDashboard() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          window.open(`${window.location.origin}/book/${provider?.business_id}`, '_blank');
+                          window.open(
+                            `${window.location.origin}/book/${provider?.business_id}`,
+                            "_blank",
+                          );
                         }}
                       >
                         <ExternalLink className="w-4 h-4" />
@@ -11298,7 +11336,9 @@ export default function ProviderDashboard() {
                   </div>
 
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">What customers will see:</h4>
+                    <h4 className="font-medium text-blue-900 mb-2">
+                      What customers will see:
+                    </h4>
                     <ul className="text-sm text-blue-800 space-y-1">
                       <li>• Your business information and description</li>
                       <li>• All available services with pricing</li>
@@ -11311,7 +11351,9 @@ export default function ProviderDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card>
                       <CardContent className="p-4">
-                        <h4 className="font-medium mb-2">Share via Social Media</h4>
+                        <h4 className="font-medium mb-2">
+                          Share via Social Media
+                        </h4>
                         <div className="flex gap-2">
                           <Button
                             variant="outline"
@@ -11319,7 +11361,10 @@ export default function ProviderDashboard() {
                             onClick={() => {
                               const url = `${window.location.origin}/book/${provider?.business_id}`;
                               const text = `Book services with ${business?.business_name}!`;
-                              window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+                              window.open(
+                                `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+                                "_blank",
+                              );
                             }}
                           >
                             Twitter
@@ -11329,7 +11374,10 @@ export default function ProviderDashboard() {
                             size="sm"
                             onClick={() => {
                               const url = `${window.location.origin}/book/${provider?.business_id}`;
-                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                              window.open(
+                                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+                                "_blank",
+                              );
                             }}
                           >
                             Facebook
@@ -11340,7 +11388,10 @@ export default function ProviderDashboard() {
                             onClick={() => {
                               const url = `${window.location.origin}/book/${provider?.business_id}`;
                               const text = `Book services with ${business?.business_name}! ${url}`;
-                              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                              window.open(
+                                `https://wa.me/?text=${encodeURIComponent(text)}`,
+                                "_blank",
+                              );
                             }}
                           >
                             WhatsApp
@@ -11355,8 +11406,12 @@ export default function ProviderDashboard() {
                         <div className="text-center space-y-2">
                           <div className="w-32 h-32 mx-auto bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
                             <div className="text-center">
-                              <div className="text-xs text-gray-500 mb-1">QR Code</div>
-                              <div className="text-xs text-gray-400">Coming Soon</div>
+                              <div className="text-xs text-gray-500 mb-1">
+                                QR Code
+                              </div>
+                              <div className="text-xs text-gray-400">
+                                Coming Soon
+                              </div>
                             </div>
                           </div>
                           <p className="text-xs text-foreground/60">
@@ -11368,12 +11423,26 @@ export default function ProviderDashboard() {
                   </div>
 
                   <div className="border-t pt-4">
-                    <h4 className="font-medium mb-2">How to use your booking page:</h4>
+                    <h4 className="font-medium mb-2">
+                      How to use your booking page:
+                    </h4>
                     <div className="space-y-2 text-sm text-foreground/70">
-                      <p>1. <strong>Share the link</strong> - Send the URL to customers via email, text, or social media</p>
-                      <p>2. <strong>Add to your website</strong> - Link to this page from your website or business cards</p>
-                      <p>3. <strong>Print materials</strong> - Include the URL or QR code on flyers, business cards, or signage</p>
-                      <p>4. <strong>Receive bookings</strong> - Customers fill out the booking form and you'll receive notifications</p>
+                      <p>
+                        1. <strong>Share the link</strong> - Send the URL to
+                        customers via email, text, or social media
+                      </p>
+                      <p>
+                        2. <strong>Add to your website</strong> - Link to this
+                        page from your website or business cards
+                      </p>
+                      <p>
+                        3. <strong>Print materials</strong> - Include the URL or
+                        QR code on flyers, business cards, or signage
+                      </p>
+                      <p>
+                        4. <strong>Receive bookings</strong> - Customers fill
+                        out the booking form and you'll receive notifications
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -11399,15 +11468,23 @@ export default function ProviderDashboard() {
                             />
                           ) : (
                             <div className="text-2xl font-bold text-gray-500">
-                              {business.business_name.substring(0, 2).toUpperCase()}
+                              {business.business_name
+                                .substring(0, 2)
+                                .toUpperCase()}
                             </div>
                           )}
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold">{business.business_name}</h3>
-                          <Badge variant="secondary" className="mb-2">{business.business_type}</Badge>
+                          <h3 className="text-xl font-bold">
+                            {business.business_name}
+                          </h3>
+                          <Badge variant="secondary" className="mb-2">
+                            {business.business_type}
+                          </Badge>
                           {business.business_description && (
-                            <p className="text-foreground/70">{business.business_description}</p>
+                            <p className="text-foreground/70">
+                              {business.business_description}
+                            </p>
                           )}
                           <div className="mt-2 space-y-1 text-sm text-foreground/60">
                             {business.contact_email && (
@@ -13917,18 +13994,31 @@ export default function ProviderDashboard() {
       <ConversationChat
         isOpen={messagingModal}
         onClose={handleCloseMessaging}
-        booking={selectedBookingForMessaging ? {
-          id: selectedBookingForMessaging.id,
-          customer_name: selectedBookingForMessaging.customer_profiles?.first_name ||
-                        selectedBookingForMessaging.guest_name || 'Customer',
-          customer_email: selectedBookingForMessaging.customer_profiles?.email ||
-                         selectedBookingForMessaging.guest_email || '',
-          customer_phone: selectedBookingForMessaging.customer_profiles?.phone ||
-                         selectedBookingForMessaging.guest_phone || '',
-          service_name: selectedBookingForMessaging.services?.name || 'Service',
-          provider_name: `${provider?.first_name || ''} ${provider?.last_name || ''}`.trim() || 'Provider',
-          business_id: provider?.business_id || ''
-        } : undefined}
+        booking={
+          selectedBookingForMessaging
+            ? {
+                id: selectedBookingForMessaging.id,
+                customer_name:
+                  selectedBookingForMessaging.customer_profiles?.first_name ||
+                  selectedBookingForMessaging.guest_name ||
+                  "Customer",
+                customer_email:
+                  selectedBookingForMessaging.customer_profiles?.email ||
+                  selectedBookingForMessaging.guest_email ||
+                  "",
+                customer_phone:
+                  selectedBookingForMessaging.customer_profiles?.phone ||
+                  selectedBookingForMessaging.guest_phone ||
+                  "",
+                service_name:
+                  selectedBookingForMessaging.services?.name || "Service",
+                provider_name:
+                  `${provider?.first_name || ""} ${provider?.last_name || ""}`.trim() ||
+                  "Provider",
+                business_id: provider?.business_id || "",
+              }
+            : undefined
+        }
       />
 
       <ConversationsList
