@@ -242,13 +242,21 @@ export default function BusinessProfile() {
         stats,
       });
     } catch (error: any) {
-      console.error("Error fetching business data:", error);
+      console.error("Error fetching business data:", error?.message || error);
+      console.error("Business ID:", businessId);
+
+      const isNotFoundError = error?.message?.includes("not found");
+
       toast({
-        title: "Error",
-        description: error.message || "Failed to load business information",
+        title: isNotFoundError ? "Business Not Found" : "Error",
+        description: isNotFoundError
+          ? "The business you're looking for doesn't exist or may have been removed."
+          : error.message || "Failed to load business information",
         variant: "destructive",
       });
-      navigate("/");
+
+      // Navigate back to home page after a short delay
+      setTimeout(() => navigate("/"), 2000);
     } finally {
       setLoading(false);
     }
