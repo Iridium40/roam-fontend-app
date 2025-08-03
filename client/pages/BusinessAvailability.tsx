@@ -290,9 +290,22 @@ export default function BusinessAvailability() {
 
   const handleSelectBusiness = (business: any) => {
     console.log('Selecting business:', business.name);
+    console.log('Business object:', business);
+    console.log('Business ID:', business.id);
     console.log('Service ID:', serviceId);
     console.log('Selected date:', selectedDate);
     console.log('Selected time:', selectedTime);
+
+    // Ensure we have a valid business ID
+    if (!business.id) {
+      console.error('No business ID found in business object');
+      toast({
+        title: "Error",
+        description: "Unable to select business - missing ID",
+        variant: "destructive",
+      });
+      return;
+    }
 
     // Navigate to business profile with services tab active and service pre-selected
     const targetUrl = `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`;
