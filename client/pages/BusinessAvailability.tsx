@@ -289,10 +289,16 @@ export default function BusinessAvailability() {
   };
 
   const handleSelectBusiness = (business: any) => {
+    console.log('Selecting business:', business.name);
+    console.log('Service ID:', serviceId);
+    console.log('Selected date:', selectedDate);
+    console.log('Selected time:', selectedTime);
+
     // Navigate to business profile with services tab active and service pre-selected
-    navigate(
-      `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`,
-    );
+    const targetUrl = `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`;
+    console.log('Navigating to:', targetUrl);
+
+    navigate(targetUrl);
   };
 
   const formatDate = (dateString: string) => {
