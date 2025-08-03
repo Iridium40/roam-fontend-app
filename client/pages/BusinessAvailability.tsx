@@ -118,9 +118,14 @@ export default function BusinessAvailability() {
             business_name,
             business_type,
             logo_url,
+            image_url,
             verification_status,
             is_active,
-            is_featured
+            is_featured,
+            business_hours,
+            contact_email,
+            phone,
+            website_url
           )
         `,
         )
