@@ -225,6 +225,37 @@ export default function BusinessAvailability() {
     }
   };
 
+  // Function to check if business is open at requested time
+  const isBusinessOpen = (businessHours: any, selectedDate: string, selectedTime: string) => {
+    if (!businessHours || !selectedDate || !selectedTime) {
+      return true; // Default to open if no hours data
+    }
+
+    // Get day name from date
+    const date = new Date(selectedDate);
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = dayNames[date.getDay()];
+
+    // Check if business has hours for this day
+    const dayHours = businessHours[dayName];
+    if (!dayHours || !dayHours.open || !dayHours.close) {
+      return false; // Closed if no hours defined
+    }
+
+    // Convert selected time to minutes for comparison
+    const [selectedHour, selectedMinute] = selectedTime.split(':').map(Number);
+    const selectedMinutes = selectedHour * 60 + selectedMinute;
+
+    // Convert business hours to minutes
+    const [openHour, openMinute] = dayHours.open.split(':').map(Number);
+    const [closeHour, closeMinute] = dayHours.close.split(':').map(Number);
+    const openMinutes = openHour * 60 + openMinute;
+    const closeMinutes = closeHour * 60 + closeMinute;
+
+    // Check if selected time is within business hours
+    return selectedMinutes >= openMinutes && selectedMinutes <= closeMinutes;
+  };
+
   const handleSelectBusiness = (business: any) => {
     console.log('Selecting business:', business.name);
     console.log('Business object:', business);
