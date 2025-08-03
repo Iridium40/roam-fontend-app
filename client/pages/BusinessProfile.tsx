@@ -663,9 +663,16 @@ export default function BusinessProfile() {
 
                   <CardContent className="p-6">
                     <div className="mb-4">
-                      <h3 className="text-xl font-semibold mb-2">
-                        {service.services?.name}
-                      </h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-xl font-semibold">
+                          {service.services?.name}
+                        </h3>
+                        {selectedService?.id === service.id && (
+                          <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                            Pre-selected
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-foreground/70 text-sm mb-3 line-clamp-2">
                         {service.services?.description}
                       </p>
