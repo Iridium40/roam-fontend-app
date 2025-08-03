@@ -636,7 +636,11 @@ export default function BusinessProfile() {
               {services.map((service) => (
                 <Card
                   key={service.id}
-                  className="hover:shadow-lg transition-all duration-200 group"
+                  className={`hover:shadow-lg transition-all duration-200 group ${
+                    selectedService?.id === service.id
+                      ? 'ring-2 ring-roam-blue border-roam-blue'
+                      : ''
+                  }`}
                 >
                   <div className="relative">
                     {service.services?.image_url && (
