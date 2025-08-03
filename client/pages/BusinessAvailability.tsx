@@ -105,6 +105,7 @@ export default function BusinessAvailability() {
 
       // Try a simpler business query first to debug
       console.log("Attempting to fetch businesses for serviceId:", serviceId);
+      console.log("Expected business ID for 60 Minute Massage:", "a3b483e5-b375-4a83-8c1e-223452f23397");
 
       const { data: businessesData, error: businessesError } = await supabase
         .from("business_services")
