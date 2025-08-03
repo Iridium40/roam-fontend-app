@@ -75,6 +75,14 @@ export default function BusinessProfile() {
   useEffect(() => {
     if (businessId) {
       fetchBusinessData();
+    } else {
+      console.error("No business ID provided");
+      toast({
+        title: "Invalid Business Link",
+        description: "The business link you followed is invalid.",
+        variant: "destructive",
+      });
+      navigate("/");
     }
   }, [businessId]);
 
