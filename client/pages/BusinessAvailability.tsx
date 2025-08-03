@@ -282,12 +282,22 @@ export default function BusinessAvailability() {
             businessesDataLength: businessesData?.length || 0,
             filteredBusinessesLength: filteredBusinesses?.length || 0,
             transformedBusinessesLength: transformedBusinesses?.length || 0,
+            serviceId: serviceId,
+            selectedDate: selectedDate,
+            selectedTime: selectedTime,
             businessesData: businessesData,
+            filteredBusinesses: filteredBusinesses,
           },
           null,
           2,
         ),
       );
+
+      // Check if the expected business ID is in the results
+      const expectedBusinessFound = businessesData?.find(item =>
+        item.business_profiles?.id === 'a3b483e5-b375-4a83-8c1e-223452f23397'
+      );
+      console.log('Expected business found in query:', expectedBusinessFound);
     } catch (error: any) {
       console.error("Error fetching available businesses:", error);
       toast({
