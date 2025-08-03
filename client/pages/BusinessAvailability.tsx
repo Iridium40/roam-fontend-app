@@ -200,8 +200,8 @@ export default function BusinessAvailability() {
         deliveryType: item.delivery_type || "mobile",
         rating: 4.8, // Mock rating - replace with actual data
         reviewCount: Math.floor(Math.random() * 200) + 50,
-        openTime: "9:00 AM", // Parse from business_hours JSON if needed
-        closeTime: "5:00 PM",
+        openTime: getBusinessDisplayTime(item.business_profiles.business_hours, selectedDate, "open"),
+        closeTime: getBusinessDisplayTime(item.business_profiles.business_hours, selectedDate, "close"),
         email: item.business_profiles.contact_email,
         phone: item.business_profiles.phone,
         website: item.business_profiles.website_url,
