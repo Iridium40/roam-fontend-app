@@ -50,7 +50,7 @@ export default function BusinessAvailability() {
       setLoading(true);
 
       // First fetch the service details
-      const { data: serviceData, error: serviceError } = await supabase
+      const serviceResponse = await supabase
         .from("services")
         .select(
           `
