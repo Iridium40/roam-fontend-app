@@ -8235,6 +8235,28 @@ export default function ProviderDashboard() {
                               title="Verification status is managed by system"
                             />
                           </div>
+
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id="is_featured"
+                                checked={businessDetailsForm.is_featured}
+                                onCheckedChange={(checked) =>
+                                  handleBusinessDetailsFormChange(
+                                    "is_featured",
+                                    checked === true,
+                                  )
+                                }
+                                disabled={businessDetailsSaving || isDispatcher}
+                              />
+                              <Label htmlFor="is_featured" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                Featured Business
+                              </Label>
+                            </div>
+                            <p className="text-xs text-foreground/60">
+                              Featured businesses appear prominently on the homepage and get increased visibility to customers.
+                            </p>
+                          </div>
                         </div>
                       </div>
 
@@ -12413,7 +12435,7 @@ export default function ProviderDashboard() {
                                         )}
                                         {booking.customer_profiles?.phone && (
                                           <span>
-                                            ������{" "}
+                                            �������{" "}
                                             {booking.customer_profiles.phone}
                                           </span>
                                         )}
