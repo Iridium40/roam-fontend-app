@@ -182,6 +182,31 @@ export default function MyBookings() {
         }
       } catch (err: any) {
         console.error("Error fetching bookings:", err);
+
+        // Check if this is a JWT expiration error and we haven't retried yet
+        if (
+          (err.message?.includes("JWT") ||
+            err.message?.includes("401") ||
+            err.status === 401) &&
+          retryCount === 0
+        ) {
+          console.log("JWT error detected, attempting token refresh...");
+          try {
+            const { data: refreshData, error: refreshError } =
+              await supabase.auth.refreshSession();
+
+            if (!refreshError && refreshData?.session) {
+              console.log("Session refreshed, retrying bookings fetch...");
+              return await fetchBookings(1);
+            }
+          } catch (refreshError) {
+            console.error("Token refresh failed:", refreshError);
+          }
+
+          setError("Your session has expired. Please refresh the page and sign in again.");
+          return;
+        }
+
         setError(err.message || "Failed to load bookings. Please try again.");
       } finally {
         setLoading(false);
