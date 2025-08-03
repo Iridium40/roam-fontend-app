@@ -163,14 +163,25 @@ export default function BusinessAvailability() {
         return;
       }
 
-      // Filter businesses by active status and verification
+      // Filter businesses by active status, verification, and business hours
       const filteredBusinesses = (businessesData || []).filter((item: any) => {
         // Only include active and approved businesses
-        return (
+        const isActiveAndApproved = (
           item.business_profiles &&
           item.business_profiles.is_active &&
           item.business_profiles.verification_status === "approved"
         );
+
+        // Check if business is open at requested time
+        const isOpen = isBusinessOpen(
+          item.business_profiles.business_hours,
+          selectedDate,
+          selectedTime
+        );
+
+        console.log(`Business ${item.business_profiles?.business_name}: active=${isActiveAndApproved}, open=${isOpen}`);
+
+        return isActiveAndApproved && isOpen;
       });
 
       // Transform the data for display
