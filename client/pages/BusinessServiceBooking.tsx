@@ -125,7 +125,7 @@ export default function BusinessServiceBooking() {
       if (businessError || !businessData) {
         console.error(
           "Business not found, using fallback data:",
-          businessError,
+          businessError?.message || businessError,
         );
         const fallbackBusiness = {
           id: businessId,
