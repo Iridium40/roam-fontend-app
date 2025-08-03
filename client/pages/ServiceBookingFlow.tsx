@@ -58,11 +58,11 @@ export default function ServiceBookingFlow() {
     }
   }, [serviceId]);
 
-  const fetchServiceData = async () => {
+  const fetchServiceData = async (retryCount = 0) => {
     try {
       setLoading(true);
 
-      const { data: serviceData, error } = await supabase
+      const serviceResponse = await supabase
         .from("services")
         .select(
           `
@@ -84,6 +84,30 @@ export default function ServiceBookingFlow() {
         .eq("is_active", true)
         .single();
 
+      // Check for authentication error
+      if (serviceResponse.status === 401 && retryCount === 0) {
+        console.log("JWT token expired, refreshing session...");
+        const { data: refreshData, error: refreshError } =
+          await supabase.auth.refreshSession();
+
+        if (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          toast({
+            title: "Authentication Error",
+            description:
+              "Your session has expired. Please refresh the page and sign in again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (refreshData?.session) {
+          console.log("Session refreshed successfully, retrying...");
+          return await fetchServiceData(1);
+        }
+      }
+
+      const { data: serviceData, error } = serviceResponse;
       if (error || !serviceData) {
         throw new Error("Service not found");
       }
@@ -91,6 +115,36 @@ export default function ServiceBookingFlow() {
       setService(serviceData);
     } catch (error: any) {
       console.error("Error fetching service:", error);
+
+      // Check if this is a JWT expiration error and we haven't retried yet
+      if (
+        (error.message?.includes("JWT") ||
+          error.message?.includes("401") ||
+          error.status === 401) &&
+        retryCount === 0
+      ) {
+        console.log("JWT error detected, attempting token refresh...");
+        try {
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (!refreshError && refreshData?.session) {
+            console.log("Session refreshed, retrying service data fetch...");
+            return await fetchServiceData(1);
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+        }
+
+        toast({
+          title: "Authentication Error",
+          description:
+            "Your session has expired. Please refresh the page and sign in again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
         title: "Error",
         description: "Failed to load service information",
