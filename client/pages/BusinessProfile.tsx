@@ -122,7 +122,7 @@ export default function BusinessProfile() {
     }
   }, [searchParams, businessData?.services]);
 
-  const fetchBusinessData = async () => {
+  const fetchBusinessData = async (retryCount = 0) => {
     try {
       setLoading(true);
 
@@ -134,40 +134,14 @@ export default function BusinessProfile() {
       }
 
       // Fetch business profile
-      const { data: business, error: businessError } = await supabase
+      const businessResponse = await supabase
         .from("business_profiles")
         .select("*")
         .eq("id", businessId)
         .single();
 
-      if (businessError) {
-        console.error(
-          "Business profile query error:",
-          businessError?.message || businessError,
-        );
-        console.error(
-          "Business error details:",
-          JSON.stringify(businessError, null, 2),
-        );
-        if (businessError.code === "PGRST116") {
-          throw new Error(`Business with ID ${businessId} not found`);
-        }
-        throw new Error(
-          `Failed to fetch business: ${businessError.message || "Unknown error"}`,
-        );
-      }
-
-      if (!business) {
-        throw new Error(`Business with ID ${businessId} not found`);
-      }
-
-      // Check if business is active and show warning if not
-      if (!business.is_active) {
-        console.warn("Business is not active:", business.business_name);
-      }
-
       // Fetch business services with service details
-      const { data: services, error: servicesError } = await supabase
+      const servicesResponse = await supabase
         .from("business_services")
         .select(
           `
@@ -196,10 +170,8 @@ export default function BusinessProfile() {
         .eq("business_id", businessId)
         .eq("is_active", true);
 
-      console.log("Services query result:", { services, servicesError });
-
       // Fetch business addons
-      const { data: addons, error: addonsError } = await supabase
+      const addonsResponse = await supabase
         .from("business_addons")
         .select(
           `
@@ -215,17 +187,14 @@ export default function BusinessProfile() {
         .eq("is_available", true);
 
       // Fetch business location
-      const { data: location, error: locationError } = await supabase
+      const locationResponse = await supabase
         .from("business_locations")
         .select("*")
         .eq("business_id", businessId)
         .single();
 
-      // Business hours are included in the business profile as JSONB
-      const hours = business.business_hours || {};
-
       // Fetch providers
-      const { data: providers, error: providersError } = await supabase
+      const providersResponse = await supabase
         .from("providers")
         .select(
           `
@@ -246,6 +215,74 @@ export default function BusinessProfile() {
         .eq("business_id", businessId)
         .eq("is_active", true);
 
+      // Check for authentication errors
+      const authErrors = [
+        businessResponse,
+        servicesResponse,
+        addonsResponse,
+        locationResponse,
+        providersResponse,
+      ].filter((response) => response.status === 401);
+
+      if (authErrors.length > 0 && retryCount === 0) {
+        console.log("JWT token expired, refreshing session...");
+        const { data: refreshData, error: refreshError } =
+          await supabase.auth.refreshSession();
+
+        if (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          toast({
+            title: "Authentication Error",
+            description:
+              "Your session has expired. Please refresh the page and sign in again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (refreshData?.session) {
+          console.log("Session refreshed successfully, retrying...");
+          return await fetchBusinessData(1);
+        }
+      }
+
+      const { data: business, error: businessError } = businessResponse;
+      if (businessError) {
+        console.error(
+          "Business profile query error:",
+          businessError?.message || businessError,
+        );
+        console.error(
+          "Business error details:",
+          JSON.stringify(businessError, null, 2),
+        );
+        if (businessError.code === "PGRST116") {
+          throw new Error(`Business with ID ${businessId} not found`);
+        }
+        throw new Error(
+          `Failed to fetch business: ${businessError.message || "Unknown error"}`,
+        );
+      }
+
+      if (!business) {
+        throw new Error(`Business with ID ${businessId} not found`);
+      }
+
+      // Check if business is active and show warning if not
+      if (!business.is_active) {
+        console.warn("Business is not active:", business.business_name);
+      }
+
+      const { data: services, error: servicesError } = servicesResponse;
+      console.log("Services query result:", { services, servicesError });
+
+      const { data: addons, error: addonsError } = addonsResponse;
+      const { data: location, error: locationError } = locationResponse;
+
+      // Business hours are included in the business profile as JSONB
+      const hours = business.business_hours || {};
+
+      const { data: providers, error: providersError } = providersResponse;
       console.log("Providers query result:", { providers, providersError });
 
       // Mock reviews data (you can implement this based on your reviews table structure)
@@ -293,6 +330,35 @@ export default function BusinessProfile() {
     } catch (error: any) {
       console.error("Error fetching business data:", error?.message || error);
       console.error("Business ID:", businessId);
+
+      // Check if this is a JWT expiration error and we haven't retried yet
+      if (
+        (error.message?.includes("JWT") ||
+          error.message?.includes("401") ||
+          error.status === 401) &&
+        retryCount === 0
+      ) {
+        console.log("JWT error detected, attempting token refresh...");
+        try {
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (!refreshError && refreshData?.session) {
+            console.log("Session refreshed, retrying business data fetch...");
+            return await fetchBusinessData(1);
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+        }
+
+        toast({
+          title: "Authentication Error",
+          description:
+            "Your session has expired. Please refresh the page and sign in again.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const isNotFoundError = error?.message?.includes("not found");
 
