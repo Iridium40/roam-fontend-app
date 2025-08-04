@@ -260,10 +260,6 @@ export default function Index() {
           }
         }
 
-        const { data: featuredServicesData, error: featuredError } = featuredServicesResponse;
-        const { data: popularServicesData, error: popularError } = popularServicesResponse;
-        const { data: businessesData, error: businessesError } = businessesResponse;
-
         console.log("Featured businesses query result:", {
           businessesData,
           businessesError,
