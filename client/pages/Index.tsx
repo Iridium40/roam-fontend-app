@@ -180,6 +180,8 @@ export default function Index() {
             .eq("is_popular", true)
             .limit(6);
 
+        const { data: popularServicesData, error: popularError } = popularServicesResponse;
+
         console.log("Popular services query result:", {
           popularServicesData,
           popularError,
