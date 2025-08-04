@@ -123,6 +123,8 @@ export default function Index() {
             .eq("is_featured", true)
             .limit(6);
 
+        const { data: featuredServicesData, error: featuredError } = featuredServicesResponse;
+
         console.log("Featured services query result:", {
           featuredServicesData,
           featuredError,
