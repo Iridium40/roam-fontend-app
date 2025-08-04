@@ -236,6 +236,8 @@ export default function Index() {
           .eq("is_featured", true)
           .limit(12);
 
+        const { data: businessesData, error: businessesError } = businessesResponse;
+
         // Check for authentication errors
         const authErrors = [
           featuredServicesResponse,
