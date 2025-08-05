@@ -431,7 +431,25 @@ export default function BusinessProfile() {
   };
 
   const handleBookBusiness = () => {
-    navigate(`/book/${businessId}`);
+    // Preserve date and time parameters from the current URL
+    const selectedDate = searchParams.get("date");
+    const selectedTime = searchParams.get("time");
+
+    let bookingUrl = `/book/${businessId}`;
+    const params = new URLSearchParams();
+
+    if (selectedDate) {
+      params.append("date", selectedDate);
+    }
+    if (selectedTime) {
+      params.append("time", selectedTime);
+    }
+
+    if (params.toString()) {
+      bookingUrl += `?${params.toString()}`;
+    }
+
+    navigate(bookingUrl);
   };
 
   const formatBusinessHours = (hours: any) => {
