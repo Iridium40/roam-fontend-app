@@ -388,7 +388,9 @@ export default function ProviderProfile() {
                             variant="outline"
                             className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                           >
-                            <Link to={`/business/${provider.business_id}?tab=team`}>
+                            <Link
+                              to={`/business/${provider.business_id}?tab=team`}
+                            >
                               <Building className="w-4 h-4 mr-2" />
                               View Business
                             </Link>
