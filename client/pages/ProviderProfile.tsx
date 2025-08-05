@@ -124,7 +124,8 @@ export default function ProviderProfile() {
               name,
               description,
               min_price,
-              duration_minutes
+              duration_minutes,
+              image_url
             )
           `,
           )
