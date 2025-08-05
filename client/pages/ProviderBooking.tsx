@@ -91,7 +91,9 @@ const ProviderBooking = () => {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
-  const [expandedDescriptions, setExpandedDescriptions] = useState<{[key: string]: boolean}>({});
+  const [expandedDescriptions, setExpandedDescriptions] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [bookingForm, setBookingForm] = useState<BookingForm>({
     customerName: "",
     customerEmail: "",
@@ -176,10 +178,10 @@ const ProviderBooking = () => {
 
       // Filter by selected service if one is specified
       if (selectedServiceId && allAddons) {
-        addons = allAddons.filter(addon =>
+        addons = allAddons.filter((addon) =>
           (addon as any).addons?.service_addon_eligibility?.some(
-            (eligibility: any) => eligibility.service_id === selectedServiceId
-          )
+            (eligibility: any) => eligibility.service_id === selectedServiceId,
+          ),
         );
       }
 
@@ -426,16 +428,16 @@ const ProviderBooking = () => {
   };
 
   const toggleDescription = (serviceId: string) => {
-    setExpandedDescriptions(prev => ({
+    setExpandedDescriptions((prev) => ({
       ...prev,
-      [serviceId]: !prev[serviceId]
+      [serviceId]: !prev[serviceId],
     }));
   };
 
   const truncateDescription = (description: string, isExpanded: boolean) => {
-    if (!description) return '';
+    if (!description) return "";
     if (description.length <= 100 || isExpanded) return description;
-    return description.substring(0, 100) + '...';
+    return description.substring(0, 100) + "...";
   };
 
   if (loading) {
@@ -536,7 +538,9 @@ const ProviderBooking = () => {
                   >
                     <Link to={`/business/${business.id}`}>
                       <Building className="w-5 h-5 mr-2" />
-                      <span className="hidden sm:inline">View Business Profile</span>
+                      <span className="hidden sm:inline">
+                        View Business Profile
+                      </span>
                       <span className="sm:hidden">View Profile</span>
                     </Link>
                   </Button>
@@ -688,11 +692,14 @@ const ProviderBooking = () => {
                   </CardTitle>
                   {selectedServiceId && (
                     <p className="text-sm text-gray-600 mt-1">
-                      Ready to book • {preSelectedDate && new Date(preSelectedDate).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric"
-                      })} {preSelectedTime && `at ${preSelectedTime}`}
+                      Ready to book •{" "}
+                      {preSelectedDate &&
+                        new Date(preSelectedDate).toLocaleDateString("en-US", {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                      {preSelectedTime && `at ${preSelectedTime}`}
                     </p>
                   )}
                 </CardHeader>
@@ -700,11 +707,19 @@ const ProviderBooking = () => {
                   <div className="grid grid-cols-1 gap-4">
                     {(() => {
                       console.log("Selected Service ID:", selectedServiceId);
-                      console.log("All services:", services.map(s => ({ id: s.id, service_id: s.service_id, name: s.services?.name })));
-                      const filteredServices = services.filter(service =>
-                        !selectedServiceId ||
-                        service.service_id === selectedServiceId ||
-                        service.id === selectedServiceId
+                      console.log(
+                        "All services:",
+                        services.map((s) => ({
+                          id: s.id,
+                          service_id: s.service_id,
+                          name: s.services?.name,
+                        })),
+                      );
+                      const filteredServices = services.filter(
+                        (service) =>
+                          !selectedServiceId ||
+                          service.service_id === selectedServiceId ||
+                          service.id === selectedServiceId,
                       );
                       console.log("Filtered services:", filteredServices);
                       return filteredServices;
@@ -712,7 +727,9 @@ const ProviderBooking = () => {
                       <div
                         key={service.id}
                         className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${
-                          selectedServiceId && (service.service_id === selectedServiceId || service.id === selectedServiceId)
+                          selectedServiceId &&
+                          (service.service_id === selectedServiceId ||
+                            service.id === selectedServiceId)
                             ? "border-roam-blue bg-roam-blue/5 border-2"
                             : ""
                         }`}
@@ -730,25 +747,32 @@ const ProviderBooking = () => {
                               <h3 className="font-semibold">
                                 {(service as any).services.name}
                               </h3>
-                              {selectedServiceId && (service.service_id === selectedServiceId || service.id === selectedServiceId) && (
-                                <Badge className="bg-roam-yellow text-gray-900 text-xs">
-                                  Selected
-                                </Badge>
-                              )}
+                              {selectedServiceId &&
+                                (service.service_id === selectedServiceId ||
+                                  service.id === selectedServiceId) && (
+                                  <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                                    Selected
+                                  </Badge>
+                                )}
                             </div>
                             {(service as any).services.description && (
                               <div className="mb-2">
                                 <p className="text-sm text-gray-600">
                                   {truncateDescription(
                                     (service as any).services.description,
-                                    expandedDescriptions[service.id] || false
+                                    expandedDescriptions[service.id] || false,
                                   )}
-                                  {(service as any).services.description.length > 100 && (
+                                  {(service as any).services.description
+                                    .length > 100 && (
                                     <button
-                                      onClick={() => toggleDescription(service.id)}
+                                      onClick={() =>
+                                        toggleDescription(service.id)
+                                      }
                                       className="ml-2 text-roam-blue hover:text-roam-blue/80 text-sm font-medium"
                                     >
-                                      {expandedDescriptions[service.id] ? 'Read Less' : 'Read More'}
+                                      {expandedDescriptions[service.id]
+                                        ? "Read Less"
+                                        : "Read More"}
                                     </button>
                                   )}
                                 </p>
@@ -768,7 +792,10 @@ const ProviderBooking = () => {
                                 <div className="flex items-center">
                                   <Clock className="h-4 w-4 mr-1" />
                                   <span>
-                                    {(service as any).services.estimated_duration}{" "}
+                                    {
+                                      (service as any).services
+                                        .estimated_duration
+                                    }{" "}
                                     min
                                   </span>
                                 </div>
@@ -819,7 +846,9 @@ const ProviderBooking = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    {selectedServiceId ? "Available Add-ons for Selected Service" : "Available Add-ons"}
+                    {selectedServiceId
+                      ? "Available Add-ons for Selected Service"
+                      : "Available Add-ons"}
                   </CardTitle>
                   {selectedServiceId && (
                     <p className="text-sm text-gray-600 mt-1">
@@ -840,13 +869,19 @@ const ProviderBooking = () => {
                               <h3 className="font-semibold">
                                 {(addon as any).addons.name}
                               </h3>
-                              {selectedServiceId && (addon as any).addons?.service_addon_eligibility?.some(
-                                (eligibility: any) => eligibility.service_id === selectedServiceId && eligibility.is_recommended
-                              ) && (
-                                <Badge className="bg-green-100 text-green-800 text-xs">
-                                  Recommended
-                                </Badge>
-                              )}
+                              {selectedServiceId &&
+                                (
+                                  addon as any
+                                ).addons?.service_addon_eligibility?.some(
+                                  (eligibility: any) =>
+                                    eligibility.service_id ===
+                                      selectedServiceId &&
+                                    eligibility.is_recommended,
+                                ) && (
+                                  <Badge className="bg-green-100 text-green-800 text-xs">
+                                    Recommended
+                                  </Badge>
+                                )}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">
                               {(addon as any).addons.description}

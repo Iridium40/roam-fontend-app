@@ -546,16 +546,18 @@ export default function BusinessProfile() {
                 size="sm"
                 className="text-foreground hover:text-roam-blue"
               >
-                <Link to={(() => {
-                  const serviceId = searchParams.get("service");
-                  const date = searchParams.get("date");
-                  const time = searchParams.get("time");
+                <Link
+                  to={(() => {
+                    const serviceId = searchParams.get("service");
+                    const date = searchParams.get("date");
+                    const time = searchParams.get("time");
 
-                  if (serviceId && date && time) {
-                    return `/business-availability/${serviceId}?date=${date}&time=${time}`;
-                  }
-                  return "/home";
-                })()}>
+                    if (serviceId && date && time) {
+                      return `/business-availability/${serviceId}?date=${date}&time=${time}`;
+                    }
+                    return "/home";
+                  })()}
+                >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Business Selection
                 </Link>
@@ -837,11 +839,17 @@ export default function BusinessProfile() {
                         Selected Service
                       </CardTitle>
                       <p className="text-sm text-gray-600 mt-1">
-                        Ready to book • {searchParams.get("date") && new Date(searchParams.get("date")!).toLocaleDateString("en-US", {
-                          weekday: "long",
-                          month: "long",
-                          day: "numeric"
-                        })} {searchParams.get("time") && `at ${searchParams.get("time")}`}
+                        Ready to book •{" "}
+                        {searchParams.get("date") &&
+                          new Date(
+                            searchParams.get("date")!,
+                          ).toLocaleDateString("en-US", {
+                            weekday: "long",
+                            month: "long",
+                            day: "numeric",
+                          })}{" "}
+                        {searchParams.get("time") &&
+                          `at ${searchParams.get("time")}`}
                       </p>
                     </div>
                     <Badge className="bg-roam-yellow text-gray-900">
@@ -871,14 +879,18 @@ export default function BusinessProfile() {
                           {selectedService.services?.duration_minutes} minutes
                         </div>
                         <div className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" />
-                          ${selectedService.business_price}
+                          <DollarSign className="w-4 h-4" />$
+                          {selectedService.business_price}
                         </div>
                         {selectedService.delivery_type && (
                           <Badge variant="outline" className="text-xs">
-                            {selectedService.delivery_type === "customer_location" ? "Mobile" :
-                             selectedService.delivery_type === "business_location" ? "In-Studio" :
-                             "Virtual"}
+                            {selectedService.delivery_type ===
+                            "customer_location"
+                              ? "Mobile"
+                              : selectedService.delivery_type ===
+                                  "business_location"
+                                ? "In-Studio"
+                                : "Virtual"}
                           </Badge>
                         )}
                       </div>
@@ -897,7 +909,9 @@ export default function BusinessProfile() {
                             // Remove service from URL
                             const newParams = new URLSearchParams(searchParams);
                             newParams.delete("service");
-                            navigate(`?${newParams.toString()}`, { replace: true });
+                            navigate(`?${newParams.toString()}`, {
+                              replace: true,
+                            });
                           }}
                         >
                           Change Service
@@ -912,129 +926,134 @@ export default function BusinessProfile() {
             {/* Services Grid - Only show when no service is selected */}
             {!selectedService && (
               <div>
-                <h3 className="text-lg font-semibold mb-4">Available Services</h3>
+                <h3 className="text-lg font-semibold mb-4">
+                  Available Services
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((service) => (
-                <Card
-                  key={service.id}
-                  className={`hover:shadow-lg transition-all duration-200 group ${
-                    selectedService?.id === service.id
-                      ? "ring-2 ring-roam-blue border-roam-blue"
-                      : ""
-                  }`}
-                >
-                  <div className="relative">
-                    {service.services?.image_url && (
-                      <img
-                        src={service.services.image_url}
-                        alt={service.services?.name}
-                        className="w-full h-48 object-cover rounded-t-lg"
-                      />
-                    )}
-                    <div className="absolute top-3 right-3">
-                      <FavoriteButton
-                        type="service"
-                        itemId={service.service_id}
-                        size="sm"
-                        variant="ghost"
-                        className="bg-white/90 hover:bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <CardContent className="p-6">
-                    <div className="mb-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-xl font-semibold">
-                          {service.services?.name}
-                        </h3>
-                        {selectedService?.id === service.id && (
-                          <Badge className="bg-roam-yellow text-gray-900 text-xs">
-                            Pre-selected
-                          </Badge>
+                  {services.map((service) => (
+                    <Card
+                      key={service.id}
+                      className={`hover:shadow-lg transition-all duration-200 group ${
+                        selectedService?.id === service.id
+                          ? "ring-2 ring-roam-blue border-roam-blue"
+                          : ""
+                      }`}
+                    >
+                      <div className="relative">
+                        {service.services?.image_url && (
+                          <img
+                            src={service.services.image_url}
+                            alt={service.services?.name}
+                            className="w-full h-48 object-cover rounded-t-lg"
+                          />
                         )}
-                      </div>
-                      <p className="text-foreground/70 text-sm mb-3 line-clamp-2">
-                        {service.services?.description}
-                      </p>
-
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-roam-blue" />
-                          <span className="text-xl font-bold text-roam-blue">
-                            ${service.business_price || service.custom_price}
-                          </span>
+                        <div className="absolute top-3 right-3">
+                          <FavoriteButton
+                            type="service"
+                            itemId={service.service_id}
+                            size="sm"
+                            variant="ghost"
+                            className="bg-white/90 hover:bg-white"
+                          />
                         </div>
-                        {service.services?.duration_minutes && (
-                          <Badge
-                            variant="outline"
-                            className="border-roam-blue text-roam-blue"
-                          >
-                            <Clock className="w-3 h-3 mr-1" />
-                            {service.services.duration_minutes} min
-                          </Badge>
-                        )}
                       </div>
 
-                      {service.services?.service_subcategories && (
-                        <Badge variant="secondary" className="text-xs mb-2">
-                          {
-                            service.services.service_subcategories
-                              .service_categories?.service_category_type
-                          }
-                        </Badge>
-                      )}
+                      <CardContent className="p-6">
+                        <div className="mb-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="text-xl font-semibold">
+                              {service.services?.name}
+                            </h3>
+                            {selectedService?.id === service.id && (
+                              <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                                Pre-selected
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-foreground/70 text-sm mb-3 line-clamp-2">
+                            {service.services?.description}
+                          </p>
 
-                      {/* Delivery Type Badge */}
-                      {service.delivery_type && (
-                        <Badge
-                          variant="outline"
-                          className={`text-xs mb-4 ${
-                            service.delivery_type === "customer_location"
-                              ? "border-green-500 text-green-700 bg-green-50"
-                              : service.delivery_type === "business_location"
-                              ? "border-blue-500 text-blue-700 bg-blue-50"
-                              : "border-purple-500 text-purple-700 bg-purple-50"
-                          }`}
-                        >
-                          {service.delivery_type === "customer_location" ? (
-                            <>
-                              <Car className="w-3 h-3 mr-1" />
-                              Mobile
-                            </>
-                          ) : service.delivery_type === "business_location" ? (
-                            <>
-                              <Building className="w-3 h-3 mr-1" />
-                              Business
-                            </>
-                          ) : (
-                            <>
-                              <Video className="w-3 h-3 mr-1" />
-                              Virtual
-                            </>
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="w-4 h-4 text-roam-blue" />
+                              <span className="text-xl font-bold text-roam-blue">
+                                $
+                                {service.business_price || service.custom_price}
+                              </span>
+                            </div>
+                            {service.services?.duration_minutes && (
+                              <Badge
+                                variant="outline"
+                                className="border-roam-blue text-roam-blue"
+                              >
+                                <Clock className="w-3 h-3 mr-1" />
+                                {service.services.duration_minutes} min
+                              </Badge>
+                            )}
+                          </div>
+
+                          {service.services?.service_subcategories && (
+                            <Badge variant="secondary" className="text-xs mb-2">
+                              {
+                                service.services.service_subcategories
+                                  .service_categories?.service_category_type
+                              }
+                            </Badge>
                           )}
-                        </Badge>
-                      )}
-                    </div>
 
-                    <div className="space-y-2">
-                      <Button
-                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                        onClick={() => handleBookService(service)}
-                      >
-                        <Calendar className="w-4 h-4 mr-2" />
-                        Book This Service
-                      </Button>
-                      {providers.length > 0 && (
-                        <div className="text-xs text-center text-foreground/60 flex items-center justify-center gap-1">
-                          <UserCheck className="w-3 h-3" />
-                          Choose your preferred provider during booking
+                          {/* Delivery Type Badge */}
+                          {service.delivery_type && (
+                            <Badge
+                              variant="outline"
+                              className={`text-xs mb-4 ${
+                                service.delivery_type === "customer_location"
+                                  ? "border-green-500 text-green-700 bg-green-50"
+                                  : service.delivery_type ===
+                                      "business_location"
+                                    ? "border-blue-500 text-blue-700 bg-blue-50"
+                                    : "border-purple-500 text-purple-700 bg-purple-50"
+                              }`}
+                            >
+                              {service.delivery_type === "customer_location" ? (
+                                <>
+                                  <Car className="w-3 h-3 mr-1" />
+                                  Mobile
+                                </>
+                              ) : service.delivery_type ===
+                                "business_location" ? (
+                                <>
+                                  <Building className="w-3 h-3 mr-1" />
+                                  Business
+                                </>
+                              ) : (
+                                <>
+                                  <Video className="w-3 h-3 mr-1" />
+                                  Virtual
+                                </>
+                              )}
+                            </Badge>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+
+                        <div className="space-y-2">
+                          <Button
+                            className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                            onClick={() => handleBookService(service)}
+                          >
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Book This Service
+                          </Button>
+                          {providers.length > 0 && (
+                            <div className="text-xs text-center text-foreground/60 flex items-center justify-center gap-1">
+                              <UserCheck className="w-3 h-3" />
+                              Choose your preferred provider during booking
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </div>
             )}

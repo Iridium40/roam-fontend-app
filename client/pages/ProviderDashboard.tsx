@@ -3273,7 +3273,7 @@ export default function ProviderDashboard() {
         let errorDetails = "";
         try {
           // Only read response if it hasn't been read already
-          if (lastError && typeof lastError === 'string') {
+          if (lastError && typeof lastError === "string") {
             errorText = lastError;
           } else {
             errorText = await response.text();
