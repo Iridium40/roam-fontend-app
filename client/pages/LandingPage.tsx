@@ -394,12 +394,11 @@ export default function LandingPage() {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold">R</span>
-                </div>
-                <span className="text-xl font-bold text-roam-blue">ROAM</span>
-              </div>
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                alt="ROAM - Your Best Life. Everywhere."
+                className="h-8 w-auto mb-4"
+              />
               <p className="text-foreground/70 leading-relaxed">
                 Connecting you with verified professionals for all your service needs.
               </p>
