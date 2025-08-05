@@ -156,7 +156,7 @@ export function FavoriteButton({
         )}
       />
       {showText && (
-        <span className="hidden sm:inline">
+        <span className="hidden sm:inline-block">
           {isFavorited ? 'Favorited' : 'Add to Favorites'}
         </span>
       )}
