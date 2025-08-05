@@ -175,14 +175,19 @@ export default function BookingModal({
   const handleBack = () => {
     switch (currentStep) {
       case "datetime":
-        setCurrentStep("delivery");
+        // Only go back to delivery if service doesn't have preselected delivery type
+        if (service?.preselectedDeliveryType) {
+          onClose(); // Close modal instead of going back to delivery step
+        } else {
+          setCurrentStep("delivery");
+        }
         break;
       case "location":
         setCurrentStep("datetime");
         break;
       case "details":
         setCurrentStep(
-          selectedDeliveryType === "mobile" ? "location" : "datetime",
+          selectedDeliveryType === "customer_location" ? "location" : "datetime",
         );
         break;
       case "confirmation":
