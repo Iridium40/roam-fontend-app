@@ -642,9 +642,17 @@ const ProviderBooking = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {services
-                      .filter(service => !selectedServiceId || service.service_id === selectedServiceId)
-                      .map((service) => (
+                    {(() => {
+                      console.log("Selected Service ID:", selectedServiceId);
+                      console.log("All services:", services.map(s => ({ id: s.id, service_id: s.service_id, name: s.services?.name })));
+                      const filteredServices = services.filter(service =>
+                        !selectedServiceId ||
+                        service.service_id === selectedServiceId ||
+                        service.id === selectedServiceId
+                      );
+                      console.log("Filtered services:", filteredServices);
+                      return filteredServices;
+                    })().map((service) => (
                       <div
                         key={service.id}
                         className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${
