@@ -155,25 +155,32 @@ const ProviderBooking = () => {
           `
           *,
           addons:addon_id (
+            id,
             name,
             description,
-            image_url
-          ),
-          service_addon_eligibility!inner (
-            service_id,
-            is_recommended
+            image_url,
+            service_addon_eligibility (
+              service_id,
+              is_recommended
+            )
           )
         `,
         )
         .eq("business_id", businessId)
         .eq("is_available", true);
 
-      // Filter by selected service if one is specified
-      if (selectedServiceId) {
-        addonsQuery = addonsQuery.eq("service_addon_eligibility.service_id", selectedServiceId);
-      }
+      const { data: allAddons, error: addonsError } = await addonsQuery;
 
-      const { data: addons, error: addonsError } = await addonsQuery;
+      let addons = allAddons || [];
+
+      // Filter by selected service if one is specified
+      if (selectedServiceId && allAddons) {
+        addons = allAddons.filter(addon =>
+          (addon as any).addons?.service_addon_eligibility?.some(
+            (eligibility: any) => eligibility.service_id === selectedServiceId
+          )
+        );
+      }
 
       if (addonsError) {
         console.error(
