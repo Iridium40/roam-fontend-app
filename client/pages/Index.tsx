@@ -450,6 +450,11 @@ export default function Index() {
     setCurrentServiceSlide(0); // Reset carousel to first slide when category changes
   };
 
+  // Reset carousel when filters change
+  useEffect(() => {
+    setCurrentServiceSlide(0);
+  }, [selectedCategory, searchQuery, selectedDelivery]);
+
   const nextServiceSlide = () => {
     setCurrentServiceSlide((prev) => (prev + 1) % featuredServices.length);
   };
