@@ -254,6 +254,8 @@ const ProviderBooking = () => {
     item: BusinessService | BusinessAddon,
     type: "service" | "addon",
   ) => {
+    console.log("Adding item to booking:", { item, type });
+
     const bookingItem: BookingItem = {
       type,
       id: item.id,
@@ -268,6 +270,8 @@ const ProviderBooking = () => {
           : undefined,
       quantity: 1,
     };
+
+    console.log("Created booking item:", bookingItem);
 
     const existingIndex = selectedItems.findIndex(
       (i) => i.id === item.id && i.type === type,
