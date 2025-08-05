@@ -295,9 +295,16 @@ export default function ProviderProfile() {
           <div className="relative -mt-20 pb-8">
             <div className="flex flex-col md:flex-row gap-6 items-start">
               <div className="relative">
-                <div className="w-32 h-32 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                  <Users className="w-16 h-16 text-white" />
-                </div>
+                <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
+                  <AvatarImage
+                    src={provider.profileImage}
+                    alt={provider.name}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-gradient-to-br from-roam-blue to-roam-light-blue text-white text-2xl font-bold">
+                    {provider.name.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
                 {provider.verified && (
                   <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-roam-blue rounded-full flex items-center justify-center border-2 border-white">
                     <CheckCircle className="w-6 h-6 text-white" />
