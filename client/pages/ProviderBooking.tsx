@@ -309,12 +309,13 @@ const ProviderBooking = () => {
     );
     if (existingIndex >= 0) {
       const updated = [...selectedItems];
-      if (updated[existingIndex].quantity > 1) {
-        updated[existingIndex].quantity -= 1;
-      } else {
-        updated.splice(existingIndex, 1);
-      }
+      updated.splice(existingIndex, 1);
       setSelectedItems(updated);
+
+      toast({
+        title: "Removed from booking",
+        description: `Item has been removed from your booking`,
+      });
     }
   };
 
