@@ -810,12 +810,9 @@ const ProviderBooking = () => {
                       >
                         <div className="flex-1">
                           <p className="font-medium text-sm">{item.name}</p>
-                          <p className="text-xs text-gray-500">
-                            Qty: {item.quantity}
-                          </p>
                         </div>
                         <div className="text-sm font-medium">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ${item.price.toFixed(2)}
                         </div>
                       </div>
                     ))}
