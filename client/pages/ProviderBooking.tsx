@@ -170,12 +170,14 @@ const ProviderBooking = () => {
         );
       }
 
-      // Fetch business location
-      const { data: location, error: locationError } = await supabase
+      // Fetch business location (take the first one if multiple exist)
+      const { data: locations, error: locationError } = await supabase
         .from("business_locations")
         .select("*")
         .eq("business_id", businessId)
-        .single();
+        .limit(1);
+
+      const location = locations && locations.length > 0 ? locations[0] : null;
 
       if (locationError) {
         console.error(
