@@ -213,6 +213,30 @@ export default function ProviderProfile() {
     setShowShareModal(true);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-roam-blue mx-auto mb-4"></div>
+          <p className="text-foreground/60">Loading provider information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!provider) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-foreground text-xl mb-4">Provider not found</p>
+          <Link to="/providers" className="text-roam-blue hover:underline">
+            Back to Providers
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
       {/* Navigation */}
