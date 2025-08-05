@@ -12,7 +12,6 @@ import {
   Clock,
   Shield,
   Users,
-  MessageCircle,
   Share2,
   Heart,
   Smartphone,
