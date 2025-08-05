@@ -3272,7 +3272,12 @@ export default function ProviderDashboard() {
         let errorText = "Unknown error";
         let errorDetails = "";
         try {
-          errorText = await response.text();
+          // Only read response if it hasn't been read already
+          if (lastError && typeof lastError === 'string') {
+            errorText = lastError;
+          } else {
+            errorText = await response.text();
+          }
           // Try to parse error details from response
           try {
             const errorJson = JSON.parse(errorText);
