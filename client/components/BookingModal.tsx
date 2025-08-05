@@ -538,10 +538,15 @@ export default function BookingModal({
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Type</span>
                   <Badge variant="secondary">
-                    {selectedDeliveryType === "mobile" ? (
+                    {selectedDeliveryType === "customer_location" ? (
                       <>
                         <Smartphone className="w-3 h-3 mr-1" />
                         Mobile Service
+                      </>
+                    ) : selectedDeliveryType === "virtual" ? (
+                      <>
+                        <Video className="w-3 h-3 mr-1" />
+                        Virtual Service
                       </>
                     ) : (
                       <>
