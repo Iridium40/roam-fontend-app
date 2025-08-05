@@ -326,7 +326,7 @@ const ProviderBooking = () => {
 
   const getTotalAmount = () => {
     return selectedItems.reduce(
-      (total, item) => total + item.price * item.quantity,
+      (total, item) => total + item.price,
       0,
     );
   };
