@@ -184,22 +184,29 @@ export default function ProviderProfile() {
     },
   ];
 
-  const getDeliveryIcon = (type: string) => {
-    const icons = {
-      mobile: Smartphone,
-      business: Building,
-      virtual: Video,
-    };
-    return icons[type as keyof typeof icons] || Smartphone;
+  // Delivery icons matching home page
+  const deliveryIcons = {
+    mobile: Car,
+    business: Building,
+    virtual: Video,
   };
 
-  const getDeliveryLabel = (type: string) => {
-    const labels = {
-      mobile: "Mobile Service",
-      business: "In-Studio",
-      virtual: "Virtual",
+  const getDeliveryIcon = (type: string) => {
+    return deliveryIcons[type as keyof typeof deliveryIcons] || Building;
+  };
+
+  const getDeliveryBadge = (type: string) => {
+    const config = {
+      mobile: { label: "Mobile", color: "bg-green-100 text-green-800" },
+      business: { label: "Business", color: "bg-blue-100 text-blue-800" },
+      virtual: { label: "Virtual", color: "bg-purple-100 text-purple-800" },
     };
-    return labels[type as keyof typeof labels] || type;
+    return (
+      config[type as keyof typeof config] || {
+        label: type,
+        color: "bg-gray-100 text-gray-800",
+      }
+    );
   };
 
   const handleBookService = (serviceId: number) => {
