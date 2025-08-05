@@ -206,10 +206,7 @@ const App = () => (
                 element={<ProviderProfile />}
               />
 
-              <Route
-                path="/book/:businessId"
-                element={<ProviderBooking />}
-              />
+              <Route path="/book/:businessId" element={<ProviderBooking />} />
 
               <Route
                 path="/business/:businessId"
