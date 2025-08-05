@@ -389,6 +389,43 @@ export default function Index() {
     );
   };
 
+  // Category mapping for filtering services
+  const categoryMapping = {
+    beauty: ["Beauty & Wellness", "beauty"],
+    fitness: ["Personal Training", "fitness", "Personal Fitness", "Fitness"],
+    therapy: ["Massage Therapy", "therapy", "Wellness", "Health"],
+    healthcare: ["Healthcare", "healthcare", "Medical", "Health"],
+  };
+
+  // Filter services based on selected category
+  const getFilteredServices = (services: any[]) => {
+    if (selectedCategory === "all") {
+      return services;
+    }
+
+    const categoryKeywords = categoryMapping[selectedCategory as keyof typeof categoryMapping] || [];
+
+    return services.filter((service: any) => {
+      // Check if service category matches any of the category keywords
+      const serviceCategory = service.category?.toLowerCase() || "";
+      const serviceTitle = service.title?.toLowerCase() || "";
+
+      return categoryKeywords.some(keyword =>
+        serviceCategory.includes(keyword.toLowerCase()) ||
+        serviceTitle.includes(keyword.toLowerCase())
+      );
+    });
+  };
+
+  // Get filtered services
+  const filteredFeaturedServices = getFilteredServices(featuredServices);
+  const filteredPopularServices = getFilteredServices(popularServices);
+
+  // Handle category selection
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+  };
+
   const nextServiceSlide = () => {
     setCurrentServiceSlide((prev) => (prev + 1) % featuredServices.length);
   };
