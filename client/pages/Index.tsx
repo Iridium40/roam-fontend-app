@@ -628,6 +628,104 @@ export default function Index() {
               </Card>
             ))}
           </div>
+
+          {/* Simple Search and Delivery Filter */}
+          <div className="mt-8 max-w-2xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Search Input */}
+              <div className="md:col-span-2">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    type="search"
+                    placeholder="Search services..."
+                    className="pl-10 h-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Delivery Type Filter */}
+              <Select value={selectedDelivery} onValueChange={setSelectedDelivery}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="Delivery Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="mobile">
+                    <div className="flex items-center gap-2">
+                      <Smartphone className="w-4 h-4" />
+                      Mobile Service
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="business">
+                    <div className="flex items-center gap-2">
+                      <Building className="w-4 h-4" />
+                      In-Studio
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="virtual">
+                    <div className="flex items-center gap-2">
+                      <Video className="w-4 h-4" />
+                      Virtual
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Active Filters Display */}
+            {(selectedCategory !== "all" || selectedDelivery !== "all" || searchQuery) && (
+              <div className="flex flex-wrap items-center gap-2 mt-4">
+                <span className="text-sm text-foreground/60">Active filters:</span>
+                {selectedCategory !== "all" && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-roam-blue/10 text-roam-blue cursor-pointer hover:bg-roam-blue/20"
+                    onClick={() => handleCategorySelect("all")}
+                  >
+                    {serviceCategories.find(cat => cat.id === selectedCategory)?.name || selectedCategory}
+                    <X className="w-3 h-3 ml-1" />
+                  </Badge>
+                )}
+                {selectedDelivery !== "all" && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-roam-blue/10 text-roam-blue cursor-pointer hover:bg-roam-blue/20"
+                    onClick={() => setSelectedDelivery("all")}
+                  >
+                    {selectedDelivery === "mobile" ? "Mobile Service" :
+                     selectedDelivery === "business" ? "In-Studio" :
+                     selectedDelivery === "virtual" ? "Virtual" : selectedDelivery}
+                    <X className="w-3 h-3 ml-1" />
+                  </Badge>
+                )}
+                {searchQuery && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-roam-blue/10 text-roam-blue cursor-pointer hover:bg-roam-blue/20"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    "{searchQuery}"
+                    <X className="w-3 h-3 ml-1" />
+                  </Badge>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-roam-blue hover:text-roam-blue/80"
+                  onClick={() => {
+                    setSelectedCategory("all");
+                    setSelectedDelivery("all");
+                    setSearchQuery("");
+                  }}
+                >
+                  Clear all
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
