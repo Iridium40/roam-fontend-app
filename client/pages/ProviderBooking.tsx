@@ -196,7 +196,7 @@ const ProviderBooking = () => {
         .eq("is_active", true);
 
       if (providersError) {
-        console.error("Error fetching providers:", providersError);
+        console.error("Error fetching providers:", providersError.message || providersError);
       }
 
       // Set preferred provider if specified in URL
