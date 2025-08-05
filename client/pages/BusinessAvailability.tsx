@@ -784,62 +784,161 @@ export default function BusinessAvailability() {
                             <p className="text-foreground/70 mb-2">
                               {business.description}
                             </p>
-                            {/* Business Locations */}
-                            <div className="mb-3">
-                              {business.locations && business.locations.length > 0 ? (
-                                <div className="space-y-2">
-                                  <label className="text-sm font-medium text-foreground/70">
-                                    Select Location:
-                                  </label>
-                                  {business.locations.map((location: any) => (
-                                    <div
-                                      key={location.id}
-                                      className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                                        selectedLocations[business.id]?.id === location.id
-                                          ? "border-roam-blue bg-roam-blue/5"
-                                          : "border-gray-200 hover:border-gray-300"
-                                      }`}
-                                      onClick={() => handleLocationSelect(business.id, location)}
-                                    >
-                                      <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                          <div className="flex items-center gap-2 mb-1">
-                                            <MapPin className="w-4 h-4 text-roam-blue" />
-                                            <span className="font-medium">
-                                              {location.location_name || "Main Location"}
-                                            </span>
-                                            {location.is_primary && (
-                                              <Badge variant="secondary" className="text-xs">
-                                                Primary
-                                              </Badge>
-                                            )}
-                                          </div>
-                                          <p className="text-sm text-foreground/60">
-                                            {[location.address_line1, location.city, location.state].filter(Boolean).join(", ")}
-                                          </p>
-                                        </div>
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            openInGoogleMaps(location);
-                                          }}
-                                          className="ml-2"
-                                        >
-                                          <Map className="w-4 h-4" />
-                                        </Button>
+                            {/* Delivery Type Selection for both_locations */}
+                            {business.deliveryType === "both_locations" && (
+                              <div className="mb-4">
+                                <label className="text-sm font-medium text-foreground/70 mb-2 block">
+                                  Choose Delivery Option:
+                                </label>
+                                <div className="grid grid-cols-2 gap-3 mb-3">
+                                  <div
+                                    className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                                      selectedDeliveryTypes[business.id] === "business_location"
+                                        ? "border-roam-blue bg-roam-blue/5"
+                                        : "border-gray-200 hover:border-gray-300"
+                                    }`}
+                                    onClick={() => handleDeliveryTypeSelect(business.id, "business_location")}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <Building className="w-5 h-5 text-roam-blue" />
+                                      <div>
+                                        <div className="font-medium">Business</div>
+                                        <div className="text-xs text-foreground/60">Visit our location</div>
                                       </div>
                                     </div>
-                                  ))}
+                                  </div>
+                                  <div
+                                    className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                                      selectedDeliveryTypes[business.id] === "customer_location"
+                                        ? "border-roam-blue bg-roam-blue/5"
+                                        : "border-gray-200 hover:border-gray-300"
+                                    }`}
+                                    onClick={() => handleDeliveryTypeSelect(business.id, "customer_location")}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <Car className="w-5 h-5 text-green-600" />
+                                      <div>
+                                        <div className="font-medium">Mobile</div>
+                                        <div className="text-xs text-foreground/60">We come to you</div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                              ) : (
-                                <div className="flex items-center gap-1 text-sm text-foreground/60">
-                                  <MapPin className="w-4 h-4" />
-                                  <span>Location details not available</span>
+                              </div>
+                            )}
+
+                            {/* Business Locations - only show for business delivery or single location businesses */}
+                            {((business.deliveryType === "both_locations" && selectedDeliveryTypes[business.id] === "business_location") ||
+                              business.deliveryType === "business_location") && (
+                              <div className="mb-3">
+                                {business.locations && business.locations.length > 0 ? (
+                                  <div className="space-y-2">
+                                    <label className="text-sm font-medium text-foreground/70">
+                                      Select Location:
+                                    </label>
+                                    {business.locations.map((location: any) => (
+                                      <div
+                                        key={location.id}
+                                        className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                                          selectedLocations[business.id]?.id === location.id
+                                            ? "border-roam-blue bg-roam-blue/5"
+                                            : "border-gray-200 hover:border-gray-300"
+                                        }`}
+                                        onClick={() => handleLocationSelect(business.id, location)}
+                                      >
+                                        <div className="flex items-start justify-between">
+                                          <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                              <MapPin className="w-4 h-4 text-roam-blue" />
+                                              <span className="font-medium">
+                                                {location.location_name || "Main Location"}
+                                              </span>
+                                              {location.is_primary && (
+                                                <Badge variant="secondary" className="text-xs">
+                                                  Primary
+                                                </Badge>
+                                              )}
+                                            </div>
+                                            <p className="text-sm text-foreground/60">
+                                              {[location.address_line1, location.city, location.state].filter(Boolean).join(", ")}
+                                            </p>
+                                          </div>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              openInGoogleMaps(location);
+                                            }}
+                                            className="ml-2"
+                                          >
+                                            <Map className="w-4 h-4" />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1 text-sm text-foreground/60">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>Location details not available</span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Customer Address Form - only show for mobile delivery */}
+                            {business.deliveryType === "both_locations" && selectedDeliveryTypes[business.id] === "customer_location" && (
+                              <div className="mb-3">
+                                <label className="text-sm font-medium text-foreground/70 mb-2 block">
+                                  Delivery Address:
+                                </label>
+                                <div className="space-y-3 p-3 border rounded-lg bg-gray-50">
+                                  <div>
+                                    <Label htmlFor={`address-${business.id}`} className="text-xs">Street Address *</Label>
+                                    <Input
+                                      id={`address-${business.id}`}
+                                      placeholder="123 Main Street"
+                                      value={customerAddresses[business.id]?.address || ""}
+                                      onChange={(e) => handleAddressChange(business.id, "address", e.target.value)}
+                                      className="mt-1"
+                                    />
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                      <Label htmlFor={`city-${business.id}`} className="text-xs">City *</Label>
+                                      <Input
+                                        id={`city-${business.id}`}
+                                        placeholder="Miami"
+                                        value={customerAddresses[business.id]?.city || ""}
+                                        onChange={(e) => handleAddressChange(business.id, "city", e.target.value)}
+                                        className="mt-1"
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor={`state-${business.id}`} className="text-xs">State</Label>
+                                      <Input
+                                        id={`state-${business.id}`}
+                                        placeholder="FL"
+                                        value={customerAddresses[business.id]?.state || ""}
+                                        onChange={(e) => handleAddressChange(business.id, "state", e.target.value)}
+                                        className="mt-1"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <Label htmlFor={`zip-${business.id}`} className="text-xs">Zip Code</Label>
+                                    <Input
+                                      id={`zip-${business.id}`}
+                                      placeholder="33101"
+                                      value={customerAddresses[business.id]?.zip || ""}
+                                      onChange={(e) => handleAddressChange(business.id, "zip", e.target.value)}
+                                      className="mt-1"
+                                    />
+                                  </div>
                                 </div>
-                              )}
-                            </div>
+                              </div>
+                            )}
 
                             <div className="flex items-center gap-4 text-sm text-foreground/60">
                               {business.verification_status === "approved" && (
