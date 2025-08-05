@@ -627,11 +627,24 @@ const ProviderBooking = () => {
             {services.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Services</CardTitle>
+                  <CardTitle>
+                    {selectedServiceId ? "Selected Service" : "Services"}
+                  </CardTitle>
+                  {selectedServiceId && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Ready to book • {preSelectedDate && new Date(preSelectedDate).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric"
+                      })} {preSelectedTime && `at ${preSelectedTime}`}
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {services.map((service) => (
+                    {services
+                      .filter(service => !selectedServiceId || service.service_id === selectedServiceId)
+                      .map((service) => (
                       <div
                         key={service.id}
                         className="border rounded-lg p-4 hover:shadow-md transition-shadow"
