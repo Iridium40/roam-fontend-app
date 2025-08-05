@@ -24,7 +24,9 @@ import {
   QrCode,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 import BookingModal from "@/components/BookingModal";
 import ShareModal from "@/components/ShareModal";
 
