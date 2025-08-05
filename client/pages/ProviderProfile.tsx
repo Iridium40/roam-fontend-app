@@ -165,48 +165,7 @@ export default function ProviderProfile() {
     fetchProviderData();
   }, [providerId, toast]);
 
-  const services = [
-    {
-      id: 1,
-      name: "Deep Tissue Massage",
-      duration: "90 minutes",
-      price: 120,
-      description:
-        "Therapeutic massage targeting deeper layers of muscle and connective tissue to relieve chronic pain and tension.",
-      deliveryTypes: ["mobile", "business"],
-      popularity: "Most Popular",
-    },
-    {
-      id: 2,
-      name: "Swedish Massage",
-      duration: "60 minutes",
-      price: 90,
-      description:
-        "Relaxing full-body massage using long strokes, kneading, and circular movements to promote relaxation.",
-      deliveryTypes: ["mobile", "business"],
-      popularity: null,
-    },
-    {
-      id: 3,
-      name: "Sports Recovery Massage",
-      duration: "75 minutes",
-      price: 110,
-      description:
-        "Specialized massage for athletes focusing on injury prevention and recovery enhancement.",
-      deliveryTypes: ["mobile"],
-      popularity: null,
-    },
-    {
-      id: 4,
-      name: "Prenatal Massage",
-      duration: "60 minutes",
-      price: 100,
-      description:
-        "Gentle, safe massage designed specifically for expecting mothers to reduce pregnancy discomfort.",
-      deliveryTypes: ["mobile", "business"],
-      popularity: null,
-    },
-  ];
+
 
   const reviews = [
     {
