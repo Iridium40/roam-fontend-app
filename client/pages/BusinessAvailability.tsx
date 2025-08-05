@@ -140,7 +140,7 @@ export default function BusinessAvailability() {
 
       // Check for authentication errors
       const authErrors = [serviceResponse, businessesResponse].filter(
-        (response) => response.status === 401
+        (response) => response.status === 401,
       );
 
       if (authErrors.length > 0 && retryCount === 0) {
@@ -166,7 +166,8 @@ export default function BusinessAvailability() {
       }
 
       const { data: serviceData, error: serviceError } = serviceResponse;
-      const { data: businessesData, error: businessesError } = businessesResponse;
+      const { data: businessesData, error: businessesError } =
+        businessesResponse;
 
       if (businessesError) {
         console.error(
