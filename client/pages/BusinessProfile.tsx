@@ -543,7 +543,16 @@ export default function BusinessProfile() {
                 size="sm"
                 className="text-foreground hover:text-roam-blue"
               >
-                <Link to="/home">
+                <Link to={(() => {
+                  const serviceId = searchParams.get("service");
+                  const date = searchParams.get("date");
+                  const time = searchParams.get("time");
+
+                  if (serviceId && date && time) {
+                    return `/business-availability/${serviceId}?date=${date}&time=${time}`;
+                  }
+                  return "/home";
+                })()}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Business Selection
                 </Link>
