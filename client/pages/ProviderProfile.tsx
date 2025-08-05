@@ -39,47 +39,75 @@ export default function ProviderProfile() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Mock provider data - in real app would fetch based on providerId
-  const provider = {
-    id: providerId || "1",
-    name: "Sarah Johnson",
-    title: "Licensed Massage Therapist",
-    rating: 4.9,
-    reviews: 127,
-    responseRate: "98%",
-    responseTime: "Within 1 hour",
-    location: "Miami, FL",
-    joinedDate: "January 2022",
-    verified: true,
-    profileImage: "/api/placeholder/120/120",
-    coverImage:
-      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=300&fit=crop",
-    bio: "I'm a licensed massage therapist with over 8 years of experience helping clients achieve relaxation and pain relief. Specializing in deep tissue and therapeutic massage, I bring my expertise directly to your location for maximum comfort and convenience.",
-    specialties: [
-      "Deep Tissue",
-      "Swedish",
-      "Sports Massage",
-      "Prenatal",
-      "Hot Stone",
-    ],
-    languages: ["English", "Spanish"],
-    certifications: [
-      "Licensed Massage Therapist (FL #MA12345)",
-      "Certified Myofascial Release Therapist",
-      "Prenatal Massage Certification",
-    ],
-    deliveryTypes: ["mobile", "business"],
-    businessAddress: "123 Wellness Center, Miami, FL 33101",
-    serviceArea: "Miami-Dade County",
-    availableDays: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ],
-  };
+  // Fetch real provider data from database
+  useEffect(() => {
+    const fetchProviderData = async () => {
+      if (!providerId) return;
+
+      try {
+        setLoading(true);
+
+        const { data: providerData, error } = await supabase
+          .from('providers')
+          .select(`
+            id,
+            first_name,
+            last_name,
+            bio,
+            experience_years,
+            image_url,
+            average_rating,
+            total_reviews,
+            business_id,
+            is_active,
+            created_at
+          `)
+          .eq('id', providerId)
+          .eq('is_active', true)
+          .single();
+
+        if (error || !providerData) {
+          throw new Error('Provider not found');
+        }
+
+        // Transform the data to match the expected format
+        setProvider({
+          id: providerData.id,
+          name: `${providerData.first_name} ${providerData.last_name}`,
+          title: "Service Provider", // Generic title since we don't have this field
+          rating: providerData.average_rating || 0,
+          reviews: providerData.total_reviews || 0,
+          responseRate: "95%", // Default value
+          responseTime: "Within 2 hours", // Default value
+          location: "Service Area", // Default value
+          joinedDate: new Date(providerData.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+          verified: true,
+          profileImage: providerData.image_url || "/api/placeholder/120/120",
+          coverImage: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=300&fit=crop",
+          bio: providerData.bio || "Professional service provider",
+          specialties: [], // Could fetch from separate table if available
+          languages: ["English"], // Default value
+          certifications: [], // Could fetch from separate table if available
+          deliveryTypes: ["mobile", "business"], // Default values
+          businessAddress: "", // Could fetch from business_locations if available
+          serviceArea: "Local Area", // Default value
+          availableDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], // Default values
+        });
+
+      } catch (error: any) {
+        console.error('Error fetching provider:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load provider information",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProviderData();
+  }, [providerId, toast]);
 
   const services = [
     {
