@@ -547,54 +547,7 @@ export default function Index() {
               and Healthcare. Available mobile, in-studio, or virtual.
             </p>
 
-            {/* Search and Filters */}
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                    <Input
-                      type="search"
-                      placeholder="Search services, providers, or specialties..."
-                      className="pl-10 h-12 text-lg"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <Select
-                  value={selectedCategory}
-                  onValueChange={setSelectedCategory}
-                >
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="beauty">Beauty & Wellness</SelectItem>
-                    <SelectItem value="fitness">Personal Training</SelectItem>
-                    <SelectItem value="massage">Massage Therapy</SelectItem>
-                    <SelectItem value="healthcare">Healthcare</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={selectedDelivery}
-                  onValueChange={setSelectedDelivery}
-                >
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Delivery Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="mobile">
-                      Mobile (Your Location)
-                    </SelectItem>
-                    <SelectItem value="business">In-Studio</SelectItem>
-                    <SelectItem value="virtual">Virtual</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
