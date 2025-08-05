@@ -17,6 +17,7 @@ import {
   Smartphone,
   Building,
   Video,
+  Car,
   Award,
   CheckCircle,
   Camera,
