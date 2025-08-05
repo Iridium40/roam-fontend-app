@@ -53,7 +53,8 @@ const App = () => (
           <ThemeProvider>
             <Routes>
               {/* Public routes */}
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/home" element={<Index />} />
               <Route path="/providers" element={<Providers />} />
               <Route path="/about" element={<About />} />
               <Route path="/support" element={<Support />} />
