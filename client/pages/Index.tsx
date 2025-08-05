@@ -1075,144 +1075,162 @@ export default function Index() {
             </Badge>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredBusinesses.map((business) => (
               <Card
                 key={business.id}
-                className="hover:shadow-lg transition-shadow border-border/50 hover:border-roam-light-blue/50"
+                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-border/50 hover:border-roam-light-blue/50 overflow-hidden"
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start">
-                    <div className="w-24 h-24 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {business.image &&
-                      business.image !== "/api/placeholder/80/80" ? (
-                        <img
-                          src={business.image}
-                          alt={business.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Building className="w-12 h-12 text-white" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-lg">
-                              {business.name}
-                            </h3>
-                            {business.is_featured && (
-                              <Badge className="bg-roam-yellow text-gray-900 text-xs">
-                                <Star className="w-3 h-3 mr-1" />
-                                Featured
-                              </Badge>
-                            )}
-                          </div>
-
-                          <p className="text-xs text-foreground/50">
-                            {business.location}
-                          </p>
-                          {business.verification_status === "approved" && (
-                            <div className="flex items-center gap-1 mt-1">
-                              <Shield className="w-3 h-3 text-green-600" />
-                              <span className="text-xs text-green-600">
-                                Verified
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className="flex items-center gap-1 mb-1">
-                            <Star className="w-4 h-4 text-roam-warning fill-current" />
-                            <span className="font-semibold">
-                              {business.rating}
-                            </span>
-                            <span className="text-sm text-foreground/60">
-                              ({business.reviews})
-                            </span>
-                          </div>
-
-                          {business.years_in_business && (
-                            <div className="text-xs text-foreground/50">
-                              {business.years_in_business} years
-                            </div>
-                          )}
-                        </div>
+                <CardContent className="p-0">
+                  {/* Header with Logo and Actions */}
+                  <div className="relative bg-gradient-to-br from-roam-light-blue/10 to-roam-blue/5 p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      {/* Business Logo */}
+                      <div className="w-16 h-16 bg-white rounded-xl shadow-md flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-white">
+                        {business.image &&
+                        business.image !== "/api/placeholder/80/80" ? (
+                          <img
+                            src={business.image}
+                            alt={business.name}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        ) : (
+                          <Building className="w-8 h-8 text-roam-blue" />
+                        )}
                       </div>
 
-                      <div className="flex flex-wrap gap-1 mb-3">
+                      {/* Action Buttons */}
+                      <div className="flex items-center gap-1">
+                        <FavoriteButton
+                          type="business"
+                          itemId={business.id}
+                          size="sm"
+                          variant="ghost"
+                          className="bg-white/80 hover:bg-white text-gray-600 hover:text-red-500"
+                        />
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="bg-white/80 hover:bg-white text-gray-600"
+                          onClick={() => handleBusinessShare(business)}
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Business Name and Featured Badge */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors">
+                        {business.name}
+                      </h3>
+                      {business.is_featured && (
+                        <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                          <Star className="w-3 h-3 mr-1 fill-current" />
+                          Featured
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Location and Verification */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-gray-500" />
+                        <span className="text-sm text-gray-600">{business.location}</span>
+                      </div>
+                      {business.verification_status === "approved" && (
+                        <div className="flex items-center gap-1">
+                          <Shield className="w-4 h-4 text-green-600" />
+                          <span className="text-xs text-green-600 font-medium">Verified</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="p-4 space-y-4">
+                    {/* Star Rating */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 bg-roam-warning/10 px-2 py-1 rounded-lg">
+                          <Star className="w-4 h-4 text-roam-warning fill-current" />
+                          <span className="font-semibold text-gray-900">{business.rating}</span>
+                          <span className="text-sm text-gray-600">({business.reviews})</span>
+                        </div>
+                      </div>
+                      {business.years_in_business && (
+                        <div className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
+                          {business.years_in_business} years
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Delivery Types */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-2">Delivery Options</h4>
+                      <div className="flex flex-wrap gap-1">
                         {business.deliveryTypes.map((type) => {
                           const badge = getDeliveryBadge(type);
+                          const Icon = deliveryIcons[type as keyof typeof deliveryIcons] || Building;
                           return (
                             <Badge
                               key={type}
                               variant="secondary"
-                              className={`text-xs ${badge.color}`}
+                              className={`text-xs flex items-center gap-1 ${badge.color}`}
                             >
+                              <Icon className="w-3 h-3" />
                               {badge.label}
                             </Badge>
                           );
                         })}
                       </div>
+                    </div>
 
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        {business.specialties.slice(0, 3).map((specialty) => (
+                    {/* SubCategory Types / Specialties */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-2">Specialties</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {business.specialties.slice(0, 4).map((specialty, index) => (
                           <Badge
                             key={specialty}
                             variant="outline"
-                            className="text-xs border-roam-light-blue text-roam-blue"
+                            className="text-xs border-roam-blue/50 text-roam-blue bg-roam-blue/5"
                           >
                             {specialty}
                           </Badge>
                         ))}
+                        {business.specialties.length > 4 && (
+                          <Badge
+                            variant="outline"
+                            className="text-xs border-gray-300 text-gray-500"
+                          >
+                            +{business.specialties.length - 4} more
+                          </Badge>
+                        )}
                       </div>
+                    </div>
 
-                      <div className="space-y-2">
-                        <Button
-                          asChild
-                          size="sm"
-                          className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                          style={{
-                            marginLeft: "-2px",
-                            paddingLeft: "9px",
-                            paddingRight: "12px",
-                          }}
-                        >
-                          <Link to={`/business/${business.id}?tab=services`}>
-                            <Calendar className="w-4 h-4 mr-2" />
-                            Book Services
-                          </Link>
-                        </Button>
-                        <div className="flex gap-2">
-                          <Button
-                            asChild
-                            size="sm"
-                            variant="outline"
-                            className="flex-1 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                          >
-                            <Link to={`/business/${business.id}`}>
-                              <BookOpen className="w-4 h-4 mr-2" />
-                              View Business
-                            </Link>
-                          </Button>
-                          <FavoriteButton
-                            type="business"
-                            itemId={business.id}
-                            size="sm"
-                            variant="outline"
-                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                          />
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-gray-300 text-gray-600 hover:bg-gray-50"
-                            onClick={() => handleBusinessShare(business)}
-                          >
-                            <QrCode className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
+                    {/* Action Buttons */}
+                    <div className="space-y-2 pt-2">
+                      <Button
+                        asChild
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
+                      >
+                        <Link to={`/business/${business.id}?tab=services`}>
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Book Services
+                        </Link>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                      >
+                        <Link to={`/business/${business.id}`}>
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          View Business Profile
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
