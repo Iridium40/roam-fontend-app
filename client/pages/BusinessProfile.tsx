@@ -815,7 +815,94 @@ export default function BusinessProfile() {
 
           {/* Services Tab */}
           <TabsContent value="services" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Preselected Service Section */}
+            {selectedService && (
+              <Card className="border-2 border-roam-blue bg-roam-blue/5 mb-8">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-xl text-roam-blue">
+                        Selected Service
+                      </CardTitle>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Ready to book • {searchParams.get("date") && new Date(searchParams.get("date")!).toLocaleDateString("en-US", {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric"
+                        })} {searchParams.get("time") && `at ${searchParams.get("time")}`}
+                      </p>
+                    </div>
+                    <Badge className="bg-roam-yellow text-gray-900">
+                      Selected
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-start gap-6">
+                    {selectedService.services?.image_url && (
+                      <img
+                        src={selectedService.services.image_url}
+                        alt={selectedService.services?.name}
+                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-2">
+                        {selectedService.services?.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-3">
+                        {selectedService.services?.description}
+                      </p>
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {selectedService.services?.duration_minutes} minutes
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="w-4 h-4" />
+                          ${selectedService.business_price}
+                        </div>
+                        {selectedService.delivery_type && (
+                          <Badge variant="outline" className="text-xs">
+                            {selectedService.delivery_type === "customer_location" ? "Mobile" :
+                             selectedService.delivery_type === "business_location" ? "In-Studio" :
+                             "Virtual"}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex gap-3">
+                        <Button
+                          onClick={() => setProviderSelectorOpen(true)}
+                          className="bg-roam-blue hover:bg-roam-blue/90"
+                        >
+                          <Users className="w-4 h-4 mr-2" />
+                          Choose Provider
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedService(null);
+                            // Remove service from URL
+                            const newParams = new URLSearchParams(searchParams);
+                            newParams.delete("service");
+                            navigate(`?${newParams.toString()}`, { replace: true });
+                          }}
+                        >
+                          Change Service
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* All Services Grid */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">
+                {selectedService ? "Other Available Services" : "Available Services"}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => (
                 <Card
                   key={service.id}
@@ -906,6 +993,7 @@ export default function BusinessProfile() {
                   </CardContent>
                 </Card>
               ))}
+              </div>
             </div>
 
             {services.length === 0 && (
