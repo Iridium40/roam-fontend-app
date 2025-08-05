@@ -194,7 +194,6 @@ const ProviderBooking = () => {
           last_name,
           bio,
           experience_years,
-          specialties,
           image_url,
           average_rating,
           total_reviews
