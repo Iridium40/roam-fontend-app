@@ -504,7 +504,7 @@ const ProviderBooking = () => {
                     size="lg"
                     variant="outline"
                     showText={true}
-                    className="border-gray-300 hover:border-red-300"
+                    className="border-gray-300 hover:border-red-300 w-full sm:w-auto"
                   />
                 </div>
               </div>
