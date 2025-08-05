@@ -683,7 +683,7 @@ export default function Index() {
                 transform: `translateX(-${currentServiceSlide * 100}%)`,
               }}
             >
-              {featuredServices.map((service) => (
+              {filteredFeaturedServices.map((service) => (
                 <div key={service.id} className="w-full flex-shrink-0">
                   <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 mx-2">
                     <div className="relative">
