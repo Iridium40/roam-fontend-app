@@ -694,6 +694,24 @@ const ProviderBooking = () => {
                                 </Badge>
                               )}
                             </div>
+                            {(service as any).services.description && (
+                              <div className="mb-2">
+                                <p className="text-sm text-gray-600">
+                                  {truncateDescription(
+                                    (service as any).services.description,
+                                    expandedDescriptions[service.id] || false
+                                  )}
+                                  {(service as any).services.description.length > 100 && (
+                                    <button
+                                      onClick={() => toggleDescription(service.id)}
+                                      className="ml-2 text-roam-blue hover:text-roam-blue/80 text-sm font-medium"
+                                    >
+                                      {expandedDescriptions[service.id] ? 'Read Less' : 'Read More'}
+                                    </button>
+                                  )}
+                                </p>
+                              </div>
+                            )}
                             <div className="flex items-center gap-4 text-sm text-gray-500">
                               <div className="flex items-center">
                                 <DollarSign className="h-4 w-4 mr-1" />
