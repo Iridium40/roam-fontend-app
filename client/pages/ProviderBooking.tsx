@@ -816,7 +816,9 @@ const ProviderBooking = () => {
                               <h3 className="font-semibold">
                                 {(addon as any).addons.name}
                               </h3>
-                              {selectedServiceId && (addon as any).service_addon_eligibility?.is_recommended && (
+                              {selectedServiceId && (addon as any).addons?.service_addon_eligibility?.some(
+                                (eligibility: any) => eligibility.service_id === selectedServiceId && eligibility.is_recommended
+                              ) && (
                                 <Badge className="bg-green-100 text-green-800 text-xs">
                                   Recommended
                                 </Badge>
