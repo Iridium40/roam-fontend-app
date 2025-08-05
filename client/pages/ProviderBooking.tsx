@@ -962,9 +962,9 @@ const ProviderBooking = () => {
                     className="flex justify-between"
                   >
                     <span>
-                      {item.name} (x{item.quantity})
+                      {item.name}
                     </span>
-                    <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    <span>${item.price.toFixed(2)}</span>
                   </div>
                 ))}
                 <Separator />
