@@ -515,7 +515,7 @@ export default function BusinessAvailability() {
     const config = {
       mobile: { label: "Mobile Service", color: "bg-green-100 text-green-800" },
       business_location: {
-        label: "In-Studio",
+        label: "Business",
         color: "bg-blue-100 text-blue-800",
       },
       virtual: { label: "Virtual", color: "bg-purple-100 text-purple-800" },
