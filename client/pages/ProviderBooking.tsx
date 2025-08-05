@@ -289,10 +289,9 @@ const ProviderBooking = () => {
       (i) => i.id === item.id && i.type === type,
     );
     if (existingIndex >= 0) {
-      const updated = [...selectedItems];
-      updated[existingIndex].quantity += 1;
-      setSelectedItems(updated);
-      console.log("Updated existing item quantity");
+      // Item already exists, don't add again
+      console.log("Item already in selection");
+      return;
     } else {
       setSelectedItems([...selectedItems, bookingItem]);
       console.log("Added new item to selection");
