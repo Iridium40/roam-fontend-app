@@ -752,7 +752,7 @@ export default function Index() {
 
           {/* Carousel indicators */}
           <div className="flex justify-center mt-6 gap-2">
-            {featuredServices.map((_, index) => (
+            {filteredFeaturedServices.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentServiceSlide(index)}
