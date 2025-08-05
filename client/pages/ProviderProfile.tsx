@@ -393,14 +393,14 @@ export default function ProviderProfile() {
                             <div className="flex flex-wrap gap-2 mb-3">
                               {service.deliveryTypes.map((type) => {
                                 const Icon = getDeliveryIcon(type);
+                                const badge = getDeliveryBadge(type);
                                 return (
                                   <Badge
                                     key={type}
-                                    variant="secondary"
-                                    className="text-xs"
+                                    className={`text-xs ${badge.color}`}
                                   >
                                     <Icon className="w-3 h-3 mr-1" />
-                                    {getDeliveryLabel(type)}
+                                    {badge.label}
                                   </Badge>
                                 );
                               })}
