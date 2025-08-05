@@ -162,7 +162,7 @@ const ProviderBooking = () => {
         .eq("is_available", true);
 
       if (addonsError) {
-        console.error("Error fetching addons:", addonsError);
+        console.error("Error fetching addons:", addonsError.message || addonsError);
       }
 
       // Fetch business location
