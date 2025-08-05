@@ -787,7 +787,14 @@ const ProviderBooking = () => {
             {addons.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Add-ons</CardTitle>
+                  <CardTitle>
+                    {selectedServiceId ? "Available Add-ons for Selected Service" : "Available Add-ons"}
+                  </CardTitle>
+                  {selectedServiceId && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      These add-ons are compatible with your selected service
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
