@@ -24,6 +24,7 @@ import {
   MapPin,
   Smartphone,
   Building,
+  Video,
   ChevronLeft,
   ChevronRight,
   DollarSign,
