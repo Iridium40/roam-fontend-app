@@ -855,6 +855,14 @@ export default function ProviderDashboard() {
       // Use direct API for authenticated operations
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
+      // Ensure we have a valid access token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        directSupabaseAPI.currentAccessToken = session.access_token;
+      } else {
+        throw new Error("No valid authentication session");
+      }
+
       // Remove old avatar if exists
       if (provider.image_url) {
         try {
