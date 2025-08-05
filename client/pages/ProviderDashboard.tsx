@@ -3111,7 +3111,7 @@ export default function ProviderDashboard() {
       const validDeliveryTypes = [
         "business_location",
         "service_location",
-        "both",
+        "both_locations",
       ];
       if (!validDeliveryTypes.includes(serviceForm.delivery_type)) {
         throw new Error("Invalid delivery type selected");
