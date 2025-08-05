@@ -382,6 +382,18 @@ export default function ProviderProfile() {
                           <Calendar className="w-4 h-4 mr-2" />
                           Book Now
                         </Button>
+                        {provider.business_id && (
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                          >
+                            <Link to={`/business/${provider.business_id}`}>
+                              <Building className="w-4 h-4 mr-2" />
+                              View Business
+                            </Link>
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
