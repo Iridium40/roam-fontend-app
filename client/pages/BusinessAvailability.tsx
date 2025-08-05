@@ -712,11 +712,64 @@ export default function BusinessAvailability() {
                             <p className="text-foreground/70 mb-2">
                               {business.description}
                             </p>
+                            {/* Business Locations */}
+                            <div className="mb-3">
+                              {business.locations && business.locations.length > 0 ? (
+                                <div className="space-y-2">
+                                  <label className="text-sm font-medium text-foreground/70">
+                                    Select Location:
+                                  </label>
+                                  {business.locations.map((location: any) => (
+                                    <div
+                                      key={location.id}
+                                      className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                                        selectedLocations[business.id]?.id === location.id
+                                          ? "border-roam-blue bg-roam-blue/5"
+                                          : "border-gray-200 hover:border-gray-300"
+                                      }`}
+                                      onClick={() => handleLocationSelect(business.id, location)}
+                                    >
+                                      <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                          <div className="flex items-center gap-2 mb-1">
+                                            <MapPin className="w-4 h-4 text-roam-blue" />
+                                            <span className="font-medium">
+                                              {location.location_name || "Main Location"}
+                                            </span>
+                                            {location.is_primary && (
+                                              <Badge variant="secondary" className="text-xs">
+                                                Primary
+                                              </Badge>
+                                            )}
+                                          </div>
+                                          <p className="text-sm text-foreground/60">
+                                            {[location.address_line1, location.city, location.state].filter(Boolean).join(", ")}
+                                          </p>
+                                        </div>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            openInGoogleMaps(location);
+                                          }}
+                                          className="ml-2"
+                                        >
+                                          <Map className="w-4 h-4" />
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1 text-sm text-foreground/60">
+                                  <MapPin className="w-4 h-4" />
+                                  <span>Location details not available</span>
+                                </div>
+                              )}
+                            </div>
+
                             <div className="flex items-center gap-4 text-sm text-foreground/60">
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4" />
-                                <span>{business.location}</span>
-                              </div>
                               {business.verification_status === "approved" && (
                                 <div className="flex items-center gap-1 text-green-600">
                                   <Shield className="w-4 h-4" />
