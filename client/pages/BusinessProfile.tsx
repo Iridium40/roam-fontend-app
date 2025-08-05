@@ -411,9 +411,21 @@ export default function BusinessProfile() {
   const handleProviderSelection = (providerId: string | null) => {
     setSelectedProviderId(providerId);
     if (selectedService) {
-      const bookingUrl = `/book/${businessId}?service=${selectedService.id}${
-        providerId ? `&provider=${providerId}` : ""
-      }`;
+      // Preserve date and time parameters from the current URL
+      const selectedDate = searchParams.get("date");
+      const selectedTime = searchParams.get("time");
+
+      let bookingUrl = `/book/${businessId}?service=${selectedService.id}`;
+      if (providerId) {
+        bookingUrl += `&provider=${providerId}`;
+      }
+      if (selectedDate) {
+        bookingUrl += `&date=${selectedDate}`;
+      }
+      if (selectedTime) {
+        bookingUrl += `&time=${selectedTime}`;
+      }
+
       navigate(bookingUrl);
     }
   };
