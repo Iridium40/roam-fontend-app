@@ -3611,7 +3611,7 @@ export default function ProviderDashboard() {
       business_location: "Business",
       customer_location: "Mobile",
       virtual: "Virtual",
-      both_locations: "In-Studio or Mobile",
+      both_locations: "Both",
     };
     return labels[type] || type;
   };
