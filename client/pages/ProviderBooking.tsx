@@ -474,7 +474,6 @@ const ProviderBooking = () => {
                     {business.business_description}
                   </p>
                   <div className="flex items-center space-x-4 mt-2">
-                    <Badge variant="secondary">{business.business_type}</Badge>
                     {business.verification_status === "approved" && (
                       <Badge
                         variant="default"
