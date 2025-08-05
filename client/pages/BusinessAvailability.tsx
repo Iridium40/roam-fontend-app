@@ -493,6 +493,27 @@ export default function BusinessAvailability() {
     return selectedMinutes >= openMinutes && selectedMinutes <= closeMinutes;
   };
 
+  const handleLocationSelect = (businessId: string, location: any) => {
+    setSelectedLocations(prev => ({
+      ...prev,
+      [businessId]: location
+    }));
+  };
+
+  const openInGoogleMaps = (location: any) => {
+    const address = [
+      location.address_line1,
+      location.address_line2,
+      location.city,
+      location.state,
+      location.postal_code,
+      location.country
+    ].filter(Boolean).join(", ");
+
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    window.open(url, '_blank');
+  };
+
   const handleSelectBusiness = (business: any) => {
     console.log("Selecting business:", business.name);
     console.log("Business object:", business);
