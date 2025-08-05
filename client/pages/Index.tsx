@@ -605,7 +605,35 @@ export default function Index() {
             Browse by <span className="text-roam-blue">Category</span>
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            {/* All Categories Option */}
+            <Card
+              className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-border/50 hover:border-roam-light-blue/50 ${
+                selectedCategory === "all"
+                  ? "ring-2 ring-roam-blue border-roam-blue bg-roam-light-blue/5"
+                  : ""
+              }`}
+              onClick={() => handleCategorySelect("all")}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Filter className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 group-hover:text-roam-blue transition-colors">
+                  All Categories
+                </h3>
+                <p className="text-sm text-foreground/60 mb-3">
+                  Browse all available services
+                </p>
+                <Badge
+                  variant="secondary"
+                  className="bg-roam-light-blue/20 text-roam-blue"
+                >
+                  View All
+                </Badge>
+              </CardContent>
+            </Card>
+
             {serviceCategories.map((category) => (
               <Card
                 key={category.id}
