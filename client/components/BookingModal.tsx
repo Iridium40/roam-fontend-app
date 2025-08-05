@@ -160,7 +160,7 @@ export default function BookingModal({
         break;
       case "datetime":
         setCurrentStep(
-          selectedDeliveryType === "mobile" ? "location" : "details",
+          selectedDeliveryType === "customer_location" ? "location" : "details",
         );
         break;
       case "location":
