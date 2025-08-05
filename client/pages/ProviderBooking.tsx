@@ -661,64 +661,55 @@ const ProviderBooking = () => {
                             : ""
                         }`}
                       >
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                  <h3 className="font-semibold">
-                                    {(service as any).services.name}
-                                  </h3>
-                                  {selectedServiceId && (service.service_id === selectedServiceId || service.id === selectedServiceId) && (
-                                    <Badge className="bg-roam-yellow text-gray-900 text-xs">
-                                      Selected
-                                    </Badge>
-                                  )}
-                                </div>
-                                <p className="text-sm text-gray-600 mt-1">
-                                  {(service as any).services.description}
-                                </p>
-                              </div>
-                              <FavoriteButton
-                                type="service"
-                                itemId={service.service_id}
-                                size="sm"
-                                variant="ghost"
-                                className="ml-2"
-                              />
-                            </div>
-                          </div>
+                        <div className="flex items-center gap-4 mb-4">
                           {(service as any).services.image_url && (
                             <img
                               src={(service as any).services.image_url}
                               alt={(service as any).services.name}
-                              className="w-16 h-16 object-cover rounded ml-4"
+                              className="w-12 h-12 object-cover rounded flex-shrink-0"
                             />
                           )}
-                        </div>
-
-                        <div className="flex items-center justify-between mt-4">
-                          <div className="text-sm text-gray-500 space-y-1">
-                            <div className="flex items-center">
-                              <DollarSign className="h-4 w-4 mr-1" />
-                              <span className="font-semibold">
-                                $
-                                {(service as any).custom_price ||
-                                  (service as any).business_price ||
-                                  0}
-                              </span>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold">
+                                {(service as any).services.name}
+                              </h3>
+                              {selectedServiceId && (service.service_id === selectedServiceId || service.id === selectedServiceId) && (
+                                <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                                  Selected
+                                </Badge>
+                              )}
                             </div>
-                            {(service as any).services.estimated_duration && (
+                            <div className="flex items-center gap-4 text-sm text-gray-500">
                               <div className="flex items-center">
-                                <Clock className="h-4 w-4 mr-1" />
-                                <span>
-                                  {(service as any).services.estimated_duration}{" "}
-                                  min
+                                <DollarSign className="h-4 w-4 mr-1" />
+                                <span className="font-semibold">
+                                  $
+                                  {(service as any).custom_price ||
+                                    (service as any).business_price ||
+                                    0}
                                 </span>
                               </div>
-                            )}
+                              {(service as any).services.estimated_duration && (
+                                <div className="flex items-center">
+                                  <Clock className="h-4 w-4 mr-1" />
+                                  <span>
+                                    {(service as any).services.estimated_duration}{" "}
+                                    min
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
+                          <FavoriteButton
+                            type="service"
+                            itemId={service.service_id}
+                            size="sm"
+                            variant="ghost"
+                          />
+                        </div>
 
+                        <div className="flex justify-end">
                           <div className="flex items-center space-x-2">
                             {getItemQuantity(service.id, "service") > 0 ? (
                               <Button
