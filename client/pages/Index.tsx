@@ -99,9 +99,9 @@ export default function Index() {
 
         // Fetch featured services using is_featured flag
         const featuredServicesResponse = await supabase
-            .from("services")
-            .select(
-              `
+          .from("services")
+          .select(
+            `
             id,
             name,
             description,
@@ -120,12 +120,13 @@ export default function Index() {
               )
             )
           `,
-            )
-            .eq("is_active", true)
-            .eq("is_featured", true)
-            .limit(6);
+          )
+          .eq("is_active", true)
+          .eq("is_featured", true)
+          .limit(6);
 
-        const { data: featuredServicesData, error: featuredError } = featuredServicesResponse;
+        const { data: featuredServicesData, error: featuredError } =
+          featuredServicesResponse;
 
         console.log("Featured services query result:", {
           featuredServicesData,
@@ -156,9 +157,9 @@ export default function Index() {
 
         // Fetch popular services using is_popular flag
         const popularServicesResponse = await supabase
-            .from("services")
-            .select(
-              `
+          .from("services")
+          .select(
+            `
             id,
             name,
             description,
@@ -177,12 +178,13 @@ export default function Index() {
               )
             )
           `,
-            )
-            .eq("is_active", true)
-            .eq("is_popular", true)
-            .limit(6);
+          )
+          .eq("is_active", true)
+          .eq("is_popular", true)
+          .limit(6);
 
-        const { data: popularServicesData, error: popularError } = popularServicesResponse;
+        const { data: popularServicesData, error: popularError } =
+          popularServicesResponse;
 
         console.log("Popular services query result:", {
           popularServicesData,
@@ -238,7 +240,8 @@ export default function Index() {
           .eq("is_featured", true)
           .limit(12);
 
-        const { data: businessesData, error: businessesError } = businessesResponse;
+        const { data: businessesData, error: businessesError } =
+          businessesResponse;
 
         // Check for authentication errors
         const authErrors = [
@@ -405,13 +408,16 @@ export default function Index() {
       // Category filter
       let categoryMatch = true;
       if (selectedCategory !== "all") {
-        const categoryKeywords = categoryMapping[selectedCategory as keyof typeof categoryMapping] || [];
+        const categoryKeywords =
+          categoryMapping[selectedCategory as keyof typeof categoryMapping] ||
+          [];
         const serviceCategory = service.category?.toLowerCase() || "";
         const serviceTitle = service.title?.toLowerCase() || "";
 
-        categoryMatch = categoryKeywords.some(keyword =>
-          serviceCategory.includes(keyword.toLowerCase()) ||
-          serviceTitle.includes(keyword.toLowerCase())
+        categoryMatch = categoryKeywords.some(
+          (keyword) =>
+            serviceCategory.includes(keyword.toLowerCase()) ||
+            serviceTitle.includes(keyword.toLowerCase()),
         );
       }
 
@@ -423,9 +429,10 @@ export default function Index() {
         const serviceCategory = service.category?.toLowerCase() || "";
         const serviceDescription = service.description?.toLowerCase() || "";
 
-        searchMatch = serviceTitle.includes(query) ||
-                     serviceCategory.includes(query) ||
-                     serviceDescription.includes(query);
+        searchMatch =
+          serviceTitle.includes(query) ||
+          serviceCategory.includes(query) ||
+          serviceDescription.includes(query);
       }
 
       // Delivery type filter (services don't have delivery type data in current structure)
@@ -575,8 +582,6 @@ export default function Index() {
               Connect with verified professionals in Beauty, Fitness, Therapy,
               and Healthcare. Available mobile, business, or virtual.
             </p>
-
-
           </div>
         </div>
       </section>
@@ -590,17 +595,23 @@ export default function Index() {
 
           {/* Mobile Category Dropdown */}
           <div className="md:hidden mb-8">
-            <Select value={selectedCategory} onValueChange={handleCategorySelect}>
+            <Select
+              value={selectedCategory}
+              onValueChange={handleCategorySelect}
+            >
               <SelectTrigger className="w-full h-12 bg-white border-2 border-roam-light-blue/30 focus:border-roam-blue">
                 <div className="flex items-center gap-3">
                   {selectedCategory === "all" ? (
                     <Filter className="w-5 h-5 text-roam-blue" />
                   ) : (
-                    serviceCategories.find(cat => cat.id === selectedCategory)?.icon && (
+                    serviceCategories.find((cat) => cat.id === selectedCategory)
+                      ?.icon && (
                       <div className="w-5 h-5 flex items-center justify-center">
                         {React.createElement(
-                          serviceCategories.find(cat => cat.id === selectedCategory)!.icon,
-                          { className: "w-5 h-5 text-roam-blue" }
+                          serviceCategories.find(
+                            (cat) => cat.id === selectedCategory,
+                          )!.icon,
+                          { className: "w-5 h-5 text-roam-blue" },
                         )}
                       </div>
                     )
@@ -608,12 +619,16 @@ export default function Index() {
                   <SelectValue placeholder="Select a category">
                     {selectedCategory === "all"
                       ? "All Categories"
-                      : serviceCategories.find(cat => cat.id === selectedCategory)?.name ||
-                        (selectedCategory === "therapy" ? "Therapy" :
-                         selectedCategory === "fitness" ? "Fitness" :
-                         selectedCategory === "beauty" ? "Beauty" :
-                         selectedCategory)
-                    }
+                      : serviceCategories.find(
+                          (cat) => cat.id === selectedCategory,
+                        )?.name ||
+                        (selectedCategory === "therapy"
+                          ? "Therapy"
+                          : selectedCategory === "fitness"
+                            ? "Fitness"
+                            : selectedCategory === "beauty"
+                              ? "Beauty"
+                              : selectedCategory)}
                   </SelectValue>
                 </div>
               </SelectTrigger>
@@ -629,10 +644,13 @@ export default function Index() {
                     <div className="flex items-center gap-3">
                       <category.icon className="w-4 h-4 text-roam-blue" />
                       <span>
-                        {category.id === "therapy" ? "Therapy" :
-                         category.id === "fitness" ? "Fitness" :
-                         category.id === "beauty" ? "Beauty" :
-                         category.name}
+                        {category.id === "therapy"
+                          ? "Therapy"
+                          : category.id === "fitness"
+                            ? "Fitness"
+                            : category.id === "beauty"
+                              ? "Beauty"
+                              : category.name}
                       </span>
                     </div>
                   </SelectItem>
@@ -730,7 +748,10 @@ export default function Index() {
               </div>
 
               {/* Delivery Type Filter */}
-              <Select value={selectedDelivery} onValueChange={setSelectedDelivery}>
+              <Select
+                value={selectedDelivery}
+                onValueChange={setSelectedDelivery}
+              >
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="Delivery Type" />
                 </SelectTrigger>
@@ -759,16 +780,22 @@ export default function Index() {
             </div>
 
             {/* Active Filters Display */}
-            {(selectedCategory !== "all" || selectedDelivery !== "all" || searchQuery) && (
+            {(selectedCategory !== "all" ||
+              selectedDelivery !== "all" ||
+              searchQuery) && (
               <div className="flex flex-wrap items-center gap-2 mt-4">
-                <span className="text-sm text-foreground/60">Active filters:</span>
+                <span className="text-sm text-foreground/60">
+                  Active filters:
+                </span>
                 {selectedCategory !== "all" && (
                   <Badge
                     variant="secondary"
                     className="bg-roam-blue/10 text-roam-blue cursor-pointer hover:bg-roam-blue/20"
                     onClick={() => handleCategorySelect("all")}
                   >
-                    {serviceCategories.find(cat => cat.id === selectedCategory)?.name || selectedCategory}
+                    {serviceCategories.find(
+                      (cat) => cat.id === selectedCategory,
+                    )?.name || selectedCategory}
                     <X className="w-3 h-3 ml-1" />
                   </Badge>
                 )}
@@ -778,9 +805,13 @@ export default function Index() {
                     className="bg-roam-blue/10 text-roam-blue cursor-pointer hover:bg-roam-blue/20"
                     onClick={() => setSelectedDelivery("all")}
                   >
-                    {selectedDelivery === "mobile" ? "Mobile" :
-                     selectedDelivery === "business" ? "Business" :
-                     selectedDelivery === "virtual" ? "Virtual" : selectedDelivery}
+                    {selectedDelivery === "mobile"
+                      ? "Mobile"
+                      : selectedDelivery === "business"
+                        ? "Business"
+                        : selectedDelivery === "virtual"
+                          ? "Virtual"
+                          : selectedDelivery}
                     <X className="w-3 h-3 ml-1" />
                   </Badge>
                 )}
@@ -848,68 +879,68 @@ export default function Index() {
                 }}
               >
                 {filteredFeaturedServices.map((service) => (
-                <div key={service.id} className="w-full flex-shrink-0">
-                  <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 mx-2">
-                    <div className="relative">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-64 object-cover rounded-t-lg"
-                      />
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-roam-blue text-white">
-                          {service.category}
-                        </Badge>
-                      </div>
-                      <div className="absolute top-4 right-4 flex gap-2">
-                        <FavoriteButton
-                          type="service"
-                          itemId={service.id}
-                          size="sm"
-                          variant="ghost"
-                          className="bg-white/90 hover:bg-white"
+                  <div key={service.id} className="w-full flex-shrink-0">
+                    <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 mx-2">
+                      <div className="relative">
+                        <img
+                          src={service.image}
+                          alt={service.title}
+                          className="w-full h-64 object-cover rounded-t-lg"
                         />
-                        <Badge
-                          variant="secondary"
-                          className="bg-white/90 text-gray-800"
-                        >
-                          <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
-                          {service.rating}
-                        </Badge>
-                      </div>
-                    </div>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-semibold mb-2">
-                        {service.title}
-                      </h3>
-                      <p className="text-foreground/70 mb-4">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl font-bold text-roam-blue">
-                            {service.price}
-                          </span>
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-roam-blue text-white">
+                            {service.category}
+                          </Badge>
                         </div>
-                        <Badge
-                          variant="outline"
-                          className="border-roam-blue text-roam-blue"
-                        >
-                          {service.duration}
-                        </Badge>
+                        <div className="absolute top-4 right-4 flex gap-2">
+                          <FavoriteButton
+                            type="service"
+                            itemId={service.id}
+                            size="sm"
+                            variant="ghost"
+                            className="bg-white/90 hover:bg-white"
+                          />
+                          <Badge
+                            variant="secondary"
+                            className="bg-white/90 text-gray-800"
+                          >
+                            <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
+                            {service.rating}
+                          </Badge>
+                        </div>
                       </div>
-                      <Button
-                        asChild
-                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      >
-                        <Link to={`/book-service/${service.id}`}>
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Book This Service
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-semibold mb-2">
+                          {service.title}
+                        </h3>
+                        <p className="text-foreground/70 mb-4">
+                          {service.description}
+                        </p>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl font-bold text-roam-blue">
+                              {service.price}
+                            </span>
+                          </div>
+                          <Badge
+                            variant="outline"
+                            className="border-roam-blue text-roam-blue"
+                          >
+                            {service.duration}
+                          </Badge>
+                        </div>
+                        <Button
+                          asChild
+                          className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                        >
+                          <Link to={`/book-service/${service.id}`}>
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Book This Service
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
                 ))}
               </div>
             </div>
@@ -918,9 +949,12 @@ export default function Index() {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No Featured Services Found</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No Featured Services Found
+              </h3>
               <p className="text-foreground/60 mb-4">
-                No featured services match the selected category. Try selecting a different category.
+                No featured services match the selected category. Try selecting
+                a different category.
               </p>
               <Button
                 onClick={() => handleCategorySelect("all")}
@@ -940,7 +974,9 @@ export default function Index() {
                   key={index}
                   onClick={() => setCurrentServiceSlide(index)}
                   className={`w-3 h-3 rounded-full transition-colors ${
-                    index === currentServiceSlide ? "bg-roam-blue" : "bg-gray-300"
+                    index === currentServiceSlide
+                      ? "bg-roam-blue"
+                      : "bg-gray-300"
                   }`}
                 />
               ))}
@@ -1187,12 +1223,16 @@ export default function Index() {
                         <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
                           <MapPin className="w-3 h-3 text-gray-600" />
                         </div>
-                        <span className="text-sm font-medium text-gray-700">{business.location}</span>
+                        <span className="text-sm font-medium text-gray-700">
+                          {business.location}
+                        </span>
                       </div>
                       {business.verification_status === "approved" && (
                         <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full">
                           <Shield className="w-3 h-3 text-green-600" />
-                          <span className="text-xs text-green-700 font-semibold">Verified</span>
+                          <span className="text-xs text-green-700 font-semibold">
+                            Verified
+                          </span>
                         </div>
                       )}
                     </div>
@@ -1204,24 +1244,36 @@ export default function Index() {
                     <div className="flex items-center justify-center">
                       <div className="flex items-center gap-2 bg-gradient-to-r from-roam-warning/10 to-roam-warning/5 px-4 py-2 rounded-2xl border border-roam-warning/20">
                         <Star className="w-5 h-5 text-roam-warning fill-current" />
-                        <span className="font-bold text-lg text-gray-900">{business.rating}</span>
-                        <span className="text-sm text-gray-600 font-medium">({business.reviews} reviews)</span>
+                        <span className="font-bold text-lg text-gray-900">
+                          {business.rating}
+                        </span>
+                        <span className="text-sm text-gray-600 font-medium">
+                          ({business.reviews} reviews)
+                        </span>
                       </div>
                     </div>
 
                     {/* Delivery Types */}
                     <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Service Options</h4>
+                      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
+                        Service Options
+                      </h4>
                       <div className="flex flex-wrap gap-2">
                         {business.deliveryTypes.map((type) => {
                           let badge, Icon;
                           // Map business_location to business for display
                           if (type === "business_location") {
-                            badge = { label: "Business", color: "bg-blue-50 text-blue-700 border-blue-200" };
+                            badge = {
+                              label: "Business",
+                              color: "bg-blue-50 text-blue-700 border-blue-200",
+                            };
                             Icon = Building;
                           } else {
                             badge = getDeliveryBadge(type);
-                            Icon = deliveryIcons[type as keyof typeof deliveryIcons] || Building;
+                            Icon =
+                              deliveryIcons[
+                                type as keyof typeof deliveryIcons
+                              ] || Building;
                           }
 
                           return (
@@ -1239,24 +1291,32 @@ export default function Index() {
 
                     {/* Specialties */}
                     <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Specialties</h4>
+                      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
+                        Specialties
+                      </h4>
                       <div className="flex flex-wrap gap-2">
-                        {business.specialties.slice(0, 4).map((specialty, index) => {
-                          // Convert to camel case
-                          const camelCaseSpecialty = specialty
-                            .split(' ')
-                            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                            .join(' ');
+                        {business.specialties
+                          .slice(0, 4)
+                          .map((specialty, index) => {
+                            // Convert to camel case
+                            const camelCaseSpecialty = specialty
+                              .split(" ")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() +
+                                  word.slice(1).toLowerCase(),
+                              )
+                              .join(" ");
 
-                          return (
-                            <span
-                              key={specialty}
-                              className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-roam-blue/10 to-roam-light-blue/10 text-roam-blue rounded-full border border-roam-blue/20"
-                            >
-                              {camelCaseSpecialty}
-                            </span>
-                          );
-                        })}
+                            return (
+                              <span
+                                key={specialty}
+                                className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-roam-blue/10 to-roam-light-blue/10 text-roam-blue rounded-full border border-roam-blue/20"
+                              >
+                                {camelCaseSpecialty}
+                              </span>
+                            );
+                          })}
                         {business.specialties.length > 4 && (
                           <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full border border-gray-200">
                             +{business.specialties.length - 4} more
