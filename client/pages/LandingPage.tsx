@@ -406,10 +406,10 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold text-foreground mb-4">Services</h4>
               <ul className="space-y-2 text-foreground/70">
-                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Beauty & Wellness</Link></li>
-                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Fitness & Training</Link></li>
-                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Health & Therapy</Link></li>
-                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Home Services</Link></li>
+                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Beauty</Link></li>
+                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Fitness</Link></li>
+                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Therapy</Link></li>
+                <li><Link to="/home" className="hover:text-roam-blue transition-colors">Healthcare</Link></li>
               </ul>
             </div>
             <div>
