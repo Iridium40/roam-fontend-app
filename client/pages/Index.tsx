@@ -684,8 +684,8 @@ export default function Index() {
                   <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="mobile">
                     <div className="flex items-center gap-2">
-                      <Smartphone className="w-4 h-4" />
-                      Mobile Service
+                      <Car className="w-4 h-4" />
+                      Mobile
                     </div>
                   </SelectItem>
                   <SelectItem value="business">
@@ -724,7 +724,7 @@ export default function Index() {
                     className="bg-roam-blue/10 text-roam-blue cursor-pointer hover:bg-roam-blue/20"
                     onClick={() => setSelectedDelivery("all")}
                   >
-                    {selectedDelivery === "mobile" ? "Mobile Service" :
+                    {selectedDelivery === "mobile" ? "Mobile" :
                      selectedDelivery === "business" ? "Business" :
                      selectedDelivery === "virtual" ? "Virtual" : selectedDelivery}
                     <X className="w-3 h-3 ml-1" />
