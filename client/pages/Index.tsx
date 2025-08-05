@@ -41,7 +41,7 @@ import {
   Car,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CustomerAuthModal } from "@/components/CustomerAuthModal";
 import { CustomerAvatarDropdown } from "@/components/CustomerAvatarDropdown";
