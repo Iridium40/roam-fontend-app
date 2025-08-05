@@ -419,17 +419,6 @@ export default function Index() {
             serviceCategory.includes(keyword.toLowerCase()) ||
             serviceTitle.includes(keyword.toLowerCase()),
         );
-
-        // Debug logging for category filtering
-        if (selectedCategory === "fitness") {
-          console.log("Fitness filtering debug:", {
-            selectedCategory,
-            categoryKeywords,
-            serviceCategory,
-            serviceTitle,
-            categoryMatch
-          });
-        }
       }
 
       // Search query filter
