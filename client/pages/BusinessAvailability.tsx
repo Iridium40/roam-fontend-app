@@ -23,6 +23,7 @@ import {
   DollarSign,
   Users,
   Map,
+  Car,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
