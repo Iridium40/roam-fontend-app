@@ -39,6 +39,7 @@ interface Service {
   price: number;
   description: string;
   deliveryTypes: string[];
+  preselectedDeliveryType?: string;
 }
 
 interface Provider {
