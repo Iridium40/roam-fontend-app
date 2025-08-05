@@ -551,18 +551,7 @@ export default function ProviderProfile() {
                 </CardContent>
               </Card>
 
-              {/* Contact */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact {provider.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Send Message
-                  </Button>
-                </CardContent>
-              </Card>
+
             </div>
           </div>
         </div>
