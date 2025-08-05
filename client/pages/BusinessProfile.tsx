@@ -902,10 +902,33 @@ export default function BusinessProfile() {
 
             {/* All Services Grid */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">
-                {selectedService ? "Other Available Services" : "Available Services"}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">
+                  {selectedService ? "Other Available Services" : "Available Services"}
+                </h3>
+                {selectedService && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowOtherServices(!showOtherServices)}
+                    className="text-sm"
+                  >
+                    {showOtherServices ? (
+                      <>
+                        <ChevronUp className="w-4 h-4 mr-2" />
+                        Hide Services
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4 mr-2" />
+                        Show Services
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+              {(!selectedService || showOtherServices) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => (
                 <Card
                   key={service.id}
@@ -996,7 +1019,8 @@ export default function BusinessProfile() {
                   </CardContent>
                 </Card>
               ))}
-              </div>
+                </div>
+              )}
             </div>
 
             {services.length === 0 && (
