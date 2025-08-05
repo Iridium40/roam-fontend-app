@@ -669,7 +669,7 @@ const ProviderBooking = () => {
                                   <h3 className="font-semibold">
                                     {(service as any).services.name}
                                   </h3>
-                                  {selectedServiceId && service.service_id === selectedServiceId && (
+                                  {selectedServiceId && (service.service_id === selectedServiceId || service.id === selectedServiceId) && (
                                     <Badge className="bg-roam-yellow text-gray-900 text-xs">
                                       Selected
                                     </Badge>
