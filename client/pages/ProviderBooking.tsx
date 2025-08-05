@@ -657,9 +657,16 @@ const ProviderBooking = () => {
                           <div className="flex-1">
                             <div className="flex items-start justify-between">
                               <div>
-                                <h3 className="font-semibold">
-                                  {(service as any).services.name}
-                                </h3>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-semibold">
+                                    {(service as any).services.name}
+                                  </h3>
+                                  {selectedServiceId && service.service_id === selectedServiceId && (
+                                    <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                                      Selected
+                                    </Badge>
+                                  )}
+                                </div>
                                 <p className="text-sm text-gray-600 mt-1">
                                   {(service as any).services.description}
                                 </p>
