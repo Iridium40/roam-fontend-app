@@ -36,6 +36,7 @@ import {
   Check,
   Building,
   UserCheck,
+  ArrowLeft,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
