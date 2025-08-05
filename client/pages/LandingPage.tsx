@@ -374,11 +374,11 @@ export default function LandingPage() {
                 <Calendar className="w-5 h-5" />
               </Link>
             </Button>
-            <Button 
-              asChild 
+            <Button
+              asChild
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-roam-blue px-8 py-4 text-lg font-semibold transition-all duration-300"
+              className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white px-8 py-4 text-lg font-semibold transition-all duration-300"
             >
               <Link to="/providers" className="flex items-center gap-2">
                 Become a Provider
