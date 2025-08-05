@@ -131,7 +131,7 @@ const ProviderBooking = () => {
             name,
             description,
             image_url,
-            estimated_duration
+            duration_minutes
           )
         `,
         )
