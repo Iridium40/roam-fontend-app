@@ -280,8 +280,10 @@ const ProviderBooking = () => {
       const updated = [...selectedItems];
       updated[existingIndex].quantity += 1;
       setSelectedItems(updated);
+      console.log("Updated existing item quantity");
     } else {
       setSelectedItems([...selectedItems, bookingItem]);
+      console.log("Added new item to selection");
     }
 
     toast({
