@@ -280,13 +280,7 @@ export default function ProviderProfile() {
                           <Calendar className="w-4 h-4 mr-2" />
                           Book Now
                         </Button>
-                        <Button
-                          variant="outline"
-                          className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                        >
-                          <MessageCircle className="w-4 h-4 mr-2" />
-                          Message
-                        </Button>
+
                       </div>
                     </div>
                   </div>
