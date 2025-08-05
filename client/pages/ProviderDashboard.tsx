@@ -70,6 +70,7 @@ import { useToast } from "@/hooks/use-toast";
 import ConversationChat from "@/components/ConversationChat";
 import ConversationsList from "@/components/ConversationsList";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
+import { supabase } from "@/lib/supabase";
 
 // Plaid configuration
 const PLAID_CLIENT_ID = "670d967ef5ca2b001925eee0";
