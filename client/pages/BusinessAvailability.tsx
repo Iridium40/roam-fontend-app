@@ -533,8 +533,22 @@ export default function BusinessAvailability() {
       return;
     }
 
+    // Check if location is selected for businesses with multiple locations
+    const selectedLocation = selectedLocations[business.id];
+    if (business.locations && business.locations.length > 1 && !selectedLocation) {
+      toast({
+        title: "Location Required",
+        description: "Please select a location for this business",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Navigate to business profile with services tab active and service pre-selected
-    const targetUrl = `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`;
+    let targetUrl = `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`;
+    if (selectedLocation) {
+      targetUrl += `&location=${selectedLocation.id}`;
+    }
     console.log("Navigating to:", targetUrl);
 
     navigate(targetUrl);
