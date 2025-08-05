@@ -485,16 +485,17 @@ const ProviderBooking = () => {
                     )}
                   </div>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     asChild
                     size="lg"
                     variant="outline"
-                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white w-full sm:w-auto"
                   >
                     <Link to={`/business/${business.id}`}>
                       <Building className="w-5 h-5 mr-2" />
-                      View Business Profile
+                      <span className="hidden sm:inline">View Business Profile</span>
+                      <span className="sm:hidden">View Profile</span>
                     </Link>
                   </Button>
                   <FavoriteButton
