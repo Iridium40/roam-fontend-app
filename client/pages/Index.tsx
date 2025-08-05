@@ -348,7 +348,7 @@ export default function Index() {
     {
       id: "fitness",
       icon: Dumbbell,
-      name: "Personal Training",
+      name: "Fitness",
       count: "80+ trainers",
       color: "from-orange-500 to-red-500",
       description: "Personal trainers, yoga, and fitness coaching",
@@ -356,7 +356,7 @@ export default function Index() {
     {
       id: "therapy",
       icon: Hand,
-      name: "Massage Therapy",
+      name: "Therapy",
       count: "120+ therapists",
       color: "from-green-500 to-emerald-500",
       description: "Therapeutic massage and bodywork",
