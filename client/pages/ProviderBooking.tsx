@@ -266,7 +266,7 @@ const ProviderBooking = () => {
       price: (item as any).custom_price || (item as any).business_price || 0,
       duration:
         type === "service"
-          ? (item as any).services.estimated_duration
+          ? (item as any).services.duration_minutes
           : undefined,
       quantity: 1,
     };
