@@ -94,8 +94,8 @@ const ProviderBooking = () => {
     customerName: "",
     customerEmail: "",
     customerPhone: "",
-    preferredDate: "",
-    preferredTime: "",
+    preferredDate: preSelectedDate || "",
+    preferredTime: preSelectedTime || "",
     notes: "",
     items: [],
   });
