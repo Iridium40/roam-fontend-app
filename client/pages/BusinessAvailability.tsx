@@ -66,11 +66,9 @@ export default function BusinessAvailability() {
         .eq("is_active", true)
         .single();
 
-      const { data: serviceData, error: serviceError } = serviceResponse;
-
       console.log(
         "Service query result:",
-        JSON.stringify({ serviceData, serviceError, serviceId }, null, 2),
+        JSON.stringify(serviceResponse, null, 2),
       );
 
       if (serviceError) {
