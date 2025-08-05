@@ -705,14 +705,15 @@ export default function Index() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden">
-            <div
-              className="flex transition-transform duration-300 ease-in-out"
-              style={{
-                transform: `translateX(-${currentServiceSlide * 100}%)`,
-              }}
-            >
-              {filteredFeaturedServices.map((service) => (
+          {filteredFeaturedServices.length > 0 ? (
+            <div className="relative overflow-hidden">
+              <div
+                className="flex transition-transform duration-300 ease-in-out"
+                style={{
+                  transform: `translateX(-${currentServiceSlide * 100}%)`,
+                }}
+              >
+                {filteredFeaturedServices.map((service) => (
                 <div key={service.id} className="w-full flex-shrink-0">
                   <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 mx-2">
                     <div className="relative">
@@ -775,22 +776,42 @@ export default function Index() {
                     </CardContent>
                   </Card>
                 </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">No Featured Services Found</h3>
+              <p className="text-foreground/60 mb-4">
+                No featured services match the selected category. Try selecting a different category.
+              </p>
+              <Button
+                onClick={() => handleCategorySelect("all")}
+                variant="outline"
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              >
+                View All Services
+              </Button>
+            </div>
+          )}
+
+          {/* Carousel indicators - only show when there are services */}
+          {filteredFeaturedServices.length > 0 && (
+            <div className="flex justify-center mt-6 gap-2">
+              {filteredFeaturedServices.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentServiceSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-colors ${
+                    index === currentServiceSlide ? "bg-roam-blue" : "bg-gray-300"
+                  }`}
+                />
               ))}
             </div>
-          </div>
-
-          {/* Carousel indicators */}
-          <div className="flex justify-center mt-6 gap-2">
-            {filteredFeaturedServices.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentServiceSlide(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${
-                  index === currentServiceSlide ? "bg-roam-blue" : "bg-gray-300"
-                }`}
-              />
-            ))}
-          </div>
+          )}
         </div>
       </section>
 
