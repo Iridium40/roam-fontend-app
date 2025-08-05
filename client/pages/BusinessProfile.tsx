@@ -73,7 +73,6 @@ export default function BusinessProfile() {
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
     null,
   );
-  const [showOtherServices, setShowOtherServices] = useState(false);
 
   useEffect(() => {
     if (businessId) {
