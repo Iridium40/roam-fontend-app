@@ -187,8 +187,8 @@ export default function ProviderProfile() {
 
   // Delivery icons matching home page
   const deliveryIcons = {
-    mobile: Car,
-    business: Building,
+    customer_location: Car,
+    business_location: Building,
     virtual: Video,
   };
 
@@ -198,8 +198,8 @@ export default function ProviderProfile() {
 
   const getDeliveryBadge = (type: string) => {
     const config = {
-      mobile: { label: "Mobile", color: "bg-green-100 text-green-800" },
-      business: { label: "Business", color: "bg-blue-100 text-blue-800" },
+      customer_location: { label: "Mobile", color: "bg-green-100 text-green-800" },
+      business_location: { label: "Business", color: "bg-blue-100 text-blue-800" },
       virtual: { label: "Virtual", color: "bg-purple-100 text-purple-800" },
     };
     return (
