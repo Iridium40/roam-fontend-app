@@ -90,9 +90,15 @@ export default function BookingModal({
 
   // Reset when modal opens
   useEffect(() => {
-    if (isOpen) {
-      setCurrentStep("delivery");
-      setSelectedDeliveryType("");
+    if (isOpen && service) {
+      // If service has a preselected delivery type, skip delivery step
+      if (service.preselectedDeliveryType) {
+        setCurrentStep("datetime");
+        setSelectedDeliveryType(service.preselectedDeliveryType);
+      } else {
+        setCurrentStep("delivery");
+        setSelectedDeliveryType("");
+      }
       setSelectedDate("");
       setSelectedTime("");
       setCustomerLocation({
@@ -110,7 +116,7 @@ export default function BookingModal({
         specialRequests: "",
       });
     }
-  }, [isOpen]);
+  }, [isOpen, service]);
 
   if (!service) return null;
 
