@@ -426,56 +426,67 @@ export default function ProviderProfile() {
                     {services.map((service) => (
                       <div
                         key={service.id}
-                        className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                        className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
                       >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <h3 className="font-semibold text-lg">
-                                {service.name}
-                              </h3>
-                              {service.popularity && (
-                                <Badge className="bg-roam-yellow text-gray-900">
-                                  {service.popularity}
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-gray-600 mb-3">
-                              {service.description}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              {service.deliveryTypes.map((type) => {
-                                const Icon = getDeliveryIcon(type);
-                                const badge = getDeliveryBadge(type);
-                                return (
-                                  <Badge
-                                    key={type}
-                                    className={`text-xs ${badge.color}`}
-                                  >
-                                    <Icon className="w-3 h-3 mr-1" />
-                                    {badge.label}
-                                  </Badge>
-                                );
-                              })}
-                            </div>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                              <div className="flex items-center gap-1">
-                                <Clock className="w-4 h-4" />
-                                {service.duration}
+                        <div className="flex items-start">
+                          <div className="w-24 h-24 flex-shrink-0">
+                            <img
+                              src={service.image_url}
+                              alt={service.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h3 className="font-semibold text-lg">
+                                    {service.name}
+                                  </h3>
+                                  {service.popularity && (
+                                    <Badge className="bg-roam-yellow text-gray-900">
+                                      {service.popularity}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-gray-600 mb-3 text-sm">
+                                  {service.description}
+                                </p>
+                                <div className="flex flex-wrap gap-2 mb-3">
+                                  {service.deliveryTypes.map((type) => {
+                                    const Icon = getDeliveryIcon(type);
+                                    const badge = getDeliveryBadge(type);
+                                    return (
+                                      <Badge
+                                        key={type}
+                                        className={`text-xs ${badge.color}`}
+                                      >
+                                        <Icon className="w-3 h-3 mr-1" />
+                                        {badge.label}
+                                      </Badge>
+                                    );
+                                  })}
+                                </div>
+                                <div className="flex items-center gap-4 text-sm text-gray-600">
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="w-4 h-4" />
+                                    {service.duration}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right ml-4">
+                                <div className="text-2xl font-bold text-roam-blue mb-2">
+                                  ${service.price}
+                                </div>
+                                <Button
+                                  size="sm"
+                                  className="bg-roam-blue hover:bg-roam-blue/90"
+                                  onClick={() => handleBookService(service.id)}
+                                >
+                                  Book Service
+                                </Button>
                               </div>
                             </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-roam-blue mb-2">
-                              ${service.price}
-                            </div>
-                            <Button
-                              size="sm"
-                              className="bg-roam-blue hover:bg-roam-blue/90"
-                              onClick={() => handleBookService(service.id)}
-                            >
-                              Book Service
-                            </Button>
                           </div>
                         </div>
                       </div>
