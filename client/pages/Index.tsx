@@ -394,12 +394,12 @@ export default function Index() {
     );
   };
 
-  // Category mapping for filtering services
+  // Category mapping for filtering services - maps UI category IDs to database service_category_type enum values
   const categoryMapping = {
-    beauty: ["beauty", "Beauty & Wellness", "beauty_wellness"],
-    fitness: ["fitness", "Fitness", "fitness_training"],
-    therapy: ["therapy", "Therapy", "massage_therapy"],
-    healthcare: ["healthcare", "Healthcare", "medical", "health"],
+    beauty: ["beauty"],
+    fitness: ["fitness"],
+    therapy: ["therapy"],
+    healthcare: ["healthcare"],
   };
 
   // Filter services based on selected category, search query, and delivery type
