@@ -241,7 +241,19 @@ export default function ProviderProfile() {
 
   const handleBookService = (serviceId: number) => {
     const service = services.find((s) => s.id === serviceId);
-    setSelectedService(service || null);
+    if (service) {
+      // Check if service has only one delivery type
+      if (service.deliveryTypes.length === 1) {
+        // Skip delivery selection step and set the single delivery type
+        setSelectedService({
+          ...service,
+          preselectedDeliveryType: service.deliveryTypes[0],
+        });
+      } else {
+        // Multiple delivery types, let user choose
+        setSelectedService(service);
+      }
+    }
     setShowBookingModal(true);
   };
 
