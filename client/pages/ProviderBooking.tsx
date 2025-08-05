@@ -805,9 +805,16 @@ const ProviderBooking = () => {
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
-                            <h3 className="font-semibold">
-                              {(addon as any).addons.name}
-                            </h3>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold">
+                                {(addon as any).addons.name}
+                              </h3>
+                              {selectedServiceId && (addon as any).service_addon_eligibility?.is_recommended && (
+                                <Badge className="bg-green-100 text-green-800 text-xs">
+                                  Recommended
+                                </Badge>
+                              )}
+                            </div>
                             <p className="text-sm text-gray-600 mt-1">
                               {(addon as any).addons.description}
                             </p>
