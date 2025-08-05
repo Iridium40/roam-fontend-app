@@ -647,7 +647,11 @@ const ProviderBooking = () => {
                       .map((service) => (
                       <div
                         key={service.id}
-                        className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                        className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${
+                          selectedServiceId && service.service_id === selectedServiceId
+                            ? "border-roam-blue bg-roam-blue/5 border-2"
+                            : ""
+                        }`}
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
