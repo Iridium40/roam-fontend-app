@@ -132,7 +132,7 @@ const ProviderBooking = () => {
         .eq('is_available', true);
 
       if (servicesError) {
-        console.error('Error fetching services:', servicesError);
+        console.error('Error fetching services:', servicesError.message || servicesError);
       }
 
       // Fetch business addons
