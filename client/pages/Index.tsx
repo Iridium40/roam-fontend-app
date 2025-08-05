@@ -1134,11 +1134,14 @@ export default function Index() {
                   </div>
 
                   <Button
+                    asChild
                     size="sm"
                     className="w-full bg-roam-blue hover:bg-roam-blue/90"
                   >
-                    <Calendar className="w-3 h-3 mr-2" />
-                    Book Now
+                    <Link to={`/book-service/${service.id}`}>
+                      <Calendar className="w-3 h-3 mr-2" />
+                      Book Now
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>
