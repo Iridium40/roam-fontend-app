@@ -173,7 +173,7 @@ const ProviderBooking = () => {
         .single();
 
       if (locationError) {
-        console.error("Error fetching location:", locationError);
+        console.error("Error fetching location:", locationError.message || locationError);
       }
 
       // Fetch business providers
