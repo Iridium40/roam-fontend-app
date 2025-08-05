@@ -153,6 +153,7 @@ export default function ProviderProfile() {
                   ? [businessService.delivery_type]
                   : ["mobile", "business"],
                 popularity: null, // Could be determined by booking frequency
+                image_url: service?.image_url || "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop",
               };
             },
           );
