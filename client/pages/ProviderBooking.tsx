@@ -325,10 +325,7 @@ const ProviderBooking = () => {
   };
 
   const getTotalAmount = () => {
-    return selectedItems.reduce(
-      (total, item) => total + item.price,
-      0,
-    );
+    return selectedItems.reduce((total, item) => total + item.price, 0);
   };
 
   const openBookingModal = () => {
@@ -613,7 +610,6 @@ const ProviderBooking = () => {
                         )}
                       </div>
                     </div>
-
                   </div>
                   <div className="mt-3 p-3 bg-green-100 rounded-md">
                     <p className="text-sm text-green-700">
@@ -961,9 +957,7 @@ const ProviderBooking = () => {
                     key={`${item.type}-${item.id}-${index}`}
                     className="flex justify-between"
                   >
-                    <span>
-                      {item.name}
-                    </span>
+                    <span>{item.name}</span>
                     <span>${item.price.toFixed(2)}</span>
                   </div>
                 ))}

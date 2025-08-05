@@ -857,7 +857,9 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       // Ensure we have a valid access token
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.access_token) {
         directSupabaseAPI.currentAccessToken = session.access_token;
       } else {
@@ -895,7 +897,7 @@ export default function ProviderDashboard() {
         type: typeof error,
         message: error?.message,
         keys: Object.keys(error || {}),
-        stack: error?.stack
+        stack: error?.stack,
       });
 
       let errorMessage = "Failed to upload avatar";

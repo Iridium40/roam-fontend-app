@@ -51,8 +51,9 @@ export default function ProviderProfile() {
         setLoading(true);
 
         const { data: providerData, error } = await supabase
-          .from('providers')
-          .select(`
+          .from("providers")
+          .select(
+            `
             id,
             first_name,
             last_name,
@@ -64,13 +65,14 @@ export default function ProviderProfile() {
             business_id,
             is_active,
             created_at
-          `)
-          .eq('id', providerId)
-          .eq('is_active', true)
+          `,
+          )
+          .eq("id", providerId)
+          .eq("is_active", true)
           .single();
 
         if (error || !providerData) {
-          throw new Error('Provider not found');
+          throw new Error("Provider not found");
         }
 
         // Transform the data to match the expected format
@@ -83,10 +85,14 @@ export default function ProviderProfile() {
           responseRate: "95%", // Default value
           responseTime: "Within 2 hours", // Default value
           location: "Service Area", // Default value
-          joinedDate: new Date(providerData.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+          joinedDate: new Date(providerData.created_at).toLocaleDateString(
+            "en-US",
+            { month: "long", year: "numeric" },
+          ),
           verified: true,
           profileImage: providerData.image_url || "/api/placeholder/120/120",
-          coverImage: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=300&fit=crop",
+          coverImage:
+            "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=300&fit=crop",
           bio: providerData.bio || "Professional service provider",
           specialties: [], // Could fetch from separate table if available
           languages: ["English"], // Default value
@@ -94,13 +100,21 @@ export default function ProviderProfile() {
           deliveryTypes: ["mobile", "business"], // Default values
           businessAddress: "", // Could fetch from business_locations if available
           serviceArea: "Local Area", // Default value
-          availableDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], // Default values
+          availableDays: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ], // Default values
         });
 
         // Fetch services assigned to this provider
         const { data: servicesData, error: servicesError } = await supabase
-          .from('business_services')
-          .select(`
+          .from("business_services")
+          .select(
+            `
             id,
             business_price,
             delivery_type,
@@ -111,33 +125,40 @@ export default function ProviderProfile() {
               min_price,
               duration_minutes
             )
-          `)
-          .eq('business_id', providerData.business_id)
-          .eq('is_active', true);
+          `,
+          )
+          .eq("business_id", providerData.business_id)
+          .eq("is_active", true);
 
         if (servicesError) {
-          console.error('Error fetching services:', servicesError);
+          console.error("Error fetching services:", servicesError);
         } else if (servicesData) {
-          const transformedServices = servicesData.map((businessService: any) => {
-            const service = businessService.services;
-            const serviceName = service?.name || "Professional Service";
+          const transformedServices = servicesData.map(
+            (businessService: any) => {
+              const service = businessService.services;
+              const serviceName = service?.name || "Professional Service";
 
-            return {
-              id: businessService.id,
-              name: serviceName,
-              duration: `${service?.duration_minutes || 60} minutes`,
-              price: businessService.business_price || service?.min_price || 50,
-              description: service?.description || "Professional service delivered by experienced and qualified practitioners.",
-              deliveryTypes: businessService.delivery_type ? [businessService.delivery_type] : ["mobile", "business"],
-              popularity: null // Could be determined by booking frequency
-            };
-          });
+              return {
+                id: businessService.id,
+                name: serviceName,
+                duration: `${service?.duration_minutes || 60} minutes`,
+                price:
+                  businessService.business_price || service?.min_price || 50,
+                description:
+                  service?.description ||
+                  "Professional service delivered by experienced and qualified practitioners.",
+                deliveryTypes: businessService.delivery_type
+                  ? [businessService.delivery_type]
+                  : ["mobile", "business"],
+                popularity: null, // Could be determined by booking frequency
+              };
+            },
+          );
 
           setServices(transformedServices);
         }
-
       } catch (error: any) {
-        console.error('Error fetching provider:', error);
+        console.error("Error fetching provider:", error);
         toast({
           title: "Error",
           description: "Failed to load provider information",
@@ -150,8 +171,6 @@ export default function ProviderProfile() {
 
     fetchProviderData();
   }, [providerId, toast]);
-
-
 
   const reviews = [
     {
@@ -199,8 +218,14 @@ export default function ProviderProfile() {
 
   const getDeliveryBadge = (type: string) => {
     const config = {
-      customer_location: { label: "Mobile", color: "bg-green-100 text-green-800" },
-      business_location: { label: "Business", color: "bg-blue-100 text-blue-800" },
+      customer_location: {
+        label: "Mobile",
+        color: "bg-green-100 text-green-800",
+      },
+      business_location: {
+        label: "Business",
+        color: "bg-blue-100 text-blue-800",
+      },
       virtual: { label: "Virtual", color: "bg-purple-100 text-purple-800" },
     };
     return (
@@ -302,7 +327,11 @@ export default function ProviderProfile() {
                     className="object-cover"
                   />
                   <AvatarFallback className="bg-gradient-to-br from-roam-blue to-roam-light-blue text-white text-2xl font-bold">
-                    {provider.name.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
+                    {provider.name
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 {provider.verified && (
@@ -352,7 +381,6 @@ export default function ProviderProfile() {
                           <Calendar className="w-4 h-4 mr-2" />
                           Book Now
                         </Button>
-
                       </div>
                     </div>
                   </div>
@@ -622,8 +650,6 @@ export default function ProviderProfile() {
                   </div>
                 </CardContent>
               </Card>
-
-
             </div>
           </div>
         </div>
