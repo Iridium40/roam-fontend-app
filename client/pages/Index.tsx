@@ -372,7 +372,7 @@ export default function Index() {
   const promotionalDeals: any[] = [];
 
   const deliveryIcons = {
-    mobile: Smartphone,
+    mobile: Car,
     business: Building,
     virtual: Video,
   };
