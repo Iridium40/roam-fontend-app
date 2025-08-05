@@ -611,20 +611,7 @@ const ProviderBooking = () => {
                         )}
                       </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-green-500 text-green-600 hover:bg-green-600 hover:text-white"
-                      onClick={() => {
-                        setPreferredProvider(null);
-                        // Update URL to remove provider parameter
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete("provider");
-                        window.history.replaceState({}, "", url.toString());
-                      }}
-                    >
-                      Change Provider
-                    </Button>
+
                   </div>
                   <div className="mt-3 p-3 bg-green-100 rounded-md">
                     <p className="text-sm text-green-700">
