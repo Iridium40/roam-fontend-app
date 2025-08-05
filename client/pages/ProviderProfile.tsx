@@ -32,6 +32,9 @@ import ShareModal from "@/components/ShareModal";
 
 export default function ProviderProfile() {
   const { providerId } = useParams();
+  const { toast } = useToast();
+  const [provider, setProvider] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState<any | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
