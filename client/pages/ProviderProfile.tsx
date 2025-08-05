@@ -34,6 +34,7 @@ export default function ProviderProfile() {
   const { providerId } = useParams();
   const { toast } = useToast();
   const [provider, setProvider] = useState<any | null>(null);
+  const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState<any | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
