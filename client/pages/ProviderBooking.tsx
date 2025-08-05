@@ -761,28 +761,24 @@ const ProviderBooking = () => {
                           </div>
 
                           <div className="flex items-center space-x-2">
-                            {getItemQuantity(addon.id, "addon") > 0 && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() =>
-                                    removeItemFromBooking(addon.id, "addon")
-                                  }
-                                >
-                                  <Minus className="h-4 w-4" />
-                                </Button>
-                                <span className="min-w-[20px] text-center">
-                                  {getItemQuantity(addon.id, "addon")}
-                                </span>
-                              </>
+                            {getItemQuantity(addon.id, "addon") > 0 ? (
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() =>
+                                  removeItemFromBooking(addon.id, "addon")
+                                }
+                              >
+                                Remove
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() => addItemToBooking(addon, "addon")}
+                              >
+                                Add
+                              </Button>
                             )}
-                            <Button
-                              size="sm"
-                              onClick={() => addItemToBooking(addon, "addon")}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
                           </div>
                         </div>
                       </div>
