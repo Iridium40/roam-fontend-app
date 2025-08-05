@@ -424,6 +424,7 @@ export default function Index() {
   // Handle category selection
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
+    setCurrentServiceSlide(0); // Reset carousel to first slide when category changes
   };
 
   const nextServiceSlide = () => {
