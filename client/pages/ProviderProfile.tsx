@@ -95,6 +95,61 @@ export default function ProviderProfile() {
           availableDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], // Default values
         });
 
+        // Fetch services assigned to this provider
+        const { data: servicesData, error: servicesError } = await supabase
+          .from('business_services')
+          .select(`
+            id,
+            business_price,
+            delivery_type,
+            services:service_id (
+              id,
+              name,
+              min_price,
+              duration_minutes
+            )
+          `)
+          .eq('business_id', providerData.business_id)
+          .eq('is_active', true);
+
+        if (servicesError) {
+          console.error('Error fetching services:', servicesError);
+        } else if (servicesData) {
+          // Mock descriptions for different service types
+          const mockDescriptions = {
+            "Deep Tissue Massage": "Therapeutic massage targeting deeper layers of muscle and connective tissue to relieve chronic pain and tension.",
+            "Swedish Massage": "Relaxing full-body massage using long strokes, kneading, and circular movements to promote relaxation.",
+            "Sports Recovery Massage": "Specialized massage for athletes focusing on injury prevention and recovery enhancement.",
+            "Prenatal Massage": "Gentle, safe massage designed specifically for expecting mothers to reduce pregnancy discomfort.",
+            "Hot Stone Massage": "Therapeutic massage using heated stones to relax muscles and improve circulation.",
+            "Aromatherapy Massage": "Relaxing massage combined with essential oils to enhance therapeutic benefits.",
+            "Couples Massage": "Relaxing massage experience designed for two people in the same room.",
+            "Chair Massage": "Quick and convenient seated massage perfect for workplace wellness.",
+            "Reflexology": "Therapeutic massage focusing on pressure points in feet, hands, and ears.",
+            "Thai Massage": "Traditional healing practice combining acupressure, stretching, and yoga poses.",
+            "Shiatsu Massage": "Japanese massage technique using finger pressure to restore energy balance.",
+            "Trigger Point Therapy": "Targeted massage focusing on specific muscle knots and tension areas."
+          };
+
+          const transformedServices = servicesData.map((businessService: any) => {
+            const service = businessService.services;
+            const serviceName = service?.name || "Professional Service";
+
+            return {
+              id: businessService.id,
+              name: serviceName,
+              duration: `${service?.duration_minutes || 60} minutes`,
+              price: businessService.business_price || service?.min_price || 50,
+              description: mockDescriptions[serviceName as keyof typeof mockDescriptions] ||
+                          "Professional service delivered by experienced and qualified practitioners.",
+              deliveryTypes: businessService.delivery_type ? [businessService.delivery_type] : ["mobile", "business"],
+              popularity: null // Could be determined by booking frequency
+            };
+          });
+
+          setServices(transformedServices);
+        }
+
       } catch (error: any) {
         console.error('Error fetching provider:', error);
         toast({
