@@ -78,10 +78,12 @@ const ProviderBooking = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Get URL parameters for provider preference and service selection
+  // Get URL parameters for provider preference, service selection, date and time
   const urlParams = new URLSearchParams(window.location.search);
   const preferredProviderId = urlParams.get("provider");
   const selectedServiceId = urlParams.get("service");
+  const preSelectedDate = urlParams.get("date");
+  const preSelectedTime = urlParams.get("time");
 
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [loading, setLoading] = useState(true);
