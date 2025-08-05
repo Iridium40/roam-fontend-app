@@ -845,7 +845,7 @@ export default function Index() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {popularServices.map((service) => (
+            {filteredPopularServices.map((service) => (
               <Card
                 key={service.id}
                 className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50 hover:border-roam-light-blue/50"
