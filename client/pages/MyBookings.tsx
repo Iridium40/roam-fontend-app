@@ -309,7 +309,7 @@ export default function MyBookings() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Button asChild variant="ghost" size="sm">
-                <Link to="/">
+                <Link to="/home">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Services
                 </Link>
