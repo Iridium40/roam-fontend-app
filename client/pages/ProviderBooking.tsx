@@ -148,8 +148,8 @@ const ProviderBooking = () => {
         );
       }
 
-      // Fetch business addons
-      const { data: addons, error: addonsError } = await supabase
+      // Fetch business addons filtered by selected service
+      let addonsQuery = supabase
         .from("business_addons")
         .select(
           `
@@ -158,11 +158,22 @@ const ProviderBooking = () => {
             name,
             description,
             image_url
+          ),
+          service_addon_eligibility!inner (
+            service_id,
+            is_recommended
           )
         `,
         )
         .eq("business_id", businessId)
         .eq("is_available", true);
+
+      // Filter by selected service if one is specified
+      if (selectedServiceId) {
+        addonsQuery = addonsQuery.eq("service_addon_eligibility.service_id", selectedServiceId);
+      }
+
+      const { data: addons, error: addonsError } = await addonsQuery;
 
       if (addonsError) {
         console.error(
