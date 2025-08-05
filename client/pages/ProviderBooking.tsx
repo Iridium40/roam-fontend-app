@@ -692,30 +692,26 @@ const ProviderBooking = () => {
                           </div>
 
                           <div className="flex items-center space-x-2">
-                            {getItemQuantity(service.id, "service") > 0 && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() =>
-                                    removeItemFromBooking(service.id, "service")
-                                  }
-                                >
-                                  <Minus className="h-4 w-4" />
-                                </Button>
-                                <span className="min-w-[20px] text-center">
-                                  {getItemQuantity(service.id, "service")}
-                                </span>
-                              </>
+                            {getItemQuantity(service.id, "service") > 0 ? (
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() =>
+                                  removeItemFromBooking(service.id, "service")
+                                }
+                              >
+                                Remove
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  addItemToBooking(service, "service")
+                                }
+                              >
+                                Add
+                              </Button>
                             )}
-                            <Button
-                              size="sm"
-                              onClick={() =>
-                                addItemToBooking(service, "service")
-                              }
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
                           </div>
                         </div>
                       </div>
