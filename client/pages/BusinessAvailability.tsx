@@ -137,7 +137,7 @@ export default function BusinessAvailability() {
         .eq("is_active", true);
 
       // Check for authentication errors
-      const authErrors = [serviceResponse, businessesResponse].filter(
+      const authErrors = [businessesResponse].filter(
         (response) => response.status === 401,
       );
 
