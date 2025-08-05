@@ -572,7 +572,7 @@ export default function Index() {
             </h1>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
               Connect with verified professionals in Beauty, Fitness, Therapy,
-              and Healthcare. Available mobile, in-studio, or virtual.
+              and Healthcare. Available mobile, business, or virtual.
             </p>
 
 
@@ -690,7 +690,7 @@ export default function Index() {
                   <SelectItem value="business">
                     <div className="flex items-center gap-2">
                       <Building className="w-4 h-4" />
-                      In-Studio
+                      Business
                     </div>
                   </SelectItem>
                   <SelectItem value="virtual">
@@ -724,7 +724,7 @@ export default function Index() {
                     onClick={() => setSelectedDelivery("all")}
                   >
                     {selectedDelivery === "mobile" ? "Mobile Service" :
-                     selectedDelivery === "business" ? "In-Studio" :
+                     selectedDelivery === "business" ? "Business" :
                      selectedDelivery === "virtual" ? "Virtual" : selectedDelivery}
                     <X className="w-3 h-3 ml-1" />
                   </Badge>
