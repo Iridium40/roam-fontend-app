@@ -974,11 +974,42 @@ export default function BusinessProfile() {
                       </div>
 
                       {service.services?.service_subcategories && (
-                        <Badge variant="secondary" className="text-xs mb-4">
+                        <Badge variant="secondary" className="text-xs mb-2">
                           {
                             service.services.service_subcategories
                               .service_categories?.service_category_type
                           }
+                        </Badge>
+                      )}
+
+                      {/* Delivery Type Badge */}
+                      {service.delivery_type && (
+                        <Badge
+                          variant="outline"
+                          className={`text-xs mb-4 ${
+                            service.delivery_type === "customer_location"
+                              ? "border-green-500 text-green-700 bg-green-50"
+                              : service.delivery_type === "business_location"
+                              ? "border-blue-500 text-blue-700 bg-blue-50"
+                              : "border-purple-500 text-purple-700 bg-purple-50"
+                          }`}
+                        >
+                          {service.delivery_type === "customer_location" ? (
+                            <>
+                              <Car className="w-3 h-3 mr-1" />
+                              Mobile
+                            </>
+                          ) : service.delivery_type === "business_location" ? (
+                            <>
+                              <Building className="w-3 h-3 mr-1" />
+                              Business
+                            </>
+                          ) : (
+                            <>
+                              <Video className="w-3 h-3 mr-1" />
+                              Virtual
+                            </>
+                          )}
                         </Badge>
                       )}
                     </div>
