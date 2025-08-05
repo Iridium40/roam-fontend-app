@@ -3608,7 +3608,7 @@ export default function ProviderDashboard() {
 
   const getDeliveryTypeLabel = (type: string) => {
     const labels = {
-      business_location: "In-Studio/Business",
+      business_location: "Business",
       customer_location: "Mobile",
       virtual: "Virtual",
       both_locations: "In-Studio or Mobile",
