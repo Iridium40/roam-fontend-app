@@ -641,7 +641,7 @@ const ProviderBooking = () => {
                   )}
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {(() => {
                       console.log("Selected Service ID:", selectedServiceId);
                       console.log("All services:", services.map(s => ({ id: s.id, service_id: s.service_id, name: s.services?.name })));
