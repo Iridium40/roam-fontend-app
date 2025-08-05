@@ -255,18 +255,26 @@ export default function BookingModal({
                   onClick={() => setSelectedDeliveryType(type)}
                 >
                   <CardContent className="p-4 flex items-center gap-3">
-                    {type === "mobile" ? (
+                    {type === "customer_location" ? (
                       <Smartphone className="w-8 h-8 text-roam-blue" />
+                    ) : type === "virtual" ? (
+                      <Video className="w-8 h-8 text-roam-blue" />
                     ) : (
                       <Building className="w-8 h-8 text-roam-blue" />
                     )}
                     <div>
                       <h4 className="font-semibold">
-                        {type === "mobile" ? "Mobile Service" : "In-Studio"}
+                        {type === "customer_location"
+                          ? "Mobile Service"
+                          : type === "virtual"
+                          ? "Virtual Service"
+                          : "In-Studio"}
                       </h4>
                       <p className="text-sm text-gray-600">
-                        {type === "mobile"
+                        {type === "customer_location"
                           ? "Service provided at your location"
+                          : type === "virtual"
+                          ? "Service provided online via video call"
                           : `Service at ${provider.businessAddress}`}
                       </p>
                     </div>
