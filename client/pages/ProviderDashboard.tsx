@@ -882,8 +882,12 @@ export default function ProviderDashboard() {
       setProvider({ ...provider, image_url: publicUrl });
     } catch (error: any) {
       console.error("Avatar upload error:", error);
-      console.error("Error type:", typeof error);
-      console.error("Error keys:", Object.keys(error || {}));
+      console.error("Error details:", {
+        type: typeof error,
+        message: error?.message,
+        keys: Object.keys(error || {}),
+        stack: error?.stack
+      });
 
       let errorMessage = "Failed to upload avatar";
 
