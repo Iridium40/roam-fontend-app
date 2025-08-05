@@ -54,26 +54,26 @@ export default function LandingPage() {
   const serviceCategories = [
     {
       icon: Scissors,
-      title: "Beauty & Wellness",
+      title: "Beauty",
       description: "Hair, nails, skincare, and beauty treatments",
       color: "from-pink-500 to-rose-400"
     },
     {
       icon: Dumbbell,
-      title: "Fitness & Training",
+      title: "Fitness",
       description: "Personal training, yoga, and fitness coaching",
       color: "from-green-500 to-emerald-400"
     },
     {
-      icon: Stethoscope,
-      title: "Health & Therapy",
+      icon: Hand,
+      title: "Therapy",
       description: "Physical therapy, counseling, and wellness services",
       color: "from-blue-500 to-cyan-400"
     },
     {
-      icon: Home,
-      title: "Home Services",
-      description: "Cleaning, maintenance, and home improvement",
+      icon: Stethoscope,
+      title: "Healthcare",
+      description: "Medical services, health screenings, and professional care",
       color: "from-purple-500 to-violet-400"
     }
   ];
