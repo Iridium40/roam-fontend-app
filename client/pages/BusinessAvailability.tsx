@@ -163,7 +163,6 @@ export default function BusinessAvailability() {
         }
       }
 
-      const { data: serviceData, error: serviceError } = serviceResponse;
       const { data: businessesData, error: businessesError } =
         businessesResponse;
 
