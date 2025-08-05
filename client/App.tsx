@@ -16,6 +16,7 @@ declare global {
     _reactRoot?: ReturnType<typeof createRoot>;
   }
 }
+import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
 import Providers from "./pages/Providers";
 import About from "./pages/About";
