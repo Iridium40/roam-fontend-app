@@ -105,6 +105,7 @@ export default function ProviderProfile() {
             services:service_id (
               id,
               name,
+              description,
               min_price,
               duration_minutes
             )
