@@ -616,7 +616,7 @@ export default function BookingModal({
           {renderStepContent()}
 
           <div className="flex justify-between pt-4 border-t">
-            {currentStep !== "delivery" && (
+            {(currentStep !== "delivery" && !(currentStep === "datetime" && service?.preselectedDeliveryType)) && (
               <Button variant="outline" onClick={handleBack}>
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 Back
