@@ -502,6 +502,39 @@ export default function BusinessAvailability() {
     }));
   };
 
+  const handleDeliveryTypeSelect = (businessId: string, deliveryType: string) => {
+    setSelectedDeliveryTypes(prev => ({
+      ...prev,
+      [businessId]: deliveryType
+    }));
+
+    // Clear location selection if switching to mobile
+    if (deliveryType === 'customer_location') {
+      setSelectedLocations(prev => ({
+        ...prev,
+        [businessId]: null
+      }));
+    }
+
+    // Clear address if switching to business
+    if (deliveryType === 'business_location') {
+      setCustomerAddresses(prev => ({
+        ...prev,
+        [businessId]: null
+      }));
+    }
+  };
+
+  const handleAddressChange = (businessId: string, field: string, value: string) => {
+    setCustomerAddresses(prev => ({
+      ...prev,
+      [businessId]: {
+        ...prev[businessId],
+        [field]: value
+      }
+    }));
+  };
+
   const openInGoogleMaps = (location: any) => {
     const address = [
       location.address_line1,
