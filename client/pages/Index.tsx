@@ -396,10 +396,10 @@ export default function Index() {
 
   // Category mapping for filtering services
   const categoryMapping = {
-    beauty: ["Beauty & Wellness", "beauty"],
-    fitness: ["Personal Training", "fitness", "Personal Fitness", "Fitness"],
-    therapy: ["Massage Therapy", "therapy", "Wellness", "Health"],
-    healthcare: ["Healthcare", "healthcare", "Medical", "Health"],
+    beauty: ["beauty", "Beauty & Wellness", "beauty_wellness"],
+    fitness: ["fitness", "Fitness", "fitness_training"],
+    therapy: ["therapy", "Therapy", "massage_therapy"],
+    healthcare: ["healthcare", "Healthcare", "medical", "health"],
   };
 
   // Filter services based on selected category, search query, and delivery type
