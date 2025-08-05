@@ -406,6 +406,19 @@ const ProviderBooking = () => {
     }
   };
 
+  const toggleDescription = (serviceId: string) => {
+    setExpandedDescriptions(prev => ({
+      ...prev,
+      [serviceId]: !prev[serviceId]
+    }));
+  };
+
+  const truncateDescription = (description: string, isExpanded: boolean) => {
+    if (!description) return '';
+    if (description.length <= 100 || isExpanded) return description;
+    return description.substring(0, 100) + '...';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
