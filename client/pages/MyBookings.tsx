@@ -106,7 +106,9 @@ export default function MyBookings() {
 
           if (refreshError) {
             console.error("Token refresh failed:", refreshError);
-            setError("Your session has expired. Please refresh the page and sign in again.");
+            setError(
+              "Your session has expired. Please refresh the page and sign in again.",
+            );
             return;
           }
 
@@ -203,7 +205,9 @@ export default function MyBookings() {
             console.error("Token refresh failed:", refreshError);
           }
 
-          setError("Your session has expired. Please refresh the page and sign in again.");
+          setError(
+            "Your session has expired. Please refresh the page and sign in again.",
+          );
           return;
         }
 

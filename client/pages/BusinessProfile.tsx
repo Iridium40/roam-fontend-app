@@ -383,7 +383,8 @@ export default function BusinessProfile() {
     try {
       if (!isCustomer) {
         // Try to refresh session first
-        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+        const { data: refreshData, error: refreshError } =
+          await supabase.auth.refreshSession();
 
         if (refreshError || !refreshData?.session) {
           toast({
