@@ -205,7 +205,7 @@ export default function BookingModal({
       date: selectedDate,
       time: selectedTime,
       location:
-        selectedDeliveryType === "mobile"
+        selectedDeliveryType === "customer_location"
           ? customerLocation
           : provider.businessAddress,
       customer: customerDetails,
