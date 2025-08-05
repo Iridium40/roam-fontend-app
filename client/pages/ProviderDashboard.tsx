@@ -13505,7 +13505,7 @@ export default function ProviderDashboard() {
                   <SelectItem value="customer_location">
                     Customer Location
                   </SelectItem>
-                  <SelectItem value="both">Both</SelectItem>
+                  <SelectItem value="both_locations">Both</SelectItem>
                   <SelectItem value="virtual">Virtual</SelectItem>
                 </SelectContent>
               </Select>
