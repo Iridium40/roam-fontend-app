@@ -188,7 +188,9 @@ export default function BookingModal({
         break;
       case "details":
         setCurrentStep(
-          selectedDeliveryType === "customer_location" ? "location" : "datetime",
+          selectedDeliveryType === "customer_location"
+            ? "location"
+            : "datetime",
         );
         break;
       case "confirmation":
@@ -268,15 +270,15 @@ export default function BookingModal({
                         {type === "customer_location"
                           ? "Mobile Service"
                           : type === "virtual"
-                          ? "Virtual Service"
-                          : "In-Studio"}
+                            ? "Virtual Service"
+                            : "In-Studio"}
                       </h4>
                       <p className="text-sm text-gray-600">
                         {type === "customer_location"
                           ? "Service provided at your location"
                           : type === "virtual"
-                          ? "Service provided online via video call"
-                          : `Service at ${provider.businessAddress}`}
+                            ? "Service provided online via video call"
+                            : `Service at ${provider.businessAddress}`}
                       </p>
                     </div>
                   </CardContent>
@@ -632,12 +634,15 @@ export default function BookingModal({
           {renderStepContent()}
 
           <div className="flex justify-between pt-4 border-t">
-            {(currentStep !== "delivery" && !(currentStep === "datetime" && service?.preselectedDeliveryType)) && (
-              <Button variant="outline" onClick={handleBack}>
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            )}
+            {currentStep !== "delivery" &&
+              !(
+                currentStep === "datetime" && service?.preselectedDeliveryType
+              ) && (
+                <Button variant="outline" onClick={handleBack}>
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+              )}
 
             <div className="ml-auto">
               {currentStep === "confirmation" ? (
