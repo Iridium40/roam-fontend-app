@@ -588,7 +588,61 @@ export default function Index() {
             Browse by <span className="text-roam-blue">Category</span>
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {/* Mobile Category Dropdown */}
+          <div className="md:hidden mb-8">
+            <Select value={selectedCategory} onValueChange={handleCategorySelect}>
+              <SelectTrigger className="w-full h-12 bg-white border-2 border-roam-light-blue/30 focus:border-roam-blue">
+                <div className="flex items-center gap-3">
+                  {selectedCategory === "all" ? (
+                    <Filter className="w-5 h-5 text-roam-blue" />
+                  ) : (
+                    serviceCategories.find(cat => cat.id === selectedCategory)?.icon && (
+                      <div className="w-5 h-5 flex items-center justify-center">
+                        {React.createElement(
+                          serviceCategories.find(cat => cat.id === selectedCategory)!.icon,
+                          { className: "w-5 h-5 text-roam-blue" }
+                        )}
+                      </div>
+                    )
+                  )}
+                  <SelectValue placeholder="Select a category">
+                    {selectedCategory === "all"
+                      ? "All Categories"
+                      : serviceCategories.find(cat => cat.id === selectedCategory)?.name ||
+                        (selectedCategory === "therapy" ? "Therapy" :
+                         selectedCategory === "fitness" ? "Fitness" :
+                         selectedCategory === "beauty" ? "Beauty" :
+                         selectedCategory)
+                    }
+                  </SelectValue>
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  <div className="flex items-center gap-3">
+                    <Filter className="w-4 h-4 text-roam-blue" />
+                    <span>All Categories</span>
+                  </div>
+                </SelectItem>
+                {serviceCategories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    <div className="flex items-center gap-3">
+                      <category.icon className="w-4 h-4 text-roam-blue" />
+                      <span>
+                        {category.id === "therapy" ? "Therapy" :
+                         category.id === "fitness" ? "Fitness" :
+                         category.id === "beauty" ? "Beauty" :
+                         category.name}
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Desktop Category Cards */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-5 gap-6">
             {/* All Categories Option */}
             <Card
               className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-border/50 hover:border-roam-light-blue/50 ${
