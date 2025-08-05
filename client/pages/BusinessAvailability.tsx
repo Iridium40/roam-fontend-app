@@ -341,6 +341,7 @@ export default function BusinessAvailability() {
         email: item.business_profiles.contact_email,
         phone: item.business_profiles.phone,
         website: item.business_profiles.website_url,
+        locations: item.business_profiles.business_locations?.filter((loc: any) => loc.is_active) || [],
       }));
 
       // If no businesses found, use fallback data
