@@ -573,7 +573,7 @@ export default function BookingModal({
                 <div className="flex items-start justify-between">
                   <span className="font-semibold">Location</span>
                   <div className="text-right max-w-xs">
-                    {selectedDeliveryType === "mobile" ? (
+                    {selectedDeliveryType === "customer_location" ? (
                       <div className="text-sm">
                         <div>{customerLocation.address}</div>
                         <div>
@@ -581,6 +581,8 @@ export default function BookingModal({
                           {customerLocation.zipCode}
                         </div>
                       </div>
+                    ) : selectedDeliveryType === "virtual" ? (
+                      <div className="text-sm">Online video call</div>
                     ) : (
                       <div className="text-sm">{provider.businessAddress}</div>
                     )}
