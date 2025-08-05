@@ -50,7 +50,7 @@ export default function BusinessAvailability() {
       setLoading(true);
 
       // First fetch the service details
-      const serviceResponse = await supabase
+      const { data: serviceData, error: serviceError } = await supabase
         .from("services")
         .select(
           `
@@ -68,7 +68,7 @@ export default function BusinessAvailability() {
 
       console.log(
         "Service query result:",
-        JSON.stringify(serviceResponse, null, 2),
+        JSON.stringify({ serviceData, serviceError }, null, 2),
       );
 
       if (serviceError) {
