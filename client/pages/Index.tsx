@@ -397,23 +397,45 @@ export default function Index() {
     healthcare: ["Healthcare", "healthcare", "Medical", "Health"],
   };
 
-  // Filter services based on selected category
+  // Filter services based on selected category, search query, and delivery type
   const getFilteredServices = (services: any[]) => {
-    if (selectedCategory === "all") {
-      return services;
-    }
-
-    const categoryKeywords = categoryMapping[selectedCategory as keyof typeof categoryMapping] || [];
-
     return services.filter((service: any) => {
-      // Check if service category matches any of the category keywords
-      const serviceCategory = service.category?.toLowerCase() || "";
-      const serviceTitle = service.title?.toLowerCase() || "";
+      // Category filter
+      let categoryMatch = true;
+      if (selectedCategory !== "all") {
+        const categoryKeywords = categoryMapping[selectedCategory as keyof typeof categoryMapping] || [];
+        const serviceCategory = service.category?.toLowerCase() || "";
+        const serviceTitle = service.title?.toLowerCase() || "";
 
-      return categoryKeywords.some(keyword =>
-        serviceCategory.includes(keyword.toLowerCase()) ||
-        serviceTitle.includes(keyword.toLowerCase())
-      );
+        categoryMatch = categoryKeywords.some(keyword =>
+          serviceCategory.includes(keyword.toLowerCase()) ||
+          serviceTitle.includes(keyword.toLowerCase())
+        );
+      }
+
+      // Search query filter
+      let searchMatch = true;
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        const serviceTitle = service.title?.toLowerCase() || "";
+        const serviceCategory = service.category?.toLowerCase() || "";
+        const serviceDescription = service.description?.toLowerCase() || "";
+
+        searchMatch = serviceTitle.includes(query) ||
+                     serviceCategory.includes(query) ||
+                     serviceDescription.includes(query);
+      }
+
+      // Delivery type filter (services don't have delivery type data in current structure)
+      // This would need to be added to service data structure to work properly
+      let deliveryMatch = true;
+      if (selectedDelivery !== "all") {
+        // For now, we'll assume all services support all delivery types
+        // In a real implementation, this would check service.deliveryTypes array
+        deliveryMatch = true;
+      }
+
+      return categoryMatch && searchMatch && deliveryMatch;
     });
   };
 
