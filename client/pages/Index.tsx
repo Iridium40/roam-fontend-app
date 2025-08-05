@@ -38,6 +38,7 @@ import {
   Tag,
   Percent,
   X,
+  Car,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
