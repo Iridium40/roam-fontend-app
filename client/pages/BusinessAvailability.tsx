@@ -604,11 +604,22 @@ export default function BusinessAvailability() {
 
     // Navigate to business profile with services tab active and service pre-selected
     let targetUrl = `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`;
-    if (selectedLocation) {
+
+    // Add delivery type information
+    if (selectedDeliveryType) {
+      targetUrl += `&deliveryType=${selectedDeliveryType}`;
+    }
+
+    if (selectedDeliveryType === "business_location" && selectedLocation) {
       targetUrl += `&location=${selectedLocation.id}`;
     }
-    console.log("Navigating to:", targetUrl);
 
+    if (selectedDeliveryType === "customer_location" && customerAddress) {
+      const addressData = encodeURIComponent(JSON.stringify(customerAddress));
+      targetUrl += `&address=${addressData}`;
+    }
+
+    console.log("Navigating to:", targetUrl);
     navigate(targetUrl);
   };
 
