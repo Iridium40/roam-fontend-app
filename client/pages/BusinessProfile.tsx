@@ -213,7 +213,8 @@ export default function BusinessProfile() {
         `,
         )
         .eq("business_id", businessId)
-        .eq("is_active", true);
+        .eq("is_active", true)
+        .eq("provider_role", "provider");
 
       // Check for authentication errors
       const authErrors = [
