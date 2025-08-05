@@ -136,7 +136,7 @@ const ProviderBooking = () => {
         `,
         )
         .eq("business_id", businessId)
-        .eq("is_available", true);
+        .eq("is_active", true);
 
       if (servicesError) {
         console.error(
