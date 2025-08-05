@@ -159,7 +159,7 @@ const ProviderBooking = () => {
         `,
         )
         .eq("business_id", businessId)
-        .eq("is_available", true);
+        .eq("is_active", true);
 
       if (addonsError) {
         console.error("Error fetching addons:", addonsError.message || addonsError);
