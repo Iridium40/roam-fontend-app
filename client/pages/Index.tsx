@@ -609,7 +609,12 @@ export default function Index() {
             {serviceCategories.map((category) => (
               <Card
                 key={category.id}
-                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-border/50 hover:border-roam-light-blue/50"
+                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-border/50 hover:border-roam-light-blue/50 ${
+                  selectedCategory === category.id
+                    ? "ring-2 ring-roam-blue border-roam-blue bg-roam-light-blue/5"
+                    : ""
+                }`}
+                onClick={() => handleCategorySelect(category.id)}
               >
                 <CardContent className="p-6 text-center">
                   <div
