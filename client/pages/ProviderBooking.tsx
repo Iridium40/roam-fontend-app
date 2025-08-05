@@ -39,7 +39,12 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { BusinessProfile, BusinessService, BusinessAddon, BusinessLocation } from "@/lib/database.types";
+import {
+  BusinessProfile,
+  BusinessService,
+  BusinessAddon,
+  BusinessLocation,
+} from "@/lib/database.types";
 
 interface ProviderData {
   business: BusinessProfile;
@@ -50,7 +55,7 @@ interface ProviderData {
 }
 
 interface BookingItem {
-  type: 'service' | 'addon';
+  type: "service" | "addon";
   id: string;
   name: string;
   price: number;
@@ -75,8 +80,8 @@ const ProviderBooking = () => {
 
   // Get URL parameters for provider preference and service selection
   const urlParams = new URLSearchParams(window.location.search);
-  const preferredProviderId = urlParams.get('provider');
-  const selectedServiceId = urlParams.get('service');
+  const preferredProviderId = urlParams.get("provider");
+  const selectedServiceId = urlParams.get("service");
 
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,13 +89,13 @@ const ProviderBooking = () => {
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
   const [bookingForm, setBookingForm] = useState<BookingForm>({
-    customerName: '',
-    customerEmail: '',
-    customerPhone: '',
-    preferredDate: '',
-    preferredTime: '',
-    notes: '',
-    items: []
+    customerName: "",
+    customerEmail: "",
+    customerPhone: "",
+    preferredDate: "",
+    preferredTime: "",
+    notes: "",
+    items: [],
   });
 
   useEffect(() => {
@@ -105,21 +110,22 @@ const ProviderBooking = () => {
 
       // Fetch business profile
       const { data: business, error: businessError } = await supabase
-        .from('business_profiles')
-        .select('*')
-        .eq('id', businessId)
-        .eq('is_active', true)
-        .eq('verification_status', 'approved')
+        .from("business_profiles")
+        .select("*")
+        .eq("id", businessId)
+        .eq("is_active", true)
+        .eq("verification_status", "approved")
         .single();
 
       if (businessError || !business) {
-        throw new Error('Business not found or not available for booking');
+        throw new Error("Business not found or not available for booking");
       }
 
       // Fetch business services
       const { data: services, error: servicesError } = await supabase
-        .from('business_services')
-        .select(`
+        .from("business_services")
+        .select(
+          `
           *,
           services:service_id (
             name,
@@ -127,47 +133,54 @@ const ProviderBooking = () => {
             image_url,
             estimated_duration
           )
-        `)
-        .eq('business_id', businessId)
-        .eq('is_available', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_available", true);
 
       if (servicesError) {
-        console.error('Error fetching services:', servicesError.message || servicesError);
+        console.error(
+          "Error fetching services:",
+          servicesError.message || servicesError,
+        );
       }
 
       // Fetch business addons
       const { data: addons, error: addonsError } = await supabase
-        .from('business_addons')
-        .select(`
+        .from("business_addons")
+        .select(
+          `
           *,
           addons:addon_id (
             name,
             description,
             image_url
           )
-        `)
-        .eq('business_id', businessId)
-        .eq('is_available', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_available", true);
 
       if (addonsError) {
-        console.error('Error fetching addons:', addonsError);
+        console.error("Error fetching addons:", addonsError);
       }
 
       // Fetch business location
       const { data: location, error: locationError } = await supabase
-        .from('business_locations')
-        .select('*')
-        .eq('business_id', businessId)
+        .from("business_locations")
+        .select("*")
+        .eq("business_id", businessId)
         .single();
 
       if (locationError) {
-        console.error('Error fetching location:', locationError);
+        console.error("Error fetching location:", locationError);
       }
 
       // Fetch business providers
       const { data: providers, error: providersError } = await supabase
-        .from('providers')
-        .select(`
+        .from("providers")
+        .select(
+          `
           id,
           first_name,
           last_name,
@@ -177,32 +190,43 @@ const ProviderBooking = () => {
           image_url,
           average_rating,
           total_reviews
-        `)
-        .eq('business_id', businessId)
-        .eq('is_active', true);
+        `,
+        )
+        .eq("business_id", businessId)
+        .eq("is_active", true);
 
       if (providersError) {
-        console.error('Error fetching providers:', providersError);
+        console.error("Error fetching providers:", providersError);
       }
 
       // Set preferred provider if specified in URL
       if (preferredProviderId && providers) {
-        const preferred = providers.find(p => p.id === preferredProviderId);
+        const preferred = providers.find((p) => p.id === preferredProviderId);
         setPreferredProvider(preferred);
       }
 
       // Auto-select service if specified in URL
       if (selectedServiceId && services) {
-        console.log('Looking for service with ID:', selectedServiceId);
-        console.log('Available services:', services.map(s => ({ id: s.id, service_id: s.service_id, name: s.services?.name })));
+        console.log("Looking for service with ID:", selectedServiceId);
+        console.log(
+          "Available services:",
+          services.map((s) => ({
+            id: s.id,
+            service_id: s.service_id,
+            name: s.services?.name,
+          })),
+        );
 
-        const serviceToAdd = services.find(s => s.id === selectedServiceId || s.service_id === selectedServiceId);
-        console.log('Found service to add:', serviceToAdd);
+        const serviceToAdd = services.find(
+          (s) =>
+            s.id === selectedServiceId || s.service_id === selectedServiceId,
+        );
+        console.log("Found service to add:", serviceToAdd);
 
         if (serviceToAdd) {
-          addItemToBooking(serviceToAdd, 'service');
+          addItemToBooking(serviceToAdd, "service");
         } else {
-          console.warn('Service not found with ID:', selectedServiceId);
+          console.warn("Service not found with ID:", selectedServiceId);
         }
       }
 
@@ -211,33 +235,43 @@ const ProviderBooking = () => {
         services: services || [],
         addons: addons || [],
         location: location || null,
-        providers: providers || []
+        providers: providers || [],
       });
-
     } catch (error: any) {
-      console.error('Error fetching provider data:', error);
+      console.error("Error fetching provider data:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to load provider information",
         variant: "destructive",
       });
-      navigate('/providers');
+      navigate("/providers");
     } finally {
       setLoading(false);
     }
   };
 
-  const addItemToBooking = (item: BusinessService | BusinessAddon, type: 'service' | 'addon') => {
+  const addItemToBooking = (
+    item: BusinessService | BusinessAddon,
+    type: "service" | "addon",
+  ) => {
     const bookingItem: BookingItem = {
       type,
       id: item.id,
-      name: type === 'service' ? (item as any).services.name : (item as any).addons.name,
+      name:
+        type === "service"
+          ? (item as any).services.name
+          : (item as any).addons.name,
       price: (item as any).custom_price || (item as any).business_price || 0,
-      duration: type === 'service' ? (item as any).services.estimated_duration : undefined,
-      quantity: 1
+      duration:
+        type === "service"
+          ? (item as any).services.estimated_duration
+          : undefined,
+      quantity: 1,
     };
 
-    const existingIndex = selectedItems.findIndex(i => i.id === item.id && i.type === type);
+    const existingIndex = selectedItems.findIndex(
+      (i) => i.id === item.id && i.type === type,
+    );
     if (existingIndex >= 0) {
       const updated = [...selectedItems];
       updated[existingIndex].quantity += 1;
@@ -252,8 +286,10 @@ const ProviderBooking = () => {
     });
   };
 
-  const removeItemFromBooking = (itemId: string, type: 'service' | 'addon') => {
-    const existingIndex = selectedItems.findIndex(i => i.id === itemId && i.type === type);
+  const removeItemFromBooking = (itemId: string, type: "service" | "addon") => {
+    const existingIndex = selectedItems.findIndex(
+      (i) => i.id === itemId && i.type === type,
+    );
     if (existingIndex >= 0) {
       const updated = [...selectedItems];
       if (updated[existingIndex].quantity > 1) {
@@ -265,13 +301,16 @@ const ProviderBooking = () => {
     }
   };
 
-  const getItemQuantity = (itemId: string, type: 'service' | 'addon') => {
-    const item = selectedItems.find(i => i.id === itemId && i.type === type);
+  const getItemQuantity = (itemId: string, type: "service" | "addon") => {
+    const item = selectedItems.find((i) => i.id === itemId && i.type === type);
     return item ? item.quantity : 0;
   };
 
   const getTotalAmount = () => {
-    return selectedItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return selectedItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0,
+    );
   };
 
   const openBookingModal = () => {
@@ -283,13 +322,17 @@ const ProviderBooking = () => {
       });
       return;
     }
-    setBookingForm(prev => ({ ...prev, items: selectedItems }));
+    setBookingForm((prev) => ({ ...prev, items: selectedItems }));
     setIsBookingModalOpen(true);
   };
 
   const submitBooking = async () => {
     try {
-      if (!bookingForm.customerName || !bookingForm.customerEmail || !bookingForm.preferredDate) {
+      if (
+        !bookingForm.customerName ||
+        !bookingForm.customerEmail ||
+        !bookingForm.preferredDate
+      ) {
         toast({
           title: "Missing information",
           description: "Please fill in all required fields",
@@ -300,7 +343,7 @@ const ProviderBooking = () => {
 
       // Create booking record
       const { data: booking, error: bookingError } = await supabase
-        .from('bookings')
+        .from("bookings")
         .insert({
           business_id: businessId,
           customer_name: bookingForm.customerName,
@@ -310,8 +353,8 @@ const ProviderBooking = () => {
           preferred_time: bookingForm.preferredTime,
           notes: bookingForm.notes,
           total_amount: getTotalAmount(),
-          status: 'pending',
-          booking_items: bookingForm.items
+          status: "pending",
+          booking_items: bookingForm.items,
         })
         .select()
         .single();
@@ -322,23 +365,23 @@ const ProviderBooking = () => {
 
       toast({
         title: "Booking submitted!",
-        description: "Your booking request has been submitted. The provider will contact you shortly.",
+        description:
+          "Your booking request has been submitted. The provider will contact you shortly.",
       });
 
       setIsBookingModalOpen(false);
       setSelectedItems([]);
       setBookingForm({
-        customerName: '',
-        customerEmail: '',
-        customerPhone: '',
-        preferredDate: '',
-        preferredTime: '',
-        notes: '',
-        items: []
+        customerName: "",
+        customerEmail: "",
+        customerPhone: "",
+        preferredDate: "",
+        preferredTime: "",
+        notes: "",
+        items: [],
       });
-
     } catch (error: any) {
-      console.error('Error submitting booking:', error);
+      console.error("Error submitting booking:", error);
       toast({
         title: "Error",
         description: "Failed to submit booking. Please try again.",
@@ -362,9 +405,13 @@ const ProviderBooking = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Provider Not Found</h1>
-          <p className="text-gray-600 mb-6">The provider you're looking for is not available for booking.</p>
-          <Button onClick={() => navigate('/providers')}>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Provider Not Found
+          </h1>
+          <p className="text-gray-600 mb-6">
+            The provider you're looking for is not available for booking.
+          </p>
+          <Button onClick={() => navigate("/providers")}>
             Browse Other Providers
           </Button>
         </div>
@@ -381,18 +428,29 @@ const ProviderBooking = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={business.logo_url || business.image_url || undefined} />
-              <AvatarFallback>{business.business_name.substring(0, 2).toUpperCase()}</AvatarFallback>
+              <AvatarImage
+                src={business.logo_url || business.image_url || undefined}
+              />
+              <AvatarFallback>
+                {business.business_name.substring(0, 2).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-start justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">{business.business_name}</h1>
-                  <p className="text-gray-600">{business.business_description}</p>
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    {business.business_name}
+                  </h1>
+                  <p className="text-gray-600">
+                    {business.business_description}
+                  </p>
                   <div className="flex items-center space-x-4 mt-2">
                     <Badge variant="secondary">{business.business_type}</Badge>
-                    {business.verification_status === 'approved' && (
-                      <Badge variant="default" className="bg-green-100 text-green-800">
+                    {business.verification_status === "approved" && (
+                      <Badge
+                        variant="default"
+                        className="bg-green-100 text-green-800"
+                      >
                         <Check className="h-3 w-3 mr-1" />
                         Verified
                       </Badge>
@@ -437,9 +495,11 @@ const ProviderBooking = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {business.business_description && (
-                  <p className="text-gray-700">{business.business_description}</p>
+                  <p className="text-gray-700">
+                    {business.business_description}
+                  </p>
                 )}
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {business.contact_email && (
                     <div className="flex items-center space-x-2">
@@ -456,8 +516,12 @@ const ProviderBooking = () => {
                   {business.website_url && (
                     <div className="flex items-center space-x-2">
                       <Globe className="h-4 w-4 text-gray-500" />
-                      <a href={business.website_url} target="_blank" rel="noopener noreferrer" 
-                         className="text-sm text-blue-600 hover:underline">
+                      <a
+                        href={business.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
                         Visit Website
                       </a>
                     </div>
@@ -466,7 +530,8 @@ const ProviderBooking = () => {
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-gray-500" />
                       <span className="text-sm">
-                        {location.address_line1}, {location.city}, {location.state} {location.postal_code}
+                        {location.address_line1}, {location.city},{" "}
+                        {location.state} {location.postal_code}
                       </span>
                     </div>
                   )}
@@ -494,14 +559,18 @@ const ProviderBooking = () => {
                 <CardContent>
                   <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={preferredProvider.image_url || undefined} />
+                      <AvatarImage
+                        src={preferredProvider.image_url || undefined}
+                      />
                       <AvatarFallback>
-                        {preferredProvider.first_name[0]}{preferredProvider.last_name[0]}
+                        {preferredProvider.first_name[0]}
+                        {preferredProvider.last_name[0]}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <div className="font-semibold text-green-800">
-                        {preferredProvider.first_name} {preferredProvider.last_name}
+                        {preferredProvider.first_name}{" "}
+                        {preferredProvider.last_name}
                       </div>
                       {preferredProvider.bio && (
                         <p className="text-sm text-green-600 line-clamp-1">
@@ -511,14 +580,16 @@ const ProviderBooking = () => {
                       <div className="flex items-center gap-4 mt-2">
                         {preferredProvider.experience_years && (
                           <span className="text-xs text-green-600">
-                            {preferredProvider.experience_years} years experience
+                            {preferredProvider.experience_years} years
+                            experience
                           </span>
                         )}
                         {preferredProvider.average_rating && (
                           <div className="flex items-center gap-1">
                             <Star className="w-3 h-3 text-green-600 fill-current" />
                             <span className="text-xs text-green-600">
-                              {preferredProvider.average_rating} ({preferredProvider.total_reviews || 0} reviews)
+                              {preferredProvider.average_rating} (
+                              {preferredProvider.total_reviews || 0} reviews)
                             </span>
                           </div>
                         )}
@@ -532,8 +603,8 @@ const ProviderBooking = () => {
                         setPreferredProvider(null);
                         // Update URL to remove provider parameter
                         const url = new URL(window.location.href);
-                        url.searchParams.delete('provider');
-                        window.history.replaceState({}, '', url.toString());
+                        url.searchParams.delete("provider");
+                        window.history.replaceState({}, "", url.toString());
                       }}
                     >
                       Change Provider
@@ -541,8 +612,10 @@ const ProviderBooking = () => {
                   </div>
                   <div className="mt-3 p-3 bg-green-100 rounded-md">
                     <p className="text-sm text-green-700">
-                      <strong>Note:</strong> This is your preferred provider for this booking.
-                      The business will try to assign this provider, but final assignment depends on availability and business approval.
+                      <strong>Note:</strong> This is your preferred provider for
+                      this booking. The business will try to assign this
+                      provider, but final assignment depends on availability and
+                      business approval.
                     </p>
                   </div>
                 </CardContent>
@@ -558,12 +631,17 @@ const ProviderBooking = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {services.map((service) => (
-                      <div key={service.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div
+                        key={service.id}
+                        className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                      >
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
                             <div className="flex items-start justify-between">
                               <div>
-                                <h3 className="font-semibold">{(service as any).services.name}</h3>
+                                <h3 className="font-semibold">
+                                  {(service as any).services.name}
+                                </h3>
                                 <p className="text-sm text-gray-600 mt-1">
                                   {(service as any).services.description}
                                 </p>
@@ -585,39 +663,51 @@ const ProviderBooking = () => {
                             />
                           )}
                         </div>
-                        
+
                         <div className="flex items-center justify-between mt-4">
                           <div className="text-sm text-gray-500 space-y-1">
                             <div className="flex items-center">
                               <DollarSign className="h-4 w-4 mr-1" />
-                              <span className="font-semibold">${(service as any).custom_price || (service as any).business_price || 0}</span>
+                              <span className="font-semibold">
+                                $
+                                {(service as any).custom_price ||
+                                  (service as any).business_price ||
+                                  0}
+                              </span>
                             </div>
                             {(service as any).services.estimated_duration && (
                               <div className="flex items-center">
                                 <Clock className="h-4 w-4 mr-1" />
-                                <span>{(service as any).services.estimated_duration} min</span>
+                                <span>
+                                  {(service as any).services.estimated_duration}{" "}
+                                  min
+                                </span>
                               </div>
                             )}
                           </div>
-                          
+
                           <div className="flex items-center space-x-2">
-                            {getItemQuantity(service.id, 'service') > 0 && (
+                            {getItemQuantity(service.id, "service") > 0 && (
                               <>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => removeItemFromBooking(service.id, 'service')}
+                                  onClick={() =>
+                                    removeItemFromBooking(service.id, "service")
+                                  }
                                 >
                                   <Minus className="h-4 w-4" />
                                 </Button>
                                 <span className="min-w-[20px] text-center">
-                                  {getItemQuantity(service.id, 'service')}
+                                  {getItemQuantity(service.id, "service")}
                                 </span>
                               </>
                             )}
                             <Button
                               size="sm"
-                              onClick={() => addItemToBooking(service, 'service')}
+                              onClick={() =>
+                                addItemToBooking(service, "service")
+                              }
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -639,47 +729,56 @@ const ProviderBooking = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {addons.map((addon) => (
-                      <div key={addon.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div
+                        key={addon.id}
+                        className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                      >
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
-                            <h3 className="font-semibold">{(addon as any).addons.name}</h3>
+                            <h3 className="font-semibold">
+                              {(addon as any).addons.name}
+                            </h3>
                             <p className="text-sm text-gray-600 mt-1">
                               {(addon as any).addons.description}
                             </p>
                           </div>
                           {(addon as any).addons.image_url && (
-                            <img 
-                              src={(addon as any).addons.image_url} 
+                            <img
+                              src={(addon as any).addons.image_url}
                               alt={(addon as any).addons.name}
                               className="w-16 h-16 object-cover rounded ml-4"
                             />
                           )}
                         </div>
-                        
+
                         <div className="flex items-center justify-between mt-4">
                           <div className="flex items-center">
                             <DollarSign className="h-4 w-4 mr-1 text-gray-500" />
-                            <span className="font-semibold">${addon.custom_price}</span>
+                            <span className="font-semibold">
+                              ${addon.custom_price}
+                            </span>
                           </div>
-                          
+
                           <div className="flex items-center space-x-2">
-                            {getItemQuantity(addon.id, 'addon') > 0 && (
+                            {getItemQuantity(addon.id, "addon") > 0 && (
                               <>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => removeItemFromBooking(addon.id, 'addon')}
+                                  onClick={() =>
+                                    removeItemFromBooking(addon.id, "addon")
+                                  }
                                 >
                                   <Minus className="h-4 w-4" />
                                 </Button>
                                 <span className="min-w-[20px] text-center">
-                                  {getItemQuantity(addon.id, 'addon')}
+                                  {getItemQuantity(addon.id, "addon")}
                                 </span>
                               </>
                             )}
                             <Button
                               size="sm"
-                              onClick={() => addItemToBooking(addon, 'addon')}
+                              onClick={() => addItemToBooking(addon, "addon")}
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -708,28 +807,30 @@ const ProviderBooking = () => {
                 ) : (
                   <div className="space-y-3">
                     {selectedItems.map((item, index) => (
-                      <div key={`${item.type}-${item.id}-${index}`} className="flex justify-between items-center">
+                      <div
+                        key={`${item.type}-${item.id}-${index}`}
+                        className="flex justify-between items-center"
+                      >
                         <div className="flex-1">
                           <p className="font-medium text-sm">{item.name}</p>
-                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                          <p className="text-xs text-gray-500">
+                            Qty: {item.quantity}
+                          </p>
                         </div>
                         <div className="text-sm font-medium">
                           ${(item.price * item.quantity).toFixed(2)}
                         </div>
                       </div>
                     ))}
-                    
+
                     <Separator />
-                    
+
                     <div className="flex justify-between items-center font-semibold">
                       <span>Total</span>
                       <span>${getTotalAmount().toFixed(2)}</span>
                     </div>
-                    
-                    <Button 
-                      className="w-full mt-4" 
-                      onClick={openBookingModal}
-                    >
+
+                    <Button className="w-full mt-4" onClick={openBookingModal}>
                       <Calendar className="h-4 w-4 mr-2" />
                       Book Now
                     </Button>
@@ -747,41 +848,56 @@ const ProviderBooking = () => {
           <DialogHeader>
             <DialogTitle>Complete Your Booking</DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-6">
             {/* Customer Information */}
             <div className="space-y-4">
               <h3 className="font-semibold">Your Information</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="customerName">Full Name *</Label>
                   <Input
                     id="customerName"
                     value={bookingForm.customerName}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, customerName: e.target.value }))}
+                    onChange={(e) =>
+                      setBookingForm((prev) => ({
+                        ...prev,
+                        customerName: e.target.value,
+                      }))
+                    }
                     placeholder="Enter your full name"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="customerEmail">Email *</Label>
                   <Input
                     id="customerEmail"
                     type="email"
                     value={bookingForm.customerEmail}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, customerEmail: e.target.value }))}
+                    onChange={(e) =>
+                      setBookingForm((prev) => ({
+                        ...prev,
+                        customerEmail: e.target.value,
+                      }))
+                    }
                     placeholder="Enter your email"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="customerPhone">Phone Number</Label>
                   <Input
                     id="customerPhone"
                     type="tel"
                     value={bookingForm.customerPhone}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, customerPhone: e.target.value }))}
+                    onChange={(e) =>
+                      setBookingForm((prev) => ({
+                        ...prev,
+                        customerPhone: e.target.value,
+                      }))
+                    }
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -791,7 +907,7 @@ const ProviderBooking = () => {
             {/* Booking Details */}
             <div className="space-y-4">
               <h3 className="font-semibold">Booking Details</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="preferredDate">Preferred Date *</Label>
@@ -799,28 +915,43 @@ const ProviderBooking = () => {
                     id="preferredDate"
                     type="date"
                     value={bookingForm.preferredDate}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, preferredDate: e.target.value }))}
-                    min={new Date().toISOString().split('T')[0]}
+                    onChange={(e) =>
+                      setBookingForm((prev) => ({
+                        ...prev,
+                        preferredDate: e.target.value,
+                      }))
+                    }
+                    min={new Date().toISOString().split("T")[0]}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="preferredTime">Preferred Time</Label>
                   <Input
                     id="preferredTime"
                     type="time"
                     value={bookingForm.preferredTime}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, preferredTime: e.target.value }))}
+                    onChange={(e) =>
+                      setBookingForm((prev) => ({
+                        ...prev,
+                        preferredTime: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="notes">Additional Notes</Label>
                 <Textarea
                   id="notes"
                   value={bookingForm.notes}
-                  onChange={(e) => setBookingForm(prev => ({ ...prev, notes: e.target.value }))}
+                  onChange={(e) =>
+                    setBookingForm((prev) => ({
+                      ...prev,
+                      notes: e.target.value,
+                    }))
+                  }
                   placeholder="Any special requests or additional information..."
                   rows={3}
                 />
@@ -832,8 +963,13 @@ const ProviderBooking = () => {
               <h3 className="font-semibold">Order Summary</h3>
               <div className="bg-gray-50 p-4 rounded-lg space-y-2">
                 {selectedItems.map((item, index) => (
-                  <div key={`${item.type}-${item.id}-${index}`} className="flex justify-between">
-                    <span>{item.name} (x{item.quantity})</span>
+                  <div
+                    key={`${item.type}-${item.id}-${index}`}
+                    className="flex justify-between"
+                  >
+                    <span>
+                      {item.name} (x{item.quantity})
+                    </span>
                     <span>${(item.price * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
@@ -847,7 +983,11 @@ const ProviderBooking = () => {
 
             {/* Actions */}
             <div className="flex space-x-3">
-              <Button variant="outline" className="flex-1" onClick={() => setIsBookingModalOpen(false)}>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setIsBookingModalOpen(false)}
+              >
                 Cancel
               </Button>
               <Button className="flex-1" onClick={submitBooking}>
