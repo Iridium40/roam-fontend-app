@@ -162,7 +162,10 @@ const ProviderBooking = () => {
         .eq("is_available", true);
 
       if (addonsError) {
-        console.error("Error fetching addons:", addonsError.message || addonsError);
+        console.error(
+          "Error fetching addons:",
+          addonsError.message || addonsError,
+        );
       }
 
       // Fetch business location
@@ -173,7 +176,10 @@ const ProviderBooking = () => {
         .single();
 
       if (locationError) {
-        console.error("Error fetching location:", locationError.message || locationError);
+        console.error(
+          "Error fetching location:",
+          locationError.message || locationError,
+        );
       }
 
       // Fetch business providers
@@ -196,7 +202,10 @@ const ProviderBooking = () => {
         .eq("is_active", true);
 
       if (providersError) {
-        console.error("Error fetching providers:", providersError.message || providersError);
+        console.error(
+          "Error fetching providers:",
+          providersError.message || providersError,
+        );
       }
 
       // Set preferred provider if specified in URL
