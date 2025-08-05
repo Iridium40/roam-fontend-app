@@ -193,9 +193,16 @@ const ProviderBooking = () => {
 
       // Auto-select service if specified in URL
       if (selectedServiceId && services) {
+        console.log('Looking for service with ID:', selectedServiceId);
+        console.log('Available services:', services.map(s => ({ id: s.id, service_id: s.service_id, name: s.services?.name })));
+
         const serviceToAdd = services.find(s => s.id === selectedServiceId || s.service_id === selectedServiceId);
+        console.log('Found service to add:', serviceToAdd);
+
         if (serviceToAdd) {
           addItemToBooking(serviceToAdd, 'service');
+        } else {
+          console.warn('Service not found with ID:', selectedServiceId);
         }
       }
 
