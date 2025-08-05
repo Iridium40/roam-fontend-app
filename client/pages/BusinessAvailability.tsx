@@ -568,12 +568,35 @@ export default function BusinessAvailability() {
       return;
     }
 
-    // Check if location is selected for businesses with multiple locations
+    // Check delivery type selection for both_locations services
+    const selectedDeliveryType = selectedDeliveryTypes[business.id];
     const selectedLocation = selectedLocations[business.id];
-    if (business.locations && business.locations.length > 1 && !selectedLocation) {
+    const customerAddress = customerAddresses[business.id];
+
+    if (business.deliveryType === "both_locations" && !selectedDeliveryType) {
+      toast({
+        title: "Delivery Type Required",
+        description: "Please choose between Business or Mobile delivery",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check location selection for business delivery
+    if (selectedDeliveryType === "business_location" && business.locations && business.locations.length > 1 && !selectedLocation) {
       toast({
         title: "Location Required",
-        description: "Please select a location for this business",
+        description: "Please select a business location",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check address for mobile delivery
+    if (selectedDeliveryType === "customer_location" && (!customerAddress || !customerAddress.address || !customerAddress.city)) {
+      toast({
+        title: "Address Required",
+        description: "Please provide your delivery address",
         variant: "destructive",
       });
       return;
