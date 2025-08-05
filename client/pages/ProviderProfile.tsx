@@ -78,6 +78,7 @@ export default function ProviderProfile() {
         // Transform the data to match the expected format
         setProvider({
           id: providerData.id,
+          business_id: providerData.business_id,
           name: `${providerData.first_name} ${providerData.last_name}`,
           title: "Service Provider", // Generic title since we don't have this field
           rating: providerData.average_rating || 0,
