@@ -157,17 +157,20 @@ export default function CustomerLocations() {
       setLoading(true);
       console.log('Fetching locations for customer:', customer);
 
-      // First check if customer has locations using your function
-      const { data: hasLocationCheck, error: hasLocationError } = await supabase
-        .rpc('customer_has_location');
+      // Get the current user to use the auth user ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('No authenticated user found');
+        return;
+      }
 
-      console.log('Customer has location check:', { hasLocationCheck, hasLocationError });
+      console.log('Using auth user ID for customer_locations query:', user.id);
 
-      // Fetch customer locations
+      // Fetch customer locations using auth user ID
       const { data, error } = await supabase
         .from("customer_locations")
         .select("*")
-        .eq("customer_id", customer.id) // Use customer.id which is the auth user ID
+        .eq("customer_id", user.id) // Use auth user ID as per database schema
         .eq("is_active", true)
         .order("is_primary", { ascending: false })
         .order("created_at", { ascending: false });
