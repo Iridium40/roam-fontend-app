@@ -8310,6 +8310,22 @@ export default function ProviderDashboard() {
                             />
                           </div>
 
+                          {/* Verification Notes */}
+                          {businessDetailsForm.verification_notes && (
+                            <div className="space-y-2">
+                              <Label htmlFor="verification_notes">
+                                ROAM Admin Feedback
+                              </Label>
+                              <Textarea
+                                id="verification_notes"
+                                value={businessDetailsForm.verification_notes}
+                                readOnly
+                                className="bg-muted cursor-not-allowed min-h-[80px] resize-none"
+                                title="Feedback from ROAM administration team"
+                              />
+                            </div>
+                          )}
+
                           <div className="space-y-2">
                             <div className="flex items-center space-x-3">
                               <span className="text-sm font-medium">
