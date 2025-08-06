@@ -10149,6 +10149,81 @@ export default function ProviderDashboard() {
                       </CardContent>
                     </Card>
 
+                    {/* Banner Image Upload */}
+                    <Card>
+                      <CardContent className="p-6">
+                        <h3 className="font-medium text-lg mb-4">
+                          Banner Image
+                        </h3>
+                        <div className="relative">
+                          <div className="w-full h-32 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden">
+                            {provider?.banner_image ? (
+                              <img
+                                src={provider.banner_image}
+                                alt="Banner"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-center text-white">
+                                <Camera className="w-8 h-8 mx-auto mb-2" />
+                                <p className="text-sm">No banner image</p>
+                              </div>
+                            )}
+                          </div>
+                          {bannerUploading && (
+                            <div className="absolute inset-0 w-full h-32 bg-black/50 rounded-lg flex items-center justify-center">
+                              <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                          )}
+                        </div>
+
+                        {bannerError && (
+                          <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                            {bannerError}
+                          </div>
+                        )}
+
+                        <div className="flex gap-2 justify-center mt-4">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleBannerUpload}
+                            className="hidden"
+                            id="banner-upload"
+                            disabled={bannerUploading || profileSaving}
+                          />
+                          <Button
+                            variant="outline"
+                            className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                            onClick={() =>
+                              document.getElementById("banner-upload")?.click()
+                            }
+                            disabled={bannerUploading || profileSaving}
+                          >
+                            <Camera className="w-4 h-4 mr-2" />
+                            {provider?.banner_image
+                              ? "Change Banner"
+                              : "Upload Banner"}
+                          </Button>
+
+                          {provider?.banner_image && (
+                            <Button
+                              variant="outline"
+                              className="border-red-300 text-red-600 hover:bg-red-50"
+                              onClick={handleBannerRemove}
+                              disabled={bannerUploading || profileSaving}
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </div>
+
+                        <p className="text-xs text-foreground/60 text-center mt-2">
+                          Upload a banner image for your profile (max 10MB). Recommended size: 800x200px
+                        </p>
+                      </CardContent>
+                    </Card>
+
                     {/* Available Services - only show for non-provider roles */}
                     {availableProviderServices.length > 0 &&
                       provider?.provider_role !== "provider" && (
