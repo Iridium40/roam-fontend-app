@@ -6301,6 +6301,7 @@ export default function ProviderDashboard() {
           website_url: businessData.website_url || "",
           logo_url: businessData.logo_url || "",
           verification_status: businessData.verification_status || "",
+          verification_notes: businessData.verification_notes || "",
           is_active: businessData.is_active !== false,
           is_featured: businessData.is_featured || false,
           setup_completed: businessData.setup_completed || false,
