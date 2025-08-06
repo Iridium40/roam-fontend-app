@@ -815,8 +815,7 @@ export default function Index() {
               />
             </div>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-              Connect with verified professionals in Beauty, Fitness, Therapy,
-              and Healthcare. Available mobile, business, or virtual.
+              Florida's premier on-demand services marketplace. Connecting customers with verified professionals for premium services delivered anywhere.
             </p>
           </div>
         </div>
