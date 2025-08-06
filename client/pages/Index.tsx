@@ -1175,37 +1175,73 @@ export default function Index() {
                   key={promotion.id}
                   className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-border/50 hover:border-roam-light-blue/50"
                 >
-                  <div className="relative bg-gradient-to-br from-roam-light-blue/10 to-roam-blue/20 p-8 text-center">
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-roam-yellow text-gray-900">
-                        <Percent className="w-3 h-3 mr-1" />
-                        {promotion.business ? 'Business Exclusive' : 'Special Offer'}
-                      </Badge>
-                    </div>
-                    {promotion.endDate && (
-                      <div className="absolute top-4 right-4">
-                        <Badge variant="destructive">
-                          Ends {new Date(promotion.endDate).toLocaleDateString()}
-                        </Badge>
+                  <div className="relative">
+                    {promotion.imageUrl ? (
+                      <div className="relative">
+                        <img
+                          src={promotion.imageUrl}
+                          alt={promotion.title}
+                          className="w-full h-48 object-cover rounded-t-lg"
+                        />
+                        <div className="absolute inset-0 bg-black/20 rounded-t-lg"></div>
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-roam-yellow text-gray-900">
+                            <Percent className="w-3 h-3 mr-1" />
+                            {promotion.business ? 'Business Exclusive' : 'Special Offer'}
+                          </Badge>
+                        </div>
+                        {promotion.endDate && (
+                          <div className="absolute top-4 right-4">
+                            <Badge variant="destructive">
+                              Ends {new Date(promotion.endDate).toLocaleDateString()}
+                            </Badge>
+                          </div>
+                        )}
+                        {promotion.business && promotion.business.logo && (
+                          <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                            <img
+                              src={promotion.business.logo}
+                              alt={promotion.business.name}
+                              className="w-6 h-6 rounded-full object-cover"
+                            />
+                            <span className="text-xs font-bold text-gray-900">{promotion.business.name}</span>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="relative bg-gradient-to-br from-roam-light-blue/10 to-roam-blue/20 p-8 text-center">
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-roam-yellow text-gray-900">
+                            <Percent className="w-3 h-3 mr-1" />
+                            {promotion.business ? 'Business Exclusive' : 'Special Offer'}
+                          </Badge>
+                        </div>
+                        {promotion.endDate && (
+                          <div className="absolute top-4 right-4">
+                            <Badge variant="destructive">
+                              Ends {new Date(promotion.endDate).toLocaleDateString()}
+                            </Badge>
+                          </div>
+                        )}
+                        <div className="mt-4">
+                          {promotion.business && promotion.business.logo ? (
+                            <div className="flex flex-col items-center">
+                              <img
+                                src={promotion.business.logo}
+                                alt={promotion.business.name}
+                                className="w-12 h-12 rounded-full object-cover border-2 border-roam-blue mb-2"
+                              />
+                              <h3 className="text-sm font-bold text-roam-blue">{promotion.business.name}</h3>
+                            </div>
+                          ) : (
+                            <div>
+                              <Tag className="w-12 h-12 text-roam-blue mx-auto mb-4" />
+                              <h3 className="text-xl font-bold text-roam-blue">PROMO</h3>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
-                    <div className="mt-4">
-                      {promotion.business && promotion.business.logo ? (
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={promotion.business.logo}
-                            alt={promotion.business.name}
-                            className="w-12 h-12 rounded-full object-cover border-2 border-roam-blue mb-2"
-                          />
-                          <h3 className="text-sm font-bold text-roam-blue">{promotion.business.name}</h3>
-                        </div>
-                      ) : (
-                        <div>
-                          <Tag className="w-12 h-12 text-roam-blue mx-auto mb-4" />
-                          <h3 className="text-xl font-bold text-roam-blue">PROMO</h3>
-                        </div>
-                      )}
-                    </div>
                   </div>
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-2">{promotion.title}</h3>
