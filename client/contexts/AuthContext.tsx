@@ -24,6 +24,7 @@ interface AuthContextType {
   }) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
+  resendVerificationEmail: (email: string) => Promise<void>;
   updateCustomerProfile: (profileData: {
     firstName: string;
     lastName: string;
