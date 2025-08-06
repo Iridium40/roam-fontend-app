@@ -1210,7 +1210,110 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Mobile Carousel View */}
+          <div className="md:hidden relative overflow-hidden">
+            <div
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{
+                transform: `translateX(-${currentPopularSlide * 100}%)`,
+              }}
+            >
+              {filteredPopularServices.map((service) => (
+                <div key={service.id} className="w-full flex-shrink-0 px-2">
+                  <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50 hover:border-roam-light-blue/50">
+                    <div className="relative">
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="w-full h-40 object-cover rounded-t-lg"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <Badge
+                          variant="secondary"
+                          className="bg-white/90 text-gray-800"
+                        >
+                          <TrendingUp className="w-3 h-3 mr-1 text-roam-blue" />
+                          Popular
+                        </Badge>
+                      </div>
+                      <div className="absolute top-3 right-3 flex gap-2">
+                        <FavoriteButton
+                          type="service"
+                          itemId={service.id}
+                          size="sm"
+                          variant="ghost"
+                          className="bg-white/90 hover:bg-white"
+                        />
+                        <Badge
+                          variant="secondary"
+                          className="bg-white/90 text-gray-800"
+                        >
+                          <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
+                          {service.rating}
+                        </Badge>
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold mb-2">{service.title}</h3>
+                      <div className="mb-3">
+                        <p className="text-sm text-foreground/70">
+                          {getDisplayDescription(service.description, service.id)}
+                        </p>
+                        {service.description && service.description.length > 200 && (
+                          <button
+                            onClick={() => toggleDescription(service.id)}
+                            className="text-roam-blue text-xs font-medium hover:underline mt-1"
+                          >
+                            {expandedDescriptions.has(service.id) ? 'Show less' : 'Read more'}
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-xs text-foreground/60 mb-3">
+                        {service.category}
+                      </p>
+
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-lg font-bold text-roam-blue">
+                          {service.price}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className="text-xs border-roam-blue text-roam-blue"
+                        >
+                          {service.duration}
+                        </Badge>
+                      </div>
+
+                      <div className="space-y-2 mb-4">
+                        <p className="text-xs text-foreground/70 flex items-center gap-1">
+                          <TrendingUp className="w-3 h-3 text-roam-blue" />
+                          {service.bookings}
+                        </p>
+                        <p className="text-xs text-green-600 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {service.availability}
+                        </p>
+                      </div>
+
+                      <Button
+                        asChild
+                        size="sm"
+                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                      >
+                        <Link to={`/book-service/${service.id}`}>
+                          <Calendar className="w-3 h-3 mr-2" />
+                          Book Now
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid View */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredPopularServices.map((service) => (
               <Card
                 key={service.id}
