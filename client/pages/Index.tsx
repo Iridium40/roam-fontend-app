@@ -1289,12 +1289,20 @@ export default function Index() {
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-2">{promotion.title}</h3>
 
-                    {promotion.business && (
-                      <div className="mb-3 p-2 bg-roam-light-blue/10 rounded-lg">
-                        <p className="text-xs text-roam-blue font-medium flex items-center">
-                          <Building className="w-3 h-3 mr-1" />
-                          Exclusive to {promotion.business.name}
-                        </p>
+                    {(promotion.business || promotion.service) && (
+                      <div className="mb-3 p-2 bg-roam-light-blue/10 rounded-lg space-y-1">
+                        {promotion.business && (
+                          <p className="text-xs text-roam-blue font-medium flex items-center">
+                            <Building className="w-3 h-3 mr-1" />
+                            Exclusive to {promotion.business.name}
+                          </p>
+                        )}
+                        {promotion.service && (
+                          <p className="text-xs text-green-600 font-medium flex items-center">
+                            <Tag className="w-3 h-3 mr-1" />
+                            Service: {promotion.service.name}
+                          </p>
+                        )}
                       </div>
                     )}
 
