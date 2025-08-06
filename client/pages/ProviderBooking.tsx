@@ -93,6 +93,7 @@ const ProviderBooking = () => {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
+  const [promotionData, setPromotionData] = useState<any>(null);
   const [expandedDescriptions, setExpandedDescriptions] = useState<{
     [key: string]: boolean;
   }>({});
