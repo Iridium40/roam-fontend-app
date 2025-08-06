@@ -10296,9 +10296,9 @@ export default function ProviderDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Error and Success Messages */}
-                  {(profileError || avatarError) && (
+                  {(profileError || avatarError || bannerError) && (
                     <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                      {profileError || avatarError}
+                      {profileError || avatarError || bannerError}
                     </div>
                   )}
 
