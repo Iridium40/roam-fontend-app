@@ -9090,7 +9090,7 @@ export default function ProviderDashboard() {
                         <div className="pt-4 border-t">
                           <Button
                             onClick={handleSaveBusinessDetails}
-                            disabled={businessDetailsSaving}
+                            disabled={businessDetailsSaving || businessCoverUploading}
                             className="bg-roam-blue hover:bg-roam-blue/90"
                           >
                             {businessDetailsSaving ? (
