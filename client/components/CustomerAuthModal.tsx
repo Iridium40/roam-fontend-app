@@ -220,6 +220,9 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
     return /iPad|iPhone|iPod|Macintosh/.test(userAgent);
   };
 
+  // Check if OAuth providers should be shown (useful for development)
+  const showOAuthProviders = process.env.NODE_ENV === 'production' || process.env.REACT_APP_ENABLE_OAUTH === 'true';
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
