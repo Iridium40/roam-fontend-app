@@ -9398,7 +9398,7 @@ export default function ProviderDashboard() {
                         <p>Loading team members...</p>
                       </div>
                     ) : teamProviders.filter(
-                        (tp) => tp.provider_role !== "owner",
+                        (tp) => businessDetailsForm.business_type === "independent" ? true : tp.provider_role !== "owner",
                       ).length > 0 ? (
                       <div className="space-y-4">
                         {/* Show filtered count */}
