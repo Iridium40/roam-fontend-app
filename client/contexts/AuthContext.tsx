@@ -875,6 +875,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signUpCustomer,
     signInWithGoogle,
     signInWithApple,
+    resendVerificationEmail,
     updateCustomerProfile,
     uploadCustomerAvatar,
     signOut,
