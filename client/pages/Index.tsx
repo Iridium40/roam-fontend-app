@@ -682,12 +682,6 @@ export default function Index() {
                 <p className="text-sm text-foreground/60 mb-3">
                   Browse all available services
                 </p>
-                <Badge
-                  variant="secondary"
-                  className="bg-roam-light-blue/20 text-roam-blue"
-                >
-                  View All
-                </Badge>
               </CardContent>
             </Card>
 
