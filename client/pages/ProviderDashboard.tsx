@@ -1138,6 +1138,150 @@ export default function ProviderDashboard() {
     }
   };
 
+  const handleBusinessCoverUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file || !business) return;
+
+    setBusinessCoverUploading(true);
+    setBusinessCoverError("");
+
+    try {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Please select an image file");
+      }
+
+      // Validate file size (max 10MB for cover images)
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error("File size must be less than 10MB");
+      }
+
+      // Generate unique filename
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${business.id}-${Date.now()}.${fileExt}`;
+      const filePath = `business-cover-image/${fileName}`;
+
+      // Use direct API for authenticated operations
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Ensure we have a valid access token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        directSupabaseAPI.currentAccessToken = session.access_token;
+      } else {
+        throw new Error("No valid authentication session");
+      }
+
+      // Remove old cover image if exists
+      if (business.cover_image_url) {
+        try {
+          const urlParts = business.cover_image_url.split("/");
+          const oldFileName = urlParts[urlParts.length - 1];
+          const oldFilePath = `business-cover-image/${oldFileName}`;
+          await directSupabaseAPI.deleteFile("roam-file-storage", oldFilePath);
+        } catch (deleteError) {
+          console.warn("Failed to delete old business cover:", deleteError);
+          // Continue with upload even if delete fails
+        }
+      }
+
+      // Upload new cover image using direct API
+      const { publicUrl } = await directSupabaseAPI.uploadFile(
+        "roam-file-storage",
+        filePath,
+        file,
+      );
+
+      // Update business record using direct API
+      await directSupabaseAPI.updateBusinessCoverImage(business.id, publicUrl);
+
+      // Update local state
+      setBusiness({ ...business, cover_image_url: publicUrl });
+    } catch (error: any) {
+      console.error("Business cover upload error:", error);
+      console.error("Error details:", {
+        type: typeof error,
+        message: error?.message,
+        keys: Object.keys(error || {}),
+        stack: error?.stack,
+      });
+
+      let errorMessage = "Failed to upload business cover image";
+
+      // Handle Supabase storage error structure
+      if (error?.error && typeof error.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.statusCode && error?.error) {
+        errorMessage = `Error ${error.statusCode}: ${error.error}`;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      }
+
+      setBusinessCoverError(errorMessage);
+    } finally {
+      setBusinessCoverUploading(false);
+      // Reset file input
+      const input = document.getElementById("business-cover-upload") as HTMLInputElement;
+      if (input) input.value = "";
+    }
+  };
+
+  const handleBusinessCoverRemove = async () => {
+    if (!business?.cover_image_url) return;
+
+    setBusinessCoverUploading(true);
+    setBusinessCoverError("");
+
+    try {
+      // Use direct API for authenticated operations
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Extract filename from URL
+      const urlParts = business.cover_image_url.split("/");
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `business-cover-image/${fileName}`;
+
+      // Remove from storage using direct API
+      await directSupabaseAPI.deleteFile("roam-file-storage", filePath);
+
+      // Update business record using direct API
+      await directSupabaseAPI.updateBusinessCoverImage(business.id, null);
+
+      // Update local state
+      setBusiness({ ...business, cover_image_url: null });
+    } catch (error: any) {
+      console.error("Business cover remove error:", error);
+      let errorMessage = "Failed to remove business cover image";
+
+      // Handle Supabase storage error structure
+      if (error?.error && typeof error.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      }
+
+      setBusinessCoverError(errorMessage);
+    } finally {
+      setBusinessCoverUploading(false);
+    }
+  };
+
   const handleDocumentUploadWithFile = async (file: File) => {
     if (!file || !business?.id) return;
 
