@@ -1151,12 +1151,6 @@ export default function Index() {
                 Premium Partners
               </Badge>
             </div>
-            <Badge
-              variant="outline"
-              className="border-roam-blue text-roam-blue"
-            >
-              {filteredBusinesses.length} featured businesses
-            </Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
