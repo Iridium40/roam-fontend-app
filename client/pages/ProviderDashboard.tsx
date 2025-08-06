@@ -1119,6 +1119,8 @@ export default function ProviderDashboard() {
 
       // Update local state
       setProvider({ ...provider, cover_image_url: null });
+      setProviderCoverPosition("50% 50%");
+      setShowProviderPositionControls(false);
     } catch (error: any) {
       console.error("Banner remove error:", error);
       let errorMessage = "Failed to remove banner image";
