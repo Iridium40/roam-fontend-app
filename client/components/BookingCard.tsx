@@ -321,8 +321,19 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       setCancelReason("");
       setRefundAmount(0);
       onUpdate?.();
-    } catch (error) {
+
+      toast({
+        title: "Success",
+        description: "Booking cancelled successfully",
+      });
+    } catch (error: any) {
       console.error("Error cancelling booking:", error);
+      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to cancel booking";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
