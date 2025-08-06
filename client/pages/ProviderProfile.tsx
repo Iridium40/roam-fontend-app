@@ -60,7 +60,7 @@ export default function ProviderProfile() {
             bio,
             experience_years,
             image_url,
-            banner_image,
+            cover_image_url,
             average_rating,
             total_reviews,
             business_id,
