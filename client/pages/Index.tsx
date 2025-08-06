@@ -1014,9 +1014,19 @@ export default function Index() {
                         <h3 className="text-xl font-semibold mb-2">
                           {service.title}
                         </h3>
-                        <p className="text-foreground/70 mb-4">
-                          {service.description}
-                        </p>
+                        <div className="mb-4">
+                          <p className="text-foreground/70">
+                            {getDisplayDescription(service.description, service.id)}
+                          </p>
+                          {service.description.length > 200 && (
+                            <button
+                              onClick={() => toggleDescription(service.id)}
+                              className="md:hidden text-roam-blue text-sm font-medium hover:underline mt-1"
+                            >
+                              {expandedDescriptions.has(service.id) ? 'Show less' : 'Read more'}
+                            </button>
+                          )}
+                        </div>
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center gap-2">
                             <span className="text-2xl font-bold text-roam-blue">
