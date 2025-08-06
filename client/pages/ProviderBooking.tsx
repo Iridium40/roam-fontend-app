@@ -407,7 +407,36 @@ const ProviderBooking = () => {
   };
 
   const getTotalAmount = () => {
+    const subtotal = selectedItems.reduce((total, item) => total + item.price, 0);
+    return subtotal - getDiscountAmount();
+  };
+
+  const getSubtotal = () => {
     return selectedItems.reduce((total, item) => total + item.price, 0);
+  };
+
+  const getDiscountAmount = () => {
+    if (!promotionData || !promotionData.savings_type || !promotionData.savings_amount) {
+      return 0;
+    }
+
+    const subtotal = getSubtotal();
+
+    if (promotionData.savings_type === 'percentage') {
+      const percentageDiscount = (subtotal * promotionData.savings_amount) / 100;
+
+      // Apply maximum discount cap if specified
+      if (promotionData.savings_max_amount) {
+        return Math.min(percentageDiscount, promotionData.savings_max_amount);
+      }
+
+      return percentageDiscount;
+    } else if (promotionData.savings_type === 'fixed_amount') {
+      // Fixed amount discount, but don't let it exceed the subtotal
+      return Math.min(promotionData.savings_amount, subtotal);
+    }
+
+    return 0;
   };
 
   const openBookingModal = () => {
