@@ -1054,7 +1054,7 @@ export default function ProviderDashboard() {
       await directSupabaseAPI.updateProviderBannerImage(provider.id, publicUrl);
 
       // Update local state
-      setProvider({ ...provider, banner_image: publicUrl });
+      setProvider({ ...provider, cover_image_url: publicUrl });
     } catch (error: any) {
       console.error("Banner upload error:", error);
       console.error("Error details:", {
