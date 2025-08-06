@@ -10388,7 +10388,7 @@ export default function ProviderDashboard() {
                             onChange={(e) =>
                               handleFormChange("firstName", e.target.value)
                             }
-                            disabled={profileSaving || avatarUploading}
+                            disabled={profileSaving || avatarUploading || bannerUploading}
                           />
                         </div>
                         <div className="space-y-2">
@@ -10399,7 +10399,7 @@ export default function ProviderDashboard() {
                             onChange={(e) =>
                               handleFormChange("lastName", e.target.value)
                             }
-                            disabled={profileSaving || avatarUploading}
+                            disabled={profileSaving || avatarUploading || bannerUploading}
                           />
                         </div>
                       </div>
@@ -10425,7 +10425,7 @@ export default function ProviderDashboard() {
                           onChange={(e) =>
                             handleFormChange("phone", e.target.value)
                           }
-                          disabled={profileSaving || avatarUploading}
+                          disabled={profileSaving || avatarUploading || bannerUploading}
                         />
                       </div>
 
@@ -10439,7 +10439,7 @@ export default function ProviderDashboard() {
                           }
                           rows={4}
                           placeholder="Tell customers about your professional background and expertise..."
-                          disabled={profileSaving || avatarUploading}
+                          disabled={profileSaving || avatarUploading || bannerUploading}
                         />
                       </div>
                     </div>
@@ -10450,7 +10450,7 @@ export default function ProviderDashboard() {
                     <Button
                       className="bg-roam-blue hover:bg-roam-blue/90"
                       onClick={handleSaveProfile}
-                      disabled={profileSaving || avatarUploading}
+                      disabled={profileSaving || avatarUploading || bannerUploading}
                     >
                       {profileSaving ? (
                         <>
