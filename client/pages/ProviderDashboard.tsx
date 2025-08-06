@@ -990,6 +990,152 @@ export default function ProviderDashboard() {
     }
   };
 
+  const handleBannerUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file || !provider) return;
+
+    setBannerUploading(true);
+    setBannerError("");
+
+    try {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Please select an image file");
+      }
+
+      // Validate file size (max 10MB for banner images)
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error("File size must be less than 10MB");
+      }
+
+      // Generate unique filename
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${provider.id}-${Date.now()}.${fileExt}`;
+      const filePath = `banner-provider-user/${fileName}`;
+
+      // Use direct API for authenticated operations
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Ensure we have a valid access token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        directSupabaseAPI.currentAccessToken = session.access_token;
+      } else {
+        throw new Error("No valid authentication session");
+      }
+
+      // Remove old banner if exists
+      if (provider.banner_image) {
+        try {
+          const urlParts = provider.banner_image.split("/");
+          const oldFileName = urlParts[urlParts.length - 1];
+          const oldFilePath = `banner-provider-user/${oldFileName}`;
+          await directSupabaseAPI.deleteFile("roam-file-storage", oldFilePath);
+        } catch (deleteError) {
+          console.warn("Failed to delete old banner:", deleteError);
+          // Continue with upload even if delete fails
+        }
+      }
+
+      // Upload new banner using direct API
+      const { publicUrl } = await directSupabaseAPI.uploadFile(
+        "roam-file-storage",
+        filePath,
+        file,
+      );
+
+      // Update provider record using direct API
+      await directSupabaseAPI.updateProviderBannerImage(provider.id, publicUrl);
+
+      // Update local state
+      setProvider({ ...provider, banner_image: publicUrl });
+    } catch (error: any) {
+      console.error("Banner upload error:", error);
+      console.error("Error details:", {
+        type: typeof error,
+        message: error?.message,
+        keys: Object.keys(error || {}),
+        stack: error?.stack,
+      });
+
+      let errorMessage = "Failed to upload banner image";
+
+      // Handle Supabase storage error structure
+      if (error?.error && typeof error.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.statusCode && error?.error) {
+        errorMessage = `Error ${error.statusCode}: ${error.error}`;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      }
+
+      setBannerError(errorMessage);
+    } finally {
+      setBannerUploading(false);
+      // Reset file input
+      const input = document.getElementById("banner-upload") as HTMLInputElement;
+      if (input) input.value = "";
+    }
+  };
+
+  const handleBannerRemove = async () => {
+    if (!provider?.banner_image) return;
+
+    setBannerUploading(true);
+    setBannerError("");
+
+    try {
+      // Use direct API for authenticated operations
+      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+
+      // Extract filename from URL
+      const urlParts = provider.banner_image.split("/");
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `banner-provider-user/${fileName}`;
+
+      // Remove from storage using direct API
+      await directSupabaseAPI.deleteFile("roam-file-storage", filePath);
+
+      // Update provider record using direct API
+      await directSupabaseAPI.updateProviderBannerImage(provider.id, null);
+
+      // Update local state
+      setProvider({ ...provider, banner_image: null });
+    } catch (error: any) {
+      console.error("Banner remove error:", error);
+      let errorMessage = "Failed to remove banner image";
+
+      // Handle Supabase storage error structure
+      if (error?.error && typeof error.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.statusCode && error?.error) {
+        errorMessage = `Error ${error.statusCode}: ${error.error}`;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      }
+
+      setBannerError(errorMessage);
+    } finally {
+      setBannerUploading(false);
+    }
+  };
+
   const handleDocumentUploadWithFile = async (file: File) => {
     if (!file || !business?.id) return;
 
