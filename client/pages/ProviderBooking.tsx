@@ -113,6 +113,12 @@ const ProviderBooking = () => {
     }
   }, [businessId]);
 
+  useEffect(() => {
+    if (promotionId) {
+      fetchPromotionData();
+    }
+  }, [promotionId]);
+
   const fetchProviderData = async () => {
     try {
       setLoading(true);
