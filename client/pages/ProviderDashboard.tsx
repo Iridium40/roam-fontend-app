@@ -9300,7 +9300,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        ��� Refresh
+                        ����� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
@@ -9533,8 +9533,7 @@ export default function ProviderDashboard() {
                                     }
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    {teamProvider.background_check_status ===
-                                    "approved"
+                                    {(teamProvider.background_check_status === "approved" || teamProvider.provider_role === "owner")
                                       ? "Background ✓"
                                       : "Approve BG"}
                                   </Button>
