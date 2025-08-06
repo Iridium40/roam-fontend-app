@@ -345,7 +345,7 @@ export default function CustomerTransactions() {
                                     <MapPin className="w-4 h-4" />
                                     {transaction.deliveryType === "mobile"
                                       ? "Mobile"
-                                      : "In-Studio"}
+                                      : "Business"}
                                   </div>
                                 </div>
                               </div>
