@@ -223,7 +223,7 @@ export default function BusinessProfile() {
           bio,
           experience_years,
           image_url,
-          banner_image,
+          cover_image_url,
           average_rating,
           total_reviews,
           verification_status,
