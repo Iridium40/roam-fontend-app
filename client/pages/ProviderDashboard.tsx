@@ -8332,25 +8332,36 @@ export default function ProviderDashboard() {
                             className="p-4 border-dashed border-2 hover:border-roam-blue transition-colors"
                           >
                             <div className="space-y-3">
-                              <div>
-                                <h4 className="font-medium">{service.name}</h4>
-                                <p className="text-sm text-foreground/60">
-                                  {service.service_subcategories
-                                    ?.service_categories?.description ||
-                                    service.service_subcategories
-                                      ?.service_categories
-                                      ?.service_category_type}{" "}
-                                  —{" "}
-                                  {
-                                    service.service_subcategories
-                                      ?.service_subcategory_type
-                                  }
-                                </p>
-                                {service.description && (
-                                  <p className="text-xs text-foreground/50 mt-1">
-                                    {service.description}
+                              <div className="flex items-start gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-roam-blue/10 flex items-center justify-center flex-shrink-0">
+                                  {(() => {
+                                    const IconComponent = getServiceIcon(
+                                      service.name,
+                                      service.service_subcategories?.service_categories?.service_category_type || ''
+                                    );
+                                    return <IconComponent className="w-5 h-5 text-roam-blue" />;
+                                  })()}
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-medium">{service.name}</h4>
+                                  <p className="text-sm text-foreground/60">
+                                    {service.service_subcategories
+                                      ?.service_categories?.description ||
+                                      service.service_subcategories
+                                        ?.service_categories
+                                        ?.service_category_type}{" "}
+                                    —{" "}
+                                    {
+                                      service.service_subcategories
+                                        ?.service_subcategory_type
+                                    }
                                   </p>
-                                )}
+                                  {service.description && (
+                                    <p className="text-xs text-foreground/50 mt-1">
+                                      {service.description}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
                               <div className="flex justify-between items-center text-sm">
                                 <span>
