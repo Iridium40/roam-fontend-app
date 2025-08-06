@@ -8965,8 +8965,12 @@ export default function ProviderDashboard() {
                                   <div className="flex items-center gap-3 mb-2">
                                     <div className="flex items-center gap-2">
                                       <Download className="w-4 h-4 text-roam-blue" />
-                                      <h4 className="font-medium text-foreground">
-                                        {document.document_name}
+                                      <h4 className="font-semibold text-lg text-foreground">
+                                        {document.document_type
+                                          ?.replace(/_/g, " ")
+                                          .replace(/\b\w/g, (l) =>
+                                            l.toUpperCase(),
+                                          )}
                                       </h4>
                                     </div>
                                     <Badge
