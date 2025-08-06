@@ -1305,8 +1305,8 @@ export default function Index() {
                     >
                       <Link
                         to={promotion.business
-                          ? `/business/${promotion.business.id}?promotion=${promotion.id}`
-                          : `/services?promotion=${promotion.id}`
+                          ? `/business/${promotion.business.id}?promotion=${promotion.id}&promo_code=${promotion.promoCode}`
+                          : `/services?promotion=${promotion.id}&promo_code=${promotion.promoCode}`
                         }
                       >
                         <Tag className="w-4 h-4 mr-2" />
