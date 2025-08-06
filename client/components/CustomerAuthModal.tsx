@@ -177,6 +177,33 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setError(null);
+    try {
+      await signInWithGoogle();
+      // OAuth will redirect, so we don't need to handle success here
+    } catch (err: any) {
+      console.error("Google sign-in error:", err);
+      setError("Failed to sign in with Google. Please try again.");
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    setError(null);
+    try {
+      await signInWithApple();
+      // OAuth will redirect, so we don't need to handle success here
+    } catch (err: any) {
+      console.error("Apple sign-in error:", err);
+      setError("Failed to sign in with Apple. Please try again.");
+    }
+  };
+
+  const isAppleDevice = () => {
+    const userAgent = navigator.userAgent;
+    return /iPad|iPhone|iPod|Macintosh/.test(userAgent);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
