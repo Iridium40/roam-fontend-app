@@ -10720,7 +10720,7 @@ export default function ProviderDashboard() {
                         </div>
 
                         <p className="text-xs text-foreground/60 text-center mt-2">
-                          Upload a banner image for your profile (max 10MB). Recommended size: 800x200px
+                          Upload a cover image for your profile (max 10MB). Recommended size: 800x200px
                         </p>
                       </CardContent>
                     </Card>
