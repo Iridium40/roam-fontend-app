@@ -524,6 +524,54 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const createCustomerProfileFromOAuth = async (user: any) => {
+    try {
+      console.log("Creating customer profile from OAuth user:", user);
+
+      const { data: customerProfile, error } = await supabase
+        .from("customer_profiles")
+        .insert({
+          user_id: user.id,
+          email: user.email,
+          first_name: user.user_metadata?.full_name?.split(' ')[0] || user.user_metadata?.name?.split(' ')[0] || '',
+          last_name: user.user_metadata?.full_name?.split(' ').slice(1).join(' ') || user.user_metadata?.name?.split(' ').slice(1).join(' ') || '',
+          phone: user.user_metadata?.phone || '',
+          image_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || '',
+          date_of_birth: null,
+          bio: null,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating customer profile:", error);
+        throw error;
+      }
+
+      const customerData = {
+        id: customerProfile.id,
+        email: customerProfile.email,
+        customer_id: customerProfile.id,
+        first_name: customerProfile.first_name,
+        last_name: customerProfile.last_name,
+        phone: customerProfile.phone,
+        image_url: customerProfile.image_url,
+      };
+
+      setCustomer(customerData);
+      setUserType("customer");
+      localStorage.setItem("roam_customer", JSON.stringify(customerData));
+      localStorage.setItem("roam_user_type", "customer");
+      localStorage.setItem("roam_access_token", (await supabase.auth.getSession()).data.session?.access_token || '');
+
+      console.log("AuthContext: OAuth customer profile created successfully");
+      return customerData;
+    } catch (error) {
+      console.error("Error creating OAuth customer profile:", error);
+      throw error;
+    }
+  };
+
   const updateCustomerProfile = async (profileData: {
     firstName: string;
     lastName: string;
