@@ -63,6 +63,18 @@ import {
   ExternalLink,
   Move,
   RotateCcw,
+  Stethoscope,
+  Scissors,
+  Dumbbell,
+  Home,
+  Heart,
+  Eye,
+  Zap,
+  Brain,
+  Activity,
+  Briefcase,
+  Palette,
+  Wrench,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
