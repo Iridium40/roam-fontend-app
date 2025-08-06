@@ -1776,18 +1776,10 @@ export default function Index() {
                       </h3>
                     </div>
 
-                    {/* Location and Verification */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
-                          <MapPin className="w-3 h-3 text-gray-600" />
-                        </div>
-                        <span className="text-sm font-medium text-gray-700">
-                          {business.location}
-                        </span>
-                      </div>
+                    {/* Verification */}
+                    <div>
                       {business.verification_status === "approved" && (
-                        <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full">
+                        <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full w-fit">
                           <Shield className="w-3 h-3 text-green-600" />
                           <span className="text-xs text-green-700 font-semibold">
                             Verified
