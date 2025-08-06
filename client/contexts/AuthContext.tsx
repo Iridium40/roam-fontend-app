@@ -585,6 +585,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const resendVerificationEmail = async (email: string) => {
+    setLoading(true);
+    try {
+      console.log("Resending verification email for:", email);
+
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        console.error("Resend verification email error:", error);
+        throw error;
+      }
+
+      console.log("Verification email resent successfully");
+    } catch (error: any) {
+      console.error("Resend verification email error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const createCustomerProfileFromOAuth = async (user: any) => {
     try {
       console.log("Creating customer profile from OAuth user:", user);
