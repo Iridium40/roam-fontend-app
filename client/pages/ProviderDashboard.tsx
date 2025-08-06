@@ -10535,7 +10535,7 @@ export default function ProviderDashboard() {
                     <Card>
                       <CardContent className="p-6">
                         <h3 className="font-medium text-lg mb-4">
-                          Banner Image
+                          Cover Image
                         </h3>
                         <div className="relative">
                           <div
@@ -14870,7 +14870,7 @@ export default function ProviderDashboard() {
             {locationToDelete?.is_primary && (
               <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
                 <p className="text-amber-800 font-medium">
-                  ⚠️ Warning: This is your primary location
+                  ⚠��� Warning: This is your primary location
                 </p>
                 <p className="text-amber-700 text-sm mt-1">
                   Deleting it will leave your business without a primary
