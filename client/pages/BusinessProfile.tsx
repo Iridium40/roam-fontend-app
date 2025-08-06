@@ -892,7 +892,7 @@ export default function BusinessProfile() {
                               ? "Mobile"
                               : selectedService.delivery_type ===
                                   "business_location"
-                                ? "In-Studio"
+                                ? "Business"
                                 : "Virtual"}
                           </Badge>
                         )}
