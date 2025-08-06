@@ -10380,9 +10380,9 @@ export default function ProviderDashboard() {
                         </h3>
                         <div className="relative">
                           <div className="w-full h-32 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden">
-                            {provider?.banner_image ? (
+                            {provider?.cover_image_url ? (
                               <img
-                                src={provider.banner_image}
+                                src={provider.cover_image_url}
                                 alt="Banner"
                                 className="w-full h-full object-cover"
                               />
