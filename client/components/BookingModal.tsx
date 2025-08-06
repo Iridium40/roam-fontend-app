@@ -271,7 +271,7 @@ export default function BookingModal({
                           ? "Mobile Service"
                           : type === "virtual"
                             ? "Virtual Service"
-                            : "In-Studio"}
+                            : "Business"}
                       </h4>
                       <p className="text-sm text-gray-600">
                         {type === "customer_location"
@@ -553,7 +553,7 @@ export default function BookingModal({
                     ) : (
                       <>
                         <Building className="w-3 h-3 mr-1" />
-                        In-Studio
+                        Business
                       </>
                     )}
                   </Badge>
