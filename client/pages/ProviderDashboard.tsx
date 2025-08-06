@@ -10424,12 +10424,12 @@ export default function ProviderDashboard() {
                             disabled={bannerUploading || profileSaving}
                           >
                             <Camera className="w-4 h-4 mr-2" />
-                            {provider?.banner_image
+                            {provider?.cover_image_url
                               ? "Change Banner"
                               : "Upload Banner"}
                           </Button>
 
-                          {provider?.banner_image && (
+                          {provider?.cover_image_url && (
                             <Button
                               variant="outline"
                               className="border-red-300 text-red-600 hover:bg-red-50"
