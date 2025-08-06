@@ -8568,12 +8568,16 @@ export default function ProviderDashboard() {
                         Business Cover Image
                       </h3>
                       <div className="relative">
-                        <div className="w-full h-48 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden">
+                        <div
+                          className="w-full h-48 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden cursor-pointer"
+                          onClick={business?.cover_image_url ? handleImagePositionClick : undefined}
+                        >
                           {business?.cover_image_url ? (
                             <img
                               src={business.cover_image_url}
                               alt="Business Cover"
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover transition-all duration-300"
+                              style={{ objectPosition: businessCoverPosition }}
                             />
                           ) : (
                             <div className="text-center text-white">
@@ -8585,6 +8589,18 @@ export default function ProviderDashboard() {
                         {businessCoverUploading && (
                           <div className="absolute inset-0 w-full h-48 bg-black/50 rounded-lg flex items-center justify-center">
                             <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          </div>
+                        )}
+                        {business?.cover_image_url && (
+                          <div className="absolute top-2 right-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowPositionControls(!showPositionControls)}
+                              className="bg-white/90 hover:bg-white"
+                            >
+                              <Move className="w-4 h-4" />
+                            </Button>
                           </div>
                         )}
                       </div>
