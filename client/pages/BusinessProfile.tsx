@@ -196,7 +196,24 @@ export default function BusinessProfile() {
         .eq("business_id", businessId)
         .single();
 
-      // Fetch providers
+      // Extract business data first to access business_type
+      const { data: business, error: businessError } = businessResponse;
+      if (businessError) {
+        console.error(
+          "Business profile query error:",
+          businessError?.message || businessError,
+        );
+        console.error(
+          "Business query details:",
+          businessResponse,
+        );
+        if (businessError.code === "PGRST116") {
+          throw new Error(`Business with ID ${businessId} not found`);
+        }
+        throw new Error(`Failed to load business data: ${businessError.message}`);
+      }
+
+      // Fetch providers - now we can safely access business.business_type
       const providersResponse = await supabase
         .from("providers")
         .select(
