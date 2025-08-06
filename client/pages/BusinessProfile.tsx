@@ -217,7 +217,7 @@ export default function BusinessProfile() {
         )
         .eq("business_id", businessId)
         .eq("is_active", true)
-        .eq("provider_role", "provider");
+        .in("provider_role", business.business_type === "independent" ? ["provider", "owner"] : ["provider"]);
 
       // Check for authentication errors
       const authErrors = [
