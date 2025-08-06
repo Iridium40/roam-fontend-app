@@ -1270,6 +1270,32 @@ export default function Index() {
                       </div>
                     )}
 
+                    {promotion.promoCode && (
+                      <div className="mb-4 p-3 bg-roam-yellow/10 border border-roam-yellow/30 rounded-lg">
+                        <p className="text-xs font-medium text-gray-700 mb-1">Promo Code</p>
+                        <div className="flex items-center justify-between">
+                          <code className="text-lg font-bold text-roam-blue bg-white px-3 py-1 rounded border border-roam-blue/20">
+                            {promotion.promoCode}
+                          </code>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => copyPromoCode(promotion.promoCode)}
+                            className="ml-2 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                          >
+                            {copiedPromoCode === promotion.promoCode ? (
+                              <Check className="w-3 h-3" />
+                            ) : (
+                              <Copy className="w-3 h-3" />
+                            )}
+                          </Button>
+                        </div>
+                        {copiedPromoCode === promotion.promoCode && (
+                          <p className="text-xs text-green-600 mt-1">Code copied to clipboard!</p>
+                        )}
+                      </div>
+                    )}
+
                     <div className="mb-4">
                       <p className="text-sm text-foreground/70">
                         {getDisplayDescription(promotion.description, promotion.id)}
