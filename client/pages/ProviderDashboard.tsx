@@ -8409,11 +8409,23 @@ export default function ProviderDashboard() {
                                     )}
                                     disabled={true}
                                     readOnly
-                                    className="rounded border-gray-300 text-gray-400 cursor-not-allowed opacity-60"
+                                    className={`rounded cursor-not-allowed ${
+                                      businessDetailsForm.service_categories.includes(
+                                        category.service_category_type,
+                                      )
+                                        ? "border-orange-400 bg-orange-100 text-orange-600 accent-orange-500"
+                                        : "border-gray-300 text-gray-400 opacity-60"
+                                    }`}
                                   />
                                   <Label
                                     htmlFor={`category-${category.service_category_type}`}
-                                    className="text-sm font-normal cursor-default opacity-60"
+                                    className={`text-sm font-normal cursor-default ${
+                                      businessDetailsForm.service_categories.includes(
+                                        category.service_category_type,
+                                      )
+                                        ? "text-orange-700 font-medium"
+                                        : "opacity-60"
+                                    }`}
                                   >
                                     {toCamelCase(category.description ||
                                       category.service_category_type)}
@@ -8469,11 +8481,23 @@ export default function ProviderDashboard() {
                                           )}
                                           disabled={true}
                                           readOnly
-                                          className="rounded border-gray-300 text-gray-400 cursor-not-allowed opacity-60"
+                                          className={`rounded cursor-not-allowed ${
+                                            businessDetailsForm.service_subcategories.includes(
+                                              subcategory.service_subcategory_type,
+                                            )
+                                              ? "border-orange-400 bg-orange-100 text-orange-600 accent-orange-500"
+                                              : "border-gray-300 text-gray-400 opacity-60"
+                                          }`}
                                         />
                                         <Label
                                           htmlFor={`subcategory-${subcategory.service_subcategory_type}`}
-                                          className="text-sm font-normal cursor-default opacity-60"
+                                          className={`text-sm font-normal cursor-default ${
+                                            businessDetailsForm.service_subcategories.includes(
+                                              subcategory.service_subcategory_type,
+                                            )
+                                              ? "text-orange-700 font-medium"
+                                              : "opacity-60"
+                                          }`}
                                         >
                                           {toCamelCase(subcategory.description ||
                                             subcategory.service_subcategory_type)}
