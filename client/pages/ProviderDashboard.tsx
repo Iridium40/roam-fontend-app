@@ -8993,13 +8993,11 @@ export default function ProviderDashboard() {
 
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-foreground/60">
                                     <div>
-                                      <span className="font-medium">Type:</span>
+                                      <span className="font-medium">File Name:</span>
                                       <br />
-                                      {document.document_type
-                                        ?.replace(/_/g, " ")
-                                        .replace(/\b\w/g, (l) =>
-                                          l.toUpperCase(),
-                                        )}
+                                      <span className="text-xs text-foreground/50">
+                                        {document.document_name}
+                                      </span>
                                     </div>
                                     <div>
                                       <span className="font-medium">Size:</span>
