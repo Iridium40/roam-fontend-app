@@ -94,6 +94,26 @@ export default function Index() {
     }
   };
 
+  const toggleDescription = (serviceId: string) => {
+    setExpandedDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(serviceId)) {
+        newSet.delete(serviceId);
+      } else {
+        newSet.add(serviceId);
+      }
+      return newSet;
+    });
+  };
+
+  const getDisplayDescription = (description: string, serviceId: string) => {
+    const isExpanded = expandedDescriptions.has(serviceId);
+    if (description.length <= 200 || isExpanded) {
+      return description;
+    }
+    return description.substring(0, 200) + '...';
+  };
+
   // Fetch real data from Supabase
   useEffect(() => {
     const fetchData = async (retryCount = 0) => {
