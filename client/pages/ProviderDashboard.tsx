@@ -9300,7 +9300,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        ����� Refresh
+                        ��� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
@@ -9567,9 +9567,9 @@ export default function ProviderDashboard() {
                                     onClick={() =>
                                       handleToggleProviderActive(teamProvider)
                                     }
-                                    disabled={providerActionLoading}
+                                    disabled={providerActionLoading || teamProvider.provider_role === "owner"}
                                     className={
-                                      teamProvider.is_active
+                                      (teamProvider.is_active || teamProvider.provider_role === "owner")
                                         ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
                                         : "bg-red-50 border-red-300 text-red-700 hover:bg-red-100"
                                     }
