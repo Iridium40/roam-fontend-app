@@ -118,16 +118,6 @@ export default function Index() {
     return description.substring(0, 200) + '...';
   };
 
-  const copyPromoCode = async (promoCode: string) => {
-    try {
-      await navigator.clipboard.writeText(promoCode);
-      setCopiedPromoCode(promoCode);
-      setTimeout(() => setCopiedPromoCode(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy promo code:', err);
-    }
-  };
-
   // Fetch real data from Supabase
   useEffect(() => {
     const fetchData = async (retryCount = 0) => {
