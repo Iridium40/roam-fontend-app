@@ -61,6 +61,8 @@ import {
   Share2,
   Copy,
   ExternalLink,
+  Move,
+  RotateCcw,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
