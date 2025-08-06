@@ -1215,6 +1215,19 @@ export default function Index() {
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-semibold mb-2">{service.title}</h3>
+                  <div className="mb-3">
+                    <p className="text-sm text-foreground/70">
+                      {getDisplayDescription(service.description, service.id)}
+                    </p>
+                    {service.description && service.description.length > 200 && (
+                      <button
+                        onClick={() => toggleDescription(service.id)}
+                        className="text-roam-blue text-xs font-medium hover:underline mt-1"
+                      >
+                        {expandedDescriptions.has(service.id) ? 'Show less' : 'Read more'}
+                      </button>
+                    )}
+                  </div>
                   <p className="text-xs text-foreground/60 mb-3">
                     {service.category}
                   </p>
