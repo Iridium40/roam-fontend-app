@@ -1052,6 +1052,25 @@ const ProviderBooking = () => {
 
                     <Separator />
 
+                    {promotionData && getDiscountAmount() > 0 && (
+                      <>
+                        <div className="flex justify-between items-center">
+                          <span>Subtotal</span>
+                          <span>${getSubtotal().toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-green-600">
+                          <span className="flex items-center">
+                            <Badge variant="secondary" className="mr-2 text-xs">
+                              {promotionData.promo_code}
+                            </Badge>
+                            Discount
+                          </span>
+                          <span>-${getDiscountAmount().toFixed(2)}</span>
+                        </div>
+                        <Separator />
+                      </>
+                    )}
+
                     <div className="flex justify-between items-center font-semibold">
                       <span>Total</span>
                       <span>${getTotalAmount().toFixed(2)}</span>
