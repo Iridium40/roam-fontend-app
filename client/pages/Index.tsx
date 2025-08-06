@@ -116,6 +116,19 @@ export default function Index() {
     return description.substring(0, 200) + '...';
   };
 
+  const formatSavings = (promotion: any) => {
+    if (!promotion.savingsType || !promotion.savingsAmount) return null;
+
+    if (promotion.savingsType === 'percentage') {
+      const maxAmount = promotion.savingsMaxAmount ? ` (max $${promotion.savingsMaxAmount})` : '';
+      return `${promotion.savingsAmount}% OFF${maxAmount}`;
+    } else if (promotion.savingsType === 'fixed_amount') {
+      return `$${promotion.savingsAmount} OFF`;
+    }
+
+    return null;
+  };
+
   // Fetch real data from Supabase
   useEffect(() => {
     const fetchData = async (retryCount = 0) => {
