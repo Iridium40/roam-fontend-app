@@ -68,6 +68,7 @@ export default function Index() {
   const [featuredServices, setFeaturedServices] = useState<any[]>([]);
   const [popularServices, setPopularServices] = useState<any[]>([]);
   const [featuredBusinesses, setFeaturedBusinesses] = useState<any[]>([]);
+  const [promotions, setPromotions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const handleBusinessShare = (business: any) => {
