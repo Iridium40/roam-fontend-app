@@ -508,9 +508,10 @@ const ProviderBooking = () => {
       });
     } catch (error: any) {
       console.error("Error submitting booking:", error);
+      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to submit booking. Please try again.";
       toast({
         title: "Error",
-        description: "Failed to submit booking. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
