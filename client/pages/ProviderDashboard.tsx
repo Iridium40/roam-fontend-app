@@ -8313,13 +8313,7 @@ export default function ProviderDashboard() {
                               <Checkbox
                                 id="is_featured"
                                 checked={businessDetailsForm.is_featured}
-                                onCheckedChange={(checked) =>
-                                  handleBusinessDetailsFormChange(
-                                    "is_featured",
-                                    checked === true,
-                                  )
-                                }
-                                disabled={businessDetailsSaving || isDispatcher}
+                                disabled={true}
                               />
                               <Label
                                 htmlFor="is_featured"
