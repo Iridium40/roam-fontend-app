@@ -44,7 +44,7 @@ const getDeliveryIcon = (type: string) => {
 const getDeliveryLabel = (type: string) => {
   const labels = {
     mobile: "Mobile Service",
-    business_location: "In-Studio",
+    business_location: "Business",
     virtual: "Virtual",
   };
   return labels[type as keyof typeof labels] || type;
