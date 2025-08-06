@@ -60,6 +60,7 @@ export default function Index() {
   const [authModalTab, setAuthModalTab] = useState<"signin" | "signup">(
     "signin",
   );
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Database-driven state
   const [featuredServices, setFeaturedServices] = useState<any[]>([]);
