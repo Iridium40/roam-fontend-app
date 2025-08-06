@@ -267,24 +267,6 @@ export default function BusinessProfile() {
         }
       }
 
-      const { data: business, error: businessError } = businessResponse;
-      if (businessError) {
-        console.error(
-          "Business profile query error:",
-          businessError?.message || businessError,
-        );
-        console.error(
-          "Business error details:",
-          JSON.stringify(businessError, null, 2),
-        );
-        if (businessError.code === "PGRST116") {
-          throw new Error(`Business with ID ${businessId} not found`);
-        }
-        throw new Error(
-          `Failed to fetch business: ${businessError.message || "Unknown error"}`,
-        );
-      }
-
       if (!business) {
         throw new Error(`Business with ID ${businessId} not found`);
       }
