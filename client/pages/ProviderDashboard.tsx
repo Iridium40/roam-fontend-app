@@ -5015,11 +5015,14 @@ export default function ProviderDashboard() {
         const service = allServices.find((s) => s.id === serviceId);
         if (!service) throw new Error("Service not found");
 
+        // Check if service is Telemed and set delivery type to virtual by default
+        const defaultDeliveryType = service.name.toLowerCase().includes('telemed') ? 'virtual' : 'business_location';
+
         const newServiceData = {
           business_id: provider.business_id,
           service_id: serviceId,
           business_price: businessPrice,
-          delivery_type: deliveryType || "business_location",
+          delivery_type: deliveryType || defaultDeliveryType,
           is_active: true,
         };
 
