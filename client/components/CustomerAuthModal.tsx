@@ -412,6 +412,25 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                     </div>
                   )}
 
+                  {/* Resend Verification Email */}
+                  {(verificationEmailSent || error?.includes("Email not confirmed") || error?.includes("confirm your account")) && (lastEmailSentTo || signInData.email) && (
+                    <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-sm text-blue-800 mb-2">
+                        Didn't receive the verification email?
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleResendVerificationEmail(lastEmailSentTo || signInData.email)}
+                        disabled={loading}
+                        className="w-full border-blue-300 text-blue-700 hover:bg-blue-100"
+                      >
+                        Resend Verification Email
+                      </Button>
+                    </div>
+                  )}
+
                   <Button
                     type="submit"
                     className="w-full bg-roam-blue hover:bg-roam-blue/90"
@@ -623,6 +642,25 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                     <div className="flex items-center gap-2 text-green-600 text-sm">
                       <CheckCircle className="h-4 w-4" />
                       {success}
+                    </div>
+                  )}
+
+                  {/* Resend Verification Email */}
+                  {(verificationEmailSent || error?.includes("Email not confirmed") || error?.includes("confirm your account")) && (lastEmailSentTo || signUpData.email) && (
+                    <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-sm text-blue-800 mb-2">
+                        Didn't receive the verification email?
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleResendVerificationEmail(lastEmailSentTo || signUpData.email)}
+                        disabled={loading}
+                        className="w-full border-blue-300 text-blue-700 hover:bg-blue-100"
+                      >
+                        Resend Verification Email
+                      </Button>
                     </div>
                   )}
 
