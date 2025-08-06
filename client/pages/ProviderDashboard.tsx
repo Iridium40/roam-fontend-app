@@ -12148,7 +12148,7 @@ export default function ProviderDashboard() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="business_location">
-                      In-Studio/Business
+                      Business
                     </SelectItem>
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
@@ -12358,7 +12358,7 @@ export default function ProviderDashboard() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="business_location">
-                      In-Studio/Business
+                      Business
                     </SelectItem>
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
