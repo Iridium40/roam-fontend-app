@@ -1310,6 +1310,19 @@ export default function Index() {
                 </div>
               ))}
             </div>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-4 space-x-2">
+              {filteredPopularServices.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPopularSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    currentPopularSlide === index ? 'bg-roam-blue' : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Desktop Grid View */}
