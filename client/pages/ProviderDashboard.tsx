@@ -1031,9 +1031,9 @@ export default function ProviderDashboard() {
       }
 
       // Remove old banner if exists
-      if (provider.banner_image) {
+      if (provider.cover_image_url) {
         try {
-          const urlParts = provider.banner_image.split("/");
+          const urlParts = provider.cover_image_url.split("/");
           const oldFileName = urlParts[urlParts.length - 1];
           const oldFilePath = `banner-provider-user/${oldFileName}`;
           await directSupabaseAPI.deleteFile("roam-file-storage", oldFilePath);
