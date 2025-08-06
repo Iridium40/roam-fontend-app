@@ -424,6 +424,21 @@ export default function CustomerLocations() {
     }
   };
 
+  const openInGoogleMaps = (location: CustomerLocation) => {
+    const address = `${location.street_address}${location.unit_number ? `, ${location.unit_number}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`;
+
+    // If we have coordinates, use them for more accuracy
+    if (location.latitude && location.longitude) {
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
+      window.open(mapsUrl, '_blank');
+    } else {
+      // Otherwise use the address
+      const encodedAddress = encodeURIComponent(address);
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+      window.open(mapsUrl, '_blank');
+    }
+  };
+
   const getLocationTypeColor = (type: string | null) => {
     switch (type) {
       case "Home":
