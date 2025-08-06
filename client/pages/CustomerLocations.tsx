@@ -226,9 +226,16 @@ export default function CustomerLocations() {
     try {
       setSubmitting(true);
 
+      // Get the current user to use the auth user ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('No authenticated user found');
+        return;
+      }
+
       console.log(
-        "Submitting location with customer_id:",
-        customer?.customer_id,
+        "Submitting location with auth user ID:",
+        user.id,
       );
       console.log("Form data:", formData);
 
@@ -253,11 +260,11 @@ export default function CustomerLocations() {
         await supabase
           .from("customer_locations")
           .update({ is_primary: false })
-          .eq("customer_id", customer.id);
+          .eq("customer_id", user.id);
       }
 
       const locationData = {
-        customer_id: customer.id,
+        customer_id: user.id,
         location_name: formData.location_name.trim(),
         street_address: formData.street_address.trim(),
         unit_number: formData.unit_number.trim() || null,
