@@ -378,34 +378,48 @@ export default function Index() {
         const { data: promotionsData, error: promotionsError } = promotionsResponse;
 
         if (!promotionsError && promotionsData) {
-          const transformedPromotions = promotionsData.map((promotion: any) => ({
-            id: promotion.id,
-            title: promotion.title,
-            description: promotion.description || "Limited time offer",
-            startDate: promotion.start_date,
-            endDate: promotion.end_date,
-            isActive: promotion.is_active,
-            createdAt: promotion.created_at,
-            businessId: promotion.business_id,
-            imageUrl: promotion.image_url,
-            promoCode: promotion.promo_code,
-            savingsType: promotion.savings_type,
-            savingsAmount: promotion.savings_amount,
-            savingsMaxAmount: promotion.savings_max_amount,
-            serviceId: promotion.service_id,
-            business: promotion.business_profiles ? {
-              id: promotion.business_profiles.id,
-              name: promotion.business_profiles.business_name,
-              logo: promotion.business_profiles.logo_url,
-              type: promotion.business_profiles.business_type
-            } : null,
-            service: promotion.services ? {
-              id: promotion.services.id,
-              name: promotion.services.name,
-              minPrice: promotion.services.min_price
-            } : null,
-          }));
-          console.log("Transformed promotions:", transformedPromotions);
+          const currentDate = new Date();
+          currentDate.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+
+          const transformedPromotions = promotionsData
+            .filter((promotion: any) => {
+              // Filter out promotions with expired end dates
+              if (promotion.end_date) {
+                const endDate = new Date(promotion.end_date);
+                endDate.setHours(23, 59, 59, 999); // Set to end of day
+                return endDate >= currentDate;
+              }
+              // Keep promotions without end dates (ongoing promotions)
+              return true;
+            })
+            .map((promotion: any) => ({
+              id: promotion.id,
+              title: promotion.title,
+              description: promotion.description || "Limited time offer",
+              startDate: promotion.start_date,
+              endDate: promotion.end_date,
+              isActive: promotion.is_active,
+              createdAt: promotion.created_at,
+              businessId: promotion.business_id,
+              imageUrl: promotion.image_url,
+              promoCode: promotion.promo_code,
+              savingsType: promotion.savings_type,
+              savingsAmount: promotion.savings_amount,
+              savingsMaxAmount: promotion.savings_max_amount,
+              serviceId: promotion.service_id,
+              business: promotion.business_profiles ? {
+                id: promotion.business_profiles.id,
+                name: promotion.business_profiles.business_name,
+                logo: promotion.business_profiles.logo_url,
+                type: promotion.business_profiles.business_type
+              } : null,
+              service: promotion.services ? {
+                id: promotion.services.id,
+                name: promotion.services.name,
+                minPrice: promotion.services.min_price
+              } : null,
+            }));
+          console.log("Transformed promotions (expired filtered):", transformedPromotions);
           setPromotions(transformedPromotions);
         }
       } catch (error: any) {
