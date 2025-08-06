@@ -9413,7 +9413,7 @@ export default function ProviderDashboard() {
                             {
                               teamProviders.filter(
                                 (tp) =>
-                                  tp.provider_role !== "owner" &&
+                                  (businessDetailsForm.business_type === "independent" ? true : tp.provider_role !== "owner") &&
                                   (selectedProviderRoleFilter === "all" ||
                                     tp.provider_role ===
                                       selectedProviderRoleFilter) &&
