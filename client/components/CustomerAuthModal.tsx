@@ -25,7 +25,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   onClose,
   defaultTab = "signin",
 }) => {
-  const { signInCustomer, signUpCustomer, loading } = useAuth();
+  const { signInCustomer, signUpCustomer, signInWithGoogle, signInWithApple, loading } = useAuth();
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
