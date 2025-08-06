@@ -326,6 +326,7 @@ export default function Index() {
               business.logo_url ||
               business.image_url ||
               "/api/placeholder/80/80",
+            cover_image_url: business.cover_image_url,
             specialties: business.service_categories || [
               "Professional Service",
               "Quality Care",
