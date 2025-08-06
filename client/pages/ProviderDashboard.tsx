@@ -318,6 +318,8 @@ export default function ProviderDashboard() {
   const [bannerError, setBannerError] = useState("");
   const [businessCoverUploading, setBusinessCoverUploading] = useState(false);
   const [businessCoverError, setBusinessCoverError] = useState("");
+  const [businessCoverPosition, setBusinessCoverPosition] = useState("50% 50%");
+  const [showPositionControls, setShowPositionControls] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
