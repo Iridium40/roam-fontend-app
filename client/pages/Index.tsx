@@ -1252,7 +1252,6 @@ export default function Index() {
                           <Building className="w-3 h-3 mr-1" />
                           Exclusive to {promotion.business.name}
                         </p>
-                        <p className="text-xs text-foreground/60">{promotion.business.type}</p>
                       </div>
                     )}
 
