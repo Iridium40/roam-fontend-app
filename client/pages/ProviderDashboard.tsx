@@ -12153,7 +12153,7 @@ export default function ProviderDashboard() {
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
                     <SelectItem value="both_locations">
-                      In-Studio or Mobile
+                      Business or Mobile
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -12363,7 +12363,7 @@ export default function ProviderDashboard() {
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
                     <SelectItem value="both_locations">
-                      In-Studio or Mobile
+                      Business or Mobile
                     </SelectItem>
                   </SelectContent>
                 </Select>
