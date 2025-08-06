@@ -229,8 +229,19 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       setIsReassignDialogOpen(false);
       setReassignProviderId("");
       onUpdate?.();
-    } catch (error) {
+
+      toast({
+        title: "Success",
+        description: "Booking reassigned successfully",
+      });
+    } catch (error: any) {
       console.error("Error reassigning booking:", error);
+      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to reassign booking";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
