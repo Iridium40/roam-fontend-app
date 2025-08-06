@@ -8632,9 +8632,9 @@ export default function ProviderDashboard() {
                       </div>
                     )}
 
-                    {businessDetailsError && (
+                    {(businessDetailsError || businessCoverError) && (
                       <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
-                        {businessDetailsError}
+                        {businessDetailsError || businessCoverError}
                       </div>
                     )}
 
