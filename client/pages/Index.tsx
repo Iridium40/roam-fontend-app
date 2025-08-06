@@ -61,6 +61,7 @@ export default function Index() {
     "signin",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
 
   // Database-driven state
   const [featuredServices, setFeaturedServices] = useState<any[]>([]);
