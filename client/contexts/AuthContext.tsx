@@ -157,10 +157,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 "AuthContext: Provider session restored successfully",
               );
             } else {
-              console.log(
-                "AuthContext: Provider not found, clearing stored session",
-              );
-              clearStoredData();
+              // Check if user is a customer instead
+              console.log("AuthContext: Provider not found, checking for customer profile...");
+
+              const { data: customerProfile } = await supabase
+                .from("customer_profiles")
+                .select("*")
+                .eq("user_id", session.user.id)
+                .single();
+
+              if (customerProfile) {
+                const customerData = {
+                  id: customerProfile.id,
+                  email: customerProfile.email,
+                  customer_id: customerProfile.id,
+                  first_name: customerProfile.first_name,
+                  last_name: customerProfile.last_name,
+                  phone: customerProfile.phone,
+                  image_url: customerProfile.image_url,
+                };
+
+                setCustomer(customerData);
+                setUserType("customer");
+                localStorage.setItem("roam_customer", JSON.stringify(customerData));
+                localStorage.setItem("roam_user_type", "customer");
+                console.log("AuthContext: Customer session restored successfully");
+              } else {
+                // For OAuth users without existing customer profile, create one
+                if (session.user.app_metadata?.provider) {
+                  console.log("AuthContext: OAuth user without profile, creating customer profile...");
+                  await createCustomerProfileFromOAuth(session.user);
+                } else {
+                  console.log("AuthContext: No provider or customer profile found, clearing session");
+                  clearStoredData();
+                }
+              }
             }
           } else {
             console.log(
