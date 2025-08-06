@@ -30,6 +30,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
     signUpCustomer,
     signInWithGoogle,
     signInWithApple,
+    resendVerificationEmail,
     loading,
   } = useAuth();
   const [activeTab, setActiveTab] = useState(defaultTab);
