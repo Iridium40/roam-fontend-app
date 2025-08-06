@@ -8539,6 +8539,83 @@ export default function ProviderDashboard() {
               <TabsContent value="business" className="space-y-6">
                 <h2 className="text-2xl font-bold">Business Management</h2>
 
+                {/* Business Cover Image Upload */}
+                {!isDispatcher && (
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="font-medium text-lg mb-4">
+                        Business Cover Image
+                      </h3>
+                      <div className="relative">
+                        <div className="w-full h-48 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden">
+                          {business?.cover_image_url ? (
+                            <img
+                              src={business.cover_image_url}
+                              alt="Business Cover"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="text-center text-white">
+                              <Building className="w-12 h-12 mx-auto mb-2" />
+                              <p className="text-sm">No cover image</p>
+                            </div>
+                          )}
+                        </div>
+                        {businessCoverUploading && (
+                          <div className="absolute inset-0 w-full h-48 bg-black/50 rounded-lg flex items-center justify-center">
+                            <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          </div>
+                        )}
+                      </div>
+
+                      {businessCoverError && (
+                        <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                          {businessCoverError}
+                        </div>
+                      )}
+
+                      <div className="flex gap-2 justify-center mt-4">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleBusinessCoverUpload}
+                          className="hidden"
+                          id="business-cover-upload"
+                          disabled={businessCoverUploading || businessDetailsSaving}
+                        />
+                        <Button
+                          variant="outline"
+                          className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                          onClick={() =>
+                            document.getElementById("business-cover-upload")?.click()
+                          }
+                          disabled={businessCoverUploading || businessDetailsSaving}
+                        >
+                          <Camera className="w-4 h-4 mr-2" />
+                          {business?.cover_image_url
+                            ? "Change Cover"
+                            : "Upload Cover"}
+                        </Button>
+
+                        {business?.cover_image_url && (
+                          <Button
+                            variant="outline"
+                            className="border-red-300 text-red-600 hover:bg-red-50"
+                            onClick={handleBusinessCoverRemove}
+                            disabled={businessCoverUploading || businessDetailsSaving}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+
+                      <p className="text-xs text-foreground/60 text-center mt-2">
+                        Upload a cover image for your business profile (max 10MB). Recommended size: 1200x400px
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Business Details Management */}
                 <Card>
                   <CardHeader>
