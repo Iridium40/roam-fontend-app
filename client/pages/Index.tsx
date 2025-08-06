@@ -808,7 +808,7 @@ export default function Index() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="https://videos.pexels.com/video-files/33321664/14189770_640_360_24fps.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/32200470/13732948_682_360_30fps.mp4" type="video/mp4" />
         </video>
 
         {/* Dark overlay for text readability */}
