@@ -1223,13 +1223,18 @@ export default function Index() {
                             {promotion.business ? 'Business Exclusive' : 'Special Offer'}
                           </Badge>
                         </div>
-                        {promotion.endDate && (
-                          <div className="absolute top-4 right-4">
+                        <div className="absolute top-4 right-4 flex flex-col gap-2">
+                          {formatSavings(promotion) && (
+                            <Badge className="bg-red-500 text-white font-bold">
+                              {formatSavings(promotion)}
+                            </Badge>
+                          )}
+                          {promotion.endDate && (
                             <Badge variant="destructive">
                               Ends {new Date(promotion.endDate).toLocaleDateString()}
                             </Badge>
-                          </div>
-                        )}
+                          )}
+                        </div>
                         {promotion.business && promotion.business.logo && (
                           <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
                             <img
@@ -1249,13 +1254,18 @@ export default function Index() {
                             {promotion.business ? 'Business Exclusive' : 'Special Offer'}
                           </Badge>
                         </div>
-                        {promotion.endDate && (
-                          <div className="absolute top-4 right-4">
+                        <div className="absolute top-4 right-4 flex flex-col gap-2">
+                          {formatSavings(promotion) && (
+                            <Badge className="bg-red-500 text-white font-bold">
+                              {formatSavings(promotion)}
+                            </Badge>
+                          )}
+                          {promotion.endDate && (
                             <Badge variant="destructive">
                               Ends {new Date(promotion.endDate).toLocaleDateString()}
                             </Badge>
-                          </div>
-                        )}
+                          )}
+                        </div>
                         <div className="mt-4">
                           {promotion.business && promotion.business.logo ? (
                             <div className="flex flex-col items-center">
