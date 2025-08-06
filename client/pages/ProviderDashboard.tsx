@@ -10538,23 +10538,39 @@ export default function ProviderDashboard() {
                           Banner Image
                         </h3>
                         <div className="relative">
-                          <div className="w-full h-32 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden">
+                          <div
+                            className="w-full h-32 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden cursor-pointer"
+                            onClick={provider?.cover_image_url ? handleProviderImagePositionClick : undefined}
+                          >
                             {provider?.cover_image_url ? (
                               <img
                                 src={provider.cover_image_url}
-                                alt="Banner"
-                                className="w-full h-full object-cover"
+                                alt="Cover Image"
+                                className="w-full h-full object-cover transition-all duration-300"
+                                style={{ objectPosition: providerCoverPosition }}
                               />
                             ) : (
                               <div className="text-center text-white">
                                 <Camera className="w-8 h-8 mx-auto mb-2" />
-                                <p className="text-sm">No banner image</p>
+                                <p className="text-sm">No cover image</p>
                               </div>
                             )}
                           </div>
                           {bannerUploading && (
                             <div className="absolute inset-0 w-full h-32 bg-black/50 rounded-lg flex items-center justify-center">
                               <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                          )}
+                          {provider?.cover_image_url && (
+                            <div className="absolute top-2 right-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setShowProviderPositionControls(!showProviderPositionControls)}
+                                className="bg-white/90 hover:bg-white"
+                              >
+                                <Move className="w-4 h-4" />
+                              </Button>
                             </div>
                           )}
                         </div>
