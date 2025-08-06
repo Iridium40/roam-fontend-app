@@ -807,11 +807,13 @@ export default function Index() {
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center mb-12">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight drop-shadow-lg">
-              Book Premium Services
-              <br />
-              <span className="text-roam-yellow">Anywhere in Florida</span>
-            </h1>
+            <div className="mb-6">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F98c77fcac42745ca81f9db3fb7f4e366?format=webp&width=800"
+                alt="ROAM Logo"
+                className="mx-auto h-24 sm:h-32 lg:h-40 w-auto drop-shadow-lg"
+              />
+            </div>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
               Connect with verified professionals in Beauty, Fitness, Therapy,
               and Healthcare. Available mobile, business, or virtual.
