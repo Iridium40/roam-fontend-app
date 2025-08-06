@@ -63,6 +63,7 @@ export default function Index() {
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+  const [copiedPromoCode, setCopiedPromoCode] = useState<string | null>(null);
 
   // Database-driven state
   const [featuredServices, setFeaturedServices] = useState<any[]>([]);
