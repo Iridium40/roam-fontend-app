@@ -267,8 +267,19 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       setIsMessageDialogOpen(false);
       setMessage("");
       onUpdate?.();
-    } catch (error) {
+
+      toast({
+        title: "Success",
+        description: "Message sent successfully",
+      });
+    } catch (error: any) {
       console.error("Error sending message:", error);
+      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to send message";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
