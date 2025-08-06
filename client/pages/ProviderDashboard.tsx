@@ -633,6 +633,7 @@ export default function ProviderDashboard() {
     website_url: "",
     logo_url: "",
     verification_status: "",
+    verification_notes: "",
     is_active: true,
     is_featured: false,
     setup_completed: false,
