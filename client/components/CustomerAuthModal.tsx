@@ -162,6 +162,8 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
       setSuccess(
         "Account created successfully! Please check your email to confirm your account, then sign in.",
       );
+      setVerificationEmailSent(true);
+      setLastEmailSentTo(signUpData.email);
       setActiveTab("signin");
       setSignInData({ email: signUpData.email, password: "" });
     } catch (err: any) {
