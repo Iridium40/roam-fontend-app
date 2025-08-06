@@ -9300,7 +9300,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        ��� Refresh
+                        ���� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
@@ -9575,7 +9575,7 @@ export default function ProviderDashboard() {
                                     }
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    {teamProvider.is_active
+                                    {(teamProvider.is_active || teamProvider.provider_role === "owner")
                                       ? "Active"
                                       : "Activate"}
                                   </Button>
