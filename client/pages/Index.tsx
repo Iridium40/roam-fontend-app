@@ -1340,13 +1340,27 @@ export default function Index() {
                       className="w-full bg-roam-blue hover:bg-roam-blue/90"
                     >
                       <Link
-                        to={promotion.business
-                          ? `/business/${promotion.business.id}?promotion=${promotion.id}&promo_code=${promotion.promoCode}`
-                          : `/services?promotion=${promotion.id}&promo_code=${promotion.promoCode}`
-                        }
+                        to={(() => {
+                          const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
+                          const serviceParam = promotion.service ? `&service_id=${promotion.service.id}` : '';
+
+                          if (promotion.business) {
+                            return `/business/${promotion.business.id}?${baseParams}${serviceParam}`;
+                          } else if (promotion.service) {
+                            return `/book-service/${promotion.service.id}?${baseParams}`;
+                          } else {
+                            return `/services?${baseParams}`;
+                          }
+                        })()}
                       >
                         <Tag className="w-4 h-4 mr-2" />
-                        {promotion.business ? 'Book with Business' : 'Choose Business'}
+                        {promotion.business && promotion.service
+                          ? 'Book Service Now'
+                          : promotion.business
+                          ? 'Book with Business'
+                          : promotion.service
+                          ? 'Book This Service'
+                          : 'Choose Business'}
                       </Link>
                     </Button>
                   </CardContent>
