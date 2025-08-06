@@ -1144,58 +1144,78 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {promotionalDeals.map((deal) => (
-              <Card
-                key={deal.id}
-                className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-border/50 hover:border-roam-light-blue/50"
-              >
-                <div className="relative">
-                  <img
-                    src={deal.image}
-                    alt={deal.title}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-roam-yellow text-gray-900">
-                      <Percent className="w-3 h-3 mr-1" />
-                      {deal.badge}
-                    </Badge>
-                  </div>
-                  <div className="absolute top-4 right-4">
-                    <Badge variant="destructive">{deal.discount}</Badge>
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-2">{deal.title}</h3>
-                  <p className="text-sm text-foreground/70 mb-4">
-                    {deal.description}
-                  </p>
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-roam-blue">
-                          {deal.discountPrice}
-                        </span>
-                        <span className="text-sm text-foreground/60 line-through">
-                          {deal.originalPrice}
-                        </span>
+          {promotionalDeals.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {promotionalDeals.map((promotion) => (
+                <Card
+                  key={promotion.id}
+                  className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-border/50 hover:border-roam-light-blue/50"
+                >
+                  <div className="relative bg-gradient-to-br from-roam-light-blue/10 to-roam-blue/20 p-8 text-center">
+                    <div className="absolute top-4 left-4">
+                      <Badge className="bg-roam-yellow text-gray-900">
+                        <Percent className="w-3 h-3 mr-1" />
+                        Special Offer
+                      </Badge>
+                    </div>
+                    {promotion.endDate && (
+                      <div className="absolute top-4 right-4">
+                        <Badge variant="destructive">
+                          Ends {new Date(promotion.endDate).toLocaleDateString()}
+                        </Badge>
                       </div>
-                      <p className="text-xs text-foreground/60">
-                        Valid until {deal.validUntil}
-                      </p>
+                    )}
+                    <div className="mt-4">
+                      <Tag className="w-12 h-12 text-roam-blue mx-auto mb-4" />
+                      <h3 className="text-xl font-bold text-roam-blue">PROMO</h3>
                     </div>
                   </div>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-2">{promotion.title}</h3>
+                    <div className="mb-4">
+                      <p className="text-sm text-foreground/70">
+                        {getDisplayDescription(promotion.description, promotion.id)}
+                      </p>
+                      {promotion.description && promotion.description.length > 200 && (
+                        <button
+                          onClick={() => toggleDescription(promotion.id)}
+                          className="text-roam-blue text-xs font-medium hover:underline mt-1"
+                        >
+                          {expandedDescriptions.has(promotion.id) ? 'Show less' : 'Read more'}
+                        </button>
+                      )}
+                    </div>
 
-                  <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                    <Tag className="w-4 h-4 mr-2" />
-                    Book Deal Now
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-foreground/60">Valid:</span>
+                        <span className="text-sm font-medium text-roam-blue">
+                          {promotion.startDate && promotion.endDate ? (
+                            `${new Date(promotion.startDate).toLocaleDateString()} - ${new Date(promotion.endDate).toLocaleDateString()}`
+                          ) : promotion.endDate ? (
+                            `Until ${new Date(promotion.endDate).toLocaleDateString()}`
+                          ) : (
+                            'Ongoing'
+                          )}
+                        </span>
+                      </div>
+                    </div>
+
+                    <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
+                      <Tag className="w-4 h-4 mr-2" />
+                      Claim Offer
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Tag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground/60 mb-2">No Active Promotions</h3>
+              <p className="text-foreground/50">Check back soon for exciting deals and offers!</p>
+            </div>
+          )}
         </div>
       </section>
 
