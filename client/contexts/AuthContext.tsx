@@ -131,12 +131,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               "AuthContext: Found active Supabase session, fetching provider...",
             );
 
+            // First check for provider account
             const { data: provider } = await supabase
               .from("providers")
               .select("*")
               .eq("user_id", session.user.id)
               .eq("is_active", true)
               .single();
+
             if (provider) {
               const userData = {
                 id: session.user.id,
