@@ -184,7 +184,15 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
       // OAuth will redirect, so we don't need to handle success here
     } catch (err: any) {
       console.error("Google sign-in error:", err);
-      setError("Failed to sign in with Google. Please try again.");
+
+      let errorMessage = "Failed to sign in with Google. Please try again.";
+      if (err.message?.includes("provider is not enabled") || err.error_code === "validation_failed") {
+        errorMessage = "Google sign-in is currently unavailable. Please use email/password to sign in.";
+      } else if (err.message?.includes("popup_closed")) {
+        errorMessage = "Sign-in was cancelled. Please try again.";
+      }
+
+      setError(errorMessage);
     }
   };
 
@@ -195,7 +203,15 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
       // OAuth will redirect, so we don't need to handle success here
     } catch (err: any) {
       console.error("Apple sign-in error:", err);
-      setError("Failed to sign in with Apple. Please try again.");
+
+      let errorMessage = "Failed to sign in with Apple. Please try again.";
+      if (err.message?.includes("provider is not enabled") || err.error_code === "validation_failed") {
+        errorMessage = "Apple sign-in is currently unavailable. Please use email/password to sign in.";
+      } else if (err.message?.includes("popup_closed")) {
+        errorMessage = "Sign-in was cancelled. Please try again.";
+      }
+
+      setError(errorMessage);
     }
   };
 
