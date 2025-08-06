@@ -8351,6 +8351,17 @@ export default function ProviderDashboard() {
                             <p className="text-sm text-foreground/60">
                               Main categories of services your business offers (read-only)
                             </p>
+                            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                              <p className="text-sm text-blue-800">
+                                <strong>Note:</strong> Service categories are controlled by ROAM. If you need approval for additional service categories, please contact ROAM at{' '}
+                                <a
+                                  href="mailto:providersupport@roamyourbestlife.com"
+                                  className="text-blue-600 hover:text-blue-800 underline"
+                                >
+                                  providersupport@roamyourbestlife.com
+                                </a>
+                              </p>
+                            </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                               {serviceCategories.map((category) => (
                                 <div
@@ -11230,7 +11241,7 @@ export default function ProviderDashboard() {
                       <div className="space-y-2">
                         <h4 className="font-medium">Business Tools</h4>
                         <ul className="space-y-1 text-foreground/70">
-                          <li>• Online Booking</li>
+                          <li>�� Online Booking</li>
                           <li>• Payment Processing</li>
                           <li>• Customer Management</li>
                           <li>• Calendar Sync</li>
