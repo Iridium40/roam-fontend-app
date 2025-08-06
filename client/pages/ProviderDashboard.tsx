@@ -8347,9 +8347,7 @@ export default function ProviderDashboard() {
                                 Featured Business Status:
                               </span>
                               {businessDetailsForm.is_featured ? (
-                                <Badge
-                                  className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 px-3 py-1 text-xs font-bold shadow-lg"
-                                >
+                                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 px-3 py-1 text-xs font-bold shadow-lg">
                                   ⭐ FEATURED BUSINESS
                                 </Badge>
                               ) : (
@@ -8382,11 +8380,15 @@ export default function ProviderDashboard() {
                               Business Service Categories
                             </Label>
                             <p className="text-sm text-foreground/60">
-                              Main categories of services your business offers (read-only)
+                              Main categories of services your business offers
+                              (read-only)
                             </p>
                             <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
                               <p className="text-sm text-blue-800">
-                                <strong>Note:</strong> Service categories are controlled by ROAM. If you need approval for additional service categories, please contact ROAM at{' '}
+                                <strong>Note:</strong> Service categories are
+                                controlled by ROAM. If you need approval for
+                                additional service categories, please contact
+                                ROAM at{" "}
                                 <a
                                   href="mailto:providersupport@roamyourbestlife.com"
                                   className="text-blue-600 hover:text-blue-800 underline"
@@ -8427,8 +8429,10 @@ export default function ProviderDashboard() {
                                         : "opacity-60"
                                     }`}
                                   >
-                                    {toCamelCase(category.description ||
-                                      category.service_category_type)}
+                                    {toCamelCase(
+                                      category.description ||
+                                        category.service_category_type,
+                                    )}
                                   </Label>
                                 </div>
                               ))}
@@ -8443,7 +8447,8 @@ export default function ProviderDashboard() {
                                 Service Specializations
                               </Label>
                               <p className="text-sm text-foreground/60">
-                                Specific services and specializations your business provides (read-only)
+                                Specific services and specializations your
+                                business provides (read-only)
                               </p>
                               {businessDetailsForm.service_categories.length ===
                               0 ? (
@@ -8499,8 +8504,10 @@ export default function ProviderDashboard() {
                                               : "opacity-60"
                                           }`}
                                         >
-                                          {toCamelCase(subcategory.description ||
-                                            subcategory.service_subcategory_type)}
+                                          {toCamelCase(
+                                            subcategory.description ||
+                                              subcategory.service_subcategory_type,
+                                          )}
                                         </Label>
                                       </div>
                                     ))}
@@ -9017,7 +9024,9 @@ export default function ProviderDashboard() {
 
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-foreground/60">
                                     <div>
-                                      <span className="font-medium">File Name:</span>
+                                      <span className="font-medium">
+                                        File Name:
+                                      </span>
                                       <br />
                                       <span className="text-xs text-foreground/50">
                                         {document.document_name}
@@ -9352,7 +9361,8 @@ export default function ProviderDashboard() {
                               Dispatcher
                             </SelectItem>
                             <SelectItem value="provider">Provider</SelectItem>
-                            {businessDetailsForm.business_type === "independent" && (
+                            {businessDetailsForm.business_type ===
+                              "independent" && (
                               <SelectItem value="owner">Owner</SelectItem>
                             )}
                           </SelectContent>
@@ -9424,8 +9434,10 @@ export default function ProviderDashboard() {
                         <div className="w-8 h-8 border-2 border-roam-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                         <p>Loading team members...</p>
                       </div>
-                    ) : teamProviders.filter(
-                        (tp) => businessDetailsForm.business_type === "independent" ? true : tp.provider_role !== "owner",
+                    ) : teamProviders.filter((tp) =>
+                        businessDetailsForm.business_type === "independent"
+                          ? true
+                          : tp.provider_role !== "owner",
                       ).length > 0 ? (
                       <div className="space-y-4">
                         {/* Show filtered count */}
@@ -9440,7 +9452,10 @@ export default function ProviderDashboard() {
                             {
                               teamProviders.filter(
                                 (tp) =>
-                                  (businessDetailsForm.business_type === "independent" ? true : tp.provider_role !== "owner") &&
+                                  (businessDetailsForm.business_type ===
+                                  "independent"
+                                    ? true
+                                    : tp.provider_role !== "owner") &&
                                   (selectedProviderRoleFilter === "all" ||
                                     tp.provider_role ===
                                       selectedProviderRoleFilter) &&
@@ -9454,8 +9469,11 @@ export default function ProviderDashboard() {
                             }{" "}
                             of{" "}
                             {
-                              teamProviders.filter(
-                                (tp) => businessDetailsForm.business_type === "independent" ? true : tp.provider_role !== "owner",
+                              teamProviders.filter((tp) =>
+                                businessDetailsForm.business_type ===
+                                "independent"
+                                  ? true
+                                  : tp.provider_role !== "owner",
                               ).length
                             }{" "}
                             staff members
@@ -9464,7 +9482,10 @@ export default function ProviderDashboard() {
                         {teamProviders
                           .filter(
                             (teamProvider) =>
-                              (businessDetailsForm.business_type === "independent" ? true : teamProvider.provider_role !== "owner") &&
+                              (businessDetailsForm.business_type ===
+                              "independent"
+                                ? true
+                                : teamProvider.provider_role !== "owner") &&
                               (selectedProviderRoleFilter === "all" ||
                                 teamProvider.provider_role ===
                                   selectedProviderRoleFilter) &&
@@ -9549,15 +9570,22 @@ export default function ProviderDashboard() {
                                         teamProvider,
                                       )
                                     }
-                                    disabled={providerActionLoading || teamProvider.provider_role === "owner"}
+                                    disabled={
+                                      providerActionLoading ||
+                                      teamProvider.provider_role === "owner"
+                                    }
                                     className={
-                                      (teamProvider.background_check_status === "approved" || teamProvider.provider_role === "owner")
+                                      teamProvider.background_check_status ===
+                                        "approved" ||
+                                      teamProvider.provider_role === "owner"
                                         ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
                                         : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"
                                     }
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    {(teamProvider.background_check_status === "approved" || teamProvider.provider_role === "owner")
+                                    {teamProvider.background_check_status ===
+                                      "approved" ||
+                                    teamProvider.provider_role === "owner"
                                       ? "Background ✓"
                                       : "Approve BG"}
                                   </Button>
@@ -9571,15 +9599,22 @@ export default function ProviderDashboard() {
                                         teamProvider,
                                       )
                                     }
-                                    disabled={providerActionLoading || teamProvider.provider_role === "owner"}
+                                    disabled={
+                                      providerActionLoading ||
+                                      teamProvider.provider_role === "owner"
+                                    }
                                     className={
-                                      (teamProvider.verification_status === "approved" || teamProvider.provider_role === "owner")
+                                      teamProvider.verification_status ===
+                                        "approved" ||
+                                      teamProvider.provider_role === "owner"
                                         ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
                                         : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"
                                     }
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    {(teamProvider.verification_status === "approved" || teamProvider.provider_role === "owner")
+                                    {teamProvider.verification_status ===
+                                      "approved" ||
+                                    teamProvider.provider_role === "owner"
                                       ? "Verified ✓"
                                       : "Verify"}
                                   </Button>
@@ -9591,15 +9626,20 @@ export default function ProviderDashboard() {
                                     onClick={() =>
                                       handleToggleProviderActive(teamProvider)
                                     }
-                                    disabled={providerActionLoading || teamProvider.provider_role === "owner"}
+                                    disabled={
+                                      providerActionLoading ||
+                                      teamProvider.provider_role === "owner"
+                                    }
                                     className={
-                                      (teamProvider.is_active || teamProvider.provider_role === "owner")
+                                      teamProvider.is_active ||
+                                      teamProvider.provider_role === "owner"
                                         ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
                                         : "bg-red-50 border-red-300 text-red-700 hover:bg-red-100"
                                     }
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    {(teamProvider.is_active || teamProvider.provider_role === "owner")
+                                    {teamProvider.is_active ||
+                                    teamProvider.provider_role === "owner"
                                       ? "Active"
                                       : "Activate"}
                                   </Button>

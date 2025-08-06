@@ -203,14 +203,13 @@ export default function BusinessProfile() {
           "Business profile query error:",
           businessError?.message || businessError,
         );
-        console.error(
-          "Business query details:",
-          businessResponse,
-        );
+        console.error("Business query details:", businessResponse);
         if (businessError.code === "PGRST116") {
           throw new Error(`Business with ID ${businessId} not found`);
         }
-        throw new Error(`Failed to load business data: ${businessError.message}`);
+        throw new Error(
+          `Failed to load business data: ${businessError.message}`,
+        );
       }
 
       // Fetch providers - now we can safely access business.business_type
@@ -234,7 +233,12 @@ export default function BusinessProfile() {
         )
         .eq("business_id", businessId)
         .eq("is_active", true)
-        .in("provider_role", business.business_type === "independent" ? ["provider", "owner"] : ["provider"]);
+        .in(
+          "provider_role",
+          business.business_type === "independent"
+            ? ["provider", "owner"]
+            : ["provider"],
+        );
 
       // Check for authentication errors
       const authErrors = [

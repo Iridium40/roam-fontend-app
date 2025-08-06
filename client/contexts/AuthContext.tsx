@@ -591,11 +591,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log("Resending verification email for:", email);
 
       const { error } = await supabase.auth.resend({
-        type: 'signup',
+        type: "signup",
         email: email,
         options: {
-          emailRedirectTo: window.location.origin
-        }
+          emailRedirectTo: window.location.origin,
+        },
       });
 
       if (error) {

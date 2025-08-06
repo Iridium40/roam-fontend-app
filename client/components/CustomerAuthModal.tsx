@@ -243,16 +243,24 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
     setError(null);
     try {
       await resendVerificationEmail(email);
-      setSuccess(`Verification email resent to ${email}. Please check your inbox and spam folder.`);
+      setSuccess(
+        `Verification email resent to ${email}. Please check your inbox and spam folder.`,
+      );
       setVerificationEmailSent(true);
       setLastEmailSentTo(email);
     } catch (err: any) {
       console.error("Resend verification email error:", err);
-      let errorMessage = "Failed to resend verification email. Please try again.";
-      if (err.message?.includes("rate limit") || err.message?.includes("too many")) {
-        errorMessage = "Too many requests. Please wait a few minutes before requesting another email.";
+      let errorMessage =
+        "Failed to resend verification email. Please try again.";
+      if (
+        err.message?.includes("rate limit") ||
+        err.message?.includes("too many")
+      ) {
+        errorMessage =
+          "Too many requests. Please wait a few minutes before requesting another email.";
       } else if (err.message?.includes("not found")) {
-        errorMessage = "Email address not found. Please check the email and try again.";
+        errorMessage =
+          "Email address not found. Please check the email and try again.";
       }
       setError(errorMessage);
     }
@@ -413,23 +421,30 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                   )}
 
                   {/* Resend Verification Email */}
-                  {(verificationEmailSent || error?.includes("Email not confirmed") || error?.includes("confirm your account")) && (lastEmailSentTo || signInData.email) && (
-                    <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-sm text-blue-800 mb-2">
-                        Didn't receive the verification email?
-                      </p>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleResendVerificationEmail(lastEmailSentTo || signInData.email)}
-                        disabled={loading}
-                        className="w-full border-blue-300 text-blue-700 hover:bg-blue-100"
-                      >
-                        Resend Verification Email
-                      </Button>
-                    </div>
-                  )}
+                  {(verificationEmailSent ||
+                    error?.includes("Email not confirmed") ||
+                    error?.includes("confirm your account")) &&
+                    (lastEmailSentTo || signInData.email) && (
+                      <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-800 mb-2">
+                          Didn't receive the verification email?
+                        </p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            handleResendVerificationEmail(
+                              lastEmailSentTo || signInData.email,
+                            )
+                          }
+                          disabled={loading}
+                          className="w-full border-blue-300 text-blue-700 hover:bg-blue-100"
+                        >
+                          Resend Verification Email
+                        </Button>
+                      </div>
+                    )}
 
                   <Button
                     type="submit"
@@ -646,23 +661,30 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                   )}
 
                   {/* Resend Verification Email */}
-                  {(verificationEmailSent || error?.includes("Email not confirmed") || error?.includes("confirm your account")) && (lastEmailSentTo || signUpData.email) && (
-                    <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-sm text-blue-800 mb-2">
-                        Didn't receive the verification email?
-                      </p>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleResendVerificationEmail(lastEmailSentTo || signUpData.email)}
-                        disabled={loading}
-                        className="w-full border-blue-300 text-blue-700 hover:bg-blue-100"
-                      >
-                        Resend Verification Email
-                      </Button>
-                    </div>
-                  )}
+                  {(verificationEmailSent ||
+                    error?.includes("Email not confirmed") ||
+                    error?.includes("confirm your account")) &&
+                    (lastEmailSentTo || signUpData.email) && (
+                      <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-800 mb-2">
+                          Didn't receive the verification email?
+                        </p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            handleResendVerificationEmail(
+                              lastEmailSentTo || signUpData.email,
+                            )
+                          }
+                          disabled={loading}
+                          className="w-full border-blue-300 text-blue-700 hover:bg-blue-100"
+                        >
+                          Resend Verification Email
+                        </Button>
+                      </div>
+                    )}
 
                   <Button
                     type="submit"

@@ -808,7 +808,10 @@ export default function Index() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="https://videos.pexels.com/video-files/11490725/11490725-sd_960_540_24fps.mp4" type="video/mp4" />
+          <source
+            src="https://videos.pexels.com/video-files/11490725/11490725-sd_960_540_24fps.mp4"
+            type="video/mp4"
+          />
         </video>
 
         {/* Dark overlay for text readability */}
@@ -823,7 +826,9 @@ export default function Index() {
               />
             </div>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-              Florida's premier on-demand services marketplace. Connecting customers with verified professionals for premium services delivered anywhere.
+              Florida's premier on-demand services marketplace. Connecting
+              customers with verified professionals for premium services
+              delivered anywhere.
             </p>
           </div>
         </div>

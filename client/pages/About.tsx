@@ -29,22 +29,26 @@ export default function About() {
     {
       icon: Star,
       title: "Premium Quality",
-      description: "We partner only with verified, high-quality professionals to ensure exceptional experiences.",
+      description:
+        "We partner only with verified, high-quality professionals to ensure exceptional experiences.",
     },
     {
       icon: Heart,
       title: "Community Focused",
-      description: "Supporting local businesses and fostering economic development in our communities.",
+      description:
+        "Supporting local businesses and fostering economic development in our communities.",
     },
     {
       icon: CheckCircle,
       title: "Trusted & Verified",
-      description: "All providers undergo thorough verification processes for your safety and peace of mind.",
+      description:
+        "All providers undergo thorough verification processes for your safety and peace of mind.",
     },
     {
       icon: Sparkles,
       title: "Luxury Convenience",
-      description: "Bringing premium beauty, fitness, and wellness services directly to your door.",
+      description:
+        "Bringing premium beauty, fitness, and wellness services directly to your door.",
     },
   ];
 
@@ -67,18 +71,26 @@ export default function About() {
             </Badge>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Your Best Life.{" "}
-            <span className="text-yellow-300">Everywhere.</span>
+            Your Best Life. <span className="text-yellow-300">Everywhere.</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
-            ROAM is a premium booking app connecting residents and visitors to luxury beauty, fitness, and wellness experiences along Florida's Emerald Coast.
+            ROAM is a premium booking app connecting residents and visitors to
+            luxury beauty, fitness, and wellness experiences along Florida's
+            Emerald Coast.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-roam-blue hover:bg-gray-100">
+            <Button
+              size="lg"
+              className="bg-white text-roam-blue hover:bg-gray-100"
+            >
               <Download className="w-5 h-5 mr-2" />
               Download the App
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white/10"
+            >
               <Users className="w-5 h-5 mr-2" />
               Become a Provider
             </Button>
@@ -93,7 +105,8 @@ export default function About() {
             Our Mission & Vision
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Redefining what it means to prioritize personal well-being and enjoyment
+            Redefining what it means to prioritize personal well-being and
+            enjoyment
           </p>
         </div>
 
@@ -107,7 +120,10 @@ export default function About() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 text-lg leading-relaxed">
-                To create and foster premium connections that enrich experiences in the communities around us. We empower local businesses while providing residents and visitors with convenient access to luxury wellness services.
+                To create and foster premium connections that enrich experiences
+                in the communities around us. We empower local businesses while
+                providing residents and visitors with convenient access to
+                luxury wellness services.
               </p>
             </CardContent>
           </Card>
@@ -121,7 +137,9 @@ export default function About() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 text-lg leading-relaxed">
-                To be the leading platform that transforms how people access premium wellness services, creating thriving communities where luxury, convenience, and local business success intersect.
+                To be the leading platform that transforms how people access
+                premium wellness services, creating thriving communities where
+                luxury, convenience, and local business success intersect.
               </p>
             </CardContent>
           </Card>
@@ -139,7 +157,7 @@ export default function About() {
               Building trust and connections across Florida's Emerald Coast
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
@@ -229,7 +247,8 @@ export default function About() {
             Premium Services at Your Door
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            From indulgent home med-spa treatments to invigorating fitness sessions, we bring luxury wellness experiences directly to you.
+            From indulgent home med-spa treatments to invigorating fitness
+            sessions, we bring luxury wellness experiences directly to you.
           </p>
         </div>
 
@@ -239,8 +258,13 @@ export default function About() {
               <div className="bg-pink-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Sparkles className="w-8 h-8 text-pink-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Beauty & Spa</h3>
-              <p className="text-gray-600">Professional beauty treatments and spa services in the comfort of your home</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Beauty & Spa
+              </h3>
+              <p className="text-gray-600">
+                Professional beauty treatments and spa services in the comfort
+                of your home
+              </p>
             </CardContent>
           </Card>
 
@@ -249,8 +273,13 @@ export default function About() {
               <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Fitness & Wellness</h3>
-              <p className="text-gray-600">Personal training and wellness services tailored to your lifestyle</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Fitness & Wellness
+              </h3>
+              <p className="text-gray-600">
+                Personal training and wellness services tailored to your
+                lifestyle
+              </p>
             </CardContent>
           </Card>
 
@@ -259,8 +288,12 @@ export default function About() {
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Award className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Premium Experiences</h3>
-              <p className="text-gray-600">Curated luxury experiences that elevate your well-being</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Premium Experiences
+              </h3>
+              <p className="text-gray-600">
+                Curated luxury experiences that elevate your well-being
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -273,18 +306,26 @@ export default function About() {
             Ready to Experience Your Best Life?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of satisfied customers and experience the convenience of premium on-demand services.
+            Join thousands of satisfied customers and experience the convenience
+            of premium on-demand services.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/browse">
-              <Button size="lg" className="bg-white text-roam-blue hover:bg-gray-100">
+              <Button
+                size="lg"
+                className="bg-white text-roam-blue hover:bg-gray-100"
+              >
                 Browse Services
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
             <Link to="/business-registration">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white/10"
+              >
                 <Users className="w-5 h-5 mr-2" />
                 Join as a Provider
               </Button>
