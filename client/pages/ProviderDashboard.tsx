@@ -9328,6 +9328,9 @@ export default function ProviderDashboard() {
                               Dispatcher
                             </SelectItem>
                             <SelectItem value="provider">Provider</SelectItem>
+                            {businessDetailsForm.business_type === "independent" && (
+                              <SelectItem value="owner">Owner</SelectItem>
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
