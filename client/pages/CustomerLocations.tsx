@@ -816,6 +816,15 @@ export default function CustomerLocations() {
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => openInGoogleMaps(location)}
+                            title="View in Google Maps"
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          >
+                            <Map className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => handleEdit(location)}
                           >
                             <Edit className="w-4 h-4" />
