@@ -362,6 +362,13 @@ export default function Index() {
             endDate: promotion.end_date,
             isActive: promotion.is_active,
             createdAt: promotion.created_at,
+            businessId: promotion.business_id,
+            business: promotion.business_profiles ? {
+              id: promotion.business_profiles.id,
+              name: promotion.business_profiles.business_name,
+              logo: promotion.business_profiles.logo_url,
+              type: promotion.business_profiles.business_type
+            } : null,
           }));
           console.log("Transformed promotions:", transformedPromotions);
           setPromotions(transformedPromotions);
