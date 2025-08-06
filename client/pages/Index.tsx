@@ -420,8 +420,8 @@ export default function Index() {
     },
   ];
 
-  // Temporary empty array for promotional deals (will implement later)
-  const promotionalDeals: any[] = [];
+  // Use real promotions data from database
+  const promotionalDeals = promotions;
 
   const deliveryIcons = {
     mobile: Car,
