@@ -341,6 +341,7 @@ export default function Index() {
             created_at,
             business_id,
             image_url,
+            promo_code,
             business_profiles (
               id,
               business_name,
