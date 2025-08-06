@@ -293,6 +293,57 @@ const ProviderBooking = () => {
     }
   };
 
+  const fetchPromotionData = async () => {
+    try {
+      const { data: promotion, error } = await supabase
+        .from("promotions")
+        .select(`
+          id,
+          title,
+          description,
+          start_date,
+          end_date,
+          is_active,
+          promo_code,
+          savings_type,
+          savings_amount,
+          savings_max_amount,
+          service_id,
+          business_id
+        `)
+        .eq("id", promotionId)
+        .eq("is_active", true)
+        .single();
+
+      if (error) {
+        console.error("Error fetching promotion:", error);
+        return;
+      }
+
+      // Check if promotion is still valid (not expired)
+      if (promotion.end_date) {
+        const endDate = new Date(promotion.end_date);
+        endDate.setHours(23, 59, 59, 999);
+        const currentDate = new Date();
+        if (endDate < currentDate) {
+          console.warn("Promotion has expired");
+          return;
+        }
+      }
+
+      // Verify promo code matches if provided
+      if (promoCode && promotion.promo_code !== promoCode) {
+        console.warn("Promo code mismatch");
+        return;
+      }
+
+      setPromotionData(promotion);
+      console.log("Promotion data loaded:", promotion);
+    } catch (error) {
+      console.error("Error fetching promotion data:", error);
+    }
+  };
+
   const addItemToBooking = (
     item: BusinessService | BusinessAddon,
     type: "service" | "addon",
