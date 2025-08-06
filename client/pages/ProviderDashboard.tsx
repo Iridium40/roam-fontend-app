@@ -1305,6 +1305,21 @@ export default function ProviderDashboard() {
     setBusinessCoverPosition(position);
   };
 
+  const handleProviderImagePositionClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!provider?.cover_image_url) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+    const position = `${Math.round(x)}% ${Math.round(y)}%`;
+    setProviderCoverPosition(position);
+  };
+
+  const handleProviderPresetPosition = (position: string) => {
+    setProviderCoverPosition(position);
+  };
+
   const handleDocumentUploadWithFile = async (file: File) => {
     if (!file || !business?.id) return;
 
