@@ -123,12 +123,13 @@ export default function CustomerLocations() {
   const createDefaultLocation = async () => {
     try {
       setLoading(true);
-      console.log('Creating default location...');
+      console.log("Creating default location...");
 
-      const { data: locationId, error } = await supabase
-        .rpc('ensure_customer_default_location');
+      const { data: locationId, error } = await supabase.rpc(
+        "ensure_customer_default_location",
+      );
 
-      console.log('Default location creation result:', { locationId, error });
+      console.log("Default location creation result:", { locationId, error });
 
       if (error) throw error;
 
@@ -156,16 +157,18 @@ export default function CustomerLocations() {
 
     try {
       setLoading(true);
-      console.log('Fetching locations for customer:', customer);
+      console.log("Fetching locations for customer:", customer);
 
       // Get the current user to use the auth user ID
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
-        console.error('No authenticated user found');
+        console.error("No authenticated user found");
         return;
       }
 
-      console.log('Using auth user ID for customer_locations query:', user.id);
+      console.log("Using auth user ID for customer_locations query:", user.id);
 
       // Fetch customer locations using auth user ID
       const { data, error } = await supabase
@@ -176,7 +179,7 @@ export default function CustomerLocations() {
         .order("is_primary", { ascending: false })
         .order("created_at", { ascending: false });
 
-      console.log('Customer locations query result:', { data, error });
+      console.log("Customer locations query result:", { data, error });
 
       if (error) throw error;
       setLocations(data || []);
@@ -228,16 +231,15 @@ export default function CustomerLocations() {
       setSubmitting(true);
 
       // Get the current user to use the auth user ID
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
-        console.error('No authenticated user found');
+        console.error("No authenticated user found");
         return;
       }
 
-      console.log(
-        "Submitting location with auth user ID:",
-        user.id,
-      );
+      console.log("Submitting location with auth user ID:", user.id);
       console.log("Form data:", formData);
 
       // Validate required fields
@@ -372,9 +374,11 @@ export default function CustomerLocations() {
   const setPrimary = async (location: CustomerLocation) => {
     try {
       // Get the current user to use the auth user ID
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
-        console.error('No authenticated user found');
+        console.error("No authenticated user found");
         return;
       }
 
@@ -426,17 +430,17 @@ export default function CustomerLocations() {
   };
 
   const openInGoogleMaps = (location: CustomerLocation) => {
-    const address = `${location.street_address}${location.unit_number ? `, ${location.unit_number}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`;
+    const address = `${location.street_address}${location.unit_number ? `, ${location.unit_number}` : ""}, ${location.city}, ${location.state} ${location.zip_code}`;
 
     // If we have coordinates, use them for more accuracy
     if (location.latitude && location.longitude) {
       const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
-      window.open(mapsUrl, '_blank');
+      window.open(mapsUrl, "_blank");
     } else {
       // Otherwise use the address
       const encodedAddress = encodeURIComponent(address);
       const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-      window.open(mapsUrl, '_blank');
+      window.open(mapsUrl, "_blank");
     }
   };
 

@@ -160,7 +160,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               );
             } else {
               // Check if user is a customer instead
-              console.log("AuthContext: Provider not found, checking for customer profile...");
+              console.log(
+                "AuthContext: Provider not found, checking for customer profile...",
+              );
 
               const { data: customerProfile } = await supabase
                 .from("customer_profiles")
@@ -181,16 +183,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
                 setCustomer(customerData);
                 setUserType("customer");
-                localStorage.setItem("roam_customer", JSON.stringify(customerData));
+                localStorage.setItem(
+                  "roam_customer",
+                  JSON.stringify(customerData),
+                );
                 localStorage.setItem("roam_user_type", "customer");
-                console.log("AuthContext: Customer session restored successfully");
+                console.log(
+                  "AuthContext: Customer session restored successfully",
+                );
               } else {
                 // For OAuth users without existing customer profile, create one
                 if (session.user.app_metadata?.provider) {
-                  console.log("AuthContext: OAuth user without profile, creating customer profile...");
+                  console.log(
+                    "AuthContext: OAuth user without profile, creating customer profile...",
+                  );
                   await createCustomerProfileFromOAuth(session.user);
                 } else {
-                  console.log("AuthContext: No provider or customer profile found, clearing session");
+                  console.log(
+                    "AuthContext: No provider or customer profile found, clearing session",
+                  );
                   clearStoredData();
                 }
               }
@@ -289,7 +300,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem("roam_user_type", "provider");
       } else {
         // Check for business owner/profile
-        console.log("AuthContext signIn: Provider not found, checking for business owner...");
+        console.log(
+          "AuthContext signIn: Provider not found, checking for business owner...",
+        );
 
         const { data: business, error: businessError } = await supabase
           .from("business_profiles")
@@ -322,14 +335,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           localStorage.setItem("roam_user_type", "provider");
         } else {
           // No provider or business owner found
-          console.error("AuthContext signIn: No provider or business owner found", {
-            providerError: providerError?.message || providerError,
-            businessError: businessError?.message || businessError,
-            userEmail: authData.user.email,
-            userId: authData.user.id
-          });
+          console.error(
+            "AuthContext signIn: No provider or business owner found",
+            {
+              providerError: providerError?.message || providerError,
+              businessError: businessError?.message || businessError,
+              userEmail: authData.user.email,
+              userId: authData.user.id,
+            },
+          );
           await supabase.auth.signOut();
-          throw new Error("Account not found or inactive. Please contact support if you believe this is an error.");
+          throw new Error(
+            "Account not found or inactive. Please contact support if you believe this is an error.",
+          );
         }
       }
 
@@ -516,14 +534,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: window.location.origin,
           queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          }
-        }
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
       });
 
       if (error) {
@@ -545,10 +563,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'apple',
+        provider: "apple",
         options: {
           redirectTo: window.location.origin,
-        }
+        },
       });
 
       if (error) {
@@ -575,10 +593,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .insert({
           user_id: user.id,
           email: user.email,
-          first_name: user.user_metadata?.full_name?.split(' ')[0] || user.user_metadata?.name?.split(' ')[0] || '',
-          last_name: user.user_metadata?.full_name?.split(' ').slice(1).join(' ') || user.user_metadata?.name?.split(' ').slice(1).join(' ') || '',
-          phone: user.user_metadata?.phone || '',
-          image_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || '',
+          first_name:
+            user.user_metadata?.full_name?.split(" ")[0] ||
+            user.user_metadata?.name?.split(" ")[0] ||
+            "",
+          last_name:
+            user.user_metadata?.full_name?.split(" ").slice(1).join(" ") ||
+            user.user_metadata?.name?.split(" ").slice(1).join(" ") ||
+            "",
+          phone: user.user_metadata?.phone || "",
+          image_url:
+            user.user_metadata?.avatar_url || user.user_metadata?.picture || "",
           date_of_birth: null,
           bio: null,
         })
@@ -604,7 +629,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUserType("customer");
       localStorage.setItem("roam_customer", JSON.stringify(customerData));
       localStorage.setItem("roam_user_type", "customer");
-      localStorage.setItem("roam_access_token", (await supabase.auth.getSession()).data.session?.access_token || '');
+      localStorage.setItem(
+        "roam_access_token",
+        (await supabase.auth.getSession()).data.session?.access_token || "",
+      );
 
       console.log("AuthContext: OAuth customer profile created successfully");
       return customerData;

@@ -192,7 +192,11 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       });
     } catch (error: any) {
       console.error("Error updating booking status:", error);
-      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to update booking status";
+      const errorMessage =
+        error?.message ||
+        error?.details ||
+        error?.error?.message ||
+        "Failed to update booking status";
       toast({
         title: "Error",
         description: errorMessage,
@@ -236,7 +240,11 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       });
     } catch (error: any) {
       console.error("Error reassigning booking:", error);
-      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to reassign booking";
+      const errorMessage =
+        error?.message ||
+        error?.details ||
+        error?.error?.message ||
+        "Failed to reassign booking";
       toast({
         title: "Error",
         description: errorMessage,
@@ -274,7 +282,11 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       });
     } catch (error: any) {
       console.error("Error sending message:", error);
-      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to send message";
+      const errorMessage =
+        error?.message ||
+        error?.details ||
+        error?.error?.message ||
+        "Failed to send message";
       toast({
         title: "Error",
         description: errorMessage,
@@ -328,7 +340,11 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       });
     } catch (error: any) {
       console.error("Error cancelling booking:", error);
-      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to cancel booking";
+      const errorMessage =
+        error?.message ||
+        error?.details ||
+        error?.error?.message ||
+        "Failed to cancel booking";
       toast({
         title: "Error",
         description: errorMessage,

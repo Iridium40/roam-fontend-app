@@ -62,7 +62,9 @@ export default function Index() {
     "signin",
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Database-driven state
   const [featuredServices, setFeaturedServices] = useState<any[]>([]);
@@ -97,7 +99,7 @@ export default function Index() {
   };
 
   const toggleDescription = (serviceId: string) => {
-    setExpandedDescriptions(prev => {
+    setExpandedDescriptions((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(serviceId)) {
         newSet.delete(serviceId);
@@ -113,16 +115,18 @@ export default function Index() {
     if (description.length <= 200 || isExpanded) {
       return description;
     }
-    return description.substring(0, 200) + '...';
+    return description.substring(0, 200) + "...";
   };
 
   const formatSavings = (promotion: any) => {
     if (!promotion.savingsType || !promotion.savingsAmount) return null;
 
-    if (promotion.savingsType === 'percentage') {
-      const maxAmount = promotion.savingsMaxAmount ? ` (max $${promotion.savingsMaxAmount})` : '';
+    if (promotion.savingsType === "percentage") {
+      const maxAmount = promotion.savingsMaxAmount
+        ? ` (max $${promotion.savingsMaxAmount})`
+        : "";
       return `${promotion.savingsAmount}% OFF${maxAmount}`;
-    } else if (promotion.savingsType === 'fixed_amount') {
+    } else if (promotion.savingsType === "fixed_amount") {
       return `$${promotion.savingsAmount} OFF`;
     }
 
@@ -344,7 +348,8 @@ export default function Index() {
         // Fetch active promotions with business and service information
         const promotionsResponse = await supabase
           .from("promotions")
-          .select(`
+          .select(
+            `
             id,
             title,
             description,
@@ -370,12 +375,14 @@ export default function Index() {
               name,
               min_price
             )
-          `)
+          `,
+          )
           .eq("is_active", true)
           .order("created_at", { ascending: false })
           .limit(6);
 
-        const { data: promotionsData, error: promotionsError } = promotionsResponse;
+        const { data: promotionsData, error: promotionsError } =
+          promotionsResponse;
 
         if (!promotionsError && promotionsData) {
           const currentDate = new Date();
@@ -407,19 +414,26 @@ export default function Index() {
               savingsAmount: promotion.savings_amount,
               savingsMaxAmount: promotion.savings_max_amount,
               serviceId: promotion.service_id,
-              business: promotion.business_profiles ? {
-                id: promotion.business_profiles.id,
-                name: promotion.business_profiles.business_name,
-                logo: promotion.business_profiles.logo_url,
-                type: promotion.business_profiles.business_type
-              } : null,
-              service: promotion.services ? {
-                id: promotion.services.id,
-                name: promotion.services.name,
-                minPrice: promotion.services.min_price
-              } : null,
+              business: promotion.business_profiles
+                ? {
+                    id: promotion.business_profiles.id,
+                    name: promotion.business_profiles.business_name,
+                    logo: promotion.business_profiles.logo_url,
+                    type: promotion.business_profiles.business_type,
+                  }
+                : null,
+              service: promotion.services
+                ? {
+                    id: promotion.services.id,
+                    name: promotion.services.name,
+                    minPrice: promotion.services.min_price,
+                  }
+                : null,
             }));
-          console.log("Transformed promotions (expired filtered):", transformedPromotions);
+          console.log(
+            "Transformed promotions (expired filtered):",
+            transformedPromotions,
+          );
           setPromotions(transformedPromotions);
         }
       } catch (error: any) {
@@ -1123,14 +1137,19 @@ export default function Index() {
                         </h3>
                         <div className="mb-4">
                           <p className="text-foreground/70">
-                            {getDisplayDescription(service.description, service.id)}
+                            {getDisplayDescription(
+                              service.description,
+                              service.id,
+                            )}
                           </p>
                           {service.description.length > 200 && (
                             <button
                               onClick={() => toggleDescription(service.id)}
                               className="md:hidden text-roam-blue text-sm font-medium hover:underline mt-1"
                             >
-                              {expandedDescriptions.has(service.id) ? 'Show less' : 'Read more'}
+                              {expandedDescriptions.has(service.id)
+                                ? "Show less"
+                                : "Read more"}
                             </button>
                           )}
                         </div>
@@ -1234,7 +1253,9 @@ export default function Index() {
                         <div className="absolute top-4 left-4">
                           <Badge className="bg-roam-yellow text-gray-900">
                             <Percent className="w-3 h-3 mr-1" />
-                            {promotion.business ? 'Business Exclusive' : 'Special Offer'}
+                            {promotion.business
+                              ? "Business Exclusive"
+                              : "Special Offer"}
                           </Badge>
                         </div>
                         <div className="absolute top-4 right-4 flex flex-col gap-2">
@@ -1245,7 +1266,8 @@ export default function Index() {
                           )}
                           {promotion.endDate && (
                             <Badge variant="destructive">
-                              Ends {new Date(promotion.endDate).toLocaleDateString()}
+                              Ends{" "}
+                              {new Date(promotion.endDate).toLocaleDateString()}
                             </Badge>
                           )}
                         </div>
@@ -1256,7 +1278,9 @@ export default function Index() {
                               alt={promotion.business.name}
                               className="w-6 h-6 rounded-full object-cover"
                             />
-                            <span className="text-xs font-bold text-gray-900">{promotion.business.name}</span>
+                            <span className="text-xs font-bold text-gray-900">
+                              {promotion.business.name}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -1265,7 +1289,9 @@ export default function Index() {
                         <div className="absolute top-4 left-4">
                           <Badge className="bg-roam-yellow text-gray-900">
                             <Percent className="w-3 h-3 mr-1" />
-                            {promotion.business ? 'Business Exclusive' : 'Special Offer'}
+                            {promotion.business
+                              ? "Business Exclusive"
+                              : "Special Offer"}
                           </Badge>
                         </div>
                         <div className="absolute top-4 right-4 flex flex-col gap-2">
@@ -1276,7 +1302,8 @@ export default function Index() {
                           )}
                           {promotion.endDate && (
                             <Badge variant="destructive">
-                              Ends {new Date(promotion.endDate).toLocaleDateString()}
+                              Ends{" "}
+                              {new Date(promotion.endDate).toLocaleDateString()}
                             </Badge>
                           )}
                         </div>
@@ -1288,12 +1315,16 @@ export default function Index() {
                                 alt={promotion.business.name}
                                 className="w-12 h-12 rounded-full object-cover border-2 border-roam-blue mb-2"
                               />
-                              <h3 className="text-sm font-bold text-roam-blue">{promotion.business.name}</h3>
+                              <h3 className="text-sm font-bold text-roam-blue">
+                                {promotion.business.name}
+                              </h3>
                             </div>
                           ) : (
                             <div>
                               <Tag className="w-12 h-12 text-roam-blue mx-auto mb-4" />
-                              <h3 className="text-xl font-bold text-roam-blue">PROMO</h3>
+                              <h3 className="text-xl font-bold text-roam-blue">
+                                PROMO
+                              </h3>
                             </div>
                           )}
                         </div>
@@ -1301,7 +1332,9 @@ export default function Index() {
                     )}
                   </div>
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold mb-2">{promotion.title}</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      {promotion.title}
+                    </h3>
 
                     {(promotion.business || promotion.service) && (
                       <div className="mb-3 p-2 bg-roam-light-blue/10 rounded-lg space-y-1">
@@ -1322,29 +1355,35 @@ export default function Index() {
 
                     <div className="mb-4">
                       <p className="text-sm text-foreground/70">
-                        {getDisplayDescription(promotion.description, promotion.id)}
+                        {getDisplayDescription(
+                          promotion.description,
+                          promotion.id,
+                        )}
                       </p>
-                      {promotion.description && promotion.description.length > 200 && (
-                        <button
-                          onClick={() => toggleDescription(promotion.id)}
-                          className="text-roam-blue text-xs font-medium hover:underline mt-1"
-                        >
-                          {expandedDescriptions.has(promotion.id) ? 'Show less' : 'Read more'}
-                        </button>
-                      )}
+                      {promotion.description &&
+                        promotion.description.length > 200 && (
+                          <button
+                            onClick={() => toggleDescription(promotion.id)}
+                            className="text-roam-blue text-xs font-medium hover:underline mt-1"
+                          >
+                            {expandedDescriptions.has(promotion.id)
+                              ? "Show less"
+                              : "Read more"}
+                          </button>
+                        )}
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-foreground/60">Valid:</span>
+                        <span className="text-sm text-foreground/60">
+                          Valid:
+                        </span>
                         <span className="text-sm font-medium text-roam-blue">
-                          {promotion.startDate && promotion.endDate ? (
-                            `${new Date(promotion.startDate).toLocaleDateString()} - ${new Date(promotion.endDate).toLocaleDateString()}`
-                          ) : promotion.endDate ? (
-                            `Until ${new Date(promotion.endDate).toLocaleDateString()}`
-                          ) : (
-                            'Ongoing'
-                          )}
+                          {promotion.startDate && promotion.endDate
+                            ? `${new Date(promotion.startDate).toLocaleDateString()} - ${new Date(promotion.endDate).toLocaleDateString()}`
+                            : promotion.endDate
+                              ? `Until ${new Date(promotion.endDate).toLocaleDateString()}`
+                              : "Ongoing"}
                         </span>
                       </div>
                     </div>
@@ -1356,7 +1395,9 @@ export default function Index() {
                       <Link
                         to={(() => {
                           const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
-                          const serviceParam = promotion.service ? `&service_id=${promotion.service.id}` : '';
+                          const serviceParam = promotion.service
+                            ? `&service_id=${promotion.service.id}`
+                            : "";
 
                           if (promotion.business) {
                             return `/business/${promotion.business.id}?${baseParams}${serviceParam}`;
@@ -1369,12 +1410,12 @@ export default function Index() {
                       >
                         <Tag className="w-4 h-4 mr-2" />
                         {promotion.business && promotion.service
-                          ? 'Book Service Now'
+                          ? "Book Service Now"
                           : promotion.business
-                          ? 'Book with Business'
-                          : promotion.service
-                          ? 'Book This Service'
-                          : 'Choose Business'}
+                            ? "Book with Business"
+                            : promotion.service
+                              ? "Book This Service"
+                              : "Choose Business"}
                       </Link>
                     </Button>
                   </CardContent>
@@ -1384,8 +1425,12 @@ export default function Index() {
           ) : (
             <div className="text-center py-12">
               <Tag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground/60 mb-2">No Active Promotions</h3>
-              <p className="text-foreground/50">Check back soon for exciting deals and offers!</p>
+              <h3 className="text-lg font-semibold text-foreground/60 mb-2">
+                No Active Promotions
+              </h3>
+              <p className="text-foreground/50">
+                Check back soon for exciting deals and offers!
+              </p>
             </div>
           )}
         </div>
@@ -1474,16 +1519,22 @@ export default function Index() {
                       <h3 className="font-semibold mb-2">{service.title}</h3>
                       <div className="mb-3">
                         <p className="text-sm text-foreground/70">
-                          {getDisplayDescription(service.description, service.id)}
+                          {getDisplayDescription(
+                            service.description,
+                            service.id,
+                          )}
                         </p>
-                        {service.description && service.description.length > 200 && (
-                          <button
-                            onClick={() => toggleDescription(service.id)}
-                            className="text-roam-blue text-xs font-medium hover:underline mt-1"
-                          >
-                            {expandedDescriptions.has(service.id) ? 'Show less' : 'Read more'}
-                          </button>
-                        )}
+                        {service.description &&
+                          service.description.length > 200 && (
+                            <button
+                              onClick={() => toggleDescription(service.id)}
+                              className="text-roam-blue text-xs font-medium hover:underline mt-1"
+                            >
+                              {expandedDescriptions.has(service.id)
+                                ? "Show less"
+                                : "Read more"}
+                            </button>
+                          )}
                       </div>
                       <p className="text-xs text-foreground/60 mb-3">
                         {service.category}
@@ -1535,7 +1586,9 @@ export default function Index() {
                   key={index}
                   onClick={() => setCurrentPopularSlide(index)}
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    currentPopularSlide === index ? 'bg-roam-blue' : 'bg-gray-300'
+                    currentPopularSlide === index
+                      ? "bg-roam-blue"
+                      : "bg-gray-300"
                   }`}
                 />
               ))}
@@ -1587,14 +1640,17 @@ export default function Index() {
                     <p className="text-sm text-foreground/70">
                       {getDisplayDescription(service.description, service.id)}
                     </p>
-                    {service.description && service.description.length > 200 && (
-                      <button
-                        onClick={() => toggleDescription(service.id)}
-                        className="text-roam-blue text-xs font-medium hover:underline mt-1"
-                      >
-                        {expandedDescriptions.has(service.id) ? 'Show less' : 'Read more'}
-                      </button>
-                    )}
+                    {service.description &&
+                      service.description.length > 200 && (
+                        <button
+                          onClick={() => toggleDescription(service.id)}
+                          className="text-roam-blue text-xs font-medium hover:underline mt-1"
+                        >
+                          {expandedDescriptions.has(service.id)
+                            ? "Show less"
+                            : "Read more"}
+                        </button>
+                      )}
                   </div>
                   <p className="text-xs text-foreground/60 mb-3">
                     {service.category}

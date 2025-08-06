@@ -207,7 +207,7 @@ class DirectSupabaseAPI {
       console.log("Bucket test response:", {
         status: response.status,
         statusText: response.statusText,
-        bucket
+        bucket,
       });
 
       return response.ok;
@@ -232,7 +232,7 @@ class DirectSupabaseAPI {
       baseURL: this.baseURL,
       hasApiKey: !!this.apiKey,
       hasAccessToken: !!this.accessToken,
-      accessTokenLength: this.accessToken?.length || 0
+      accessTokenLength: this.accessToken?.length || 0,
     });
 
     const formData = new FormData();
@@ -246,7 +246,9 @@ class DirectSupabaseAPI {
 
     console.log("Request headers:", {
       ...requestHeaders,
-      Authorization: this.accessToken ? `Bearer [TOKEN_${this.accessToken.substring(0, 10)}...]` : `Bearer [API_KEY_${this.apiKey.substring(0, 10)}...]`
+      Authorization: this.accessToken
+        ? `Bearer [TOKEN_${this.accessToken.substring(0, 10)}...]`
+        : `Bearer [API_KEY_${this.apiKey.substring(0, 10)}...]`,
     });
 
     const response = await fetch(
@@ -266,7 +268,7 @@ class DirectSupabaseAPI {
       bucket,
       path,
       hasAuthToken: !!this.accessToken,
-      headers: Object.fromEntries(response.headers.entries())
+      headers: Object.fromEntries(response.headers.entries()),
     });
 
     if (!response.ok) {
@@ -295,20 +297,26 @@ class DirectSupabaseAPI {
 
       if (response.status === 400) {
         if (errorDetails.includes("row-level security policy")) {
-          userFriendlyMessage = "Access denied: You don't have permission to upload files to this location. Please contact support.";
+          userFriendlyMessage =
+            "Access denied: You don't have permission to upload files to this location. Please contact support.";
         } else if (errorDetails.includes("violates foreign key constraint")) {
-          userFriendlyMessage = "Upload failed: Invalid business or profile reference. Please try refreshing the page.";
+          userFriendlyMessage =
+            "Upload failed: Invalid business or profile reference. Please try refreshing the page.";
         } else if (errorDetails.includes("File too large")) {
-          userFriendlyMessage = "Upload failed: File is too large. Please choose a smaller file.";
+          userFriendlyMessage =
+            "Upload failed: File is too large. Please choose a smaller file.";
         } else {
           userFriendlyMessage = `Upload failed: Invalid request. ${parsedError?.message || errorDetails}`;
         }
       } else if (response.status === 401) {
-        userFriendlyMessage = "Upload failed: You are not authorized. Please sign in again.";
+        userFriendlyMessage =
+          "Upload failed: You are not authorized. Please sign in again.";
       } else if (response.status === 403) {
-        userFriendlyMessage = "Upload failed: Access forbidden. Please check your permissions.";
+        userFriendlyMessage =
+          "Upload failed: Access forbidden. Please check your permissions.";
       } else if (response.status === 413) {
-        userFriendlyMessage = "Upload failed: File is too large. Please choose a smaller file.";
+        userFriendlyMessage =
+          "Upload failed: File is too large. Please choose a smaller file.";
       } else if (response.status === 422) {
         userFriendlyMessage = "Upload failed: Invalid file type or format.";
       } else {
@@ -321,7 +329,7 @@ class DirectSupabaseAPI {
         bucket,
         path,
         errorDetails,
-        parsedError
+        parsedError,
       });
 
       throw new Error(userFriendlyMessage);
