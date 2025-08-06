@@ -9557,9 +9557,8 @@ export default function ProviderDashboard() {
                                     }
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    {teamProvider.verification_status ===
-                                    "approved"
-                                      ? "Verified ��"
+                                    {(teamProvider.verification_status === "approved" || teamProvider.provider_role === "owner")
+                                      ? "Verified ✓"
                                       : "Verify"}
                                   </Button>
 
