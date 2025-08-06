@@ -328,7 +328,7 @@ export default function Index() {
           setFeaturedBusinesses(transformedBusinesses);
         }
 
-        // Fetch active promotions with business information
+        // Fetch active promotions with business and service information
         const promotionsResponse = await supabase
           .from("promotions")
           .select(`
@@ -342,11 +342,20 @@ export default function Index() {
             business_id,
             image_url,
             promo_code,
+            savings_type,
+            savings_amount,
+            savings_max_amount,
+            service_id,
             business_profiles (
               id,
               business_name,
               logo_url,
               business_type
+            ),
+            services (
+              id,
+              name,
+              min_price
             )
           `)
           .eq("is_active", true)
