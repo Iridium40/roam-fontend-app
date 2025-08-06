@@ -323,8 +323,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           // No provider or business owner found
           console.error("AuthContext signIn: No provider or business owner found", {
-            providerError: providerError?.message,
-            businessError: businessError?.message
+            providerError: providerError?.message || providerError,
+            businessError: businessError?.message || businessError,
+            userEmail: authData.user.email,
+            userId: authData.user.id
           });
           await supabase.auth.signOut();
           throw new Error("Account not found or inactive. Please contact support if you believe this is an error.");
