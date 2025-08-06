@@ -364,6 +364,7 @@ export default function Index() {
             isActive: promotion.is_active,
             createdAt: promotion.created_at,
             businessId: promotion.business_id,
+            imageUrl: promotion.image_url,
             business: promotion.business_profiles ? {
               id: promotion.business_profiles.id,
               name: promotion.business_profiles.business_name,
