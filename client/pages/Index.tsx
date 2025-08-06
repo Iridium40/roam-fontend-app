@@ -340,6 +340,7 @@ export default function Index() {
             is_active,
             created_at,
             business_id,
+            image_url,
             business_profiles (
               id,
               business_name,
