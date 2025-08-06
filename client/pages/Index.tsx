@@ -1743,61 +1743,66 @@ export default function Index() {
                       backgroundRepeat: 'no-repeat'
                     }}
                   >
+                    {/* Background overlay for cover image */}
                     {business.cover_image_url && (
-                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-0"></div>
                     )}
-                    <div className="relative flex items-start justify-between mb-4 z-10">
-                      {/* Business Logo */}
-                      <div className="w-20 h-20 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200 ring-2 ring-white">
-                        {business.image &&
-                        business.image !== "/api/placeholder/80/80" ? (
-                          <img
-                            src={business.image}
-                            alt={business.name}
-                            className="w-full h-full object-cover rounded-xl"
+
+                    {/* All content in foreground */}
+                    <div className="relative z-20">
+                      <div className="flex items-start justify-between mb-4">
+                        {/* Business Logo */}
+                        <div className="w-20 h-20 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200 ring-2 ring-white">
+                          {business.image &&
+                          business.image !== "/api/placeholder/80/80" ? (
+                            <img
+                              src={business.image}
+                              alt={business.name}
+                              className="w-full h-full object-cover rounded-xl"
+                            />
+                          ) : (
+                            <Building className="w-10 h-10 text-roam-blue" />
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-2">
+                          <FavoriteButton
+                            type="business"
+                            itemId={business.id}
+                            size="sm"
+                            variant="ghost"
+                            className="w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md border border-gray-200 text-gray-600 hover:text-red-500 hover:scale-110 transition-all"
                           />
-                        ) : (
-                          <Building className="w-10 h-10 text-roam-blue" />
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md border border-gray-200 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all"
+                            onClick={() => handleBusinessShare(business)}
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Business Name */}
+                      <div className="mb-3">
+                        <h3 className="font-bold text-2xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
+                          {business.name}
+                        </h3>
+                      </div>
+
+                      {/* Verification */}
+                      <div>
+                        {business.verification_status === "approved" && (
+                          <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full w-fit">
+                            <Shield className="w-3 h-3 text-green-600" />
+                            <span className="text-xs text-green-700 font-semibold">
+                              Verified
+                            </span>
+                          </div>
                         )}
                       </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-2">
-                        <FavoriteButton
-                          type="business"
-                          itemId={business.id}
-                          size="sm"
-                          variant="ghost"
-                          className="w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md border border-gray-200 text-gray-600 hover:text-red-500 hover:scale-110 transition-all"
-                        />
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md border border-gray-200 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all"
-                          onClick={() => handleBusinessShare(business)}
-                        >
-                          <Share2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Business Name */}
-                    <div className="mb-3">
-                      <h3 className="font-bold text-2xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
-                        {business.name}
-                      </h3>
-                    </div>
-
-                    {/* Verification */}
-                    <div>
-                      {business.verification_status === "approved" && (
-                        <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full w-fit">
-                          <Shield className="w-3 h-3 text-green-600" />
-                          <span className="text-xs text-green-700 font-semibold">
-                            Verified
-                          </span>
-                        </div>
-                      )}
                     </div>
                   </div>
 
