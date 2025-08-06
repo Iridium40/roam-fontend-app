@@ -420,7 +420,7 @@ class DirectSupabaseAPI {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-        body: JSON.stringify({ banner_image: bannerImageUrl }),
+        body: JSON.stringify({ cover_image_url: bannerImageUrl }),
       },
     );
 
