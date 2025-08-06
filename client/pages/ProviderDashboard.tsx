@@ -8349,8 +8349,7 @@ export default function ProviderDashboard() {
                               Business Service Categories
                             </Label>
                             <p className="text-sm text-foreground/60">
-                              Select the main categories of services your
-                              business offers
+                              Main categories of services your business offers (read-only)
                             </p>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                               {serviceCategories.map((category) => (
@@ -8364,60 +8363,13 @@ export default function ProviderDashboard() {
                                     checked={businessDetailsForm.service_categories.includes(
                                       category.service_category_type,
                                     )}
-                                    onChange={(e) => {
-                                      const updatedCategories = e.target.checked
-                                        ? [
-                                            ...businessDetailsForm.service_categories,
-                                            category.service_category_type,
-                                          ]
-                                        : businessDetailsForm.service_categories.filter(
-                                            (c) =>
-                                              c !==
-                                              category.service_category_type,
-                                          );
-
-                                      // If unchecking a category, remove all related subcategories
-                                      let updatedSubcategories =
-                                        businessDetailsForm.service_subcategories;
-                                      if (!e.target.checked) {
-                                        const subcategoriesToRemove =
-                                          serviceSubcategories
-                                            .filter(
-                                              (sub) =>
-                                                sub.category_id === category.id,
-                                            )
-                                            .map(
-                                              (sub) =>
-                                                sub.service_subcategory_type,
-                                            );
-                                        updatedSubcategories =
-                                          businessDetailsForm.service_subcategories.filter(
-                                            (sub) =>
-                                              !subcategoriesToRemove.includes(
-                                                sub,
-                                              ),
-                                          );
-                                        handleBusinessDetailsFormChange(
-                                          "service_subcategories",
-                                          updatedSubcategories,
-                                        );
-                                      }
-
-                                      handleBusinessDetailsFormChange(
-                                        "service_categories",
-                                        updatedCategories,
-                                      );
-                                    }}
-                                    disabled={
-                                      businessDetailsSaving ||
-                                      categoriesLoading ||
-                                      isDispatcher
-                                    }
-                                    className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
+                                    disabled={true}
+                                    readOnly
+                                    className="rounded border-gray-300 text-gray-400 cursor-not-allowed opacity-60"
                                   />
                                   <Label
                                     htmlFor={`category-${category.service_category_type}`}
-                                    className="text-sm font-normal cursor-pointer"
+                                    className="text-sm font-normal cursor-default opacity-60"
                                   >
                                     {category.description ||
                                       category.service_category_type}
@@ -8435,8 +8387,7 @@ export default function ProviderDashboard() {
                                 Service Specializations
                               </Label>
                               <p className="text-sm text-foreground/60">
-                                Select the specific services and specializations
-                                your business provides
+                                Specific services and specializations your business provides (read-only)
                               </p>
                               {businessDetailsForm.service_categories.length ===
                               0 ? (
@@ -8472,33 +8423,13 @@ export default function ProviderDashboard() {
                                           checked={businessDetailsForm.service_subcategories.includes(
                                             subcategory.service_subcategory_type,
                                           )}
-                                          onChange={(e) => {
-                                            const updatedSubcategories = e
-                                              .target.checked
-                                              ? [
-                                                  ...businessDetailsForm.service_subcategories,
-                                                  subcategory.service_subcategory_type,
-                                                ]
-                                              : businessDetailsForm.service_subcategories.filter(
-                                                  (s) =>
-                                                    s !==
-                                                    subcategory.service_subcategory_type,
-                                                );
-                                            handleBusinessDetailsFormChange(
-                                              "service_subcategories",
-                                              updatedSubcategories,
-                                            );
-                                          }}
-                                          disabled={
-                                            businessDetailsSaving ||
-                                            categoriesLoading ||
-                                            isDispatcher
-                                          }
-                                          className="rounded border-gray-300 text-roam-blue focus:ring-roam-blue"
+                                          disabled={true}
+                                          readOnly
+                                          className="rounded border-gray-300 text-gray-400 cursor-not-allowed opacity-60"
                                         />
                                         <Label
                                           htmlFor={`subcategory-${subcategory.service_subcategory_type}`}
-                                          className="text-sm font-normal cursor-pointer"
+                                          className="text-sm font-normal cursor-default opacity-60"
                                         >
                                           {subcategory.description ||
                                             subcategory.service_subcategory_type}
