@@ -992,7 +992,7 @@ export default function Index() {
                   <SelectValue placeholder="Delivery Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="all">Delivery Types</SelectItem>
                   <SelectItem value="mobile">
                     <div className="flex items-center gap-2">
                       <Car className="w-4 h-4" />
@@ -1733,8 +1733,19 @@ export default function Index() {
               >
                 <CardContent className="p-0">
                   {/* Header with Logo and Actions */}
-                  <div className="relative bg-gradient-to-br from-white via-roam-light-blue/5 to-roam-blue/10 p-6 border-b border-gray-100">
-                    <div className="flex items-start justify-between mb-4">
+                  <div
+                    className="relative bg-gradient-to-br from-white via-roam-light-blue/5 to-roam-blue/10 p-6 border-b border-gray-100"
+                    style={{
+                      backgroundImage: business.cover_image_url ? `url(${business.cover_image_url})` : undefined,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat'
+                    }}
+                  >
+                    {business.cover_image_url && (
+                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+                    )}
+                    <div className="relative flex items-start justify-between mb-4 z-10">
                       {/* Business Logo */}
                       <div className="w-20 h-20 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200 ring-2 ring-white">
                         {business.image &&
@@ -1807,7 +1818,7 @@ export default function Index() {
                     {/* Delivery Types */}
                     <div className="space-y-3">
                       <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
-                        Service Options
+                        Delivery Options
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {business.deliveryTypes.map((type) => {
