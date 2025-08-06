@@ -513,7 +513,9 @@ export default function Index() {
                 />
               </Link>
             </div>
-            <div className="flex items-center space-x-4">
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
               {isCustomer ? (
                 <>
                   <CustomerAvatarDropdown />
@@ -564,7 +566,93 @@ export default function Index() {
                 </>
               )}
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-foreground hover:text-roam-blue"
+              >
+                {mobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </Button>
+            </div>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-border">
+              <div className="px-2 pt-2 pb-3 space-y-2 bg-background">
+                {isCustomer ? (
+                  <>
+                    <div className="px-3 py-2">
+                      <CustomerAvatarDropdown />
+                    </div>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full justify-start border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Link to="/provider-portal">
+                        <Users className="w-4 h-4 mr-2" />
+                        Provider Portal
+                      </Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        handleMyBookings();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full justify-start border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                    >
+                      <Calendar className="w-4 h-4 mr-2" />
+                      My Bookings
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        handleSignIn();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full justify-start text-foreground hover:text-roam-blue"
+                    >
+                      Sign In
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        handleSignUp();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full justify-start bg-roam-blue hover:bg-roam-blue/90"
+                    >
+                      Sign Up
+                    </Button>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full justify-start border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Link to="/provider-portal">
+                        <Users className="w-4 h-4 mr-2" />
+                        Provider Portal
+                      </Link>
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
