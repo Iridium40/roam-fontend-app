@@ -185,8 +185,19 @@ export const BookingCard: React.FC<BookingCardProps> = ({
 
       setIsStatusDialogOpen(false);
       onUpdate?.();
-    } catch (error) {
+
+      toast({
+        title: "Success",
+        description: "Booking status updated successfully",
+      });
+    } catch (error: any) {
       console.error("Error updating booking status:", error);
+      const errorMessage = error?.message || error?.details || error?.error?.message || "Failed to update booking status";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
