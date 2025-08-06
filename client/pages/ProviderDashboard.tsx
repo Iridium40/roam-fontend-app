@@ -1091,7 +1091,7 @@ export default function ProviderDashboard() {
   };
 
   const handleBannerRemove = async () => {
-    if (!provider?.banner_image) return;
+    if (!provider?.cover_image_url) return;
 
     setBannerUploading(true);
     setBannerError("");
@@ -1101,7 +1101,7 @@ export default function ProviderDashboard() {
       const { directSupabaseAPI } = await import("@/lib/directSupabase");
 
       // Extract filename from URL
-      const urlParts = provider.banner_image.split("/");
+      const urlParts = provider.cover_image_url.split("/");
       const fileName = urlParts[urlParts.length - 1];
       const filePath = `banner-provider-user/${fileName}`;
 
@@ -1112,7 +1112,7 @@ export default function ProviderDashboard() {
       await directSupabaseAPI.updateProviderBannerImage(provider.id, null);
 
       // Update local state
-      setProvider({ ...provider, banner_image: null });
+      setProvider({ ...provider, cover_image_url: null });
     } catch (error: any) {
       console.error("Banner remove error:", error);
       let errorMessage = "Failed to remove banner image";
