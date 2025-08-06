@@ -8611,6 +8611,109 @@ export default function ProviderDashboard() {
                         </div>
                       )}
 
+                      {/* Position Controls */}
+                      {business?.cover_image_url && showPositionControls && (
+                        <div className="bg-gray-50 border rounded-lg p-4 mb-4">
+                          <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                            <Move className="w-4 h-4" />
+                            Image Position Controls
+                          </h4>
+                          <div className="space-y-3">
+                            <p className="text-xs text-gray-600">
+                              Click on the image above to set focal point, or use preset positions:
+                            </p>
+                            <div className="grid grid-cols-3 gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("0% 0%")}
+                                className="text-xs"
+                              >
+                                Top Left
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("50% 0%")}
+                                className="text-xs"
+                              >
+                                Top Center
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("100% 0%")}
+                                className="text-xs"
+                              >
+                                Top Right
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("0% 50%")}
+                                className="text-xs"
+                              >
+                                Center Left
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("50% 50%")}
+                                className="text-xs bg-roam-blue text-white border-roam-blue"
+                              >
+                                Center
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("100% 50%")}
+                                className="text-xs"
+                              >
+                                Center Right
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("0% 100%")}
+                                className="text-xs"
+                              >
+                                Bottom Left
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("50% 100%")}
+                                className="text-xs"
+                              >
+                                Bottom Center
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("100% 100%")}
+                                className="text-xs"
+                              >
+                                Bottom Right
+                              </Button>
+                            </div>
+                            <div className="flex items-center justify-between pt-2 border-t">
+                              <span className="text-xs text-gray-600">
+                                Current position: {businessCoverPosition}
+                              </span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handlePresetPosition("50% 50%")}
+                                className="text-xs"
+                              >
+                                <RotateCcw className="w-3 h-3 mr-1" />
+                                Reset
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       <div className="flex gap-2 justify-center mt-4">
                         <input
                           type="file"
