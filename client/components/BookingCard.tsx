@@ -54,6 +54,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 import type {
   Booking,
   Provider,
