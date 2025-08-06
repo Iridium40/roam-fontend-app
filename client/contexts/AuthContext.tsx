@@ -255,7 +255,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log("AuthContext signIn: Auth successful, fetching profile...");
 
-      // Use standard Supabase client for provider lookup
+      // First check for provider account
       const { data: provider, error: providerError } = await supabase
         .from("providers")
         .select("*")
@@ -263,33 +263,71 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .eq("is_active", true)
         .single();
 
-      if (providerError || !provider) {
-        console.error("AuthContext signIn: No provider found", providerError);
-        await supabase.auth.signOut();
-        throw new Error("Provider account not found or inactive");
+      if (provider && !providerError) {
+        console.log("AuthContext signIn: Provider found:", provider);
+
+        const userData = {
+          id: authData.user.id,
+          email: provider.email,
+          provider_id: provider.id,
+          business_id: provider.business_id,
+          location_id: provider.location_id,
+          provider_role: provider.provider_role,
+          first_name: provider.first_name,
+          last_name: provider.last_name,
+        };
+
+        setUser(userData);
+        setUserType("provider");
+        localStorage.setItem("roam_user", JSON.stringify(userData));
+        localStorage.setItem(
+          "roam_access_token",
+          authData.session?.access_token || "",
+        );
+        localStorage.setItem("roam_user_type", "provider");
+      } else {
+        // Check for business owner/profile
+        console.log("AuthContext signIn: Provider not found, checking for business owner...");
+
+        const { data: business, error: businessError } = await supabase
+          .from("business_profiles")
+          .select("*")
+          .eq("owner_user_id", authData.user.id)
+          .eq("is_active", true)
+          .single();
+
+        if (business && !businessError) {
+          console.log("AuthContext signIn: Business owner found:", business);
+
+          const userData = {
+            id: authData.user.id,
+            email: authData.user.email || business.contact_email,
+            business_id: business.id,
+            business_name: business.business_name,
+            owner_user_id: business.owner_user_id,
+            provider_role: "owner" as any, // Business owners have owner role
+            first_name: business.owner_first_name,
+            last_name: business.owner_last_name,
+          };
+
+          setUser(userData);
+          setUserType("provider"); // Keep as provider type for compatibility
+          localStorage.setItem("roam_user", JSON.stringify(userData));
+          localStorage.setItem(
+            "roam_access_token",
+            authData.session?.access_token || "",
+          );
+          localStorage.setItem("roam_user_type", "provider");
+        } else {
+          // No provider or business owner found
+          console.error("AuthContext signIn: No provider or business owner found", {
+            providerError: providerError?.message,
+            businessError: businessError?.message
+          });
+          await supabase.auth.signOut();
+          throw new Error("Account not found or inactive. Please contact support if you believe this is an error.");
+        }
       }
-
-      console.log("AuthContext signIn: Provider found:", provider);
-
-      const userData = {
-        id: authData.user.id,
-        email: provider.email,
-        provider_id: provider.id,
-        business_id: provider.business_id,
-        location_id: provider.location_id,
-        provider_role: provider.provider_role,
-        first_name: provider.first_name,
-        last_name: provider.last_name,
-      };
-
-      setUser(userData);
-      setUserType("provider");
-      localStorage.setItem("roam_user", JSON.stringify(userData));
-      localStorage.setItem(
-        "roam_access_token",
-        authData.session?.access_token || "",
-      );
-      localStorage.setItem("roam_user_type", "provider");
 
       console.log(
         "AuthContext signIn: Provider state updated and persisted successfully",
