@@ -406,6 +406,33 @@ class DirectSupabaseAPI {
     // Success case - responseText is empty due to Prefer: return=minimal
   }
 
+  async updateProviderBannerImage(
+    providerId: string,
+    bannerImageUrl: string | null,
+  ): Promise<void> {
+    const response = await fetch(
+      `${this.baseURL}/rest/v1/providers?id=eq.${providerId}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({ banner_image: bannerImageUrl }),
+      },
+    );
+
+    // Read response text once and use it for both success and error cases
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Database update failed: ${responseText}`);
+    }
+    // Success case - responseText is empty due to Prefer: return=minimal
+  }
+
   async updateBusinessProfile(
     businessId: string,
     updateData: any,
