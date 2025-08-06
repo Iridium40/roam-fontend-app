@@ -1745,7 +1745,7 @@ export default function Index() {
                   >
                     {/* Background overlay for cover image */}
                     {business.cover_image_url && (
-                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-0"></div>
+                      <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-0"></div>
                     )}
 
                     {/* All content in foreground */}
