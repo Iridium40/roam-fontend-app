@@ -109,6 +109,59 @@ interface ServiceSubcategory {
   category?: ServiceCategory;
 }
 
+// Service icon mapping function
+const getServiceIcon = (serviceName: string, categoryType: string) => {
+  const name = serviceName.toLowerCase();
+  const category = categoryType?.toLowerCase() || '';
+
+  // Healthcare services
+  if (category.includes('healthcare') || name.includes('medical') || name.includes('health')) {
+    if (name.includes('consultation') || name.includes('visit')) return Stethoscope;
+    if (name.includes('therapy') || name.includes('rehabilitation')) return Activity;
+    if (name.includes('mental') || name.includes('counseling')) return Brain;
+    if (name.includes('cardiac') || name.includes('heart')) return Heart;
+    if (name.includes('eye') || name.includes('vision')) return Eye;
+    return Stethoscope;
+  }
+
+  // Beauty & Wellness services
+  if (category.includes('beauty') || category.includes('wellness')) {
+    if (name.includes('haircut') || name.includes('hair') || name.includes('barber')) return Scissors;
+    if (name.includes('massage') || name.includes('spa')) return Heart;
+    if (name.includes('makeup') || name.includes('beauty')) return Palette;
+    return Scissors;
+  }
+
+  // Fitness services
+  if (category.includes('fitness') || name.includes('workout') || name.includes('training')) {
+    return Dumbbell;
+  }
+
+  // Home services
+  if (category.includes('home') || name.includes('cleaning') || name.includes('repair')) {
+    if (name.includes('repair') || name.includes('maintenance')) return Wrench;
+    return Home;
+  }
+
+  // Business services
+  if (category.includes('business') || category.includes('professional')) {
+    return Briefcase;
+  }
+
+  // Technology services
+  if (category.includes('technology') || name.includes('tech') || name.includes('digital')) {
+    return Smartphone;
+  }
+
+  // Virtual services
+  if (name.includes('virtual') || name.includes('online')) {
+    return Video;
+  }
+
+  // Default icon
+  return Star;
+};
+
 // Calendar Grid Component
 const CalendarGrid = ({
   bookings,
