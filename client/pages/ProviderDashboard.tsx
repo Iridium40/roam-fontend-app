@@ -693,6 +693,21 @@ export default function ProviderDashboard() {
     return statusMap[status] || status;
   };
 
+  const toCamelCase = (text: string) => {
+    if (!text) return "";
+
+    // Convert underscore/space to camel case
+    return text
+      .split(/[_\s]+/)
+      .map((word, index) => {
+        if (index === 0) {
+          return word.charAt(0).toLowerCase() + word.slice(1).toLowerCase();
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join("");
+  };
+
   const handleLogoUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
