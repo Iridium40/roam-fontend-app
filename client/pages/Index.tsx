@@ -721,12 +721,6 @@ export default function Index() {
                   <p className="text-sm text-foreground/60 mb-3">
                     {category.description}
                   </p>
-                  <Badge
-                    variant="secondary"
-                    className="bg-roam-light-blue/20 text-roam-blue"
-                  >
-                    {category.count}
-                  </Badge>
                 </CardContent>
               </Card>
             ))}
