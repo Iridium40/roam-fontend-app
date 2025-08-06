@@ -10703,8 +10703,8 @@ export default function ProviderDashboard() {
                           >
                             <Camera className="w-4 h-4 mr-2" />
                             {provider?.cover_image_url
-                              ? "Change Banner"
-                              : "Upload Banner"}
+                              ? "Change Cover"
+                              : "Upload Cover"}
                           </Button>
 
                           {provider?.cover_image_url && (
@@ -14870,7 +14870,7 @@ export default function ProviderDashboard() {
             {locationToDelete?.is_primary && (
               <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
                 <p className="text-amber-800 font-medium">
-                  ⚠��� Warning: This is your primary location
+                  ⚠️ Warning: This is your primary location
                 </p>
                 <p className="text-amber-700 text-sm mt-1">
                   Deleting it will leave your business without a primary
