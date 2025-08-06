@@ -8475,8 +8475,8 @@ export default function ProviderDashboard() {
                                           htmlFor={`subcategory-${subcategory.service_subcategory_type}`}
                                           className="text-sm font-normal cursor-default opacity-60"
                                         >
-                                          {subcategory.description ||
-                                            subcategory.service_subcategory_type}
+                                          {toCamelCase(subcategory.description ||
+                                            subcategory.service_subcategory_type)}
                                         </Label>
                                       </div>
                                     ))}
@@ -9298,7 +9298,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        �� Refresh
+                        ��� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
