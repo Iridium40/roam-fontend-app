@@ -439,6 +439,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signInWithGoogle = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
+        }
+      });
+
+      if (error) {
+        console.error("Google sign-in error:", error);
+        throw error;
+      }
+
+      // The OAuth flow will redirect, so we don't need to handle the response here
+      // The session will be handled when the user returns from OAuth
+    } catch (error: any) {
+      console.error("Google sign-in error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithApple = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo: window.location.origin,
+        }
+      });
+
+      if (error) {
+        console.error("Apple sign-in error:", error);
+        throw error;
+      }
+
+      // The OAuth flow will redirect, so we don't need to handle the response here
+      // The session will be handled when the user returns from OAuth
+    } catch (error: any) {
+      console.error("Apple sign-in error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const updateCustomerProfile = async (profileData: {
     firstName: string;
     lastName: string;
