@@ -8664,7 +8664,7 @@ export default function ProviderDashboard() {
                                   e.target.value,
                                 )
                               }
-                              disabled={businessDetailsSaving || isDispatcher}
+                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
                             />
                           </div>
 
@@ -8907,7 +8907,7 @@ export default function ProviderDashboard() {
                                   e.target.value,
                                 )
                               }
-                              disabled={businessDetailsSaving || isDispatcher}
+                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
                             />
                           </div>
 
@@ -8923,7 +8923,7 @@ export default function ProviderDashboard() {
                                   e.target.value,
                                 )
                               }
-                              disabled={businessDetailsSaving || isDispatcher}
+                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
                             />
                           </div>
 
@@ -8940,7 +8940,7 @@ export default function ProviderDashboard() {
                                 )
                               }
                               placeholder="https://"
-                              disabled={businessDetailsSaving || isDispatcher}
+                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
                             />
                           </div>
                         </div>
@@ -9055,7 +9055,7 @@ export default function ProviderDashboard() {
                                   checked,
                                 )
                               }
-                              disabled={businessDetailsSaving || isDispatcher}
+                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
                               className="data-[state=checked]:bg-roam-blue"
                             />
                           </div>
