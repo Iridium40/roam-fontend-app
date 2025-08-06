@@ -237,6 +237,25 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
     return /iPad|iPhone|iPod|Macintosh/.test(userAgent);
   };
 
+  const handleResendVerificationEmail = async (email: string) => {
+    setError(null);
+    try {
+      await resendVerificationEmail(email);
+      setSuccess(`Verification email resent to ${email}. Please check your inbox and spam folder.`);
+      setVerificationEmailSent(true);
+      setLastEmailSentTo(email);
+    } catch (err: any) {
+      console.error("Resend verification email error:", err);
+      let errorMessage = "Failed to resend verification email. Please try again.";
+      if (err.message?.includes("rate limit") || err.message?.includes("too many")) {
+        errorMessage = "Too many requests. Please wait a few minutes before requesting another email.";
+      } else if (err.message?.includes("not found")) {
+        errorMessage = "Email address not found. Please check the email and try again.";
+      }
+      setError(errorMessage);
+    }
+  };
+
   // Enable OAuth providers
   const showOAuthProviders = true;
 
