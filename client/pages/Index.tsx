@@ -376,11 +376,20 @@ export default function Index() {
             businessId: promotion.business_id,
             imageUrl: promotion.image_url,
             promoCode: promotion.promo_code,
+            savingsType: promotion.savings_type,
+            savingsAmount: promotion.savings_amount,
+            savingsMaxAmount: promotion.savings_max_amount,
+            serviceId: promotion.service_id,
             business: promotion.business_profiles ? {
               id: promotion.business_profiles.id,
               name: promotion.business_profiles.business_name,
               logo: promotion.business_profiles.logo_url,
               type: promotion.business_profiles.business_type
+            } : null,
+            service: promotion.services ? {
+              id: promotion.services.id,
+              name: promotion.services.name,
+              minPrice: promotion.services.min_price
             } : null,
           }));
           console.log("Transformed promotions:", transformedPromotions);
