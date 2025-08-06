@@ -497,6 +497,16 @@ export default function Index() {
     );
   };
 
+  const nextPopularSlide = () => {
+    setCurrentPopularSlide((prev) => (prev + 1) % popularServices.length);
+  };
+
+  const prevPopularSlide = () => {
+    setCurrentPopularSlide(
+      (prev) => (prev - 1 + popularServices.length) % popularServices.length,
+    );
+  };
+
   const filteredBusinesses = featuredBusinesses.filter((business) => {
     const matchesSearch =
       searchQuery === "" ||
