@@ -370,11 +370,18 @@ export default function CustomerLocations() {
 
   const setPrimary = async (location: CustomerLocation) => {
     try {
+      // Get the current user to use the auth user ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('No authenticated user found');
+        return;
+      }
+
       // Remove primary from all locations
       await supabase
         .from("customer_locations")
         .update({ is_primary: false })
-        .eq("customer_id", customer?.customer_id);
+        .eq("customer_id", user.id);
 
       // Set this location as primary
       const { error } = await supabase
