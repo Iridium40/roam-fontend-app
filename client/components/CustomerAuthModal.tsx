@@ -37,6 +37,8 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [verificationEmailSent, setVerificationEmailSent] = useState(false);
+  const [lastEmailSentTo, setLastEmailSentTo] = useState<string | null>(null);
 
   // Update activeTab when defaultTab prop changes
   useEffect(() => {
