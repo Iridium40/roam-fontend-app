@@ -40,8 +40,6 @@ import {
   X,
   Car,
   Menu,
-  Copy,
-  Check,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
