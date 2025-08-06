@@ -1177,7 +1177,7 @@ export default function Index() {
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-roam-yellow text-gray-900">
                         <Percent className="w-3 h-3 mr-1" />
-                        Special Offer
+                        {promotion.business ? 'Business Exclusive' : 'Special Offer'}
                       </Badge>
                     </div>
                     {promotion.endDate && (
@@ -1188,8 +1188,21 @@ export default function Index() {
                       </div>
                     )}
                     <div className="mt-4">
-                      <Tag className="w-12 h-12 text-roam-blue mx-auto mb-4" />
-                      <h3 className="text-xl font-bold text-roam-blue">PROMO</h3>
+                      {promotion.business && promotion.business.logo ? (
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={promotion.business.logo}
+                            alt={promotion.business.name}
+                            className="w-12 h-12 rounded-full object-cover border-2 border-roam-blue mb-2"
+                          />
+                          <h3 className="text-sm font-bold text-roam-blue">{promotion.business.name}</h3>
+                        </div>
+                      ) : (
+                        <div>
+                          <Tag className="w-12 h-12 text-roam-blue mx-auto mb-4" />
+                          <h3 className="text-xl font-bold text-roam-blue">PROMO</h3>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <CardContent className="p-6">
