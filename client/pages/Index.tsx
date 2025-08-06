@@ -327,6 +327,30 @@ export default function Index() {
           );
           setFeaturedBusinesses(transformedBusinesses);
         }
+
+        // Fetch active promotions
+        const promotionsResponse = await supabase
+          .from("promotions")
+          .select("*")
+          .eq("is_active", true)
+          .order("created_at", { ascending: false })
+          .limit(6);
+
+        const { data: promotionsData, error: promotionsError } = promotionsResponse;
+
+        if (!promotionsError && promotionsData) {
+          const transformedPromotions = promotionsData.map((promotion: any) => ({
+            id: promotion.id,
+            title: promotion.title,
+            description: promotion.description || "Limited time offer",
+            startDate: promotion.start_date,
+            endDate: promotion.end_date,
+            isActive: promotion.is_active,
+            createdAt: promotion.created_at,
+          }));
+          console.log("Transformed promotions:", transformedPromotions);
+          setPromotions(transformedPromotions);
+        }
       } catch (error: any) {
         console.error("Error fetching data:", error);
 
