@@ -1261,6 +1261,8 @@ export default function ProviderDashboard() {
 
       // Update local state
       setBusiness({ ...business, cover_image_url: null });
+      setBusinessCoverPosition("50% 50%");
+      setShowPositionControls(false);
     } catch (error: any) {
       console.error("Business cover remove error:", error);
       let errorMessage = "Failed to remove business cover image";
@@ -1282,6 +1284,21 @@ export default function ProviderDashboard() {
     } finally {
       setBusinessCoverUploading(false);
     }
+  };
+
+  const handleImagePositionClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!business?.cover_image_url) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+    const position = `${Math.round(x)}% ${Math.round(y)}%`;
+    setBusinessCoverPosition(position);
+  };
+
+  const handlePresetPosition = (position: string) => {
+    setBusinessCoverPosition(position);
   };
 
   const handleDocumentUploadWithFile = async (file: File) => {
