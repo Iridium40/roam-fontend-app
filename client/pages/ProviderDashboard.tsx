@@ -10681,6 +10681,202 @@ export default function ProviderDashboard() {
                       </p>
                     </div>
 
+                    {/* Cover Image Section */}
+                    <div className="lg:col-span-3 space-y-4">
+                      <Card>
+                        <CardContent className="p-6">
+                          <h3 className="font-medium text-lg mb-4">
+                            Cover Image
+                          </h3>
+                          <div className="relative">
+                            <div
+                              className="w-full h-32 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden cursor-pointer"
+                              onClick={provider?.cover_image_url ? handleProviderImagePositionClick : undefined}
+                            >
+                              {provider?.cover_image_url ? (
+                                <img
+                                  src={provider.cover_image_url}
+                                  alt="Cover Image"
+                                  className="w-full h-full object-cover transition-all duration-300"
+                                  style={{ objectPosition: providerCoverPosition }}
+                                />
+                              ) : (
+                                <div className="text-center text-white">
+                                  <Camera className="w-8 h-8 mx-auto mb-2" />
+                                  <p className="text-sm">No cover image</p>
+                                </div>
+                              )}
+                            </div>
+                            {bannerUploading && (
+                              <div className="absolute inset-0 w-full h-32 bg-black/50 rounded-lg flex items-center justify-center">
+                                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              </div>
+                            )}
+                            {provider?.cover_image_url && (
+                              <div className="absolute top-2 right-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setShowProviderPositionControls(!showProviderPositionControls)}
+                                  className="bg-white/90 hover:bg-white"
+                                >
+                                  <Move className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+
+                          {bannerError && (
+                            <div className="text-sm text-red-600 bg-red-50 p-3 rounded mb-4">
+                              {bannerError}
+                            </div>
+                          )}
+
+                          {/* Provider Position Controls */}
+                          {provider?.cover_image_url && showProviderPositionControls && (
+                            <div className="bg-gray-50 border rounded-lg p-4 mb-4">
+                              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                <Move className="w-4 h-4" />
+                                Cover Image Position Controls
+                              </h4>
+                              <div className="space-y-3">
+                                <p className="text-xs text-gray-600">
+                                  Click on the image above to set focal point, or use preset positions:
+                                </p>
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("0% 0%")}
+                                    className="text-xs"
+                                  >
+                                    Top Left
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("50% 0%")}
+                                    className="text-xs"
+                                  >
+                                    Top Center
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("100% 0%")}
+                                    className="text-xs"
+                                  >
+                                    Top Right
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("0% 50%")}
+                                    className="text-xs"
+                                  >
+                                    Center Left
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("50% 50%")}
+                                    className="text-xs bg-roam-blue text-white border-roam-blue"
+                                  >
+                                    Center
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("100% 50%")}
+                                    className="text-xs"
+                                  >
+                                    Center Right
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("0% 100%")}
+                                    className="text-xs"
+                                  >
+                                    Bottom Left
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("50% 100%")}
+                                    className="text-xs"
+                                  >
+                                    Bottom Center
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("100% 100%")}
+                                    className="text-xs"
+                                  >
+                                    Bottom Right
+                                  </Button>
+                                </div>
+                                <div className="flex items-center justify-between pt-2 border-t">
+                                  <span className="text-xs text-gray-600">
+                                    Current position: {providerCoverPosition}
+                                  </span>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleProviderPresetPosition("50% 50%")}
+                                    className="text-xs"
+                                  >
+                                    <RotateCcw className="w-3 h-3 mr-1" />
+                                    Reset
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="flex gap-2 justify-center mt-4">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleBannerUpload}
+                              className="hidden"
+                              id="banner-upload"
+                              disabled={bannerUploading || profileSaving}
+                            />
+                            <Button
+                              variant="outline"
+                              className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                              onClick={() =>
+                                document.getElementById("banner-upload")?.click()
+                              }
+                              disabled={bannerUploading || profileSaving}
+                            >
+                              <Camera className="w-4 h-4 mr-2" />
+                              {provider?.cover_image_url
+                                ? "Change Cover"
+                                : "Upload Cover"}
+                            </Button>
+
+                            {provider?.cover_image_url && (
+                              <Button
+                                variant="outline"
+                                className="border-red-300 text-red-600 hover:bg-red-50"
+                                onClick={handleBannerRemove}
+                                disabled={bannerUploading || profileSaving}
+                              >
+                                Remove
+                              </Button>
+                            )}
+                          </div>
+
+                          <p className="text-xs text-foreground/60 text-center mt-2">
+                            Upload a cover image for your profile (max 10MB). Recommended size: 800x200px
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+
                     {/* Contact Information Section */}
                     <div className="lg:col-span-2 space-y-4">
                       <h3 className="font-medium text-lg mb-4">
