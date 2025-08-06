@@ -8325,7 +8325,7 @@ export default function ProviderDashboard() {
                             <p className="text-xs text-foreground/60">
                               Featured businesses appear prominently on the
                               homepage and get increased visibility to
-                              customers.
+                              customers. (Read-only - controlled by ROAM)
                             </p>
                           </div>
                         </div>
