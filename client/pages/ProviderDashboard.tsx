@@ -8309,23 +8309,29 @@ export default function ProviderDashboard() {
                           </div>
 
                           <div className="space-y-2">
-                            <div className="flex items-center space-x-2">
-                              <Checkbox
-                                id="is_featured"
-                                checked={businessDetailsForm.is_featured}
-                                disabled={true}
-                              />
-                              <Label
-                                htmlFor="is_featured"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                Featured Business
-                              </Label>
+                            <div className="flex items-center space-x-3">
+                              <span className="text-sm font-medium">
+                                Featured Business Status:
+                              </span>
+                              {businessDetailsForm.is_featured ? (
+                                <Badge
+                                  className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 px-3 py-1 text-xs font-bold shadow-lg"
+                                >
+                                  ⭐ FEATURED BUSINESS
+                                </Badge>
+                              ) : (
+                                <Badge
+                                  variant="outline"
+                                  className="text-gray-500 border-gray-300 px-3 py-1 text-xs"
+                                >
+                                  Not Featured
+                                </Badge>
+                              )}
                             </div>
                             <p className="text-xs text-foreground/60">
                               Featured businesses appear prominently on the
                               homepage and get increased visibility to
-                              customers. (Read-only - controlled by ROAM)
+                              customers. (Status controlled by ROAM)
                             </p>
                           </div>
                         </div>
