@@ -9525,10 +9525,9 @@ export default function ProviderDashboard() {
                                         teamProvider,
                                       )
                                     }
-                                    disabled={providerActionLoading}
+                                    disabled={providerActionLoading || teamProvider.provider_role === "owner"}
                                     className={
-                                      teamProvider.background_check_status ===
-                                      "approved"
+                                      (teamProvider.background_check_status === "approved" || teamProvider.provider_role === "owner")
                                         ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
                                         : "bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100"
                                     }
