@@ -81,6 +81,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({
   showFullActions = false,
 }) => {
   const { user, isOwner, isDispatcher, hasPermission } = useAuth();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isReassignDialogOpen, setIsReassignDialogOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
