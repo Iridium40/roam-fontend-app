@@ -1207,6 +1207,17 @@ export default function Index() {
                   </div>
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-2">{promotion.title}</h3>
+
+                    {promotion.business && (
+                      <div className="mb-3 p-2 bg-roam-light-blue/10 rounded-lg">
+                        <p className="text-xs text-roam-blue font-medium flex items-center">
+                          <Building className="w-3 h-3 mr-1" />
+                          Exclusive to {promotion.business.name}
+                        </p>
+                        <p className="text-xs text-foreground/60">{promotion.business.type}</p>
+                      </div>
+                    )}
+
                     <div className="mb-4">
                       <p className="text-sm text-foreground/70">
                         {getDisplayDescription(promotion.description, promotion.id)}
@@ -1236,9 +1247,19 @@ export default function Index() {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-roam-blue hover:bg-roam-blue/90">
-                      <Tag className="w-4 h-4 mr-2" />
-                      Claim Offer
+                    <Button
+                      asChild
+                      className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                    >
+                      <Link
+                        to={promotion.business
+                          ? `/business/${promotion.business.id}?promotion=${promotion.id}`
+                          : `/services?promotion=${promotion.id}`
+                        }
+                      >
+                        <Tag className="w-4 h-4 mr-2" />
+                        {promotion.business ? 'Book with Business' : 'Choose Business'}
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
