@@ -272,17 +272,59 @@ class DirectSupabaseAPI {
     if (!response.ok) {
       // For error cases, try to read response body safely
       let errorDetails = response.statusText || `HTTP ${response.status}`;
+      let parsedError = null;
+
       try {
         if (response.body && !response.bodyUsed) {
           const errorText = await response.text();
-          errorDetails = errorText || errorDetails;
+          if (errorText) {
+            try {
+              parsedError = JSON.parse(errorText);
+              errorDetails = errorText;
+            } catch {
+              errorDetails = errorText;
+            }
+          }
         }
       } catch (readError) {
         console.warn("Could not read error response body:", readError);
       }
 
-      const errorMessage = `Upload failed (${response.status}): ${errorDetails}`;
-      throw new Error(errorMessage);
+      // Provide specific error messages based on status and content
+      let userFriendlyMessage = `Upload failed (${response.status})`;
+
+      if (response.status === 400) {
+        if (errorDetails.includes("row-level security policy")) {
+          userFriendlyMessage = "Access denied: You don't have permission to upload files to this location. Please contact support.";
+        } else if (errorDetails.includes("violates foreign key constraint")) {
+          userFriendlyMessage = "Upload failed: Invalid business or profile reference. Please try refreshing the page.";
+        } else if (errorDetails.includes("File too large")) {
+          userFriendlyMessage = "Upload failed: File is too large. Please choose a smaller file.";
+        } else {
+          userFriendlyMessage = `Upload failed: Invalid request. ${parsedError?.message || errorDetails}`;
+        }
+      } else if (response.status === 401) {
+        userFriendlyMessage = "Upload failed: You are not authorized. Please sign in again.";
+      } else if (response.status === 403) {
+        userFriendlyMessage = "Upload failed: Access forbidden. Please check your permissions.";
+      } else if (response.status === 413) {
+        userFriendlyMessage = "Upload failed: File is too large. Please choose a smaller file.";
+      } else if (response.status === 422) {
+        userFriendlyMessage = "Upload failed: Invalid file type or format.";
+      } else {
+        userFriendlyMessage = `Upload failed: ${parsedError?.message || errorDetails}`;
+      }
+
+      console.error("Upload error details:", {
+        status: response.status,
+        statusText: response.statusText,
+        bucket,
+        path,
+        errorDetails,
+        parsedError
+      });
+
+      throw new Error(userFriendlyMessage);
     }
 
     // For success cases, try to parse response body
