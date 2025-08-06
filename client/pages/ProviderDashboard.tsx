@@ -8415,8 +8415,8 @@ export default function ProviderDashboard() {
                                     htmlFor={`category-${category.service_category_type}`}
                                     className="text-sm font-normal cursor-default opacity-60"
                                   >
-                                    {category.description ||
-                                      category.service_category_type}
+                                    {toCamelCase(category.description ||
+                                      category.service_category_type)}
                                   </Label>
                                 </div>
                               ))}
