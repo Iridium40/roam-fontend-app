@@ -63,6 +63,7 @@ export default function Index() {
   const [currentServiceSlide, setCurrentServiceSlide] = useState(0);
   const [currentPopularSlide, setCurrentPopularSlide] = useState(0);
   const [currentPromotionSlide, setCurrentPromotionSlide] = useState(0);
+  const [currentBusinessSlide, setCurrentBusinessSlide] = useState(0);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
