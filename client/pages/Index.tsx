@@ -1353,21 +1353,13 @@ export default function Index() {
                       </h3>
                     </div>
 
-                    {/* Service/Business Info */}
-                    {(promotion.business || promotion.service) && (
-                      <div className="space-y-2">
-                        {promotion.business && (
-                          <div className="inline-flex items-center gap-2 bg-roam-blue/10 text-roam-blue px-3 py-1.5 rounded-full text-sm font-medium">
-                            <Building className="w-4 h-4" />
-                            Exclusive to {promotion.business.name}
-                          </div>
-                        )}
-                        {promotion.service && (
-                          <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
-                            <Tag className="w-4 h-4" />
-                            {promotion.service.name}
-                          </div>
-                        )}
+                    {/* Service Info */}
+                    {promotion.service && (
+                      <div>
+                        <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
+                          <Tag className="w-4 h-4" />
+                          {promotion.service.name}
+                        </div>
                       </div>
                     )}
 
