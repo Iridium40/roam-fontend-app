@@ -867,14 +867,30 @@ class DirectSupabaseAPI {
     response = await tryOperation(false);
     let responseText = "";
 
+    // Function to safely read response text
+    const safeReadResponseText = async (resp: Response): Promise<string> => {
+      try {
+        if (resp.body === null) {
+          return `HTTP ${resp.status} - ${resp.statusText}`;
+        }
+
+        const text = await resp.text();
+
+        // If text is empty, return status info
+        if (!text || text.trim() === '') {
+          return `HTTP ${resp.status} - ${resp.statusText}`;
+        }
+
+        return text;
+      } catch (readError: any) {
+        console.warn("Could not read response text:", readError);
+        return `HTTP ${resp.status} - ${resp.statusText} (read error: ${readError.message})`;
+      }
+    };
+
     // If anon key fails with auth/permission error, try with user token
     if (!response.ok && (response.status === 401 || response.status === 403)) {
-      try {
-        responseText = await response.text();
-      } catch (readError) {
-        console.warn("Could not read first response text:", readError);
-        responseText = `HTTP ${response.status} - ${response.statusText}`;
-      }
+      responseText = await safeReadResponseText(response);
 
       if (this.accessToken) {
         console.log(
@@ -882,14 +898,7 @@ class DirectSupabaseAPI {
         );
         authMethod = "user";
         response = await tryOperation(true);
-
-        // Read the new response text
-        try {
-          responseText = await response.text();
-        } catch (readError) {
-          console.warn("Could not read retry response text:", readError);
-          responseText = `HTTP ${response.status} - ${response.statusText}`;
-        }
+        responseText = await safeReadResponseText(response);
       } else {
         console.log(
           "DirectSupabase updateCustomerProfile: No user token available for fallback",
@@ -897,12 +906,7 @@ class DirectSupabaseAPI {
       }
     } else {
       // Read response text for successful response or non-auth errors
-      try {
-        responseText = await response.text();
-      } catch (readError) {
-        console.warn("Could not read response text:", readError);
-        responseText = `HTTP ${response.status} - ${response.statusText}`;
-      }
+      responseText = await safeReadResponseText(response);
     }
 
     console.log("DirectSupabase updateCustomerProfile: Response", {
