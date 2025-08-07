@@ -314,6 +314,7 @@ const ProviderBooking = () => {
 
       if (error) {
         console.error("Error fetching customer profile:", error);
+        console.error("Error details:", error.message || error.details || error);
         return;
       }
 
