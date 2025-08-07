@@ -93,6 +93,11 @@ const ProviderBooking = () => {
   const preSelectedTime = urlParams.get("time");
   const promotionId = urlParams.get("promotion");
   const promoCode = urlParams.get("promo_code");
+  const customerLocationId = urlParams.get("location");
+  const customerAddress = urlParams.get("address");
+  const customerCity = urlParams.get("city");
+  const customerState = urlParams.get("state");
+  const customerZip = urlParams.get("zip");
 
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [loading, setLoading] = useState(true);
