@@ -753,17 +753,26 @@ class DirectSupabaseAPI {
     console.log(
       "DirectSupabase updateCustomerProfile: Checking if record exists...",
     );
-    const checkResponse = await fetch(
-      `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}&select=user_id`,
-      {
-        method: "GET",
-        headers: {
-          apikey: this.apiKey,
-          Authorization: `Bearer ${this.apiKey}`,
-          "Content-Type": "application/json",
+
+    let checkResponse;
+    try {
+      checkResponse = await performRequestWithRetry(
+        `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}&select=user_id`,
+        {
+          method: "GET",
+          headers: {
+            apikey: this.apiKey,
+            Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+            "Content-Type": "application/json",
+          },
         },
-      },
-    );
+      );
+    } catch (networkError: any) {
+      console.error("DirectSupabase updateCustomerProfile: Network error during record check:", networkError);
+      throw new Error(
+        `Connection failed to Supabase. Please check your internet connection and try again. Error: ${networkError.message}`,
+      );
+    }
 
     const checkText = await checkResponse.text();
     console.log("DirectSupabase updateCustomerProfile: Check response", {
