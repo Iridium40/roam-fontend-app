@@ -192,11 +192,20 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       });
     } catch (error: any) {
       console.error("Error updating booking status:", error);
-      const errorMessage =
-        error?.message ||
-        error?.details ||
-        error?.error?.message ||
-        "Failed to update booking status";
+
+      let errorMessage = "Failed to update booking status";
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      }
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -240,11 +249,20 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       });
     } catch (error: any) {
       console.error("Error reassigning booking:", error);
-      const errorMessage =
-        error?.message ||
-        error?.details ||
-        error?.error?.message ||
-        "Failed to reassign booking";
+
+      let errorMessage = "Failed to reassign booking";
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      }
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -340,11 +358,20 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       });
     } catch (error: any) {
       console.error("Error cancelling booking:", error);
-      const errorMessage =
-        error?.message ||
-        error?.details ||
-        error?.error?.message ||
-        "Failed to cancel booking";
+
+      let errorMessage = "Failed to cancel booking";
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      }
+
       toast({
         title: "Error",
         description: errorMessage,
