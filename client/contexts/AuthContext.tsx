@@ -566,6 +566,73 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signInWithGoogleIdToken = async (idToken: string, nonce: string) => {
+    setLoading(true);
+    try {
+      console.log("AuthContext signInWithGoogleIdToken: Starting Google ID token authentication...");
+
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: idToken,
+        nonce,
+      });
+
+      if (error) {
+        console.error("Google ID token sign-in error:", error);
+        throw error;
+      }
+
+      if (data.user) {
+        console.log("AuthContext signInWithGoogleIdToken: Google authentication successful");
+
+        // Check if customer profile exists
+        const { data: customerProfile, error: profileError } = await supabase
+          .from("customer_profiles")
+          .select("*")
+          .eq("user_id", data.user.id)
+          .single();
+
+        if (profileError && profileError.code !== 'PGRST116') {
+          console.error("Error fetching customer profile:", profileError);
+          throw new Error("Failed to fetch customer profile");
+        }
+
+        if (!customerProfile) {
+          // Create customer profile from Google OAuth data
+          console.log("Creating customer profile from Google OAuth data...");
+          await createCustomerProfileFromOAuth(data.user);
+        } else {
+          // Set existing customer data
+          const customerData = {
+            id: customerProfile.id,
+            email: customerProfile.email,
+            customer_id: customerProfile.id,
+            first_name: customerProfile.first_name,
+            last_name: customerProfile.last_name,
+            phone: customerProfile.phone,
+            image_url: customerProfile.image_url,
+          };
+
+          setCustomer(customerData);
+          setUserType("customer");
+          localStorage.setItem("roam_customer", JSON.stringify(customerData));
+          localStorage.setItem("roam_user_type", "customer");
+
+          if (data.session?.access_token) {
+            localStorage.setItem("roam_access_token", data.session.access_token);
+          }
+        }
+
+        console.log("AuthContext signInWithGoogleIdToken: Authentication completed successfully");
+      }
+    } catch (error: any) {
+      console.error("Google ID token sign-in error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signInWithApple = async () => {
     setLoading(true);
     try {
