@@ -743,56 +743,11 @@ class DirectSupabaseAPI {
       }
     }
 
-    // First, verify the user exists in auth.users table
+    // Skip user verification check since auth.users table may not be accessible via REST API
+    // Instead, let the foreign key constraint handle validation during insert/update
     console.log(
-      "DirectSupabase updateCustomerProfile: Verifying user exists in auth.users...",
+      "DirectSupabase updateCustomerProfile: Proceeding with customer profile operation...",
     );
-    const userCheckResponse = await fetch(
-      `${this.baseURL}/rest/v1/users?id=eq.${customerId}&select=id`,
-      {
-        method: "GET",
-        headers: {
-          apikey: this.apiKey,
-          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
-          "Content-Type": "application/json",
-        },
-      },
-    );
-
-    const userCheckText = await userCheckResponse.text();
-    console.log("DirectSupabase updateCustomerProfile: User check response", {
-      status: userCheckResponse.status,
-      responseText: userCheckText,
-    });
-
-    if (userCheckResponse.ok) {
-      try {
-        const users = JSON.parse(userCheckText);
-        if (!Array.isArray(users) || users.length === 0) {
-          throw new Error(
-            `User with ID ${customerId} does not exist in auth.users table. Please sign in again or contact support.`,
-          );
-        }
-      } catch (parseError) {
-        // If it's a JSON parsing error, handle it specifically
-        if (parseError instanceof SyntaxError) {
-          console.error("Error parsing user check response as JSON:", parseError);
-          console.error("Response text was:", userCheckText);
-          throw new Error(
-            "Invalid response format when verifying user. Please sign in again or contact support.",
-          );
-        } else {
-          // Re-throw non-JSON errors
-          throw parseError;
-        }
-      }
-    } else {
-      console.error("User check failed with status:", userCheckResponse.status);
-      console.error("User check response text:", userCheckText);
-      throw new Error(
-        `Failed to verify user existence (HTTP ${userCheckResponse.status}). Please sign in again or contact support.`,
-      );
-    }
 
     // Now check if a record exists for this user
     console.log(
