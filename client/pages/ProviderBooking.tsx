@@ -69,6 +69,10 @@ interface BookingForm {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
+  customerAddress: string;
+  customerCity: string;
+  customerState: string;
+  customerZip: string;
   preferredDate: string;
   preferredTime: string;
   notes: string;
