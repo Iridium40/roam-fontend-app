@@ -10,7 +10,7 @@ export function Header() {
     <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center">
             <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
@@ -18,9 +18,6 @@ export function Header() {
                 className="w-8 h-8 object-contain"
               />
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-roam-blue to-roam-light-blue bg-clip-text text-transparent">
-              ROAM
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
