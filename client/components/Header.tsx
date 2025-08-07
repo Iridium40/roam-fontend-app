@@ -46,8 +46,10 @@ export function Header() {
             >
               Sign In
             </Button>
-            <Button className="bg-roam-blue hover:bg-roam-blue/90">
-              Get Started
+            <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
+              <Link to="/provider-portal">
+                Get Started
+              </Link>
             </Button>
           </div>
 
@@ -96,8 +98,10 @@ export function Header() {
                 >
                   Sign In
                 </Button>
-                <Button className="bg-roam-blue hover:bg-roam-blue/90">
-                  Get Started
+                <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
+                  <Link to="/provider-portal">
+                    Get Started
+                  </Link>
                 </Button>
               </div>
             </div>
