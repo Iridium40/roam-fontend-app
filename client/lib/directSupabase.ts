@@ -810,21 +810,23 @@ class DirectSupabaseAPI {
         `DirectSupabase updateCustomerProfile: Trying with ${useUserToken ? "user token" : "anon key"}`,
       );
 
+      const headers = {
+        apikey: this.apiKey,
+        Authorization: authHeader,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      };
+
       if (recordExists) {
         // Update existing record
         console.log(
           "DirectSupabase updateCustomerProfile: Updating existing record...",
         );
-        return await fetch(
+        return await performRequestWithRetry(
           `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
           {
             method: "PATCH",
-            headers: {
-              apikey: this.apiKey,
-              Authorization: authHeader,
-              "Content-Type": "application/json",
-              Prefer: "return=minimal",
-            },
+            headers,
             body: JSON.stringify(updateData),
           },
         );
@@ -833,26 +835,24 @@ class DirectSupabaseAPI {
         console.log(
           "DirectSupabase updateCustomerProfile: Creating new record...",
         );
-        return await fetch(`${this.baseURL}/rest/v1/customer_profiles`, {
-          method: "POST",
-          headers: {
-            apikey: this.apiKey,
-            Authorization: authHeader,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
+        return await performRequestWithRetry(
+          `${this.baseURL}/rest/v1/customer_profiles`,
+          {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              user_id: customerId,
+              ...updateData,
+              is_active: true,
+              email_notifications: true,
+              sms_notifications: true,
+              push_notifications: true,
+              marketing_emails: false,
+              email_verified: false,
+              phone_verified: false,
+            }),
           },
-          body: JSON.stringify({
-            user_id: customerId,
-            ...updateData,
-            is_active: true,
-            email_notifications: true,
-            sms_notifications: true,
-            push_notifications: true,
-            marketing_emails: false,
-            email_verified: false,
-            phone_verified: false,
-          }),
-        });
+        );
       }
     };
 
