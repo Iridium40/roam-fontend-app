@@ -138,10 +138,16 @@ const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
         // Show the One Tap prompt
         window.google.accounts.id.prompt((notification) => {
           if (notification.isNotDisplayed()) {
-            console.log(
-              "Google One Tap not displayed:",
-              notification.getNotDisplayedReason(),
-            );
+            const reason = notification.getNotDisplayedReason();
+            console.log("Google One Tap not displayed:", reason);
+
+            // Handle origin-related errors
+            if (reason.includes("origin") || reason.includes("domain")) {
+              console.warn(
+                "Google OAuth origin error detected. Check that the current domain is configured in Google Cloud Console:",
+                window.location.origin
+              );
+            }
           } else if (notification.isSkippedMoment()) {
             console.log(
               "Google One Tap skipped:",
