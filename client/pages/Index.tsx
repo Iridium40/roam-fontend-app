@@ -1268,6 +1268,9 @@ export default function Index() {
             <h2 className="text-3xl font-bold">
               Featured <span className="text-roam-blue">Services</span>
             </h2>
+            <p className="text-lg text-foreground/70 mt-4">
+              Discover our most popular and highly-rated services
+            </p>
           </div>
 
           {filteredFeaturedServices.length > 0 ? (
