@@ -162,8 +162,18 @@ const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
         });
 
         initialized.current = true;
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error initializing Google One Tap:", error);
+
+        // Provide more specific error messages for common issues
+        if (error.message?.includes("origin") || error.message?.includes("domain")) {
+          console.error(
+            "Google OAuth Configuration Error:",
+            `The current domain (${window.location.origin}) is not authorized for this Google Client ID.`,
+            "Please add this domain to the OAuth consent screen in Google Cloud Console."
+          );
+        }
+
         onError?.(error);
       }
     };
