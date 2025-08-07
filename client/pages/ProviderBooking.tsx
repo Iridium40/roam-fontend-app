@@ -638,7 +638,9 @@ const ProviderBooking = () => {
             selectedItems.find((item) => item.type === "service")?.id ||
             selectedItems[0]?.id,
           customer_id: customerId || null, // Use proper customer ID
+          customer_location_id: customerLocationId, // Include the customer location ID
           business_location_id: location?.id, // Include the business location ID
+          delivery_type: "customer_location", // Set delivery type to customer location
           guest_name: !customerId ? bookingForm.customerName : null, // Only use guest fields if not authenticated
           guest_email: !customerId ? bookingForm.customerEmail : null,
           guest_phone: !customerId ? bookingForm.customerPhone : null,
