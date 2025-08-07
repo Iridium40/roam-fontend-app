@@ -1454,6 +1454,29 @@ export default function Index() {
             <p className="text-lg text-foreground/70">
               Limited-time offers on your favorite services
             </p>
+            {/* Promotion Navigation */}
+            {promotionalDeals.length > 3 && (
+              <div className="flex justify-center gap-2 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={prevPromotionSlide}
+                  disabled={currentPromotionSlide === 0}
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white disabled:opacity-50"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={nextPromotionSlide}
+                  disabled={currentPromotionSlide >= promotionalDeals.length - 3}
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white disabled:opacity-50"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
           {promotionalDeals.length > 0 ? (
