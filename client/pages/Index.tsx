@@ -439,17 +439,21 @@ export default function Index() {
 
           // Add a mock percentage promotion to showcase 20% OFF badge
           const mockPercentagePromotion = {
-            id: 'mock-percentage-1',
-            title: 'Weekend Wellness Special',
-            description: 'Get 20% off all wellness services this weekend. Perfect time to treat yourself to some self-care!',
+            id: "mock-percentage-1",
+            title: "Weekend Wellness Special",
+            description:
+              "Get 20% off all wellness services this weekend. Perfect time to treat yourself to some self-care!",
             startDate: new Date().toISOString(),
-            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+            endDate: new Date(
+              Date.now() + 7 * 24 * 60 * 60 * 1000,
+            ).toISOString(), // 7 days from now
             isActive: true,
             createdAt: new Date().toISOString(),
             businessId: null,
-            imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800',
-            promoCode: 'WELLNESS20',
-            savingsType: 'percentage',
+            imageUrl:
+              "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800",
+            promoCode: "WELLNESS20",
+            savingsType: "percentage",
             savingsAmount: 20,
             savingsMaxAmount: 50,
             serviceId: null,
@@ -1338,29 +1342,32 @@ export default function Index() {
                     )}
 
                     {/* Business Logo Overlay - Bottom Left (for image promotions) */}
-                    {promotion.imageUrl && promotion.business && promotion.business.logo && (
-                      <div className="absolute bottom-4 left-4">
-                        <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
-                          <div className="w-8 h-8 rounded-full overflow-hidden">
-                            <img
-                              src={promotion.business.logo}
-                              alt={promotion.business.name}
-                              className="w-full h-full object-cover"
-                            />
+                    {promotion.imageUrl &&
+                      promotion.business &&
+                      promotion.business.logo && (
+                        <div className="absolute bottom-4 left-4">
+                          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
+                            <div className="w-8 h-8 rounded-full overflow-hidden">
+                              <img
+                                src={promotion.business.logo}
+                                alt={promotion.business.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <span className="text-sm font-bold text-gray-900">
+                              {promotion.business.name}
+                            </span>
                           </div>
-                          <span className="text-sm font-bold text-gray-900">
-                            {promotion.business.name}
-                          </span>
                         </div>
-                      </div>
-                    )}
+                      )}
 
                     {/* End Date Badge - Top Left */}
                     {promotion.endDate && (
                       <div className="absolute top-4 left-4">
                         <div className="bg-white/95 text-roam-blue px-3 py-1.5 rounded-full shadow-lg font-medium text-sm backdrop-blur-sm">
                           <Clock className="w-4 h-4 mr-1 inline" />
-                          Ends {new Date(promotion.endDate).toLocaleDateString()}
+                          Ends{" "}
+                          {new Date(promotion.endDate).toLocaleDateString()}
                         </div>
                       </div>
                     )}
@@ -1387,18 +1394,23 @@ export default function Index() {
                     {/* Description */}
                     <div className="space-y-2">
                       <p className="text-sm text-gray-600 leading-relaxed">
-                        {getDisplayDescription(promotion.description, promotion.id)}
+                        {getDisplayDescription(
+                          promotion.description,
+                          promotion.id,
+                        )}
                       </p>
-                      {promotion.description && promotion.description.length > 200 && (
-                        <button
-                          onClick={() => toggleDescription(promotion.id)}
-                          className="text-roam-blue text-xs font-medium hover:underline"
-                        >
-                          {expandedDescriptions.has(promotion.id) ? "Show less" : "Read more"}
-                        </button>
-                      )}
+                      {promotion.description &&
+                        promotion.description.length > 200 && (
+                          <button
+                            onClick={() => toggleDescription(promotion.id)}
+                            className="text-roam-blue text-xs font-medium hover:underline"
+                          >
+                            {expandedDescriptions.has(promotion.id)
+                              ? "Show less"
+                              : "Read more"}
+                          </button>
+                        )}
                     </div>
-
 
                     {/* Action Button */}
                     <Button
@@ -1548,16 +1560,22 @@ export default function Index() {
                       {/* Description */}
                       <div className="space-y-2">
                         <p className="text-sm text-gray-600 leading-relaxed">
-                          {getDisplayDescription(service.description, service.id)}
+                          {getDisplayDescription(
+                            service.description,
+                            service.id,
+                          )}
                         </p>
-                        {service.description && service.description.length > 200 && (
-                          <button
-                            onClick={() => toggleDescription(service.id)}
-                            className="text-roam-blue text-xs font-medium hover:underline"
-                          >
-                            {expandedDescriptions.has(service.id) ? "Show less" : "Read more"}
-                          </button>
-                        )}
+                        {service.description &&
+                          service.description.length > 200 && (
+                            <button
+                              onClick={() => toggleDescription(service.id)}
+                              className="text-roam-blue text-xs font-medium hover:underline"
+                            >
+                              {expandedDescriptions.has(service.id)
+                                ? "Show less"
+                                : "Read more"}
+                            </button>
+                          )}
                       </div>
 
                       {/* Stats Row */}
@@ -1659,14 +1677,17 @@ export default function Index() {
                     <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
                       {getDisplayDescription(service.description, service.id)}
                     </p>
-                    {service.description && service.description.length > 200 && (
-                      <button
-                        onClick={() => toggleDescription(service.id)}
-                        className="text-roam-blue text-xs font-medium hover:underline"
-                      >
-                        {expandedDescriptions.has(service.id) ? "Show less" : "Read more"}
-                      </button>
-                    )}
+                    {service.description &&
+                      service.description.length > 200 && (
+                        <button
+                          onClick={() => toggleDescription(service.id)}
+                          className="text-roam-blue text-xs font-medium hover:underline"
+                        >
+                          {expandedDescriptions.has(service.id)
+                            ? "Show less"
+                            : "Read more"}
+                        </button>
+                      )}
                   </div>
 
                   {/* Stats Row */}
