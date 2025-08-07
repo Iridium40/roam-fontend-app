@@ -58,6 +58,7 @@ export default function BusinessAvailability() {
   const [customerAddresses, setCustomerAddresses] = useState<{
     [businessId: string]: any;
   }>({});
+  const [savedLocations, setSavedLocations] = useState<any[]>([]);
 
   useEffect(() => {
     if (serviceId && selectedDate && selectedTime) {
