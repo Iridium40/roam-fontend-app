@@ -94,7 +94,11 @@ const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
       if (initialized.current || !window.google?.accounts?.id) return;
 
       try {
-        console.log("Initializing Google One Tap");
+        console.log("Initializing Google One Tap", {
+          clientId,
+          origin: window.location.origin,
+          hostname: window.location.hostname,
+        });
         const [nonce, hashedNonce] = await generateNonce();
 
         window.google.accounts.id.initialize({
