@@ -484,6 +484,7 @@ const ProviderBooking = () => {
           provider_id: businessId, // Using business_id as provider_id for now
           service_id: selectedItems.find(item => item.type === 'service')?.id || selectedItems[0]?.id,
           customer_id: null, // Will need to be set when user auth is implemented
+          business_location_id: location?.id, // Include the business location ID
           guest_name: bookingForm.customerName,
           guest_email: bookingForm.customerEmail,
           guest_phone: bookingForm.customerPhone,
