@@ -72,6 +72,29 @@ export default function BusinessAvailability() {
     }
   }, [customer, isCustomer]);
 
+  const fetchCustomerLocations = async () => {
+    try {
+      if (!customer?.customer_id) return;
+
+      const { data: locations, error } = await supabase
+        .from("customer_locations")
+        .select("*")
+        .eq("customer_id", customer.customer_id)
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching customer locations:", error);
+        return;
+      }
+
+      setSavedLocations(locations || []);
+      console.log("Loaded customer saved locations:", locations);
+    } catch (error) {
+      console.error("Error fetching customer locations:", error);
+    }
+  };
+
   const fetchAvailableBusinesses = async (retryCount = 0) => {
     try {
       setLoading(true);
