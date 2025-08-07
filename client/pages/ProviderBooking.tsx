@@ -137,6 +137,21 @@ const ProviderBooking = () => {
   }, [promotionId]);
 
   useEffect(() => {
+    // Load customer location from URL parameters or database
+    if (customerLocationId) {
+      fetchCustomerLocation(customerLocationId);
+    } else if (customerAddress && customerCity && customerState && customerZip) {
+      // Use location data from URL parameters
+      setSelectedLocation({
+        address_line1: customerAddress,
+        city: customerCity,
+        state: customerState,
+        postal_code: customerZip,
+      });
+    }
+  }, [customerLocationId, customerAddress, customerCity, customerState, customerZip]);
+
+  useEffect(() => {
     if (user && isCustomer) {
       fetchCustomerProfile();
     }
