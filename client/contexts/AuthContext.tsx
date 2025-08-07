@@ -534,10 +534,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signInWithGoogle = async () => {
     setLoading(true);
     try {
+      // Determine the appropriate redirect URL based on environment
+      const redirectTo = import.meta.env.DEV
+        ? `${window.location.origin}/home`
+        : `${window.location.origin}/home`;
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin,
+          redirectTo,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
