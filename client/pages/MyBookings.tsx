@@ -211,7 +211,19 @@ export default function MyBookings() {
           return;
         }
 
-        setError(err.message || "Failed to load bookings. Please try again.");
+        // Improved error message extraction
+        let errorMessage = "Failed to load bookings. Please try again.";
+        if (typeof err === 'string') {
+          errorMessage = err;
+        } else if (err?.message) {
+          errorMessage = err.message;
+        } else if (err?.details) {
+          errorMessage = err.details;
+        } else if (err?.hint) {
+          errorMessage = err.hint;
+        }
+
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
