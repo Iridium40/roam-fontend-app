@@ -1219,6 +1219,9 @@ const ProviderBooking = () => {
                   <Label htmlFor="customerName">Full Name *</Label>
                   <Input
                     id="customerName"
+                    name="customerName"
+                    autoComplete="name"
+                    required
                     value={bookingForm.customerName}
                     onChange={(e) =>
                       setBookingForm((prev) => ({
@@ -1234,7 +1237,10 @@ const ProviderBooking = () => {
                   <Label htmlFor="customerEmail">Email *</Label>
                   <Input
                     id="customerEmail"
+                    name="customerEmail"
                     type="email"
+                    autoComplete="email"
+                    required
                     value={bookingForm.customerEmail}
                     onChange={(e) =>
                       setBookingForm((prev) => ({
@@ -1250,7 +1256,11 @@ const ProviderBooking = () => {
                   <Label htmlFor="customerPhone">Phone Number</Label>
                   <Input
                     id="customerPhone"
+                    name="customerPhone"
                     type="tel"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    pattern="^[0-9\-\s\(\)]+$"
                     value={bookingForm.customerPhone}
                     onChange={(e) =>
                       setBookingForm((prev) => ({
