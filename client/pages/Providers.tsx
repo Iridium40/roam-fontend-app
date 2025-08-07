@@ -79,7 +79,7 @@ export default function Providers() {
         }}
       >
         {/* Background overlay */}
-        <div className="absolute inset-0 bg-white/90 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
         <div className="relative z-10">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
