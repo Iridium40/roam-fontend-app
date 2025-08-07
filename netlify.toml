@@ -17,5 +17,6 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Permissions-Policy = "identity-credentials-get=*, publickey-credentials-get=*"
+    Permissions-Policy = "identity-credentials-get=*, publickey-credentials-get=*, federated-credentials=*"
+    Feature-Policy = "identity-credentials-get *; publickey-credentials-get *"
     Referrer-Policy = "origin"
