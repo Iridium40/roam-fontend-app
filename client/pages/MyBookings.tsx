@@ -430,7 +430,7 @@ export default function MyBookings() {
                       asChild
                       className="bg-roam-blue hover:bg-roam-blue/90"
                     >
-                      <Link to="/">Browse Services</Link>
+                      <Link to="/home">Browse Services</Link>
                     </Button>
                   </Card>
                 ) : (
