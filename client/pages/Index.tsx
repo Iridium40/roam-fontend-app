@@ -1447,7 +1447,7 @@ export default function Index() {
           </div>
 
           {promotionalDeals.length > 0 ? (
-            <div className="relative overflow-hidden">
+            <div className="relative">
               {/* Navigation Arrows */}
               {promotionalDeals.length > 3 && (
                 <>
