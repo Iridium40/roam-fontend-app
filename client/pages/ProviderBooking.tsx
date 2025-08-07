@@ -79,7 +79,7 @@ const ProviderBooking = () => {
   const { businessId } = useParams<{ businessId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isCustomer } = useAuth();
+  const { user, isCustomer, customer } = useAuth();
 
   // Get URL parameters for provider preference, service selection, date and time
   const urlParams = new URLSearchParams(window.location.search);
