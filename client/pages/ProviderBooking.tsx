@@ -520,13 +520,13 @@ const ProviderBooking = () => {
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
         .insert({
-          provider_id: businessId, // Using business_id as provider_id for now
+          provider_id: preferredProviderId || null, // Use the selected provider ID
           service_id: selectedItems.find(item => item.type === 'service')?.id || selectedItems[0]?.id,
-          customer_id: null, // Will need to be set when user auth is implemented
+          customer_id: user?.id || null, // Use authenticated customer ID
           business_location_id: location?.id, // Include the business location ID
-          guest_name: bookingForm.customerName,
-          guest_email: bookingForm.customerEmail,
-          guest_phone: bookingForm.customerPhone,
+          guest_name: !user ? bookingForm.customerName : null, // Only use guest fields if not authenticated
+          guest_email: !user ? bookingForm.customerEmail : null,
+          guest_phone: !user ? bookingForm.customerPhone : null,
           booking_date: bookingForm.preferredDate,
           start_time: bookingForm.preferredTime || '09:00',
           admin_notes: bookingForm.notes,
