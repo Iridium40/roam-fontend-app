@@ -909,6 +909,8 @@ class DirectSupabaseAPI {
       status: response.status,
       statusText: response.statusText,
       responseText,
+      responseTextType: typeof responseText,
+      responseTextLength: responseText?.length,
       ok: response.ok,
       operation: recordExists ? "UPDATE" : "CREATE",
       authMethod: authMethod,
