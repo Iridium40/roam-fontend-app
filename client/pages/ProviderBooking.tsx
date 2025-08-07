@@ -596,6 +596,39 @@ const ProviderBooking = () => {
 
       console.log("Submitting booking with customer_id:", customerId);
 
+      // First, create the customer location
+      let customerLocationId = null;
+      try {
+        const { data: customerLocation, error: locationError } = await supabase
+          .from("customer_locations")
+          .insert({
+            customer_id: customerId,
+            address_line1: bookingForm.customerAddress,
+            city: bookingForm.customerCity,
+            state: bookingForm.customerState,
+            postal_code: bookingForm.customerZip,
+            is_active: true,
+          })
+          .select()
+          .single();
+
+        if (locationError) {
+          console.error("Error creating customer location:", locationError);
+          throw new Error("Failed to save customer location. Please try again.");
+        }
+
+        customerLocationId = customerLocation.id;
+        console.log("Customer location created:", customerLocationId);
+      } catch (locationError: any) {
+        console.error("Customer location creation failed:", locationError);
+        toast({
+          title: "Location Error",
+          description: locationError.message || "Failed to save your address. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Create booking record
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
