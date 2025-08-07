@@ -591,6 +591,36 @@ export default function BusinessAvailability() {
     }));
   };
 
+  const handleSavedLocationSelect = (businessId: string, locationId: string) => {
+    if (locationId === "new") {
+      // Clear address fields for new address entry
+      setCustomerAddresses((prev) => ({
+        ...prev,
+        [businessId]: {
+          address: "",
+          city: "",
+          state: "",
+          zip: "",
+        },
+      }));
+      return;
+    }
+
+    const selectedLocation = savedLocations.find((loc) => loc.id === locationId);
+    if (selectedLocation) {
+      setCustomerAddresses((prev) => ({
+        ...prev,
+        [businessId]: {
+          address: selectedLocation.address_line1 || "",
+          city: selectedLocation.city || "",
+          state: selectedLocation.state || "",
+          zip: selectedLocation.postal_code || "",
+          selectedLocationId: locationId,
+        },
+      }));
+    }
+  };
+
   const openInGoogleMaps = (location: any) => {
     const address = [
       location.address_line1,
