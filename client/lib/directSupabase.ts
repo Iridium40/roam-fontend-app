@@ -956,18 +956,30 @@ class DirectSupabaseAPI {
       // Handle HTTP 409 Conflict specifically
       if (response.status === 409) {
         // Ensure responseText is a string for proper error handling
-        const errorMessage =
-          typeof responseText === "string"
-            ? responseText
-            : responseText
-              ? JSON.stringify(responseText)
-              : `HTTP ${response.status}`;
+        let errorMessage;
+        try {
+          if (typeof responseText === "string") {
+            errorMessage = responseText;
+          } else if (responseText && typeof responseText === "object") {
+            // Try to extract meaningful error from object
+            errorMessage = responseText.message ||
+                          responseText.error ||
+                          responseText.details ||
+                          JSON.stringify(responseText);
+          } else {
+            errorMessage = `HTTP ${response.status} - ${response.statusText}`;
+          }
+        } catch (stringifyError) {
+          console.warn("Error processing response text:", stringifyError);
+          errorMessage = `HTTP ${response.status} - ${response.statusText}`;
+        }
 
         console.error(
           "DirectSupabase updateCustomerProfile: HTTP 409 Conflict detected",
           {
-            responseText,
-            errorMessage,
+            originalResponseText: responseText,
+            responseTextType: typeof responseText,
+            processedErrorMessage: errorMessage,
             updateData,
             customerId,
             recordExists,
