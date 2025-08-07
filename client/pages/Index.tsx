@@ -1298,7 +1298,10 @@ export default function Index() {
                           className="w-full h-64 object-cover rounded-t-lg"
                         />
                         <div className="absolute top-4 left-4">
-                          <Badge className="bg-roam-blue text-white">
+                          <Badge
+                            className="bg-roam-blue text-white"
+                            icon={getCategoryIcon(service.category)}
+                          >
                             {service.category}
                           </Badge>
                         </div>
