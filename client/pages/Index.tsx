@@ -40,6 +40,12 @@ import {
   X,
   Car,
   Menu,
+  Activity,
+  Brain,
+  Eye,
+  Palette,
+  Wrench,
+  Briefcase,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
