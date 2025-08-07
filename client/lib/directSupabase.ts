@@ -702,46 +702,46 @@ class DirectSupabaseAPI {
         : "none",
     });
 
-    // Try with anon key first (for tables without RLS or with public policies)
-    // First, test if we can access the customer_profiles table at all
-    console.log(
-      "DirectSupabase updateCustomerProfile: Testing table access...",
-    );
-    const testResponse = await fetch(
-      `${this.baseURL}/rest/v1/customer_profiles?limit=1`,
-      {
-        method: "GET",
-        headers: {
-          apikey: this.apiKey,
-          Authorization: `Bearer ${this.apiKey}`,
-          "Content-Type": "application/json",
-        },
-      },
-    );
+    // Add connection retry logic for transient network issues
+    const performRequestWithRetry = async (url: string, options: RequestInit, maxRetries = 2) => {
+      let lastError;
 
-    const testText = await testResponse.text();
-    console.log("DirectSupabase updateCustomerProfile: Table access test", {
-      status: testResponse.status,
-      responseText: testText,
-      ok: testResponse.ok,
-    });
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          console.log(`DirectSupabase: Attempt ${attempt}/${maxRetries} for ${url}`);
 
-    if (!testResponse.ok) {
-      // If we can't access the table at all, there's a fundamental issue
-      if (testText.includes('relation "customer_profiles" does not exist')) {
-        throw new Error(
-          "The customer_profiles table does not exist in the database. Please contact support.",
-        );
-      } else if (testText.includes("permission denied")) {
-        throw new Error(
-          "Access denied to customer_profiles table. Please contact support.",
-        );
-      } else {
-        console.warn(
-          "Table access test failed, but continuing with record check...",
-        );
+          const response = await fetch(url, options);
+          return response;
+        } catch (error: any) {
+          lastError = error;
+          console.warn(`DirectSupabase: Attempt ${attempt} failed:`, error.message);
+
+          // Check for connection issues
+          if (error.message?.includes('ERR_CONNECTION_CLOSED') ||
+              error.message?.includes('Failed to fetch') ||
+              error.message?.includes('ERR_NETWORK')) {
+            console.log(`DirectSupabase: Network error detected, retrying in ${attempt * 1000}ms...`);
+
+            if (attempt < maxRetries) {
+              // Wait before retry
+              await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+              continue;
+            }
+          }
+
+          // For non-network errors or final attempt, throw immediately
+          throw error;
+        }
       }
-    }
+
+      throw lastError;
+    };
+
+    // Skip table access test for now due to potential connection issues
+    // Instead, proceed directly to checking if record exists
+    console.log(
+      "DirectSupabase updateCustomerProfile: Skipping table access test, proceeding to record check...",
+    );
 
     // Skip user verification check since auth.users table may not be accessible via REST API
     // Instead, let the foreign key constraint handle validation during insert/update
