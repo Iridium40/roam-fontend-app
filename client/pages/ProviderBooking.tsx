@@ -328,8 +328,15 @@ const ProviderBooking = () => {
           customerPhone: profile.phone || "",
         }));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching customer profile:", error);
+      console.error("Error details:", {
+        message: error?.message,
+        details: error?.details,
+        hint: error?.hint,
+        code: error?.code,
+        fullError: error
+      });
     }
   };
 
