@@ -1386,17 +1386,6 @@ export default function Index() {
                       )}
                     </div>
 
-                    {/* Validity Period */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="w-4 h-4 text-roam-blue" />
-                      <span>
-                        Valid: {promotion.startDate && promotion.endDate
-                          ? `${new Date(promotion.startDate).toLocaleDateString()} - ${new Date(promotion.endDate).toLocaleDateString()}`
-                          : promotion.endDate
-                            ? `Until ${new Date(promotion.endDate).toLocaleDateString()}`
-                            : "Ongoing"}
-                      </span>
-                    </div>
 
                     {/* Action Button */}
                     <Button
