@@ -108,6 +108,27 @@ export default function Index() {
     // Default icon
     return Building;
   };
+
+  // Category color mapping function - consistent with filter cards
+  const getCategoryColor = (category: string) => {
+    const cat = category.toLowerCase();
+
+    if (cat.includes("beauty") || cat.includes("wellness") || cat.includes("spa")) {
+      return "bg-gradient-to-r from-pink-500 to-rose-500";
+    }
+    if (cat.includes("fitness") || cat.includes("gym") || cat.includes("workout")) {
+      return "bg-gradient-to-r from-orange-500 to-red-500";
+    }
+    if (cat.includes("therapy") || cat.includes("therapeutic") || cat.includes("massage")) {
+      return "bg-gradient-to-r from-green-500 to-emerald-500";
+    }
+    if (cat.includes("healthcare") || cat.includes("medical") || cat.includes("health")) {
+      return "bg-gradient-to-r from-blue-500 to-cyan-500";
+    }
+
+    // Default gradient
+    return "bg-gradient-to-r from-gray-500 to-gray-600";
+  };
   const [loading, setLoading] = useState(true);
 
   const handleBusinessShare = (business: any) => {
