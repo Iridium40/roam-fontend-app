@@ -41,7 +41,7 @@ export default function NotFound() {
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                    <Link to="/">
+                    <Link to="/home">
                       <Home className="w-4 h-4 mr-2" />
                       Back to Home
                     </Link>
