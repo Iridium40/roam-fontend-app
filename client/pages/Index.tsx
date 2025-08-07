@@ -1807,17 +1807,6 @@ export default function Index() {
                         </h3>
                       </div>
 
-                      {/* Verification */}
-                      <div>
-                        {business.verification_status === "approved" && (
-                          <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full w-fit">
-                            <Shield className="w-3 h-3 text-green-600" />
-                            <span className="text-xs text-green-700 font-semibold">
-                              Verified
-                            </span>
-                          </div>
-                        )}
-                      </div>
                     </div>
                   </div>
 
