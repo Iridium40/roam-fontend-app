@@ -1809,21 +1809,55 @@ export default function Index() {
                   </div>
 
                   {/* Content Section */}
-                  <div className="p-6 space-y-5">
-                    {/* Star Rating */}
-                    <div className="flex items-center justify-center">
-                      <div className="flex items-center gap-2 bg-gradient-to-r from-roam-warning/10 to-roam-warning/5 px-4 py-2 rounded-2xl border border-roam-warning/20">
-                        <Star className="w-5 h-5 text-roam-warning fill-current" />
-                        <span className="font-bold text-lg text-gray-900">
-                          {business.rating}
-                        </span>
-                        <span className="text-sm text-gray-600 font-medium">
-                          ({business.reviews} reviews)
-                        </span>
+                  <div className="p-6 space-y-4">
+                    {/* Specialties and Rating Row */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
+                          Specialties
+                        </h4>
+                        <div className="flex items-center gap-1 bg-gradient-to-r from-roam-warning/10 to-roam-warning/5 px-3 py-1 rounded-lg border border-roam-warning/20">
+                          <Star className="w-4 h-4 text-roam-warning fill-current" />
+                          <span className="font-bold text-sm text-gray-900">
+                            {business.rating}
+                          </span>
+                          <span className="text-xs text-gray-600 font-medium">
+                            ({business.reviews})
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {business.specialties
+                          .slice(0, 3)
+                          .map((specialty, index) => {
+                            // Convert to camel case
+                            const camelCaseSpecialty = specialty
+                              .split(" ")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() +
+                                  word.slice(1).toLowerCase(),
+                              )
+                              .join(" ");
+
+                            return (
+                              <span
+                                key={specialty}
+                                className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-roam-blue/10 to-roam-light-blue/10 text-roam-blue rounded-full border border-roam-blue/20"
+                              >
+                                {camelCaseSpecialty}
+                              </span>
+                            );
+                          })}
+                        {business.specialties.length > 3 && (
+                          <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full border border-gray-200">
+                            +{business.specialties.length - 3} more
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    {/* Delivery Types */}
+                    {/* Delivery Options */}
                     <div className="space-y-3">
                       <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
                         Delivery Options
@@ -1859,44 +1893,8 @@ export default function Index() {
                       </div>
                     </div>
 
-                    {/* Specialties */}
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
-                        Specialties
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {business.specialties
-                          .slice(0, 4)
-                          .map((specialty, index) => {
-                            // Convert to camel case
-                            const camelCaseSpecialty = specialty
-                              .split(" ")
-                              .map(
-                                (word) =>
-                                  word.charAt(0).toUpperCase() +
-                                  word.slice(1).toLowerCase(),
-                              )
-                              .join(" ");
-
-                            return (
-                              <span
-                                key={specialty}
-                                className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-roam-blue/10 to-roam-light-blue/10 text-roam-blue rounded-full border border-roam-blue/20"
-                              >
-                                {camelCaseSpecialty}
-                              </span>
-                            );
-                          })}
-                        {business.specialties.length > 4 && (
-                          <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full border border-gray-200">
-                            +{business.specialties.length - 4} more
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
                     {/* Action Buttons */}
-                    <div className="space-y-3 pt-4">
+                    <div className="space-y-3 pt-2">
                       <Button
                         asChild
                         className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
