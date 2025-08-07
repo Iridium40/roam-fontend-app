@@ -3144,7 +3144,8 @@ export default function ProviderDashboard() {
       window.location.href = url;
     } catch (error: any) {
       console.error("Error selecting plan:", error);
-      alert(`Error: ${error.message}`);
+      const errorMessage = error?.message || error?.details || (typeof error === 'string' ? error : 'Failed to select plan. Please try again.');
+      alert(`Error: ${errorMessage}`);
     } finally {
       setSubscriptionLoading(false);
       setSelectedPlan(null);
