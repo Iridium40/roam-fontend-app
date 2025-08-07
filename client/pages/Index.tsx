@@ -692,6 +692,15 @@ export default function Index() {
     );
   };
 
+  const nextPromotionSlide = () => {
+    const maxSlides = Math.max(0, promotionalDeals.length - 3);
+    setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxSlides));
+  };
+
+  const prevPromotionSlide = () => {
+    setCurrentPromotionSlide((prev) => Math.max(prev - 1, 0));
+  };
+
   const nextPopularSlide = () => {
     setCurrentPopularSlide((prev) => (prev + 1) % popularServices.length);
   };
