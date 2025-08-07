@@ -66,6 +66,12 @@ export default function BusinessAvailability() {
     }
   }, [serviceId, selectedDate, selectedTime]);
 
+  useEffect(() => {
+    if (customer && isCustomer) {
+      fetchCustomerLocations();
+    }
+  }, [customer, isCustomer]);
+
   const fetchAvailableBusinesses = async (retryCount = 0) => {
     try {
       setLoading(true);
