@@ -1739,16 +1739,16 @@ export default function Index() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filteredBusinesses.map((business) => (
               <Card
                 key={business.id}
-                className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-0 shadow-lg bg-white overflow-hidden"
+                className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl"
               >
                 <CardContent className="p-0">
-                  {/* Header with Logo and Actions */}
+                  {/* Hero Cover Section */}
                   <div
-                    className="relative bg-gradient-to-br from-white via-roam-light-blue/5 to-roam-blue/10 p-6 border-b border-gray-100"
+                    className="relative h-48 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5"
                     style={{
                       backgroundImage: business.cover_image_url
                         ? `url(${business.cover_image_url})`
@@ -1758,79 +1758,77 @@ export default function Index() {
                       backgroundRepeat: "no-repeat",
                     }}
                   >
-                    {/* Background overlay for cover image */}
+                    {/* Cover overlay */}
                     {business.cover_image_url && (
-                      <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-0"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
                     )}
 
-                    {/* All content in foreground */}
-                    <div className="relative z-20">
-                      <div className="flex items-start justify-between mb-4">
-                        {/* Business Logo */}
-                        <div className="w-20 h-20 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg flex items-center justify-center flex-shrink-0 overflow-hidden border border-gray-200 ring-2 ring-white">
-                          {business.image &&
-                          business.image !== "/api/placeholder/80/80" ? (
-                            <img
-                              src={business.image}
-                              alt={business.name}
-                              className="w-full h-full object-cover rounded-xl"
-                            />
-                          ) : (
-                            <Building className="w-10 h-10 text-roam-blue" />
-                          )}
-                        </div>
+                    {/* Action Buttons - Top Right */}
+                    <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
+                      <FavoriteButton
+                        type="business"
+                        itemId={business.id}
+                        size="sm"
+                        variant="ghost"
+                        className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
+                      />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all backdrop-blur-sm"
+                        onClick={() => handleBusinessShare(business)}
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </Button>
+                    </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-2">
-                          <FavoriteButton
-                            type="business"
-                            itemId={business.id}
-                            size="sm"
-                            variant="ghost"
-                            className="w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md border border-gray-200 text-gray-600 hover:text-red-500 hover:scale-110 transition-all"
+                    {/* Business Logo - Overlapping */}
+                    <div className="absolute -bottom-8 left-6 z-20">
+                      <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center overflow-hidden border-4 border-white group-hover:scale-110 transition-transform duration-300">
+                        {business.image &&
+                        business.image !== "/api/placeholder/80/80" ? (
+                          <img
+                            src={business.image}
+                            alt={business.name}
+                            className="w-full h-full object-cover rounded-xl"
                           />
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md border border-gray-200 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all"
-                            onClick={() => handleBusinessShare(business)}
-                          >
-                            <Share2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                        ) : (
+                          <Building className="w-8 h-8 text-roam-blue" />
+                        )}
                       </div>
+                    </div>
 
-                      {/* Business Name */}
-                      <div className="mb-3">
-                        <h3 className="font-bold text-2xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
-                          {business.name}
-                        </h3>
+                    {/* Rating Badge - Overlapping */}
+                    <div className="absolute -bottom-4 right-6 z-20">
+                      <div className="flex items-center gap-1 bg-white px-3 py-2 rounded-full shadow-xl border border-gray-100">
+                        <Star className="w-4 h-4 text-roam-warning fill-current" />
+                        <span className="font-bold text-sm text-gray-900">
+                          {business.rating}
+                        </span>
+                        <span className="text-xs text-gray-600 font-medium">
+                          ({business.reviews})
+                        </span>
                       </div>
-
                     </div>
                   </div>
 
                   {/* Content Section */}
-                  <div className="p-6 space-y-4">
-                    {/* Specialties and Rating Row */}
+                  <div className="px-6 pt-12 pb-6 space-y-6">
+                    {/* Business Name */}
+                    <div>
+                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight mb-1">
+                        {business.name}
+                      </h3>
+                    </div>
+
+                    {/* Specialties */}
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
-                          Specialties
-                        </h4>
-                        <div className="flex items-center gap-1 bg-gradient-to-r from-roam-warning/10 to-roam-warning/5 px-3 py-1 rounded-lg border border-roam-warning/20">
-                          <Star className="w-4 h-4 text-roam-warning fill-current" />
-                          <span className="font-bold text-sm text-gray-900">
-                            {business.rating}
-                          </span>
-                          <span className="text-xs text-gray-600 font-medium">
-                            ({business.reviews})
-                          </span>
-                        </div>
-                      </div>
+                      <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        Specialties
+                      </h4>
                       <div className="flex flex-wrap gap-2">
                         {business.specialties
-                          .slice(0, 3)
+                          .slice(0, 4)
                           .map((specialty, index) => {
                             // Convert to camel case
                             const camelCaseSpecialty = specialty
@@ -1845,40 +1843,39 @@ export default function Index() {
                             return (
                               <span
                                 key={specialty}
-                                className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-roam-blue/10 to-roam-light-blue/10 text-roam-blue rounded-full border border-roam-blue/20"
+                                className="px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-roam-blue/8 to-roam-light-blue/8 text-roam-blue rounded-lg border border-roam-blue/15 hover:border-roam-blue/25 transition-colors"
                               >
                                 {camelCaseSpecialty}
                               </span>
                             );
                           })}
-                        {business.specialties.length > 3 && (
-                          <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full border border-gray-200">
-                            +{business.specialties.length - 3} more
+                        {business.specialties.length > 4 && (
+                          <span className="px-3 py-1.5 text-xs font-medium bg-gray-50 text-gray-600 rounded-lg border border-gray-200">
+                            +{business.specialties.length - 4}
                           </span>
                         )}
                       </div>
                     </div>
 
-
                     {/* Action Buttons */}
-                    <div className="space-y-3 pt-2">
+                    <div className="flex gap-3 pt-2">
                       <Button
                         asChild
-                        className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                        className="flex-1 bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                       >
                         <Link to={`/business/${business.id}?tab=services`}>
-                          <Calendar className="w-5 h-5 mr-2" />
-                          Book Services
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Book
                         </Link>
                       </Button>
                       <Button
                         asChild
                         variant="outline"
-                        className="w-full border-2 border-roam-blue/20 text-roam-blue hover:bg-roam-blue hover:text-white font-semibold py-3 rounded-xl transition-all duration-300"
+                        className="flex-1 border-2 border-roam-blue/20 text-roam-blue hover:bg-roam-blue hover:text-white font-semibold py-3 rounded-2xl transition-all duration-300"
                       >
                         <Link to={`/business/${business.id}`}>
-                          <BookOpen className="w-5 h-5 mr-2" />
-                          View Business Profile
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          View
                         </Link>
                       </Button>
                     </div>
