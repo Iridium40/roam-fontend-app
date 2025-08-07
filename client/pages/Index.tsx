@@ -1870,41 +1870,6 @@ export default function Index() {
                       </div>
                     </div>
 
-                    {/* Delivery Options */}
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide">
-                        Delivery Options
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {business.deliveryTypes.map((type) => {
-                          let badge, Icon;
-                          // Map business_location to business for display
-                          if (type === "business_location") {
-                            badge = {
-                              label: "Business",
-                              color: "bg-blue-50 text-blue-700 border-blue-200",
-                            };
-                            Icon = Building;
-                          } else {
-                            badge = getDeliveryBadge(type);
-                            Icon =
-                              deliveryIcons[
-                                type as keyof typeof deliveryIcons
-                              ] || Building;
-                          }
-
-                          return (
-                            <div
-                              key={type}
-                              className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${badge.color} font-medium text-xs`}
-                            >
-                              <Icon className="w-4 h-4" />
-                              {badge.label}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
 
                     {/* Action Buttons */}
                     <div className="space-y-3 pt-2">
