@@ -591,7 +591,10 @@ export default function BusinessAvailability() {
     }));
   };
 
-  const handleSavedLocationSelect = (businessId: string, locationId: string) => {
+  const handleSavedLocationSelect = (
+    businessId: string,
+    locationId: string,
+  ) => {
     if (locationId === "new") {
       // Clear address fields for new address entry
       setCustomerAddresses((prev) => ({
@@ -606,7 +609,9 @@ export default function BusinessAvailability() {
       return;
     }
 
-    const selectedLocation = savedLocations.find((loc) => loc.id === locationId);
+    const selectedLocation = savedLocations.find(
+      (loc) => loc.id === locationId,
+    );
     if (selectedLocation) {
       setCustomerAddresses((prev) => ({
         ...prev,
@@ -1064,7 +1069,8 @@ export default function BusinessAvailability() {
                                                     {location.address_line1}
                                                   </span>
                                                   <span className="text-xs text-gray-500">
-                                                    {location.city}, {location.state}{" "}
+                                                    {location.city},{" "}
+                                                    {location.state}{" "}
                                                     {location.postal_code}
                                                   </span>
                                                 </div>
