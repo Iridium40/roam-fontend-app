@@ -8,7 +8,7 @@ export function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
+            <Link to="/" className="flex items-center mb-4">
               <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
@@ -16,9 +16,6 @@ export function Footer() {
                   className="w-8 h-8 object-contain"
                 />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-roam-blue to-roam-light-blue bg-clip-text text-transparent">
-                ROAM
-              </span>
             </Link>
             <p className="text-foreground/70 mb-4 max-w-md">
               Florida's premier on-demand services marketplace. Connecting
