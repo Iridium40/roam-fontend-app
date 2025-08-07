@@ -1310,7 +1310,7 @@ export default function Index() {
                   <Card
                     key={service.id}
                     className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0"
-                    style={{ minWidth: 'calc(33.333% - 1rem)' }}
+                    style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
                   >
                     <div className="relative">
                       <img
@@ -1480,7 +1480,7 @@ export default function Index() {
                   <Card
                     key={promotion.id}
                     className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                    style={{ minWidth: 'calc(33.333% - 1rem)' }}
+                    style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
                   >
                   {/* Hero Section */}
                   <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
@@ -1925,7 +1925,7 @@ export default function Index() {
                   <Card
                     key={business.id}
                     className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                    style={{ minWidth: 'calc(33.333% - 1rem)' }}
+                    style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
                   >
                 <CardContent className="p-0">
                   {/* Hero Cover Section */}
