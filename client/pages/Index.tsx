@@ -1653,35 +1653,11 @@ export default function Index() {
       {/* Popular Services */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="flex justify-between items-center mb-4 md:justify-center">
-              <div className="md:hidden">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={prevPopularSlide}
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-              </div>
-              <div className="text-center">
-                <h2 className="text-3xl font-bold">
-                  Most <span className="text-roam-blue">Popular Services</span>
-                </h2>
-              </div>
-              <div className="md:hidden">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={nextPopularSlide}
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-            <p className="text-lg text-foreground/70">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold">
+              Most <span className="text-roam-blue">Popular Services</span>
+            </h2>
+            <p className="text-lg text-foreground/70 mt-4">
               Trending services in your area this month
             </p>
           </div>
