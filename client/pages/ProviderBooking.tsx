@@ -1279,6 +1279,43 @@ const ProviderBooking = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Service Location */}
+            {selectedLocation && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-roam-blue" />
+                    Service Location
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="font-medium text-gray-900">
+                      {selectedLocation.address_line1}
+                    </div>
+                    {selectedLocation.address_line2 && (
+                      <div className="text-gray-600">
+                        {selectedLocation.address_line2}
+                      </div>
+                    )}
+                    <div className="text-gray-600">
+                      {selectedLocation.city}, {selectedLocation.state} {selectedLocation.postal_code}
+                    </div>
+                    {selectedLocation.country && selectedLocation.country !== 'US' && (
+                      <div className="text-gray-600">
+                        {selectedLocation.country}
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-3 pt-3 border-t">
+                    <p className="text-xs text-gray-500">
+                      Service will be provided at this location
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Booking Summary */}
             <Card className="sticky top-6">
               <CardHeader>
