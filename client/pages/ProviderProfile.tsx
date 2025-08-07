@@ -93,7 +93,8 @@ export default function ProviderProfile() {
           ),
           verified: true,
           profileImage: providerData.image_url || "/api/placeholder/120/120",
-          coverImage: providerData.cover_image_url ||
+          coverImage:
+            providerData.cover_image_url ||
             "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=300&fit=crop",
           bio: providerData.bio || "Professional service provider",
           specialties: [], // Could fetch from separate table if available

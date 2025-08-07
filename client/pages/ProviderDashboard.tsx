@@ -112,49 +112,72 @@ interface ServiceSubcategory {
 // Service icon mapping function
 const getServiceIcon = (serviceName: string, categoryType: string) => {
   const name = serviceName.toLowerCase();
-  const category = categoryType?.toLowerCase() || '';
+  const category = categoryType?.toLowerCase() || "";
 
   // Healthcare services
-  if (category.includes('healthcare') || name.includes('medical') || name.includes('health')) {
-    if (name.includes('consultation') || name.includes('visit')) return Stethoscope;
-    if (name.includes('therapy') || name.includes('rehabilitation')) return Activity;
-    if (name.includes('mental') || name.includes('counseling')) return Brain;
-    if (name.includes('cardiac') || name.includes('heart')) return Heart;
-    if (name.includes('eye') || name.includes('vision')) return Eye;
+  if (
+    category.includes("healthcare") ||
+    name.includes("medical") ||
+    name.includes("health")
+  ) {
+    if (name.includes("consultation") || name.includes("visit"))
+      return Stethoscope;
+    if (name.includes("therapy") || name.includes("rehabilitation"))
+      return Activity;
+    if (name.includes("mental") || name.includes("counseling")) return Brain;
+    if (name.includes("cardiac") || name.includes("heart")) return Heart;
+    if (name.includes("eye") || name.includes("vision")) return Eye;
     return Stethoscope;
   }
 
   // Beauty & Wellness services
-  if (category.includes('beauty') || category.includes('wellness')) {
-    if (name.includes('haircut') || name.includes('hair') || name.includes('barber')) return Scissors;
-    if (name.includes('massage') || name.includes('spa')) return Heart;
-    if (name.includes('makeup') || name.includes('beauty')) return Palette;
+  if (category.includes("beauty") || category.includes("wellness")) {
+    if (
+      name.includes("haircut") ||
+      name.includes("hair") ||
+      name.includes("barber")
+    )
+      return Scissors;
+    if (name.includes("massage") || name.includes("spa")) return Heart;
+    if (name.includes("makeup") || name.includes("beauty")) return Palette;
     return Scissors;
   }
 
   // Fitness services
-  if (category.includes('fitness') || name.includes('workout') || name.includes('training')) {
+  if (
+    category.includes("fitness") ||
+    name.includes("workout") ||
+    name.includes("training")
+  ) {
     return Dumbbell;
   }
 
   // Home services
-  if (category.includes('home') || name.includes('cleaning') || name.includes('repair')) {
-    if (name.includes('repair') || name.includes('maintenance')) return Wrench;
+  if (
+    category.includes("home") ||
+    name.includes("cleaning") ||
+    name.includes("repair")
+  ) {
+    if (name.includes("repair") || name.includes("maintenance")) return Wrench;
     return Home;
   }
 
   // Business services
-  if (category.includes('business') || category.includes('professional')) {
+  if (category.includes("business") || category.includes("professional")) {
     return Briefcase;
   }
 
   // Technology services
-  if (category.includes('technology') || name.includes('tech') || name.includes('digital')) {
+  if (
+    category.includes("technology") ||
+    name.includes("tech") ||
+    name.includes("digital")
+  ) {
     return Smartphone;
   }
 
   // Virtual services
-  if (name.includes('virtual') || name.includes('online')) {
+  if (name.includes("virtual") || name.includes("online")) {
     return Video;
   }
 
@@ -388,7 +411,8 @@ export default function ProviderDashboard() {
   const [businessCoverPosition, setBusinessCoverPosition] = useState("50% 50%");
   const [showPositionControls, setShowPositionControls] = useState(false);
   const [providerCoverPosition, setProviderCoverPosition] = useState("50% 50%");
-  const [showProviderPositionControls, setShowProviderPositionControls] = useState(false);
+  const [showProviderPositionControls, setShowProviderPositionControls] =
+    useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
@@ -1156,7 +1180,9 @@ export default function ProviderDashboard() {
     } finally {
       setBannerUploading(false);
       // Reset file input
-      const input = document.getElementById("banner-upload") as HTMLInputElement;
+      const input = document.getElementById(
+        "banner-upload",
+      ) as HTMLInputElement;
       if (input) input.value = "";
     }
   };
@@ -1304,7 +1330,9 @@ export default function ProviderDashboard() {
     } finally {
       setBusinessCoverUploading(false);
       // Reset file input
-      const input = document.getElementById("business-cover-upload") as HTMLInputElement;
+      const input = document.getElementById(
+        "business-cover-upload",
+      ) as HTMLInputElement;
       if (input) input.value = "";
     }
   };
@@ -1357,7 +1385,9 @@ export default function ProviderDashboard() {
     }
   };
 
-  const handleImagePositionClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleImagePositionClick = (
+    event: React.MouseEvent<HTMLDivElement>,
+  ) => {
     if (!business?.cover_image_url) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
@@ -1372,7 +1402,9 @@ export default function ProviderDashboard() {
     setBusinessCoverPosition(position);
   };
 
-  const handleProviderImagePositionClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleProviderImagePositionClick = (
+    event: React.MouseEvent<HTMLDivElement>,
+  ) => {
     if (!provider?.cover_image_url) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
@@ -5016,7 +5048,11 @@ export default function ProviderDashboard() {
         if (!service) throw new Error("Service not found");
 
         // Check if service is Telemed and set delivery type to virtual by default
-        const defaultDeliveryType = service.name.toLowerCase().includes('telemed') ? 'virtual' : 'business_location';
+        const defaultDeliveryType = service.name
+          .toLowerCase()
+          .includes("telemed")
+          ? "virtual"
+          : "business_location";
 
         const newServiceData = {
           business_id: provider.business_id,
@@ -8340,13 +8376,19 @@ export default function ProviderDashboard() {
                                   {(() => {
                                     const IconComponent = getServiceIcon(
                                       service.name,
-                                      service.service_subcategories?.service_categories?.service_category_type || ''
+                                      service.service_subcategories
+                                        ?.service_categories
+                                        ?.service_category_type || "",
                                     );
-                                    return <IconComponent className="w-5 h-5 text-roam-blue" />;
+                                    return (
+                                      <IconComponent className="w-5 h-5 text-roam-blue" />
+                                    );
                                   })()}
                                 </div>
                                 <div className="flex-1">
-                                  <h4 className="font-medium">{service.name}</h4>
+                                  <h4 className="font-medium">
+                                    {service.name}
+                                  </h4>
                                   <p className="text-sm text-foreground/60">
                                     {service.service_subcategories
                                       ?.service_categories?.description ||
@@ -8668,7 +8710,11 @@ export default function ProviderDashboard() {
                       <div className="relative">
                         <div
                           className="w-full h-48 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden cursor-pointer"
-                          onClick={business?.cover_image_url ? handleImagePositionClick : undefined}
+                          onClick={
+                            business?.cover_image_url
+                              ? handleImagePositionClick
+                              : undefined
+                          }
                         >
                           {business?.cover_image_url ? (
                             <img
@@ -8694,7 +8740,9 @@ export default function ProviderDashboard() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => setShowPositionControls(!showPositionControls)}
+                              onClick={() =>
+                                setShowPositionControls(!showPositionControls)
+                              }
                               className="bg-white/90 hover:bg-white"
                             >
                               <Move className="w-4 h-4" />
@@ -8718,7 +8766,8 @@ export default function ProviderDashboard() {
                           </h4>
                           <div className="space-y-3">
                             <p className="text-xs text-gray-600">
-                              Click on the image above to set focal point, or use preset positions:
+                              Click on the image above to set focal point, or
+                              use preset positions:
                             </p>
                             <div className="grid grid-cols-3 gap-2">
                               <Button
@@ -8788,7 +8837,9 @@ export default function ProviderDashboard() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handlePresetPosition("100% 100%")}
+                                onClick={() =>
+                                  handlePresetPosition("100% 100%")
+                                }
                                 className="text-xs"
                               >
                                 Bottom Right
@@ -8819,15 +8870,21 @@ export default function ProviderDashboard() {
                           onChange={handleBusinessCoverUpload}
                           className="hidden"
                           id="business-cover-upload"
-                          disabled={businessCoverUploading || businessDetailsSaving}
+                          disabled={
+                            businessCoverUploading || businessDetailsSaving
+                          }
                         />
                         <Button
                           variant="outline"
                           className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                           onClick={() =>
-                            document.getElementById("business-cover-upload")?.click()
+                            document
+                              .getElementById("business-cover-upload")
+                              ?.click()
                           }
-                          disabled={businessCoverUploading || businessDetailsSaving}
+                          disabled={
+                            businessCoverUploading || businessDetailsSaving
+                          }
                         >
                           <Camera className="w-4 h-4 mr-2" />
                           {business?.cover_image_url
@@ -8840,7 +8897,9 @@ export default function ProviderDashboard() {
                             variant="outline"
                             className="border-red-300 text-red-600 hover:bg-red-50"
                             onClick={handleBusinessCoverRemove}
-                            disabled={businessCoverUploading || businessDetailsSaving}
+                            disabled={
+                              businessCoverUploading || businessDetailsSaving
+                            }
                           >
                             Remove
                           </Button>
@@ -8848,7 +8907,8 @@ export default function ProviderDashboard() {
                       </div>
 
                       <p className="text-xs text-foreground/60 text-center mt-2">
-                        Upload a cover image for your business profile (max 10MB). Recommended size: 1200x400px
+                        Upload a cover image for your business profile (max
+                        10MB). Recommended size: 1200x400px
                       </p>
                     </CardContent>
                   </Card>
@@ -8902,7 +8962,11 @@ export default function ProviderDashboard() {
                                   e.target.value,
                                 )
                               }
-                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
+                              disabled={
+                                businessDetailsSaving ||
+                                businessCoverUploading ||
+                                isDispatcher
+                              }
                             />
                           </div>
 
@@ -9145,7 +9209,11 @@ export default function ProviderDashboard() {
                                   e.target.value,
                                 )
                               }
-                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
+                              disabled={
+                                businessDetailsSaving ||
+                                businessCoverUploading ||
+                                isDispatcher
+                              }
                             />
                           </div>
 
@@ -9161,7 +9229,11 @@ export default function ProviderDashboard() {
                                   e.target.value,
                                 )
                               }
-                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
+                              disabled={
+                                businessDetailsSaving ||
+                                businessCoverUploading ||
+                                isDispatcher
+                              }
                             />
                           </div>
 
@@ -9178,7 +9250,11 @@ export default function ProviderDashboard() {
                                 )
                               }
                               placeholder="https://"
-                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
+                              disabled={
+                                businessDetailsSaving ||
+                                businessCoverUploading ||
+                                isDispatcher
+                              }
                             />
                           </div>
                         </div>
@@ -9293,7 +9369,11 @@ export default function ProviderDashboard() {
                                   checked,
                                 )
                               }
-                              disabled={businessDetailsSaving || businessCoverUploading || isDispatcher}
+                              disabled={
+                                businessDetailsSaving ||
+                                businessCoverUploading ||
+                                isDispatcher
+                              }
                               className="data-[state=checked]:bg-roam-blue"
                             />
                           </div>
@@ -9328,7 +9408,9 @@ export default function ProviderDashboard() {
                         <div className="pt-4 border-t">
                           <Button
                             onClick={handleSaveBusinessDetails}
-                            disabled={businessDetailsSaving || businessCoverUploading}
+                            disabled={
+                              businessDetailsSaving || businessCoverUploading
+                            }
                             className="bg-roam-blue hover:bg-roam-blue/90"
                           >
                             {businessDetailsSaving ? (
@@ -10610,7 +10692,6 @@ export default function ProviderDashboard() {
                       </CardContent>
                     </Card>
 
-
                     {/* Available Services - only show for non-provider roles */}
                     {availableProviderServices.length > 0 &&
                       provider?.provider_role !== "provider" && (
@@ -10698,13 +10779,15 @@ export default function ProviderDashboard() {
                   {/* Cover Image Section - First */}
                   <Card>
                     <CardContent className="p-6">
-                      <h3 className="font-medium text-lg mb-4">
-                        Cover Image
-                      </h3>
+                      <h3 className="font-medium text-lg mb-4">Cover Image</h3>
                       <div className="relative">
                         <div
                           className="w-full h-32 bg-gradient-to-r from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center overflow-hidden cursor-pointer"
-                          onClick={provider?.cover_image_url ? handleProviderImagePositionClick : undefined}
+                          onClick={
+                            provider?.cover_image_url
+                              ? handleProviderImagePositionClick
+                              : undefined
+                          }
                         >
                           {provider?.cover_image_url ? (
                             <img
@@ -10730,7 +10813,11 @@ export default function ProviderDashboard() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => setShowProviderPositionControls(!showProviderPositionControls)}
+                              onClick={() =>
+                                setShowProviderPositionControls(
+                                  !showProviderPositionControls,
+                                )
+                              }
                               className="bg-white/90 hover:bg-white"
                             >
                               <Move className="w-4 h-4" />
@@ -10746,107 +10833,129 @@ export default function ProviderDashboard() {
                       )}
 
                       {/* Provider Position Controls */}
-                      {provider?.cover_image_url && showProviderPositionControls && (
-                        <div className="bg-gray-50 border rounded-lg p-4 mb-4">
-                          <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                            <Move className="w-4 h-4" />
-                            Cover Image Position Controls
-                          </h4>
-                          <div className="space-y-3">
-                            <p className="text-xs text-gray-600">
-                              Click on the image above to set focal point, or use preset positions:
-                            </p>
-                            <div className="grid grid-cols-3 gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("0% 0%")}
-                                className="text-xs"
-                              >
-                                Top Left
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("50% 0%")}
-                                className="text-xs"
-                              >
-                                Top Center
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("100% 0%")}
-                                className="text-xs"
-                              >
-                                Top Right
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("0% 50%")}
-                                className="text-xs"
-                              >
-                                Center Left
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("50% 50%")}
-                                className="text-xs bg-roam-blue text-white border-roam-blue"
-                              >
-                                Center
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("100% 50%")}
-                                className="text-xs"
-                              >
-                                Center Right
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("0% 100%")}
-                                className="text-xs"
-                              >
-                                Bottom Left
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("50% 100%")}
-                                className="text-xs"
-                              >
-                                Bottom Center
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("100% 100%")}
-                                className="text-xs"
-                              >
-                                Bottom Right
-                              </Button>
-                            </div>
-                            <div className="flex items-center justify-between pt-2 border-t">
-                              <span className="text-xs text-gray-600">
-                                Current position: {providerCoverPosition}
-                              </span>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleProviderPresetPosition("50% 50%")}
-                                className="text-xs"
-                              >
-                                <RotateCcw className="w-3 h-3 mr-1" />
-                                Reset
-                              </Button>
+                      {provider?.cover_image_url &&
+                        showProviderPositionControls && (
+                          <div className="bg-gray-50 border rounded-lg p-4 mb-4">
+                            <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                              <Move className="w-4 h-4" />
+                              Cover Image Position Controls
+                            </h4>
+                            <div className="space-y-3">
+                              <p className="text-xs text-gray-600">
+                                Click on the image above to set focal point, or
+                                use preset positions:
+                              </p>
+                              <div className="grid grid-cols-3 gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("0% 0%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Top Left
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("50% 0%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Top Center
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("100% 0%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Top Right
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("0% 50%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Center Left
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("50% 50%")
+                                  }
+                                  className="text-xs bg-roam-blue text-white border-roam-blue"
+                                >
+                                  Center
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("100% 50%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Center Right
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("0% 100%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Bottom Left
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("50% 100%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Bottom Center
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("100% 100%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  Bottom Right
+                                </Button>
+                              </div>
+                              <div className="flex items-center justify-between pt-2 border-t">
+                                <span className="text-xs text-gray-600">
+                                  Current position: {providerCoverPosition}
+                                </span>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleProviderPresetPosition("50% 50%")
+                                  }
+                                  className="text-xs"
+                                >
+                                  <RotateCcw className="w-3 h-3 mr-1" />
+                                  Reset
+                                </Button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                       <div className="flex gap-2 justify-center mt-4">
                         <input
@@ -10884,7 +10993,8 @@ export default function ProviderDashboard() {
                       </div>
 
                       <p className="text-xs text-foreground/60 text-center mt-2">
-                        Upload a cover image for your profile (max 10MB). Recommended size: 800x200px
+                        Upload a cover image for your profile (max 10MB).
+                        Recommended size: 800x200px
                       </p>
                     </CardContent>
                   </Card>
@@ -10970,7 +11080,11 @@ export default function ProviderDashboard() {
                             onChange={(e) =>
                               handleFormChange("firstName", e.target.value)
                             }
-                            disabled={profileSaving || avatarUploading || bannerUploading}
+                            disabled={
+                              profileSaving ||
+                              avatarUploading ||
+                              bannerUploading
+                            }
                           />
                         </div>
                         <div className="space-y-2">
@@ -10981,7 +11095,11 @@ export default function ProviderDashboard() {
                             onChange={(e) =>
                               handleFormChange("lastName", e.target.value)
                             }
-                            disabled={profileSaving || avatarUploading || bannerUploading}
+                            disabled={
+                              profileSaving ||
+                              avatarUploading ||
+                              bannerUploading
+                            }
                           />
                         </div>
                       </div>
@@ -11007,7 +11125,9 @@ export default function ProviderDashboard() {
                           onChange={(e) =>
                             handleFormChange("phone", e.target.value)
                           }
-                          disabled={profileSaving || avatarUploading || bannerUploading}
+                          disabled={
+                            profileSaving || avatarUploading || bannerUploading
+                          }
                         />
                       </div>
 
@@ -11021,7 +11141,9 @@ export default function ProviderDashboard() {
                           }
                           rows={4}
                           placeholder="Tell customers about your professional background and expertise..."
-                          disabled={profileSaving || avatarUploading || bannerUploading}
+                          disabled={
+                            profileSaving || avatarUploading || bannerUploading
+                          }
                         />
                       </div>
                     </div>
@@ -11032,7 +11154,9 @@ export default function ProviderDashboard() {
                     <Button
                       className="bg-roam-blue hover:bg-roam-blue/90"
                       onClick={handleSaveProfile}
-                      disabled={profileSaving || avatarUploading || bannerUploading}
+                      disabled={
+                        profileSaving || avatarUploading || bannerUploading
+                      }
                     >
                       {profileSaving ? (
                         <>
@@ -12952,9 +13076,7 @@ export default function ProviderDashboard() {
                     <SelectValue placeholder="Select delivery type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="business_location">
-                      Business
-                    </SelectItem>
+                    <SelectItem value="business_location">Business</SelectItem>
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
                     <SelectItem value="both_locations">
@@ -13162,9 +13284,7 @@ export default function ProviderDashboard() {
                     <SelectValue placeholder="Select delivery type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="business_location">
-                      Business
-                    </SelectItem>
+                    <SelectItem value="business_location">Business</SelectItem>
                     <SelectItem value="customer_location">Mobile</SelectItem>
                     <SelectItem value="virtual">Virtual</SelectItem>
                     <SelectItem value="both_locations">

@@ -1737,10 +1737,12 @@ export default function Index() {
                   <div
                     className="relative bg-gradient-to-br from-white via-roam-light-blue/5 to-roam-blue/10 p-6 border-b border-gray-100"
                     style={{
-                      backgroundImage: business.cover_image_url ? `url(${business.cover_image_url})` : undefined,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      backgroundRepeat: 'no-repeat'
+                      backgroundImage: business.cover_image_url
+                        ? `url(${business.cover_image_url})`
+                        : undefined,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
                     }}
                   >
                     {/* Background overlay for cover image */}
