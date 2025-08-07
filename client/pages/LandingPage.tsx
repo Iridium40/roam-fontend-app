@@ -26,8 +26,11 @@ import {
   Quote,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import GoogleOneTap from "@/components/GoogleOneTap";
 
 export default function LandingPage() {
+  const { customer, isCustomer } = useAuth();
   const features = [
     {
       icon: Calendar,
