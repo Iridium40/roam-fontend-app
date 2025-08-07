@@ -327,7 +327,7 @@ export default function MyBookings() {
               <Button asChild variant="ghost" size="sm">
                 <Link to="/home">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Services
+                  Back to Home
                 </Link>
               </Button>
               <div className="w-24 h-24 rounded-lg overflow-hidden flex items-center justify-center">
