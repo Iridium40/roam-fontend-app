@@ -20,7 +20,7 @@ export default function CustomerFavoritesPage() {
                 size="sm"
                 className="text-foreground hover:text-roam-blue"
               >
-                <Link to="/">
+                <Link to="/home">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Home
                 </Link>
