@@ -1443,38 +1443,45 @@ export default function Index() {
             <p className="text-lg text-foreground/70">
               Limited-time offers on your favorite services
             </p>
-            {/* Promotion Navigation */}
-            {promotionalDeals.length > 3 && (
-              <div className="flex justify-center gap-2 mb-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={prevPromotionSlide}
-                  disabled={currentPromotionSlide === 0}
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white disabled:opacity-50"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={nextPromotionSlide}
-                  disabled={currentPromotionSlide >= promotionalDeals.length - 3}
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white disabled:opacity-50"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
           </div>
 
           {promotionalDeals.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {promotionalDeals.map((promotion) => (
-                <Card
-                  key={promotion.id}
-                  className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl"
-                >
+            <div className="relative overflow-hidden">
+              {/* Navigation Arrows */}
+              {promotionalDeals.length > 3 && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={prevPromotionSlide}
+                    disabled={currentPromotionSlide === 0}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={nextPromotionSlide}
+                    disabled={currentPromotionSlide >= promotionalDeals.length - 3}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+              <div
+                className="flex gap-8 transition-transform duration-300 ease-in-out"
+                style={{
+                  transform: `translateX(-${currentPromotionSlide * (100 / 3)}%)`
+                }}
+              >
+                {promotionalDeals.map((promotion, index) => (
+                  <Card
+                    key={promotion.id}
+                    className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
+                    style={{ minWidth: 'calc(33.333% - 1rem)' }}
+                  >
                   {/* Hero Section */}
                   <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
                     {promotion.imageUrl ? (
@@ -1625,8 +1632,9 @@ export default function Index() {
                       </Link>
                     </Button>
                   </CardContent>
-                </Card>
-              ))}
+                  </Card>
+                ))}
+              </div>
             </div>
           ) : (
             <div className="text-center py-12">
