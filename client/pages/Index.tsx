@@ -1510,94 +1510,89 @@ export default function Index() {
             >
               {filteredPopularServices.map((service) => (
                 <div key={service.id} className="w-full flex-shrink-0 px-2">
-                  <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50 hover:border-roam-light-blue/50">
-                    <div className="relative">
+                  <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl">
+                    {/* Hero Image Section */}
+                    <div className="relative h-52 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
                       <img
                         src={service.image}
                         alt={service.title}
-                        className="w-full h-40 object-cover rounded-t-lg"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
-                      <div className="absolute top-3 left-3">
-                        <Badge
-                          variant="secondary"
-                          className="bg-white/90 text-gray-800"
-                        >
-                          <TrendingUp className="w-3 h-3 mr-1 text-roam-blue" />
-                          Popular
-                        </Badge>
-                      </div>
-                      <div className="absolute top-3 right-3 flex gap-2">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+
+                      {/* Floating Action Buttons */}
+                      <div className="absolute top-4 right-4 flex gap-2">
                         <FavoriteButton
                           type="service"
                           itemId={service.id}
                           size="sm"
                           variant="ghost"
-                          className="bg-white/90 hover:bg-white"
+                          className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
                         />
-                        <Badge
-                          variant="secondary"
-                          className="bg-white/90 text-gray-800"
-                        >
-                          <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
-                          {service.rating}
-                        </Badge>
+                      </div>
+
+                      {/* Rating Badge - Bottom Right */}
+                      <div className="absolute bottom-4 right-4">
+                        <div className="flex items-center gap-1 bg-white/95 px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
+                          <Star className="w-4 h-4 text-roam-warning fill-current" />
+                          <span className="font-bold text-sm text-gray-900">
+                            {service.rating}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Price Badge - Bottom Left */}
+                      <div className="absolute bottom-4 left-4">
+                        <div className="bg-roam-blue text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
+                          {service.price}
+                        </div>
                       </div>
                     </div>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold mb-2">{service.title}</h3>
-                      <div className="mb-3">
-                        <p className="text-sm text-foreground/70">
-                          {getDisplayDescription(
-                            service.description,
-                            service.id,
-                          )}
-                        </p>
-                        {service.description &&
-                          service.description.length > 200 && (
-                            <button
-                              onClick={() => toggleDescription(service.id)}
-                              className="text-roam-blue text-xs font-medium hover:underline mt-1"
-                            >
-                              {expandedDescriptions.has(service.id)
-                                ? "Show less"
-                                : "Read more"}
-                            </button>
-                          )}
-                      </div>
-                      <p className="text-xs text-foreground/60 mb-3">
-                        {service.category}
-                      </p>
 
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-lg font-bold text-roam-blue">
-                          {service.price}
+                    <CardContent className="p-6 space-y-4">
+                      {/* Service Title & Category */}
+                      <div className="space-y-2">
+                        <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
+                          {service.title}
+                        </h3>
+                        <span className="inline-block px-3 py-1 text-xs font-medium bg-roam-blue/10 text-roam-blue rounded-full">
+                          {service.category}
                         </span>
-                        <Badge
-                          variant="outline"
-                          className="text-xs border-roam-blue text-roam-blue"
-                        >
-                          {service.duration}
-                        </Badge>
                       </div>
 
-                      <div className="space-y-2 mb-4">
-                        <p className="text-xs text-foreground/70 flex items-center gap-1">
-                          <TrendingUp className="w-3 h-3 text-roam-blue" />
-                          {service.bookings}
+                      {/* Description */}
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {getDisplayDescription(service.description, service.id)}
                         </p>
-                        <p className="text-xs text-green-600 flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
+                        {service.description && service.description.length > 200 && (
+                          <button
+                            onClick={() => toggleDescription(service.id)}
+                            className="text-roam-blue text-xs font-medium hover:underline"
+                          >
+                            {expandedDescriptions.has(service.id) ? "Show less" : "Read more"}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Stats Row */}
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-1 text-gray-600">
+                          <Clock className="w-4 h-4 text-roam-blue" />
+                          <span>{service.duration}</span>
+                        </div>
+                        <div className="text-roam-blue font-medium">
                           {service.availability}
-                        </p>
+                        </div>
                       </div>
 
+                      {/* Book Button */}
                       <Button
                         asChild
-                        size="sm"
-                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                        className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                       >
                         <Link to={`/book-service/${service.id}`}>
-                          <Calendar className="w-3 h-3 mr-2" />
+                          <Calendar className="w-4 h-4 mr-2" />
                           Book Now
                         </Link>
                       </Button>
