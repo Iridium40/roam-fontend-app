@@ -691,15 +691,22 @@ class DirectSupabaseAPI {
       image_url?: string | null;
     },
   ): Promise<void> {
+    // Validate Supabase configuration
+    if (!this.baseURL || !this.apiKey) {
+      throw new Error(
+        "Supabase configuration is incomplete. Please check your API URL and keys.",
+      );
+    }
+
     console.log("DirectSupabase updateCustomerProfile: Starting update", {
       customerId,
       updateData,
-      url: `${this.baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`,
+      baseURL: this.baseURL,
+      hasApiKey: !!this.apiKey,
       hasAccessToken: !!this.accessToken,
       tokenLength: this.accessToken ? this.accessToken.length : 0,
-      tokenPrefix: this.accessToken
-        ? this.accessToken.substring(0, 20) + "..."
-        : "none",
+      userAgent: navigator.userAgent,
+      online: navigator.onLine,
     });
 
     // Add connection retry logic for transient network issues
