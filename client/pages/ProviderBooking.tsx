@@ -128,6 +128,17 @@ const ProviderBooking = () => {
     }
   }, [user, isCustomer]);
 
+  // Ensure email is populated if user is authenticated but form is empty
+  useEffect(() => {
+    if (user?.email && !bookingForm.customerEmail) {
+      console.log("Populating form with user email:", user.email);
+      setBookingForm((prev) => ({
+        ...prev,
+        customerEmail: user.email,
+      }));
+    }
+  }, [user?.email, bookingForm.customerEmail]);
+
   const fetchProviderData = async () => {
     try {
       setLoading(true);
