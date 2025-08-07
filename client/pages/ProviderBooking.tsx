@@ -524,6 +524,19 @@ const ProviderBooking = () => {
         return;
       }
 
+      // Debug customer authentication
+      console.log("Booking submission debug:", {
+        user,
+        customer,
+        isCustomer,
+        userId: user?.id,
+        customerId: customer?.customer_id || customer?.id,
+        isAuthenticated: !!user,
+      });
+
+      // Determine the correct customer ID
+      const customerId = customer?.customer_id || customer?.id || user?.id;
+
       // Create booking record
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
@@ -532,11 +545,11 @@ const ProviderBooking = () => {
           service_id:
             selectedItems.find((item) => item.type === "service")?.id ||
             selectedItems[0]?.id,
-          customer_id: user?.id || null, // Use authenticated customer ID
+          customer_id: customerId || null, // Use proper customer ID
           business_location_id: location?.id, // Include the business location ID
-          guest_name: !user ? bookingForm.customerName : null, // Only use guest fields if not authenticated
-          guest_email: !user ? bookingForm.customerEmail : null,
-          guest_phone: !user ? bookingForm.customerPhone : null,
+          guest_name: !customerId ? bookingForm.customerName : null, // Only use guest fields if not authenticated
+          guest_email: !customerId ? bookingForm.customerEmail : null,
+          guest_phone: !customerId ? bookingForm.customerPhone : null,
           booking_date: bookingForm.preferredDate,
           start_time: bookingForm.preferredTime || "09:00",
           admin_notes: bookingForm.notes,
