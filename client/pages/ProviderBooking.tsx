@@ -1302,6 +1302,7 @@ const ProviderBooking = () => {
                   <Label htmlFor="preferredTime">Preferred Time</Label>
                   <Input
                     id="preferredTime"
+                    name="preferredTime"
                     type="time"
                     value={bookingForm.preferredTime}
                     onChange={(e) =>
@@ -1318,6 +1319,7 @@ const ProviderBooking = () => {
                 <Label htmlFor="notes">Additional Notes</Label>
                 <Textarea
                   id="notes"
+                  name="notes"
                   value={bookingForm.notes}
                   onChange={(e) =>
                     setBookingForm((prev) => ({
