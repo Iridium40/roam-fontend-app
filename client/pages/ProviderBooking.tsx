@@ -106,6 +106,7 @@ const ProviderBooking = () => {
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
   const [promotionData, setPromotionData] = useState<any>(null);
   const [customerProfile, setCustomerProfile] = useState<any>(null);
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [expandedDescriptions, setExpandedDescriptions] = useState<{
     [key: string]: boolean;
   }>({});
