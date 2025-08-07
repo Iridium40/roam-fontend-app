@@ -1471,171 +1471,173 @@ export default function Index() {
                   </Button>
                 </>
               )}
-              <div
-                className="flex gap-8 transition-transform duration-300 ease-in-out"
-                style={{
-                  transform: `translateX(-${currentPromotionSlide * (100 / 3)}%)`,
-                  width: 'calc(100% + 2rem)'
-                }}
-              >
-                {promotionalDeals.map((promotion, index) => (
-                  <Card
-                    key={promotion.id}
-                    className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                    style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
-                  >
-                  {/* Hero Section */}
-                  <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
-                    {promotion.imageUrl ? (
-                      <img
-                        src={promotion.imageUrl}
-                        alt={promotion.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full">
-                        {promotion.business && promotion.business.logo ? (
-                          <div className="flex flex-col items-center space-y-3">
-                            <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white shadow-xl border-4 border-white">
-                              <img
-                                src={promotion.business.logo}
-                                alt={promotion.business.name}
-                                className="w-full h-full object-cover"
-                              />
+              <div className="overflow-hidden">
+                <div
+                  className="flex gap-8 transition-transform duration-300 ease-in-out"
+                  style={{
+                    transform: `translateX(-${currentPromotionSlide * (100 / 3)}%)`,
+                    width: promotionalDeals.length <= 3 ? '100%' : `${Math.ceil(promotionalDeals.length / 3) * 100}%`
+                  }}
+                >
+                  {promotionalDeals.map((promotion, index) => (
+                    <Card
+                      key={promotion.id}
+                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
+                      style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
+                    >
+                    {/* Hero Section */}
+                    <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
+                      {promotion.imageUrl ? (
+                        <img
+                          src={promotion.imageUrl}
+                          alt={promotion.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          {promotion.business && promotion.business.logo ? (
+                            <div className="flex flex-col items-center space-y-3">
+                              <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white shadow-xl border-4 border-white">
+                                <img
+                                  src={promotion.business.logo}
+                                  alt={promotion.business.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <h3 className="text-lg font-bold text-roam-blue">
+                                {promotion.business.name}
+                              </h3>
                             </div>
-                            <h3 className="text-lg font-bold text-roam-blue">
-                              {promotion.business.name}
-                            </h3>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col items-center space-y-3">
-                            <div className="w-20 h-20 rounded-2xl bg-roam-yellow/20 flex items-center justify-center">
-                              <Tag className="w-10 h-10 text-roam-blue" />
+                          ) : (
+                            <div className="flex flex-col items-center space-y-3">
+                              <div className="w-20 h-20 rounded-2xl bg-roam-yellow/20 flex items-center justify-center">
+                                <Tag className="w-10 h-10 text-roam-blue" />
+                              </div>
+                              <h3 className="text-xl font-bold text-roam-blue">
+                                SPECIAL OFFER
+                              </h3>
                             </div>
-                            <h3 className="text-xl font-bold text-roam-blue">
-                              SPECIAL OFFER
-                            </h3>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-
-                    {/* Savings Badge - Top Right */}
-                    {formatSavings(promotion) && (
-                      <div className="absolute top-4 right-4">
-                        <div className="bg-red-500 text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
-                          {formatSavings(promotion)}
+                          )}
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Business Logo Overlay - Bottom Left (for image promotions) */}
-                    {promotion.imageUrl &&
-                      promotion.business &&
-                      promotion.business.logo && (
-                        <div className="absolute bottom-4 left-4">
-                          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
-                            <div className="w-8 h-8 rounded-full overflow-hidden">
-                              <img
-                                src={promotion.business.logo}
-                                alt={promotion.business.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <span className="text-sm font-bold text-gray-900">
-                              {promotion.business.name}
-                            </span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+
+                      {/* Savings Badge - Top Right */}
+                      {formatSavings(promotion) && (
+                        <div className="absolute top-4 right-4">
+                          <div className="bg-red-500 text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
+                            {formatSavings(promotion)}
                           </div>
                         </div>
                       )}
 
-                    {/* End Date Badge - Top Left */}
-                    {promotion.endDate && (
-                      <div className="absolute top-4 left-4">
-                        <div className="bg-white/95 text-roam-blue px-3 py-1.5 rounded-full shadow-lg font-medium text-sm backdrop-blur-sm">
-                          <Clock className="w-4 h-4 mr-1 inline" />
-                          Ends{" "}
-                          {new Date(promotion.endDate).toLocaleDateString()}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                      {/* Business Logo Overlay - Bottom Left (for image promotions) */}
+                      {promotion.imageUrl &&
+                        promotion.business &&
+                        promotion.business.logo && (
+                          <div className="absolute bottom-4 left-4">
+                            <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
+                              <div className="w-8 h-8 rounded-full overflow-hidden">
+                                <img
+                                  src={promotion.business.logo}
+                                  alt={promotion.business.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <span className="text-sm font-bold text-gray-900">
+                                {promotion.business.name}
+                              </span>
+                            </div>
+                          </div>
+                        )}
 
-                  <CardContent className="p-6 pr-4 space-y-4">
-                    {/* Promotion Title */}
-                    <div>
-                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
-                        {promotion.title}
-                      </h3>
+                      {/* End Date Badge - Top Left */}
+                      {promotion.endDate && (
+                        <div className="absolute top-4 left-4">
+                          <div className="bg-white/95 text-roam-blue px-3 py-1.5 rounded-full shadow-lg font-medium text-sm backdrop-blur-sm">
+                            <Clock className="w-4 h-4 mr-1 inline" />
+                            Ends{" "}
+                            {new Date(promotion.endDate).toLocaleDateString()}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Service Info */}
-                    {promotion.service && (
+                    <CardContent className="p-6 pr-4 space-y-4">
+                      {/* Promotion Title */}
                       <div>
-                        <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
-                          <Tag className="w-4 h-4" />
-                          {promotion.service.name}
-                        </div>
+                        <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
+                          {promotion.title}
+                        </h3>
                       </div>
-                    )}
 
-                    {/* Description */}
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        {getDisplayDescription(
-                          promotion.description,
-                          promotion.id,
-                        )}
-                      </p>
-                      {promotion.description &&
-                        promotion.description.length > 200 && (
-                          <button
-                            onClick={() => toggleDescription(promotion.id)}
-                            className="text-roam-blue text-xs font-medium hover:underline"
-                          >
-                            {expandedDescriptions.has(promotion.id)
-                              ? "Show less"
-                              : "Read more"}
-                          </button>
-                        )}
-                    </div>
+                      {/* Service Info */}
+                      {promotion.service && (
+                        <div>
+                          <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
+                            <Tag className="w-4 h-4" />
+                            {promotion.service.name}
+                          </div>
+                        </div>
+                      )}
 
-                    {/* Action Button */}
-                    <Button
-                      asChild
-                      className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                    >
-                      <Link
-                        to={(() => {
-                          const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
-                          const serviceParam = promotion.service
-                            ? `&service_id=${promotion.service.id}`
-                            : "";
+                      {/* Description */}
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {getDisplayDescription(
+                            promotion.description,
+                            promotion.id,
+                          )}
+                        </p>
+                        {promotion.description &&
+                          promotion.description.length > 200 && (
+                            <button
+                              onClick={() => toggleDescription(promotion.id)}
+                              className="text-roam-blue text-xs font-medium hover:underline"
+                            >
+                              {expandedDescriptions.has(promotion.id)
+                                ? "Show less"
+                                : "Read more"}
+                            </button>
+                          )}
+                      </div>
 
-                          if (promotion.business) {
-                            return `/business/${promotion.business.id}?${baseParams}${serviceParam}`;
-                          } else if (promotion.service) {
-                            return `/book-service/${promotion.service.id}?${baseParams}`;
-                          } else {
-                            return `/services?${baseParams}`;
-                          }
-                        })()}
+                      {/* Action Button */}
+                      <Button
+                        asChild
+                        className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                       >
-                        <Tag className="w-4 h-4 mr-2" />
-                        {promotion.business && promotion.service
-                          ? "Claim Offer"
-                          : promotion.business
-                            ? "Book with Business"
-                            : promotion.service
-                              ? "Book This Service"
-                              : "Claim Offer"}
-                      </Link>
-                    </Button>
-                  </CardContent>
-                  </Card>
-                ))}
+                        <Link
+                          to={(() => {
+                            const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
+                            const serviceParam = promotion.service
+                              ? `&service_id=${promotion.service.id}`
+                              : "";
+
+                            if (promotion.business) {
+                              return `/business/${promotion.business.id}?${baseParams}${serviceParam}`;
+                            } else if (promotion.service) {
+                              return `/book-service/${promotion.service.id}?${baseParams}`;
+                            } else {
+                              return `/services?${baseParams}`;
+                            }
+                          })()}
+                        >
+                          <Tag className="w-4 h-4 mr-2" />
+                          {promotion.business && promotion.service
+                            ? "Claim Offer"
+                            : promotion.business
+                              ? "Book with Business"
+                              : promotion.service
+                                ? "Book This Service"
+                                : "Claim Offer"}
+                        </Link>
+                      </Button>
+                    </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
