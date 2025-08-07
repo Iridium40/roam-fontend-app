@@ -710,28 +710,43 @@ class DirectSupabaseAPI {
     });
 
     // Add connection retry logic for transient network issues
-    const performRequestWithRetry = async (url: string, options: RequestInit, maxRetries = 2) => {
+    const performRequestWithRetry = async (
+      url: string,
+      options: RequestInit,
+      maxRetries = 2,
+    ) => {
       let lastError;
 
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-          console.log(`DirectSupabase: Attempt ${attempt}/${maxRetries} for ${url}`);
+          console.log(
+            `DirectSupabase: Attempt ${attempt}/${maxRetries} for ${url}`,
+          );
 
           const response = await fetch(url, options);
           return response;
         } catch (error: any) {
           lastError = error;
-          console.warn(`DirectSupabase: Attempt ${attempt} failed:`, error.message);
+          console.warn(
+            `DirectSupabase: Attempt ${attempt} failed:`,
+            error.message,
+          );
 
           // Check for connection issues
-          if (error.message?.includes('ERR_CONNECTION_CLOSED') ||
-              error.message?.includes('Failed to fetch') ||
-              error.message?.includes('ERR_NETWORK')) {
-            console.log(`DirectSupabase: Network error detected, retrying in ${attempt * 1000}ms...`);
+          if (
+            error.message?.includes("ERR_CONNECTION_CLOSED") ||
+            error.message?.includes("Failed to fetch") ||
+            error.message?.includes("ERR_NETWORK")
+          ) {
+            console.log(
+              `DirectSupabase: Network error detected, retrying in ${attempt * 1000}ms...`,
+            );
 
             if (attempt < maxRetries) {
               // Wait before retry
-              await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+              await new Promise((resolve) =>
+                setTimeout(resolve, attempt * 1000),
+              );
               continue;
             }
           }
@@ -775,7 +790,10 @@ class DirectSupabaseAPI {
         },
       );
     } catch (networkError: any) {
-      console.error("DirectSupabase updateCustomerProfile: Network error during record check:", networkError);
+      console.error(
+        "DirectSupabase updateCustomerProfile: Network error during record check:",
+        networkError,
+      );
       throw new Error(
         `Connection failed to Supabase. Please check your internet connection and try again. Error: ${networkError.message}`,
       );
@@ -877,7 +895,7 @@ class DirectSupabaseAPI {
         const text = await resp.text();
 
         // If text is empty, return status info
-        if (!text || text.trim() === '') {
+        if (!text || text.trim() === "") {
           return `HTTP ${resp.status} - ${resp.statusText}`;
         }
 
@@ -966,10 +984,11 @@ class DirectSupabaseAPI {
             errorMessage = responseText;
           } else if (responseText && typeof responseText === "object") {
             // Try to extract meaningful error from object
-            errorMessage = responseText.message ||
-                          responseText.error ||
-                          responseText.details ||
-                          JSON.stringify(responseText);
+            errorMessage =
+              responseText.message ||
+              responseText.error ||
+              responseText.details ||
+              JSON.stringify(responseText);
           } else {
             errorMessage = `HTTP ${response.status} - ${response.statusText}`;
           }
