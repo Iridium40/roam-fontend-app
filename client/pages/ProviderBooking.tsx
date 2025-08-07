@@ -481,16 +481,18 @@ const ProviderBooking = () => {
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
         .insert({
-          business_id: businessId,
-          customer_name: bookingForm.customerName,
-          customer_email: bookingForm.customerEmail,
-          customer_phone: bookingForm.customerPhone,
-          preferred_date: bookingForm.preferredDate,
-          preferred_time: bookingForm.preferredTime,
-          notes: bookingForm.notes,
+          provider_id: businessId, // Using business_id as provider_id for now
+          service_id: selectedItems.find(item => item.type === 'service')?.id || selectedItems[0]?.id,
+          customer_id: null, // Will need to be set when user auth is implemented
+          guest_name: bookingForm.customerName,
+          guest_email: bookingForm.customerEmail,
+          guest_phone: bookingForm.customerPhone,
+          booking_date: bookingForm.preferredDate,
+          start_time: bookingForm.preferredTime || '09:00',
+          admin_notes: bookingForm.notes,
           total_amount: getTotalAmount(),
-          status: "pending",
-          booking_items: bookingForm.items,
+          booking_status: "pending",
+          payment_status: "pending"
         })
         .select()
         .single();
