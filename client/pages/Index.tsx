@@ -1563,7 +1563,7 @@ export default function Index() {
                     )}
                   </div>
 
-                  <CardContent className="p-6 space-y-4">
+                  <CardContent className="p-6 pr-4 space-y-4">
                     {/* Promotion Title */}
                     <div>
                       <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
