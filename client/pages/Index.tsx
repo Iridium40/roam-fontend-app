@@ -644,6 +644,18 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
+      {/* Google One Tap - only show when not authenticated */}
+      {!isCustomer && import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID && (
+        <GoogleOneTap
+          clientId={import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID}
+          onSuccess={() => {
+            console.log('Google One Tap sign-in successful');
+          }}
+          onError={(error) => {
+            console.error('Google One Tap error:', error);
+          }}
+        />
+      )}
       {/* Navigation */}
       <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
