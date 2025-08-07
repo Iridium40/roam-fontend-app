@@ -72,6 +72,33 @@ export default function BusinessAvailability() {
     }
   }, [customer, isCustomer]);
 
+  useEffect(() => {
+    if (!savedLocations || savedLocations.length === 0) return;
+    // Choose default: flagged default or most recent
+    const defaultLoc =
+      savedLocations.find((l: any) => l.is_default) || savedLocations[0];
+
+    setCustomerAddresses((prev) => {
+      const next = { ...prev } as any;
+      // Prefill for any business that is mobile-only or currently has Mobile selected
+      availableBusinesses.forEach((b: any) => {
+        const isMobileFlow =
+          b.deliveryType === "mobile" ||
+          selectedDeliveryTypes[b.id] === "customer_location";
+        if (isMobileFlow && !next[b.id]) {
+          next[b.id] = {
+            address: defaultLoc.address_line1 || "",
+            city: defaultLoc.city || "",
+            state: defaultLoc.state || "",
+            zip: defaultLoc.postal_code || "",
+            selectedLocationId: defaultLoc.id,
+          };
+        }
+      });
+      return next;
+    });
+  }, [savedLocations, availableBusinesses, selectedDeliveryTypes]);
+
   const fetchCustomerLocations = async () => {
     try {
       if (!customer?.customer_id) return;
@@ -575,6 +602,22 @@ export default function BusinessAvailability() {
         [businessId]: null,
       }));
     }
+
+    // If user has saved locations and no address is set yet, prefill with default
+    if (savedLocations && savedLocations.length > 0) {
+      const defaultLoc =
+        savedLocations.find((l: any) => l.is_default) || savedLocations[0];
+      setCustomerAddresses((prev) => ({
+        ...prev,
+        [businessId]: prev[businessId] || {
+          address: defaultLoc.address_line1 || "",
+          city: defaultLoc.city || "",
+          state: defaultLoc.state || "",
+          zip: defaultLoc.postal_code || "",
+          selectedLocationId: defaultLoc.id,
+        },
+      }));
+    }
   };
 
   const handleAddressChange = (
@@ -642,7 +685,26 @@ export default function BusinessAvailability() {
     window.open(url, "_blank");
   };
 
-  const handleSelectBusiness = (business: any) => {
+  const checkServiceArea = async (
+    businessId: string,
+    zip?: string,
+  ): Promise<boolean> => {
+    if (!zip) return true; // if no zip, skip check
+    try {
+      const res = await fetch(
+        `/api/service-area-check?businessId=${encodeURIComponent(businessId)}&zip=${encodeURIComponent(zip)}`,
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof data?.inServiceArea === "boolean") return data.inServiceArea;
+      }
+    } catch (e) {
+      console.warn("Service area check failed, allowing proceed.", e);
+    }
+    return true; // default allow
+  };
+
+  const handleSelectBusiness = async (business: any) => {
     console.log("Selecting business:", business.name);
     console.log("Business object:", business);
     console.log("Business ID:", business.id);
@@ -662,7 +724,13 @@ export default function BusinessAvailability() {
     }
 
     // Check delivery type selection for both_locations services
-    const selectedDeliveryType = selectedDeliveryTypes[business.id];
+    const selectedDeliveryType =
+      selectedDeliveryTypes[business.id] ||
+      (business.deliveryType === "mobile"
+        ? "customer_location"
+        : business.deliveryType === "business_location"
+        ? "business_location"
+        : undefined);
     const selectedLocation = selectedLocations[business.id];
     const customerAddress = customerAddresses[business.id];
 
@@ -701,6 +769,20 @@ export default function BusinessAvailability() {
         variant: "destructive",
       });
       return;
+    }
+
+    // Optional: Service area validation for mobile delivery
+    if (selectedDeliveryType === "customer_location") {
+      const inArea = await checkServiceArea(business.id, customerAddress?.zip);
+      if (!inArea) {
+        toast({
+          title: "Out of Service Area",
+          description:
+            "This business does not serve the provided ZIP code. Please choose a different address or business.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     // Navigate to business profile with services tab active and service pre-selected
@@ -873,7 +955,9 @@ export default function BusinessAvailability() {
                                 {business.name}
                               </h3>
                               {business.is_featured && (
-                                <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                                <Badge
+                                  className="bg-roam-yellow text-gray-900 text-xs"
+                                >
                                   <Star className="w-3 h-3 mr-1" />
                                   Featured
                                 </Badge>
