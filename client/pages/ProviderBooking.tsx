@@ -321,7 +321,10 @@ const ProviderBooking = () => {
 
       if (error) {
         console.error("Error fetching customer profile:", error);
-        console.error("Error details:", error.message || error.details || error);
+        console.error(
+          "Error details:",
+          error.message || error.details || error,
+        );
         return;
       }
 
@@ -342,7 +345,7 @@ const ProviderBooking = () => {
         details: error?.details,
         hint: error?.hint,
         code: error?.code,
-        fullError: error
+        fullError: error,
       });
     }
   };

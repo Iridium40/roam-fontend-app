@@ -853,7 +853,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Handle user existence errors (HTTP 409 foreign key constraint)
         if (
           dbError.message &&
-          (dbError.message.includes("no longer valid in the authentication system") ||
+          (dbError.message.includes(
+            "no longer valid in the authentication system",
+          ) ||
             dbError.message.includes("foreign key"))
         ) {
           console.log(
@@ -879,10 +881,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         // Handle other HTTP 409 conflicts
-        if (
-          dbError.message &&
-          dbError.message.includes("HTTP 409")
-        ) {
+        if (dbError.message && dbError.message.includes("HTTP 409")) {
           console.log(
             "AuthContext updateCustomerProfile: Database conflict detected",
           );

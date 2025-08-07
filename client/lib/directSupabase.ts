@@ -938,9 +938,12 @@ class DirectSupabaseAPI {
       // Handle HTTP 409 Conflict specifically
       if (response.status === 409) {
         // Ensure responseText is a string for proper error handling
-        const errorMessage = typeof responseText === 'string' ? responseText :
-                             responseText ? JSON.stringify(responseText) :
-                             `HTTP ${response.status}`;
+        const errorMessage =
+          typeof responseText === "string"
+            ? responseText
+            : responseText
+              ? JSON.stringify(responseText)
+              : `HTTP ${response.status}`;
 
         console.error(
           "DirectSupabase updateCustomerProfile: HTTP 409 Conflict detected",
@@ -954,15 +957,24 @@ class DirectSupabaseAPI {
         );
 
         // Check for specific constraint violations
-        if (errorMessage.includes("user_id") && errorMessage.includes("foreign key")) {
+        if (
+          errorMessage.includes("user_id") &&
+          errorMessage.includes("foreign key")
+        ) {
           throw new Error(
             `User account (${customerId}) is no longer valid in the authentication system. Please sign in again.`,
           );
-        } else if (errorMessage.includes("unique") || errorMessage.includes("duplicate")) {
+        } else if (
+          errorMessage.includes("unique") ||
+          errorMessage.includes("duplicate")
+        ) {
           throw new Error(
             `A customer profile already exists for this user. Please refresh the page and try again.`,
           );
-        } else if (errorMessage.includes("violates") && errorMessage.includes("constraint")) {
+        } else if (
+          errorMessage.includes("violates") &&
+          errorMessage.includes("constraint")
+        ) {
           throw new Error(
             `Database constraint violation: ${errorMessage}. This may indicate a data integrity issue.`,
           );
@@ -985,9 +997,12 @@ class DirectSupabaseAPI {
         },
       );
 
-      const errorMsg = typeof responseText === 'string' ? responseText :
-                       responseText ? JSON.stringify(responseText) :
-                       response.statusText || `HTTP ${response.status}`;
+      const errorMsg =
+        typeof responseText === "string"
+          ? responseText
+          : responseText
+            ? JSON.stringify(responseText)
+            : response.statusText || `HTTP ${response.status}`;
 
       throw new Error(
         `Failed to ${operation} customer profile: HTTP ${response.status} - ${errorMsg}`,
