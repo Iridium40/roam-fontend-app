@@ -9,11 +9,11 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center mb-4">
-              <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+              <div className="w-24 h-24 rounded-lg overflow-hidden flex items-center justify-center">
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
                   alt="ROAM Logo"
-                  className="w-8 h-8 object-contain"
+                  className="w-24 h-24 object-contain"
                 />
               </div>
             </Link>
@@ -136,7 +136,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
             <span className="text-roam-blue font-medium">
-              🌴 Made in Florida
+              �� Made in Florida
             </span>
             <span>•</span>
             <span>Available statewide</span>
