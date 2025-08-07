@@ -1304,6 +1304,7 @@ export default function Index() {
                 className="flex gap-8 transition-transform duration-300 ease-in-out"
                 style={{
                   transform: `translateX(-${currentServiceSlide * (100 / 3)}%)`,
+                  width: 'calc(100% + 2rem)'
                 }}
               >
                 {filteredFeaturedServices.map((service, index) => (
@@ -1919,7 +1920,8 @@ export default function Index() {
               <div
                 className="flex gap-8 transition-transform duration-300 ease-in-out"
                 style={{
-                  transform: `translateX(-${currentBusinessSlide * (100 / 3)}%)`
+                  transform: `translateX(-${currentBusinessSlide * (100 / 3)}%)`,
+                  width: 'calc(100% + 2rem)'
                 }}
               >
                 {filteredBusinesses.map((business, index) => (
