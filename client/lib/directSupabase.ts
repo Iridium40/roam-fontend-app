@@ -743,6 +743,48 @@ class DirectSupabaseAPI {
       }
     }
 
+    // First, verify the user exists in auth.users table
+    console.log(
+      "DirectSupabase updateCustomerProfile: Verifying user exists in auth.users...",
+    );
+    const userCheckResponse = await fetch(
+      `${this.baseURL}/rest/v1/users?id=eq.${customerId}&select=id`,
+      {
+        method: "GET",
+        headers: {
+          apikey: this.apiKey,
+          Authorization: `Bearer ${this.accessToken || this.apiKey}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const userCheckText = await userCheckResponse.text();
+    console.log("DirectSupabase updateCustomerProfile: User check response", {
+      status: userCheckResponse.status,
+      responseText: userCheckText,
+    });
+
+    if (userCheckResponse.ok) {
+      try {
+        const users = JSON.parse(userCheckText);
+        if (!Array.isArray(users) || users.length === 0) {
+          throw new Error(
+            `User with ID ${customerId} does not exist in auth.users table. Please sign in again or contact support.`,
+          );
+        }
+      } catch (parseError) {
+        console.error("Error parsing user check response:", parseError);
+        throw new Error(
+          "Failed to verify user existence. Please sign in again or contact support.",
+        );
+      }
+    } else {
+      throw new Error(
+        `Failed to verify user existence (HTTP ${userCheckResponse.status}). Please sign in again or contact support.`,
+      );
+    }
+
     // Now check if a record exists for this user
     console.log(
       "DirectSupabase updateCustomerProfile: Checking if record exists...",
