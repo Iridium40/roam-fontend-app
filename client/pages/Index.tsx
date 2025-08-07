@@ -1473,7 +1473,8 @@ export default function Index() {
               <div
                 className="flex gap-8 transition-transform duration-300 ease-in-out"
                 style={{
-                  transform: `translateX(-${currentPromotionSlide * (100 / 3)}%)`
+                  transform: `translateX(-${currentPromotionSlide * (100 / 3)}%)`,
+                  width: 'calc(100% + 2rem)'
                 }}
               >
                 {promotionalDeals.map((promotion, index) => (
