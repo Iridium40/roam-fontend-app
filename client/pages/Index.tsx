@@ -1576,14 +1576,9 @@ export default function Index() {
                       </div>
 
                       {/* Stats Row */}
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-1 text-gray-600">
-                          <Clock className="w-4 h-4 text-roam-blue" />
-                          <span>{service.duration}</span>
-                        </div>
-                        <div className="text-roam-blue font-medium">
-                          {service.availability}
-                        </div>
+                      <div className="flex items-center gap-1 text-sm text-gray-600">
+                        <Clock className="w-4 h-4 text-roam-blue" />
+                        <span>{service.duration}</span>
                       </div>
 
                       {/* Book Button */}
