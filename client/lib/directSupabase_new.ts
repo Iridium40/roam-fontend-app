@@ -1,4 +1,4 @@
-// Simplified Edge Function implementation for updateCustomerProfile
+// Edge Function implementation with fallback to REST API
 export const updateCustomerProfileViaEdgeFunction = async (
   baseURL: string,
   apiKey: string,
@@ -14,13 +14,15 @@ export const updateCustomerProfileViaEdgeFunction = async (
     image_url?: string | null;
   },
 ): Promise<void> => {
-  console.log("Using Edge Function for customer profile update", {
+  console.log("Attempting customer profile update", {
     customerId,
     updateData,
     hasAccessToken: !!accessToken,
   });
 
+  // First, try the Edge Function approach
   try {
+    console.log("Trying Edge Function approach...");
     const response = await fetch(
       `${baseURL}/functions/v1/update-customer-profile`,
       {
@@ -70,16 +72,94 @@ export const updateCustomerProfileViaEdgeFunction = async (
     }
 
     console.log("Successfully updated customer profile via Edge Function");
-  } catch (error: any) {
-    console.error("Edge Function error:", error);
-    
-    // Re-throw with better error message if it's a network error
-    if (error.message?.includes('Failed to fetch') || error.message?.includes('ERR_NETWORK')) {
-      throw new Error(
-        `Connection failed to Supabase Edge Function. Please check your internet connection and try again. Error: ${error.message}`,
-      );
+    return; // Success, exit early
+
+  } catch (edgeFunctionError: any) {
+    console.warn("Edge Function failed, falling back to REST API:", edgeFunctionError.message);
+
+    // If it's a network error (Failed to fetch), try the fallback
+    if (edgeFunctionError.message?.includes('Failed to fetch') ||
+        edgeFunctionError.message?.includes('ERR_NETWORK') ||
+        edgeFunctionError.message?.includes('TypeError')) {
+
+      console.log("Using REST API fallback approach...");
+
+      // Fallback to REST API approach
+      try {
+        // First check if record exists
+        const checkResponse = await fetch(
+          `${baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}&select=user_id`,
+          {
+            method: "GET",
+            headers: {
+              apikey: apiKey,
+              Authorization: `Bearer ${accessToken || apiKey}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        const checkText = await checkResponse.text();
+        let recordExists = false;
+
+        if (checkResponse.ok) {
+          try {
+            const records = JSON.parse(checkText);
+            recordExists = Array.isArray(records) && records.length > 0;
+          } catch (parseError) {
+            console.warn("Error parsing check response:", parseError);
+          }
+        }
+
+        // Update or create record
+        const method = recordExists ? "PATCH" : "POST";
+        const url = recordExists
+          ? `${baseURL}/rest/v1/customer_profiles?user_id=eq.${customerId}`
+          : `${baseURL}/rest/v1/customer_profiles`;
+
+        const body = recordExists
+          ? updateData
+          : {
+              user_id: customerId,
+              ...updateData,
+              is_active: true,
+              email_notifications: true,
+              sms_notifications: true,
+              push_notifications: true,
+              marketing_emails: false,
+              email_verified: false,
+              phone_verified: false,
+            };
+
+        const restResponse = await fetch(url, {
+          method,
+          headers: {
+            apikey: apiKey,
+            Authorization: `Bearer ${accessToken || apiKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (!restResponse.ok) {
+          const restResponseText = await restResponse.text();
+          throw new Error(`REST API failed: HTTP ${restResponse.status} - ${restResponseText}`);
+        }
+
+        console.log("Successfully updated customer profile via REST API fallback");
+        return; // Success
+
+      } catch (restError: any) {
+        console.error("REST API fallback also failed:", restError);
+        throw new Error(
+          `Both Edge Function and REST API failed. Edge Function: ${edgeFunctionError.message}, REST API: ${restError.message}`,
+        );
+      }
+
+    } else {
+      // If it's not a network error, re-throw the original Edge Function error
+      throw edgeFunctionError;
     }
-    
-    throw error;
   }
 };
