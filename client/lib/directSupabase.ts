@@ -985,8 +985,12 @@ class DirectSupabaseAPI {
         },
       );
 
+      const errorMsg = typeof responseText === 'string' ? responseText :
+                       responseText ? JSON.stringify(responseText) :
+                       response.statusText || `HTTP ${response.status}`;
+
       throw new Error(
-        `Failed to ${operation} customer profile: HTTP ${response.status} - ${responseText}`,
+        `Failed to ${operation} customer profile: HTTP ${response.status} - ${errorMsg}`,
       );
     } else {
       const operation = recordExists ? "updated" : "created";
