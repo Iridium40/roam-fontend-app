@@ -685,25 +685,6 @@ export default function BusinessAvailability() {
     window.open(url, "_blank");
   };
 
-  const checkServiceArea = async (
-    businessId: string,
-    zip?: string,
-  ): Promise<boolean> => {
-    if (!zip) return true; // if no zip, skip check
-    try {
-      const res = await fetch(
-        `/api/service-area-check?businessId=${encodeURIComponent(businessId)}&zip=${encodeURIComponent(zip)}`,
-      );
-      if (res.ok) {
-        const data = await res.json();
-        if (typeof data?.inServiceArea === "boolean") return data.inServiceArea;
-      }
-    } catch (e) {
-      console.warn("Service area check failed, allowing proceed.", e);
-    }
-    return true; // default allow
-  };
-
   const handleSelectBusiness = async (business: any) => {
     console.log("Selecting business:", business.name);
     console.log("Business object:", business);
@@ -769,20 +750,6 @@ export default function BusinessAvailability() {
         variant: "destructive",
       });
       return;
-    }
-
-    // Optional: Service area validation for mobile delivery
-    if (selectedDeliveryType === "customer_location") {
-      const inArea = await checkServiceArea(business.id, customerAddress?.zip);
-      if (!inArea) {
-        toast({
-          title: "Out of Service Area",
-          description:
-            "This business does not serve the provided ZIP code. Please choose a different address or business.",
-          variant: "destructive",
-        });
-        return;
-      }
     }
 
     // Navigate to business profile with services tab active and service pre-selected
