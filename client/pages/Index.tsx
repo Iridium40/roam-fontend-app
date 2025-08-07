@@ -1221,16 +1221,20 @@ export default function Index() {
       {/* Featured Services Carousel */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold">
               Featured <span className="text-roam-blue">Services</span>
             </h2>
-            <div className="flex gap-2">
+          </div>
+
+          {filteredFeaturedServices.length > 0 ? (
+            <div className="relative overflow-hidden">
+              {/* Navigation Arrows */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={prevServiceSlide}
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg"
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
@@ -1238,15 +1242,10 @@ export default function Index() {
                 variant="outline"
                 size="sm"
                 onClick={nextServiceSlide}
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg"
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
-            </div>
-          </div>
-
-          {filteredFeaturedServices.length > 0 ? (
-            <div className="relative overflow-hidden">
               <div
                 className="flex transition-transform duration-300 ease-in-out"
                 style={{
