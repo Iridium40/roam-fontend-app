@@ -1401,7 +1401,7 @@ export default function Index() {
                     {/* Action Button */}
                     <Button
                       asChild
-                      className="w-full bg-gradient-to-r from-roam-yellow to-roam-light-blue hover:from-roam-yellow/90 hover:to-roam-light-blue/90 text-gray-900 font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                      className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                     >
                       <Link
                         to={(() => {
@@ -1419,7 +1419,7 @@ export default function Index() {
                           }
                         })()}
                       >
-                        <Percent className="w-4 h-4 mr-2" />
+                        <Tag className="w-4 h-4 mr-2" />
                         {promotion.business && promotion.service
                           ? "Claim Offer"
                           : promotion.business
