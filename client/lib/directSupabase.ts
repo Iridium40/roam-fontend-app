@@ -935,6 +935,34 @@ class DirectSupabaseAPI {
         );
       }
 
+      // Handle HTTP 409 Conflict specifically
+      if (response.status === 409) {
+        console.error(
+          "DirectSupabase updateCustomerProfile: HTTP 409 Conflict detected",
+          {
+            responseText,
+            updateData,
+            customerId,
+            recordExists,
+          },
+        );
+
+        // Check for specific constraint violations
+        if (responseText.includes("user_id") && responseText.includes("foreign key")) {
+          throw new Error(
+            `User account (${customerId}) is no longer valid in the authentication system. Please sign in again.`,
+          );
+        } else if (responseText.includes("unique") || responseText.includes("duplicate")) {
+          throw new Error(
+            `A customer profile already exists for this user. Please refresh the page and try again.`,
+          );
+        } else {
+          throw new Error(
+            `Database conflict occurred: ${responseText}. Please try again or contact support.`,
+          );
+        }
+      }
+
       // Handle other errors with detailed information
       const operation = recordExists ? "update" : "create";
       console.error(
