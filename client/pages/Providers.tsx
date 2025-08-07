@@ -72,62 +72,71 @@ export default function Providers() {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-roam-light-blue/20 text-roam-blue border-roam-light-blue/30">
-              💼 Now accepting provider applications
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-roam-blue via-foreground to-roam-blue bg-clip-text text-transparent leading-tight">
-              Grow Your Business
-              <br />
-              <span className="text-roam-blue">On Your Terms</span>
-            </h1>
-            <p className="text-xl text-foreground/70 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Join Florida's premier network of service professionals. Connect
-              with quality clients, set your own rates, and build your business
-              with the support you deserve.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button
-                asChild
-                size="lg"
-                className="bg-roam-blue hover:bg-roam-blue/90 text-lg px-8 py-6"
-              >
-                <Link to="/provider-portal">
-                  <Users className="w-5 h-5 mr-2" />
-                  Apply Now
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white text-lg px-8 py-6"
-              >
-                <Calendar className="w-5 h-5 mr-2" />
-                Learn More
-              </Button>
-            </div>
+      <section
+        className="relative py-20 lg:py-32 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+        }}
+      >
+        {/* Background overlay */}
+        <div className="absolute inset-0 bg-white/90 backdrop-blur-sm"></div>
+        <div className="relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <Badge className="mb-6 bg-roam-light-blue/20 text-roam-blue border-roam-light-blue/30">
+                💼 Now accepting provider applications
+              </Badge>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-roam-blue via-foreground to-roam-blue bg-clip-text text-transparent leading-tight">
+                Grow Your Business
+                <br />
+                <span className="text-roam-blue">On Your Terms</span>
+              </h1>
+              <p className="text-xl text-foreground/70 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Join Florida's premier network of service professionals. Connect
+                with quality clients, set your own rates, and build your business
+                with the support you deserve.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-roam-blue hover:bg-roam-blue/90 text-lg px-8 py-6"
+                >
+                  <Link to="/provider-portal">
+                    <Users className="w-5 h-5 mr-2" />
+                    Apply Now
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white text-lg px-8 py-6"
+                >
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Learn More
+                </Button>
+              </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-roam-blue">$85k</div>
-                <div className="text-sm text-foreground/60">
-                  Average annual earnings
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-roam-blue">$85k</div>
+                  <div className="text-sm text-foreground/60">
+                    Average annual earnings
+                  </div>
                 </div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-roam-blue">4.9/5</div>
-                <div className="text-sm text-foreground/60">
-                  Provider satisfaction
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-roam-blue">4.9/5</div>
+                  <div className="text-sm text-foreground/60">
+                    Provider satisfaction
+                  </div>
                 </div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-roam-blue">24/7</div>
-                <div className="text-sm text-foreground/60">
-                  Support available
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-roam-blue">24/7</div>
+                  <div className="text-sm text-foreground/60">
+                    Support available
+                  </div>
                 </div>
               </div>
             </div>
