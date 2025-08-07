@@ -815,15 +815,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           },
         });
 
-        await directSupabaseAPI.updateCustomerProfile(customer.customer_id, {
-          first_name: profileData.firstName,
-          last_name: profileData.lastName,
-          email: profileData.email,
-          phone: profileData.phone || null,
-          date_of_birth: profileData.dateOfBirth || null,
-          bio: profileData.bio || null,
-          image_url: profileData.imageUrl || null,
-        });
+        // Use Edge Function for customer profile updates
+        const { updateCustomerProfileViaEdgeFunction } = await import("@/lib/directSupabase_new");
+        await updateCustomerProfileViaEdgeFunction(
+          directSupabaseAPI.baseURL,
+          directSupabaseAPI.apiKey,
+          directSupabaseAPI.accessToken,
+          customer.customer_id,
+          {
+            first_name: profileData.firstName,
+            last_name: profileData.lastName,
+            email: profileData.email,
+            phone: profileData.phone || null,
+            date_of_birth: profileData.dateOfBirth || null,
+            bio: profileData.bio || null,
+            image_url: profileData.imageUrl || null,
+          }
+        );
 
         console.log(
           "AuthContext updateCustomerProfile: Database update successful",
