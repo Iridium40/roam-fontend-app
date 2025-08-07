@@ -1320,7 +1320,7 @@ export default function Index() {
                         />
                         <div className="absolute top-4 left-4">
                           <Badge
-                            className="bg-roam-blue text-white"
+                            className={`${getCategoryColor(service.category)} text-white border-0`}
                             icon={getCategoryIcon(service.category)}
                           >
                             {service.category}
