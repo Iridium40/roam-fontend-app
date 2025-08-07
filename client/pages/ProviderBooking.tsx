@@ -393,15 +393,18 @@ const ProviderBooking = () => {
 
         const mostRecentLocation = customerLocations?.[0];
 
+        // Use selected location from previous step, then fall back to most recent location
+        const locationToUse = selectedLocation || mostRecentLocation;
+
         setBookingForm((prev) => ({
           ...prev,
           customerName: fullName || "",
           customerEmail: profile.email || user?.email || "",
           customerPhone: profile.phone || "",
-          customerAddress: mostRecentLocation?.address_line1 || "",
-          customerCity: mostRecentLocation?.city || "",
-          customerState: mostRecentLocation?.state || "",
-          customerZip: mostRecentLocation?.postal_code || "",
+          customerAddress: locationToUse?.address_line1 || "",
+          customerCity: locationToUse?.city || "",
+          customerState: locationToUse?.state || "",
+          customerZip: locationToUse?.postal_code || "",
         }));
 
         console.log("Pre-populated booking form with customer data:", {
