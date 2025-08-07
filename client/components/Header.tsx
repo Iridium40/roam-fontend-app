@@ -45,14 +45,10 @@ export function Header() {
               variant="outline"
               className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
             >
-              <Link to="/provider-portal">
-                Sign In
-              </Link>
+              <Link to="/provider-portal">Sign In</Link>
             </Button>
             <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-              <Link to="/provider-portal">
-                Get Started
-              </Link>
+              <Link to="/provider-portal">Get Started</Link>
             </Button>
           </div>
 
@@ -100,14 +96,10 @@ export function Header() {
                   variant="outline"
                   className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                 >
-                  <Link to="/provider-portal">
-                    Sign In
-                  </Link>
+                  <Link to="/provider-portal">Sign In</Link>
                 </Button>
                 <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                  <Link to="/provider-portal">
-                    Get Started
-                  </Link>
+                  <Link to="/provider-portal">Get Started</Link>
                 </Button>
               </div>
             </div>

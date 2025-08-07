@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FavoriteButton } from '@/components/FavoriteButton';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import {
   Heart,
   Star,
@@ -14,20 +14,32 @@ import {
   User,
   Package,
   Loader2,
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useFavorites, FavoriteService, FavoriteBusiness, FavoriteProvider } from '@/hooks/useFavorites';
-import { useAuth } from '@/contexts/AuthContext';
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  useFavorites,
+  FavoriteService,
+  FavoriteBusiness,
+  FavoriteProvider,
+} from "@/hooks/useFavorites";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function CustomerFavorites() {
   const { isCustomer } = useAuth();
-  const { getFavoriteServices, getFavoriteBusinesses, getFavoriteProviders } = useFavorites();
-  
-  const [favoriteServices, setFavoriteServices] = useState<FavoriteService[]>([]);
-  const [favoriteBusinesses, setFavoriteBusinesses] = useState<FavoriteBusiness[]>([]);
-  const [favoriteProviders, setFavoriteProviders] = useState<FavoriteProvider[]>([]);
+  const { getFavoriteServices, getFavoriteBusinesses, getFavoriteProviders } =
+    useFavorites();
+
+  const [favoriteServices, setFavoriteServices] = useState<FavoriteService[]>(
+    [],
+  );
+  const [favoriteBusinesses, setFavoriteBusinesses] = useState<
+    FavoriteBusiness[]
+  >([]);
+  const [favoriteProviders, setFavoriteProviders] = useState<
+    FavoriteProvider[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('services');
+  const [activeTab, setActiveTab] = useState("services");
 
   useEffect(() => {
     const loadFavorites = async () => {
@@ -48,14 +60,19 @@ export function CustomerFavorites() {
         setFavoriteBusinesses(businesses);
         setFavoriteProviders(providers);
       } catch (error) {
-        console.error('Error loading favorites:', error);
+        console.error("Error loading favorites:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
     loadFavorites();
-  }, [isCustomer, getFavoriteServices, getFavoriteBusinesses, getFavoriteProviders]);
+  }, [
+    isCustomer,
+    getFavoriteServices,
+    getFavoriteBusinesses,
+    getFavoriteProviders,
+  ]);
 
   const handleFavoriteRemoved = async () => {
     // Refresh favorites when an item is removed
@@ -93,13 +110,20 @@ export function CustomerFavorites() {
     return (
       <Card className="p-8 text-center">
         <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-roam-blue" />
-        <h3 className="text-lg font-semibold mb-2">Loading your favorites...</h3>
-        <p className="text-foreground/60">Please wait while we fetch your saved items.</p>
+        <h3 className="text-lg font-semibold mb-2">
+          Loading your favorites...
+        </h3>
+        <p className="text-foreground/60">
+          Please wait while we fetch your saved items.
+        </p>
       </Card>
     );
   }
 
-  const totalFavorites = favoriteServices.length + favoriteBusinesses.length + favoriteProviders.length;
+  const totalFavorites =
+    favoriteServices.length +
+    favoriteBusinesses.length +
+    favoriteProviders.length;
 
   if (totalFavorites === 0) {
     return (
@@ -109,7 +133,8 @@ export function CustomerFavorites() {
         </div>
         <h3 className="text-lg font-semibold mb-2">No favorites yet</h3>
         <p className="text-foreground/60 mb-4">
-          Start exploring and save your favorite services, businesses, and providers.
+          Start exploring and save your favorite services, businesses, and
+          providers.
         </p>
         <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
           <Link to="/">Explore Services</Link>
@@ -157,10 +182,16 @@ export function CustomerFavorites() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {favoriteServices.map((service) => (
-                <Card key={service.id} className="hover:shadow-lg transition-shadow">
+                <Card
+                  key={service.id}
+                  className="hover:shadow-lg transition-shadow"
+                >
                   <div className="relative">
                     <img
-                      src={service.image_url || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop'}
+                      src={
+                        service.image_url ||
+                        "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop"
+                      }
                       alt={service.service_name}
                       className="w-full h-40 object-cover rounded-t-lg"
                     />
@@ -175,7 +206,9 @@ export function CustomerFavorites() {
                     </div>
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2">{service.service_name}</h3>
+                    <h3 className="font-semibold mb-2">
+                      {service.service_name}
+                    </h3>
                     <p className="text-sm text-foreground/60 mb-3 line-clamp-2">
                       {service.service_description}
                     </p>
@@ -220,10 +253,17 @@ export function CustomerFavorites() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {favoriteBusinesses.map((business) => (
-                <Card key={business.id} className="hover:shadow-lg transition-shadow">
+                <Card
+                  key={business.id}
+                  className="hover:shadow-lg transition-shadow"
+                >
                   <div className="relative">
                     <img
-                      src={business.cover_image_url || business.image_url || 'https://images.unsplash.com/photo-1560472355-536de3962603?w=500&h=200&fit=crop'}
+                      src={
+                        business.cover_image_url ||
+                        business.image_url ||
+                        "https://images.unsplash.com/photo-1560472355-536de3962603?w=500&h=200&fit=crop"
+                      }
                       alt={business.business_name}
                       className="w-full h-32 object-cover rounded-t-lg"
                     />
@@ -240,21 +280,32 @@ export function CustomerFavorites() {
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
                       <img
-                        src={business.logo_url || 'https://images.unsplash.com/photo-1560472355-536de3962603?w=100&h=100&fit=crop'}
+                        src={
+                          business.logo_url ||
+                          "https://images.unsplash.com/photo-1560472355-536de3962603?w=100&h=100&fit=crop"
+                        }
                         alt={`${business.business_name} logo`}
                         className="w-12 h-12 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold mb-1">{business.business_name}</h3>
+                        <h3 className="font-semibold mb-1">
+                          {business.business_name}
+                        </h3>
                         <p className="text-sm text-foreground/60 mb-2">
                           {business.business_type}
                         </p>
                         <div className="flex items-center gap-2 mb-3">
                           <Badge
-                            variant={business.verification_status === 'approved' ? 'default' : 'secondary'}
+                            variant={
+                              business.verification_status === "approved"
+                                ? "default"
+                                : "secondary"
+                            }
                             className="text-xs"
                           >
-                            {business.verification_status === 'approved' ? 'Verified' : 'Pending'}
+                            {business.verification_status === "approved"
+                              ? "Verified"
+                              : "Pending"}
                           </Badge>
                         </div>
                         <div className="flex gap-2">
@@ -301,7 +352,10 @@ export function CustomerFavorites() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {favoriteProviders.map((provider) => (
-                <Card key={provider.id} className="hover:shadow-lg transition-shadow">
+                <Card
+                  key={provider.id}
+                  className="hover:shadow-lg transition-shadow"
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -334,7 +388,7 @@ export function CustomerFavorites() {
                             <div className="flex items-center gap-1 mb-1">
                               <Star className="w-4 h-4 text-roam-warning fill-current" />
                               <span className="font-semibold">
-                                {provider.average_rating?.toFixed(1) || '4.8'}
+                                {provider.average_rating?.toFixed(1) || "4.8"}
                               </span>
                               <span className="text-sm text-foreground/60">
                                 ({provider.total_reviews || 0})
@@ -355,7 +409,9 @@ export function CustomerFavorites() {
                             size="sm"
                             className="flex-1 bg-roam-blue hover:bg-roam-blue/90"
                           >
-                            <Link to={`/provider/${provider.provider_id}?booking=true`}>
+                            <Link
+                              to={`/provider/${provider.provider_id}?booking=true`}
+                            >
                               <Calendar className="w-4 h-4 mr-2" />
                               Book Now
                             </Link>

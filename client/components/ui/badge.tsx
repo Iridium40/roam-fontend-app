@@ -30,7 +30,13 @@ export interface BadgeProps
   icon?: LucideIcon;
 }
 
-function Badge({ className, variant, icon: Icon, children, ...props }: BadgeProps) {
+function Badge({
+  className,
+  variant,
+  icon: Icon,
+  children,
+  ...props
+}: BadgeProps) {
   return (
     <div className={cn(badgeVariants({ variant }), className)} {...props}>
       {Icon && <Icon className="w-3 h-3 mr-1" />}

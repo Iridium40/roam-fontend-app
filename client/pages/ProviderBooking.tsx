@@ -521,18 +521,20 @@ const ProviderBooking = () => {
         .from("bookings")
         .insert({
           provider_id: preferredProviderId || null, // Use the selected provider ID
-          service_id: selectedItems.find(item => item.type === 'service')?.id || selectedItems[0]?.id,
+          service_id:
+            selectedItems.find((item) => item.type === "service")?.id ||
+            selectedItems[0]?.id,
           customer_id: user?.id || null, // Use authenticated customer ID
           business_location_id: location?.id, // Include the business location ID
           guest_name: !user ? bookingForm.customerName : null, // Only use guest fields if not authenticated
           guest_email: !user ? bookingForm.customerEmail : null,
           guest_phone: !user ? bookingForm.customerPhone : null,
           booking_date: bookingForm.preferredDate,
-          start_time: bookingForm.preferredTime || '09:00',
+          start_time: bookingForm.preferredTime || "09:00",
           admin_notes: bookingForm.notes,
           total_amount: getTotalAmount(),
           booking_status: "pending",
-          payment_status: "pending"
+          payment_status: "pending",
         })
         .select()
         .single();
@@ -564,7 +566,7 @@ const ProviderBooking = () => {
       // Improved error message extraction for Supabase errors
       let errorMessage = "Failed to submit booking. Please try again.";
 
-      if (typeof error === 'string') {
+      if (typeof error === "string") {
         errorMessage = error;
       } else if (error?.message) {
         errorMessage = error.message;

@@ -213,7 +213,7 @@ export default function MyBookings() {
 
         // Improved error message extraction
         let errorMessage = "Failed to load bookings. Please try again.";
-        if (typeof err === 'string') {
+        if (typeof err === "string") {
           errorMessage = err;
         } else if (err?.message) {
           errorMessage = err.message;

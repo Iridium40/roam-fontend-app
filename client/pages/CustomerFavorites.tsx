@@ -1,8 +1,8 @@
-import { CustomerFavorites } from '@/components/CustomerFavorites';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { CustomerFavorites } from "@/components/CustomerFavorites";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function CustomerFavoritesPage() {
   const { customer, isCustomer } = useAuth();

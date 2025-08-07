@@ -75,7 +75,8 @@ export default function Providers() {
       <section
         className="relative py-20 lg:py-32 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
         }}
       >
         {/* Background overlay */}
@@ -93,8 +94,8 @@ export default function Providers() {
               </h1>
               <p className="text-xl text-foreground/70 mb-8 max-w-2xl mx-auto leading-relaxed">
                 Join Florida's premier network of service professionals. Connect
-                with quality clients, set your own rates, and build your business
-                with the support you deserve.
+                with quality clients, set your own rates, and build your
+                business with the support you deserve.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <Button

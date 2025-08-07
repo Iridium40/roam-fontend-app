@@ -194,7 +194,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       console.error("Error updating booking status:", error);
 
       let errorMessage = "Failed to update booking status";
-      if (typeof error === 'string') {
+      if (typeof error === "string") {
         errorMessage = error;
       } else if (error?.message) {
         errorMessage = error.message;
@@ -251,7 +251,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       console.error("Error reassigning booking:", error);
 
       let errorMessage = "Failed to reassign booking";
-      if (typeof error === 'string') {
+      if (typeof error === "string") {
         errorMessage = error;
       } else if (error?.message) {
         errorMessage = error.message;
@@ -360,7 +360,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({
       console.error("Error cancelling booking:", error);
 
       let errorMessage = "Failed to cancel booking";
-      if (typeof error === 'string') {
+      if (typeof error === "string") {
         errorMessage = error;
       } else if (error?.message) {
         errorMessage = error.message;

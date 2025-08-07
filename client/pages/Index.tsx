@@ -85,16 +85,32 @@ export default function Index() {
   const getCategoryIcon = (category: string) => {
     const cat = category.toLowerCase();
 
-    if (cat.includes("healthcare") || cat.includes("medical") || cat.includes("health")) {
+    if (
+      cat.includes("healthcare") ||
+      cat.includes("medical") ||
+      cat.includes("health")
+    ) {
       return Stethoscope;
     }
-    if (cat.includes("beauty") || cat.includes("wellness") || cat.includes("spa")) {
+    if (
+      cat.includes("beauty") ||
+      cat.includes("wellness") ||
+      cat.includes("spa")
+    ) {
       return Scissors;
     }
-    if (cat.includes("fitness") || cat.includes("gym") || cat.includes("workout")) {
+    if (
+      cat.includes("fitness") ||
+      cat.includes("gym") ||
+      cat.includes("workout")
+    ) {
       return Dumbbell;
     }
-    if (cat.includes("home") || cat.includes("cleaning") || cat.includes("repair")) {
+    if (
+      cat.includes("home") ||
+      cat.includes("cleaning") ||
+      cat.includes("repair")
+    ) {
       return Home;
     }
     if (cat.includes("business") || cat.includes("professional")) {
@@ -115,16 +131,32 @@ export default function Index() {
   const getCategoryColor = (category: string) => {
     const cat = category.toLowerCase();
 
-    if (cat.includes("beauty") || cat.includes("wellness") || cat.includes("spa")) {
+    if (
+      cat.includes("beauty") ||
+      cat.includes("wellness") ||
+      cat.includes("spa")
+    ) {
       return "bg-gradient-to-r from-pink-500 to-rose-500";
     }
-    if (cat.includes("fitness") || cat.includes("gym") || cat.includes("workout")) {
+    if (
+      cat.includes("fitness") ||
+      cat.includes("gym") ||
+      cat.includes("workout")
+    ) {
       return "bg-gradient-to-r from-orange-500 to-red-500";
     }
-    if (cat.includes("therapy") || cat.includes("therapeutic") || cat.includes("massage")) {
+    if (
+      cat.includes("therapy") ||
+      cat.includes("therapeutic") ||
+      cat.includes("massage")
+    ) {
       return "bg-gradient-to-r from-green-500 to-emerald-500";
     }
-    if (cat.includes("healthcare") || cat.includes("medical") || cat.includes("health")) {
+    if (
+      cat.includes("healthcare") ||
+      cat.includes("medical") ||
+      cat.includes("health")
+    ) {
       return "bg-gradient-to-r from-blue-500 to-cyan-500";
     }
 
@@ -943,7 +975,8 @@ export default function Index() {
               </span>
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Find the perfect service for your needs from our curated selection of professional providers
+              Find the perfect service for your needs from our curated selection
+              of professional providers
             </p>
           </div>
 
@@ -960,8 +993,9 @@ export default function Index() {
                       {selectedCategory === "all" ? (
                         <Filter className="w-6 h-6 text-white" />
                       ) : (
-                        serviceCategories.find((cat) => cat.id === selectedCategory)
-                          ?.icon && (
+                        serviceCategories.find(
+                          (cat) => cat.id === selectedCategory,
+                        )?.icon && (
                           <div className="w-6 h-6 flex items-center justify-center">
                             {React.createElement(
                               serviceCategories.find(
@@ -1002,14 +1036,22 @@ export default function Index() {
                       </div>
                       <div>
                         <div className="font-medium">All Categories</div>
-                        <div className="text-xs text-gray-500">Browse everything</div>
+                        <div className="text-xs text-gray-500">
+                          Browse everything
+                        </div>
                       </div>
                     </div>
                   </SelectItem>
                   {serviceCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id} className="rounded-xl m-1">
+                    <SelectItem
+                      key={category.id}
+                      value={category.id}
+                      className="rounded-xl m-1"
+                    >
                       <div className="flex items-center gap-3 py-2">
-                        <div className={`w-10 h-10 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center`}>
+                        <div
+                          className={`w-10 h-10 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center`}
+                        >
                           <category.icon className="w-5 h-5 text-white" />
                         </div>
                         <div>
@@ -1022,7 +1064,9 @@ export default function Index() {
                                   ? "Beauty"
                                   : category.name}
                           </div>
-                          <div className="text-xs text-gray-500">{category.description}</div>
+                          <div className="text-xs text-gray-500">
+                            {category.description}
+                          </div>
                         </div>
                       </div>
                     </SelectItem>
@@ -1041,11 +1085,13 @@ export default function Index() {
               }`}
               onClick={() => handleCategorySelect("all")}
             >
-              <div className={`relative overflow-hidden rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 ${
-                selectedCategory === "all"
-                  ? "ring-4 ring-roam-blue/30 bg-gradient-to-br from-roam-blue/5 to-roam-light-blue/5"
-                  : ""
-              }`}>
+              <div
+                className={`relative overflow-hidden rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 ${
+                  selectedCategory === "all"
+                    ? "ring-4 ring-roam-blue/30 bg-gradient-to-br from-roam-blue/5 to-roam-light-blue/5"
+                    : ""
+                }`}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-500/10 via-transparent to-gray-600/5"></div>
                 <div className="relative p-8 text-center">
                   <div className="w-20 h-20 bg-gradient-to-br from-gray-500 to-gray-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
@@ -1074,26 +1120,28 @@ export default function Index() {
                 }`}
                 onClick={() => handleCategorySelect(category.id)}
               >
-                <div className={`relative overflow-hidden rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 ${
-                  selectedCategory === category.id
-                    ? "ring-4 ring-roam-blue/30 bg-gradient-to-br from-roam-blue/5 to-roam-light-blue/5"
-                    : ""
-                }`}>
+                <div
+                  className={`relative overflow-hidden rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 ${
+                    selectedCategory === category.id
+                      ? "ring-4 ring-roam-blue/30 bg-gradient-to-br from-roam-blue/5 to-roam-light-blue/5"
+                      : ""
+                  }`}
+                >
                   <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-transparent opacity-50"></div>
                   <div className="relative p-8 text-center">
-                    <div className={`w-20 h-20 bg-gradient-to-br ${category.color} rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
+                    <div
+                      className={`w-20 h-20 bg-gradient-to-br ${category.color} rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}
+                    >
                       <category.icon className="w-10 h-10 text-white" />
                     </div>
                     <h3 className="text-lg font-bold mb-3 text-gray-900 group-hover:text-roam-blue transition-colors">
-                      {category.id === "therapy" ? (
-                        "Therapy"
-                      ) : category.id === "fitness" ? (
-                        "Fitness"
-                      ) : category.id === "beauty" ? (
-                        "Beauty"
-                      ) : (
-                        category.name
-                      )}
+                      {category.id === "therapy"
+                        ? "Therapy"
+                        : category.id === "fitness"
+                          ? "Fitness"
+                          : category.id === "beauty"
+                            ? "Beauty"
+                            : category.name}
                     </h3>
                     <p className="text-sm text-gray-600 leading-relaxed">
                       {category.description}
@@ -1158,7 +1206,9 @@ export default function Index() {
                             </div>
                             <div>
                               <div className="font-medium">All Types</div>
-                              <div className="text-xs text-gray-500">Any delivery method</div>
+                              <div className="text-xs text-gray-500">
+                                Any delivery method
+                              </div>
                             </div>
                           </div>
                         </SelectItem>
@@ -1169,7 +1219,9 @@ export default function Index() {
                             </div>
                             <div>
                               <div className="font-medium">Mobile</div>
-                              <div className="text-xs text-gray-500">Provider comes to you</div>
+                              <div className="text-xs text-gray-500">
+                                Provider comes to you
+                              </div>
                             </div>
                           </div>
                         </SelectItem>
@@ -1180,7 +1232,9 @@ export default function Index() {
                             </div>
                             <div>
                               <div className="font-medium">Business</div>
-                              <div className="text-xs text-gray-500">Visit business location</div>
+                              <div className="text-xs text-gray-500">
+                                Visit business location
+                              </div>
                             </div>
                           </div>
                         </SelectItem>
@@ -1191,7 +1245,9 @@ export default function Index() {
                             </div>
                             <div>
                               <div className="font-medium">Virtual</div>
-                              <div className="text-xs text-gray-500">Online consultation</div>
+                              <div className="text-xs text-gray-500">
+                                Online consultation
+                              </div>
                             </div>
                           </div>
                         </SelectItem>
@@ -1304,14 +1360,14 @@ export default function Index() {
                 className="flex gap-8 transition-transform duration-300 ease-in-out"
                 style={{
                   transform: `translateX(-${currentServiceSlide * (100 / 3)}%)`,
-                  width: 'calc(100% + 2rem)'
+                  width: "calc(100% + 2rem)",
                 }}
               >
                 {filteredFeaturedServices.map((service, index) => (
                   <Card
                     key={service.id}
                     className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0"
-                    style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
+                    style={{ minWidth: "calc(33.333% - 0.667rem)" }}
                   >
                     <div className="relative">
                       <img
@@ -1464,7 +1520,9 @@ export default function Index() {
                     variant="outline"
                     size="sm"
                     onClick={nextPromotionSlide}
-                    disabled={currentPromotionSlide >= promotionalDeals.length - 3}
+                    disabled={
+                      currentPromotionSlide >= promotionalDeals.length - 3
+                    }
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -1476,165 +1534,168 @@ export default function Index() {
                   className="flex gap-8 transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPromotionSlide * (100 / 3)}%)`,
-                    width: promotionalDeals.length <= 3 ? '100%' : `${Math.ceil(promotionalDeals.length / 3) * 100}%`
+                    width:
+                      promotionalDeals.length <= 3
+                        ? "100%"
+                        : `${Math.ceil(promotionalDeals.length / 3) * 100}%`,
                   }}
                 >
                   {promotionalDeals.map((promotion, index) => (
                     <Card
                       key={promotion.id}
                       className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                      style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
+                      style={{ minWidth: "calc(33.333% - 0.667rem)" }}
                     >
-                    {/* Hero Section */}
-                    <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
-                      {promotion.imageUrl ? (
-                        <img
-                          src={promotion.imageUrl}
-                          alt={promotion.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full">
-                          {promotion.business && promotion.business.logo ? (
-                            <div className="flex flex-col items-center space-y-3">
-                              <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white shadow-xl border-4 border-white">
-                                <img
-                                  src={promotion.business.logo}
-                                  alt={promotion.business.name}
-                                  className="w-full h-full object-cover"
-                                />
+                      {/* Hero Section */}
+                      <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
+                        {promotion.imageUrl ? (
+                          <img
+                            src={promotion.imageUrl}
+                            alt={promotion.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center h-full">
+                            {promotion.business && promotion.business.logo ? (
+                              <div className="flex flex-col items-center space-y-3">
+                                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white shadow-xl border-4 border-white">
+                                  <img
+                                    src={promotion.business.logo}
+                                    alt={promotion.business.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <h3 className="text-lg font-bold text-roam-blue">
+                                  {promotion.business.name}
+                                </h3>
                               </div>
-                              <h3 className="text-lg font-bold text-roam-blue">
-                                {promotion.business.name}
-                              </h3>
-                            </div>
-                          ) : (
-                            <div className="flex flex-col items-center space-y-3">
-                              <div className="w-20 h-20 rounded-2xl bg-roam-yellow/20 flex items-center justify-center">
-                                <Tag className="w-10 h-10 text-roam-blue" />
+                            ) : (
+                              <div className="flex flex-col items-center space-y-3">
+                                <div className="w-20 h-20 rounded-2xl bg-roam-yellow/20 flex items-center justify-center">
+                                  <Tag className="w-10 h-10 text-roam-blue" />
+                                </div>
+                                <h3 className="text-xl font-bold text-roam-blue">
+                                  SPECIAL OFFER
+                                </h3>
                               </div>
-                              <h3 className="text-xl font-bold text-roam-blue">
-                                SPECIAL OFFER
-                              </h3>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-
-                      {/* Savings Badge - Top Right */}
-                      {formatSavings(promotion) && (
-                        <div className="absolute top-4 right-4">
-                          <div className="bg-red-500 text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
-                            {formatSavings(promotion)}
+                            )}
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Business Logo Overlay - Bottom Left (for image promotions) */}
-                      {promotion.imageUrl &&
-                        promotion.business &&
-                        promotion.business.logo && (
-                          <div className="absolute bottom-4 left-4">
-                            <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
-                              <div className="w-8 h-8 rounded-full overflow-hidden">
-                                <img
-                                  src={promotion.business.logo}
-                                  alt={promotion.business.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <span className="text-sm font-bold text-gray-900">
-                                {promotion.business.name}
-                              </span>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+
+                        {/* Savings Badge - Top Right */}
+                        {formatSavings(promotion) && (
+                          <div className="absolute top-4 right-4">
+                            <div className="bg-red-500 text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
+                              {formatSavings(promotion)}
                             </div>
                           </div>
                         )}
 
-                      {/* End Date Badge - Top Left */}
-                      {promotion.endDate && (
-                        <div className="absolute top-4 left-4">
-                          <div className="bg-white/95 text-roam-blue px-3 py-1.5 rounded-full shadow-lg font-medium text-sm backdrop-blur-sm">
-                            <Clock className="w-4 h-4 mr-1 inline" />
-                            Ends{" "}
-                            {new Date(promotion.endDate).toLocaleDateString()}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                        {/* Business Logo Overlay - Bottom Left (for image promotions) */}
+                        {promotion.imageUrl &&
+                          promotion.business &&
+                          promotion.business.logo && (
+                            <div className="absolute bottom-4 left-4">
+                              <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
+                                <div className="w-8 h-8 rounded-full overflow-hidden">
+                                  <img
+                                    src={promotion.business.logo}
+                                    alt={promotion.business.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <span className="text-sm font-bold text-gray-900">
+                                  {promotion.business.name}
+                                </span>
+                              </div>
+                            </div>
+                          )}
 
-                    <CardContent className="p-6 pr-4 space-y-4">
-                      {/* Promotion Title */}
-                      <div>
-                        <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
-                          {promotion.title}
-                        </h3>
+                        {/* End Date Badge - Top Left */}
+                        {promotion.endDate && (
+                          <div className="absolute top-4 left-4">
+                            <div className="bg-white/95 text-roam-blue px-3 py-1.5 rounded-full shadow-lg font-medium text-sm backdrop-blur-sm">
+                              <Clock className="w-4 h-4 mr-1 inline" />
+                              Ends{" "}
+                              {new Date(promotion.endDate).toLocaleDateString()}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Service Info */}
-                      {promotion.service && (
+                      <CardContent className="p-6 pr-4 space-y-4">
+                        {/* Promotion Title */}
                         <div>
-                          <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
-                            <Tag className="w-4 h-4" />
-                            {promotion.service.name}
-                          </div>
+                          <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
+                            {promotion.title}
+                          </h3>
                         </div>
-                      )}
 
-                      {/* Description */}
-                      <div className="space-y-2">
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                          {getDisplayDescription(
-                            promotion.description,
-                            promotion.id,
-                          )}
-                        </p>
-                        {promotion.description &&
-                          promotion.description.length > 200 && (
-                            <button
-                              onClick={() => toggleDescription(promotion.id)}
-                              className="text-roam-blue text-xs font-medium hover:underline"
-                            >
-                              {expandedDescriptions.has(promotion.id)
-                                ? "Show less"
-                                : "Read more"}
-                            </button>
-                          )}
-                      </div>
+                        {/* Service Info */}
+                        {promotion.service && (
+                          <div>
+                            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
+                              <Tag className="w-4 h-4" />
+                              {promotion.service.name}
+                            </div>
+                          </div>
+                        )}
 
-                      {/* Action Button */}
-                      <Button
-                        asChild
-                        className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                      >
-                        <Link
-                          to={(() => {
-                            const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
-                            const serviceParam = promotion.service
-                              ? `&service_id=${promotion.service.id}`
-                              : "";
+                        {/* Description */}
+                        <div className="space-y-2">
+                          <p className="text-sm text-gray-600 leading-relaxed">
+                            {getDisplayDescription(
+                              promotion.description,
+                              promotion.id,
+                            )}
+                          </p>
+                          {promotion.description &&
+                            promotion.description.length > 200 && (
+                              <button
+                                onClick={() => toggleDescription(promotion.id)}
+                                className="text-roam-blue text-xs font-medium hover:underline"
+                              >
+                                {expandedDescriptions.has(promotion.id)
+                                  ? "Show less"
+                                  : "Read more"}
+                              </button>
+                            )}
+                        </div>
 
-                            if (promotion.business) {
-                              return `/business/${promotion.business.id}?${baseParams}${serviceParam}`;
-                            } else if (promotion.service) {
-                              return `/book-service/${promotion.service.id}?${baseParams}`;
-                            } else {
-                              return `/services?${baseParams}`;
-                            }
-                          })()}
+                        {/* Action Button */}
+                        <Button
+                          asChild
+                          className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                         >
-                          <Tag className="w-4 h-4 mr-2" />
-                          {promotion.business && promotion.service
-                            ? "Claim Offer"
-                            : promotion.business
-                              ? "Book with Business"
-                              : promotion.service
-                                ? "Book This Service"
-                                : "Claim Offer"}
-                        </Link>
-                      </Button>
-                    </CardContent>
+                          <Link
+                            to={(() => {
+                              const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
+                              const serviceParam = promotion.service
+                                ? `&service_id=${promotion.service.id}`
+                                : "";
+
+                              if (promotion.business) {
+                                return `/business/${promotion.business.id}?${baseParams}${serviceParam}`;
+                              } else if (promotion.service) {
+                                return `/book-service/${promotion.service.id}?${baseParams}`;
+                              } else {
+                                return `/services?${baseParams}`;
+                              }
+                            })()}
+                          >
+                            <Tag className="w-4 h-4 mr-2" />
+                            {promotion.business && promotion.service
+                              ? "Claim Offer"
+                              : promotion.business
+                                ? "Book with Business"
+                                : promotion.service
+                                  ? "Book This Service"
+                                  : "Claim Offer"}
+                          </Link>
+                        </Button>
+                      </CardContent>
                     </Card>
                   ))}
                 </div>
@@ -1912,7 +1973,9 @@ export default function Index() {
                     variant="outline"
                     size="sm"
                     onClick={nextBusinessSlide}
-                    disabled={currentBusinessSlide >= filteredBusinesses.length - 3}
+                    disabled={
+                      currentBusinessSlide >= filteredBusinesses.length - 3
+                    }
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -1923,151 +1986,151 @@ export default function Index() {
                 className="flex gap-8 transition-transform duration-300 ease-in-out"
                 style={{
                   transform: `translateX(-${currentBusinessSlide * (100 / 3)}%)`,
-                  width: 'calc(100% + 2rem)'
+                  width: "calc(100% + 2rem)",
                 }}
               >
                 {filteredBusinesses.map((business, index) => (
                   <Card
                     key={business.id}
                     className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                    style={{ minWidth: 'calc(33.333% - 0.667rem)' }}
+                    style={{ minWidth: "calc(33.333% - 0.667rem)" }}
                   >
-                <CardContent className="p-0">
-                  {/* Hero Cover Section */}
-                  <div
-                    className="relative h-48 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5"
-                    style={{
-                      backgroundImage: business.cover_image_url
-                        ? `url(${business.cover_image_url})`
-                        : undefined,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  >
-                    {/* Cover overlay */}
-                    {business.cover_image_url && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-                    )}
-
-                    {/* Action Buttons - Top Right */}
-                    <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
-                      <FavoriteButton
-                        type="business"
-                        itemId={business.id}
-                        size="sm"
-                        variant="ghost"
-                        className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
-                      />
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all backdrop-blur-sm"
-                        onClick={() => handleBusinessShare(business)}
+                    <CardContent className="p-0">
+                      {/* Hero Cover Section */}
+                      <div
+                        className="relative h-48 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5"
+                        style={{
+                          backgroundImage: business.cover_image_url
+                            ? `url(${business.cover_image_url})`
+                            : undefined,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                        }}
                       >
-                        <Share2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+                        {/* Cover overlay */}
+                        {business.cover_image_url && (
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                        )}
 
-                    {/* Business Logo - Overlapping */}
-                    <div className="absolute -bottom-8 left-6 z-20">
-                      <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center overflow-hidden border-4 border-white group-hover:scale-110 transition-transform duration-300">
-                        {business.image &&
-                        business.image !== "/api/placeholder/80/80" ? (
-                          <img
-                            src={business.image}
-                            alt={business.name}
-                            className="w-full h-full object-cover rounded-xl"
+                        {/* Action Buttons - Top Right */}
+                        <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
+                          <FavoriteButton
+                            type="business"
+                            itemId={business.id}
+                            size="sm"
+                            variant="ghost"
+                            className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
                           />
-                        ) : (
-                          <Building className="w-8 h-8 text-roam-blue" />
-                        )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all backdrop-blur-sm"
+                            onClick={() => handleBusinessShare(business)}
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+
+                        {/* Business Logo - Overlapping */}
+                        <div className="absolute -bottom-8 left-6 z-20">
+                          <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center overflow-hidden border-4 border-white group-hover:scale-110 transition-transform duration-300">
+                            {business.image &&
+                            business.image !== "/api/placeholder/80/80" ? (
+                              <img
+                                src={business.image}
+                                alt={business.name}
+                                className="w-full h-full object-cover rounded-xl"
+                              />
+                            ) : (
+                              <Building className="w-8 h-8 text-roam-blue" />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Rating Badge - Overlapping */}
+                        <div className="absolute -bottom-4 right-6 z-20">
+                          <div className="flex items-center gap-1 bg-white px-3 py-2 rounded-full shadow-xl border border-gray-100">
+                            <Star className="w-4 h-4 text-roam-warning fill-current" />
+                            <span className="font-bold text-sm text-gray-900">
+                              {business.rating}
+                            </span>
+                            <span className="text-xs text-gray-600 font-medium">
+                              ({business.reviews})
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Rating Badge - Overlapping */}
-                    <div className="absolute -bottom-4 right-6 z-20">
-                      <div className="flex items-center gap-1 bg-white px-3 py-2 rounded-full shadow-xl border border-gray-100">
-                        <Star className="w-4 h-4 text-roam-warning fill-current" />
-                        <span className="font-bold text-sm text-gray-900">
-                          {business.rating}
-                        </span>
-                        <span className="text-xs text-gray-600 font-medium">
-                          ({business.reviews})
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                      {/* Content Section */}
+                      <div className="px-6 pt-12 pb-6 space-y-6">
+                        {/* Business Name */}
+                        <div>
+                          <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight mb-1">
+                            {business.name}
+                          </h3>
+                        </div>
 
-                  {/* Content Section */}
-                  <div className="px-6 pt-12 pb-6 space-y-6">
-                    {/* Business Name */}
-                    <div>
-                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight mb-1">
-                        {business.name}
-                      </h3>
-                    </div>
+                        {/* Specialties */}
+                        <div className="space-y-3">
+                          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Specialties
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {business.specialties
+                              .slice(0, 4)
+                              .map((specialty, index) => {
+                                // Convert to camel case
+                                const camelCaseSpecialty = specialty
+                                  .split(" ")
+                                  .map(
+                                    (word) =>
+                                      word.charAt(0).toUpperCase() +
+                                      word.slice(1).toLowerCase(),
+                                  )
+                                  .join(" ");
 
-                    {/* Specialties */}
-                    <div className="space-y-3">
-                      <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                        Specialties
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {business.specialties
-                          .slice(0, 4)
-                          .map((specialty, index) => {
-                            // Convert to camel case
-                            const camelCaseSpecialty = specialty
-                              .split(" ")
-                              .map(
-                                (word) =>
-                                  word.charAt(0).toUpperCase() +
-                                  word.slice(1).toLowerCase(),
-                              )
-                              .join(" ");
-
-                            return (
-                              <span
-                                key={specialty}
-                                className="px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-roam-blue/8 to-roam-light-blue/8 text-roam-blue rounded-lg border border-roam-blue/15 hover:border-roam-blue/25 transition-colors"
-                              >
-                                {camelCaseSpecialty}
+                                return (
+                                  <span
+                                    key={specialty}
+                                    className="px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-roam-blue/8 to-roam-light-blue/8 text-roam-blue rounded-lg border border-roam-blue/15 hover:border-roam-blue/25 transition-colors"
+                                  >
+                                    {camelCaseSpecialty}
+                                  </span>
+                                );
+                              })}
+                            {business.specialties.length > 4 && (
+                              <span className="px-3 py-1.5 text-xs font-medium bg-gray-50 text-gray-600 rounded-lg border border-gray-200">
+                                +{business.specialties.length - 4}
                               </span>
-                            );
-                          })}
-                        {business.specialties.length > 4 && (
-                          <span className="px-3 py-1.5 text-xs font-medium bg-gray-50 text-gray-600 rounded-lg border border-gray-200">
-                            +{business.specialties.length - 4}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                            )}
+                          </div>
+                        </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-3 pt-2">
-                      <Button
-                        asChild
-                        className="flex-1 bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                      >
-                        <Link to={`/business/${business.id}?tab=services`}>
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Book
-                        </Link>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="flex-1 border-2 border-roam-blue/20 text-roam-blue hover:bg-roam-blue hover:text-white font-semibold py-3 rounded-2xl transition-all duration-300"
-                      >
-                        <Link to={`/business/${business.id}`}>
-                          <BookOpen className="w-4 h-4 mr-2" />
-                          View
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
+                        {/* Action Buttons */}
+                        <div className="flex gap-3 pt-2">
+                          <Button
+                            asChild
+                            className="flex-1 bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                          >
+                            <Link to={`/business/${business.id}?tab=services`}>
+                              <Calendar className="w-4 h-4 mr-2" />
+                              Book
+                            </Link>
+                          </Button>
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="flex-1 border-2 border-roam-blue/20 text-roam-blue hover:bg-roam-blue hover:text-white font-semibold py-3 rounded-2xl transition-all duration-300"
+                          >
+                            <Link to={`/business/${business.id}`}>
+                              <BookOpen className="w-4 h-4 mr-2" />
+                              View
+                            </Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
