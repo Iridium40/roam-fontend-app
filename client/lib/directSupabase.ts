@@ -885,29 +885,44 @@ class DirectSupabaseAPI {
 
     // Try with anon key first
     response = await tryOperation(false);
+    let responseText = "";
 
     // If anon key fails with auth/permission error, try with user token
     if (!response.ok && (response.status === 401 || response.status === 403)) {
-      const responseText = await response.text();
+      try {
+        responseText = await response.text();
+      } catch (readError) {
+        console.warn("Could not read first response text:", readError);
+        responseText = `HTTP ${response.status} - ${response.statusText}`;
+      }
+
       if (this.accessToken) {
         console.log(
           "DirectSupabase updateCustomerProfile: Anon key failed, trying with user token...",
         );
         authMethod = "user";
         response = await tryOperation(true);
+
+        // Read the new response text
+        try {
+          responseText = await response.text();
+        } catch (readError) {
+          console.warn("Could not read retry response text:", readError);
+          responseText = `HTTP ${response.status} - ${response.statusText}`;
+        }
       } else {
         console.log(
           "DirectSupabase updateCustomerProfile: No user token available for fallback",
         );
       }
-    }
-
-    let responseText = "";
-    try {
-      responseText = await response.text();
-    } catch (readError) {
-      console.warn("Could not read response text:", readError);
-      responseText = `HTTP ${response.status} - ${response.statusText}`;
+    } else {
+      // Read response text for successful response or non-auth errors
+      try {
+        responseText = await response.text();
+      } catch (readError) {
+        console.warn("Could not read response text:", readError);
+        responseText = `HTTP ${response.status} - ${response.statusText}`;
+      }
     }
 
     console.log("DirectSupabase updateCustomerProfile: Response", {
