@@ -304,12 +304,18 @@ const ProviderBooking = () => {
 
   const fetchCustomerProfile = async () => {
     try {
-      if (!user?.id) return;
+      const customerId = customer?.customer_id || customer?.id || user?.id;
+      if (!customerId) {
+        console.log("No customer ID available for profile fetch");
+        return;
+      }
+
+      console.log("Fetching customer profile for ID:", customerId);
 
       const { data: profile, error } = await supabase
         .from("customer_profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("user_id", customerId)
         .single();
 
       if (error) {
