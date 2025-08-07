@@ -774,12 +774,21 @@ class DirectSupabaseAPI {
           );
         }
       } catch (parseError) {
-        console.error("Error parsing user check response:", parseError);
-        throw new Error(
-          "Failed to verify user existence. Please sign in again or contact support.",
-        );
+        // If it's a JSON parsing error, handle it specifically
+        if (parseError instanceof SyntaxError) {
+          console.error("Error parsing user check response as JSON:", parseError);
+          console.error("Response text was:", userCheckText);
+          throw new Error(
+            "Invalid response format when verifying user. Please sign in again or contact support.",
+          );
+        } else {
+          // Re-throw non-JSON errors
+          throw parseError;
+        }
       }
     } else {
+      console.error("User check failed with status:", userCheckResponse.status);
+      console.error("User check response text:", userCheckText);
       throw new Error(
         `Failed to verify user existence (HTTP ${userCheckResponse.status}). Please sign in again or contact support.`,
       );
