@@ -678,6 +678,15 @@ export default function Index() {
     setCurrentPromotionSlide((prev) => Math.max(prev - 1, 0));
   };
 
+  const nextBusinessSlide = () => {
+    const maxSlides = Math.max(0, filteredBusinesses.length - 3);
+    setCurrentBusinessSlide((prev) => Math.min(prev + 1, maxSlides));
+  };
+
+  const prevBusinessSlide = () => {
+    setCurrentBusinessSlide((prev) => Math.max(prev - 1, 0));
+  };
+
   const nextPopularSlide = () => {
     setCurrentPopularSlide((prev) => (prev + 1) % popularServices.length);
   };
