@@ -558,11 +558,15 @@ const ProviderBooking = () => {
       if (
         !bookingForm.customerName ||
         !bookingForm.customerEmail ||
+        !bookingForm.customerAddress ||
+        !bookingForm.customerCity ||
+        !bookingForm.customerState ||
+        !bookingForm.customerZip ||
         !bookingForm.preferredDate
       ) {
         toast({
           title: "Missing information",
-          description: "Please fill in all required fields",
+          description: "Please fill in all required fields including your complete address",
           variant: "destructive",
         });
         return;
