@@ -853,16 +853,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Handle user existence errors (HTTP 409 foreign key constraint)
         if (
           dbError.message &&
-          (dbError.message.includes("does not exist in auth.users table") ||
-            dbError.message.includes("HTTP 409") ||
-            dbError.message.includes("foreign key constraint"))
+          (dbError.message.includes("no longer valid in the authentication system") ||
+            dbError.message.includes("foreign key"))
         ) {
           console.log(
-            "AuthContext updateCustomerProfile: User does not exist, clearing session",
+            "AuthContext updateCustomerProfile: User does not exist in auth system, clearing session",
           );
           await signOut();
           throw new Error(
-            "Your account is no longer valid. Please sign up again to continue.",
+            "Your account is no longer valid in the authentication system. Please sign up again to continue.",
+          );
+        }
+
+        // Handle duplicate profile errors
+        if (
+          dbError.message &&
+          dbError.message.includes("profile already exists")
+        ) {
+          console.log(
+            "AuthContext updateCustomerProfile: Duplicate profile detected",
+          );
+          throw new Error(
+            "A profile already exists for this account. Please refresh the page and try again.",
+          );
+        }
+
+        // Handle other HTTP 409 conflicts
+        if (
+          dbError.message &&
+          dbError.message.includes("HTTP 409")
+        ) {
+          console.log(
+            "AuthContext updateCustomerProfile: Database conflict detected",
+          );
+          throw new Error(
+            "A database conflict occurred. Please try again or contact support if the issue persists.",
           );
         }
 
