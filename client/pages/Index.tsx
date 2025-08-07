@@ -649,10 +649,10 @@ export default function Index() {
         <GoogleOneTap
           clientId={import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID}
           onSuccess={() => {
-            console.log('Google One Tap sign-in successful');
+            console.log("Google One Tap sign-in successful");
           }}
           onError={(error) => {
-            console.error('Google One Tap error:', error);
+            console.error("Google One Tap error:", error);
           }}
         />
       )}

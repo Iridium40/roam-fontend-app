@@ -569,10 +569,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signInWithGoogleIdToken = async (idToken: string, nonce: string) => {
     setLoading(true);
     try {
-      console.log("AuthContext signInWithGoogleIdToken: Starting Google ID token authentication...");
+      console.log(
+        "AuthContext signInWithGoogleIdToken: Starting Google ID token authentication...",
+      );
 
       const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
+        provider: "google",
         token: idToken,
         nonce,
       });
@@ -583,7 +585,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (data.user) {
-        console.log("AuthContext signInWithGoogleIdToken: Google authentication successful");
+        console.log(
+          "AuthContext signInWithGoogleIdToken: Google authentication successful",
+        );
 
         // Check if customer profile exists
         const { data: customerProfile, error: profileError } = await supabase
@@ -592,7 +596,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           .eq("user_id", data.user.id)
           .single();
 
-        if (profileError && profileError.code !== 'PGRST116') {
+        if (profileError && profileError.code !== "PGRST116") {
           console.error("Error fetching customer profile:", profileError);
           throw new Error("Failed to fetch customer profile");
         }
@@ -619,11 +623,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           localStorage.setItem("roam_user_type", "customer");
 
           if (data.session?.access_token) {
-            localStorage.setItem("roam_access_token", data.session.access_token);
+            localStorage.setItem(
+              "roam_access_token",
+              data.session.access_token,
+            );
           }
         }
 
-        console.log("AuthContext signInWithGoogleIdToken: Authentication completed successfully");
+        console.log(
+          "AuthContext signInWithGoogleIdToken: Authentication completed successfully",
+        );
       }
     } catch (error: any) {
       console.error("Google ID token sign-in error:", error);
@@ -646,8 +655,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         options: {
           redirectTo,
           queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
+            access_type: "offline",
+            prompt: "consent",
           },
         },
       });
