@@ -426,6 +426,28 @@ const ProviderBooking = () => {
     }
   };
 
+  const fetchCustomerLocation = async (locationId: string) => {
+    try {
+      const { data: location, error } = await supabase
+        .from("customer_locations")
+        .select("*")
+        .eq("id", locationId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching customer location:", error);
+        return;
+      }
+
+      if (location) {
+        setSelectedLocation(location);
+        console.log("Loaded selected customer location:", location);
+      }
+    } catch (error) {
+      console.error("Error fetching customer location:", error);
+    }
+  };
+
   const fetchPromotionData = async () => {
     try {
       const { data: promotion, error } = await supabase
