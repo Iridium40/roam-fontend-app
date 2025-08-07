@@ -535,13 +535,13 @@ const ProviderBooking = () => {
         user,
         customer,
         isCustomer,
-        userId: user?.id,
-        customerId: customer?.customer_id || customer?.id,
+        authUserId: user?.id, // This is auth.users.id from the session
+        customerData: customer,
         isAuthenticated: !!user,
       });
 
-      // Determine the correct customer ID
-      const customerId = customer?.customer_id || customer?.id || user?.id;
+      // Use auth.users.id as the customer_id for the booking
+      const customerId = user?.id; // This should be the auth.users.id from the authenticated session
 
       // Create booking record
       const { data: booking, error: bookingError } = await supabase
