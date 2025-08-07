@@ -1906,12 +1906,43 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {filteredBusinesses.map((business) => (
-              <Card
-                key={business.id}
-                className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl"
+          {filteredBusinesses.length > 0 ? (
+            <div className="relative overflow-hidden">
+              {/* Navigation Arrows */}
+              {filteredBusinesses.length > 3 && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={prevBusinessSlide}
+                    disabled={currentBusinessSlide === 0}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={nextBusinessSlide}
+                    disabled={currentBusinessSlide >= filteredBusinesses.length - 3}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+              <div
+                className="flex gap-8 transition-transform duration-300 ease-in-out"
+                style={{
+                  transform: `translateX(-${currentBusinessSlide * (100 / 3)}%)`
+                }}
               >
+                {filteredBusinesses.map((business, index) => (
+                  <Card
+                    key={business.id}
+                    className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
+                    style={{ minWidth: 'calc(33.333% - 1rem)' }}
+                  >
                 <CardContent className="p-0">
                   {/* Hero Cover Section */}
                   <div
@@ -2048,11 +2079,37 @@ export default function Index() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <Card className="p-12 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">
+                No featured businesses found
+              </h3>
+              <p className="text-foreground/60 mb-4">
+                No featured businesses match your search criteria. Try adjusting
+                your search or browse all businesses.
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("all");
+                  setSelectedDelivery("all");
+                }}
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              >
+                Clear Filters
+              </Button>
+            </Card>
+          )}
 
-          {filteredBusinesses.length === 0 && (
+          {false && (
             <Card className="p-12 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-gray-400" />
