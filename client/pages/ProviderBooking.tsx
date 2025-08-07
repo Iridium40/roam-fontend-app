@@ -302,6 +302,36 @@ const ProviderBooking = () => {
     }
   };
 
+  const fetchCustomerProfile = async () => {
+    try {
+      if (!user?.id) return;
+
+      const { data: profile, error } = await supabase
+        .from("customer_profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching customer profile:", error);
+        return;
+      }
+
+      if (profile) {
+        setCustomerProfile(profile);
+        // Pre-populate the form with customer data
+        setBookingForm((prev) => ({
+          ...prev,
+          customerName: profile.full_name || "",
+          customerEmail: profile.email || user.email || "",
+          customerPhone: profile.phone || "",
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching customer profile:", error);
+    }
+  };
+
   const fetchPromotionData = async () => {
     try {
       const { data: promotion, error } = await supabase
