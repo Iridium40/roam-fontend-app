@@ -360,16 +360,37 @@ const ProviderBooking = () => {
         setCustomerProfile(profile);
         // Pre-populate the form with customer data
         const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
+
+        // Fetch the customer's most recent location
+        const { data: customerLocations } = await supabase
+          .from("customer_locations")
+          .select("*")
+          .eq("customer_id", authUserId)
+          .eq("is_active", true)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        const mostRecentLocation = customerLocations?.[0];
+
         setBookingForm((prev) => ({
           ...prev,
           customerName: fullName || "",
           customerEmail: profile.email || user?.email || "",
           customerPhone: profile.phone || "",
+          customerAddress: mostRecentLocation?.address_line1 || "",
+          customerCity: mostRecentLocation?.city || "",
+          customerState: mostRecentLocation?.state || "",
+          customerZip: mostRecentLocation?.postal_code || "",
         }));
+
         console.log("Pre-populated booking form with customer data:", {
           customerName: fullName,
           customerEmail: profile.email || user?.email,
           customerPhone: profile.phone,
+          customerAddress: mostRecentLocation?.address_line1,
+          customerCity: mostRecentLocation?.city,
+          customerState: mostRecentLocation?.state,
+          customerZip: mostRecentLocation?.postal_code,
         });
       }
     } catch (error: any) {
