@@ -66,11 +66,26 @@ export default function BusinessAvailability() {
     }
   }, [serviceId, selectedDate, selectedTime]);
 
+  // Always attempt to load saved customer locations for the authenticated user
   useEffect(() => {
-    if (customer && isCustomer) {
-      fetchCustomerLocations();
-    }
-  }, [customer, isCustomer]);
+    let unsub: { subscription: { unsubscribe: () => void } } | null = null;
+    // Initial load
+    fetchCustomerLocations();
+    // Listen for auth changes
+    const sub = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        fetchCustomerLocations();
+      } else {
+        setSavedLocations([]);
+      }
+    });
+    unsub = sub.data as any;
+    return () => {
+      try {
+        unsub?.subscription?.unsubscribe?.();
+      } catch {}
+    };
+  }, []);
 
   useEffect(() => {
     if (!savedLocations || savedLocations.length === 0) return;
@@ -101,13 +116,19 @@ export default function BusinessAvailability() {
 
   const fetchCustomerLocations = async () => {
     try {
-      if (!customer?.customer_id) return;
+      // Use Supabase Auth user id as customer_id in customer_locations
+      const { data: userData, error: userErr } = await supabase.auth.getUser();
+      if (userErr || !userData?.user?.id) return;
+      const authUserId = userData.user.id;
+
+      console.log("[BA] Auth user for locations:", authUserId);
 
       const { data: locations, error } = await supabase
         .from("customer_locations")
         .select("*")
-        .eq("customer_id", customer.customer_id)
-        .eq("is_active", true)
+        .eq("customer_id", authUserId)
+        // include active rows; also include legacy rows where is_active is null
+        .or("is_active.eq.true,is_active.is.null")
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -116,7 +137,7 @@ export default function BusinessAvailability() {
       }
 
       setSavedLocations(locations || []);
-      console.log("Loaded customer saved locations:", locations);
+      console.log("[BA] Loaded customer saved locations count:", locations?.length || 0);
     } catch (error) {
       console.error("Error fetching customer locations:", error);
     }
@@ -1076,153 +1097,140 @@ export default function BusinessAvailability() {
                               </div>
                             )}
 
-                            {/* Customer Address Form - only show for mobile delivery */}
-                            {business.deliveryType === "both_locations" &&
-                              selectedDeliveryTypes[business.id] ===
-                                "customer_location" && (
-                                <div className="mb-3">
-                                  <label className="text-sm font-medium text-foreground/70 mb-2 block">
-                                    Delivery Address:
-                                  </label>
-                                  <div className="space-y-3 p-3 border rounded-lg bg-gray-50">
-                                    {/* Saved Locations Selector */}
-                                    {savedLocations.length > 0 && (
-                                      <div>
-                                        <Label className="text-xs">
-                                          Select from saved addresses:
-                                        </Label>
-                                        <Select
-                                          value={
-                                            customerAddresses[business.id]
-                                              ?.selectedLocationId || "new"
-                                          }
-                                          onValueChange={(value) =>
-                                            handleSavedLocationSelect(
-                                              business.id,
-                                              value,
-                                            )
-                                          }
-                                        >
-                                          <SelectTrigger className="mt-1">
-                                            <SelectValue placeholder="Choose an address" />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="new">
-                                              Enter new address
-                                            </SelectItem>
-                                            {savedLocations.map((location) => (
-                                              <SelectItem
-                                                key={location.id}
-                                                value={location.id}
-                                              >
-                                                <div className="flex flex-col text-left">
-                                                  <span className="font-medium">
-                                                    {location.address_line1}
-                                                  </span>
-                                                  <span className="text-xs text-gray-500">
-                                                    {location.city},{" "}
-                                                    {location.state}{" "}
-                                                    {location.postal_code}
-                                                  </span>
-                                                </div>
-                                              </SelectItem>
-                                            ))}
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                    )}
-                                    <div>
-                                      <Label
-                                        htmlFor={`address-${business.id}`}
-                                        className="text-xs"
-                                      >
-                                        Street Address *
-                                      </Label>
-                                      <Input
-                                        id={`address-${business.id}`}
-                                        placeholder="123 Main Street"
+                            {/* Customer Address Form - show for mobile-only or both_locations when Mobile is selected */}
+                            {(business.deliveryType === "mobile" ||
+                              (business.deliveryType === "both_locations" &&
+                                selectedDeliveryTypes[business.id] ===
+                                  "customer_location")) && (
+                              <div className="mb-3">
+                                <label className="text-sm font-medium text-foreground/70 mb-2 block">
+                                  Delivery Address:
+                                </label>
+                                <div className="space-y-3 p-3 border rounded-lg bg-gray-50">
+                                  {/* Saved Locations Selector */}
+                                  <div>
+                                    <Label className="text-xs">
+                                      Select from saved addresses:
+                                    </Label>
+                                    {savedLocations.length > 0 ? (
+                                      <Select
                                         value={
                                           customerAddresses[business.id]
-                                            ?.address || ""
+                                            ?.selectedLocationId || "new"
+                                        }
+                                        onValueChange={(value) =>
+                                          handleSavedLocationSelect(
+                                            business.id,
+                                            value,
+                                          )
+                                        }
+                                      >
+                                        <SelectTrigger className="mt-1">
+                                          <SelectValue placeholder="Choose an address" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="new">
+                                            Enter new address
+                                          </SelectItem>
+                                          {savedLocations.map((location) => (
+                                            <SelectItem
+                                              key={location.id}
+                                              value={location.id}
+                                            >
+                                              <div className="flex flex-col text-left">
+                                                <span className="font-medium">
+                                                  {location.street_address}
+                                                </span>
+                                                <span className="text-xs text-gray-500">
+                                                  {location.city},{" "}
+                                                  {location.state}{" "}
+                                                  {location.zip_code}
+                                                </span>
+                                              </div>
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    ) : (
+                                      <div className="text-xs text-foreground/60 mt-1">
+                                        No saved addresses found for your account.
+                                      </div>
+                                    )}
+                                    <div className="mt-2">
+                                      <Button variant="link" size="sm" asChild>
+                                        <Link to="/customer/locations">
+                                          Manage saved addresses
+                                        </Link>
+                                      </Button>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <Label
+                                      htmlFor={`address-${business.id}`}
+                                      className="text-xs"
+                                    >
+                                      Street Address *
+                                    </Label>
+                                    <Input
+                                      id={`address-${business.id}`}
+                                      placeholder="123 Main Street"
+                                      value={
+                                        customerAddresses[business.id]
+                                          ?.address || ""
+                                      }
+                                      onChange={(e) =>
+                                        handleAddressChange(
+                                          business.id,
+                                          "address",
+                                          e.target.value,
+                                        )
+                                      }
+                                      className="mt-1"
+                                    />
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                      <Label
+                                        htmlFor={`city-${business.id}`}
+                                        className="text-xs"
+                                      >
+                                        City *
+                                      </Label>
+                                      <Input
+                                        id={`city-${business.id}`}
+                                        placeholder="Miami"
+                                        value={
+                                          customerAddresses[business.id]
+                                            ?.city || ""
                                         }
                                         onChange={(e) =>
                                           handleAddressChange(
                                             business.id,
-                                            "address",
+                                            "city",
                                             e.target.value,
                                           )
                                         }
                                         className="mt-1"
                                       />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-2">
-                                      <div>
-                                        <Label
-                                          htmlFor={`city-${business.id}`}
-                                          className="text-xs"
-                                        >
-                                          City *
-                                        </Label>
-                                        <Input
-                                          id={`city-${business.id}`}
-                                          placeholder="Miami"
-                                          value={
-                                            customerAddresses[business.id]
-                                              ?.city || ""
-                                          }
-                                          onChange={(e) =>
-                                            handleAddressChange(
-                                              business.id,
-                                              "city",
-                                              e.target.value,
-                                            )
-                                          }
-                                          className="mt-1"
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label
-                                          htmlFor={`state-${business.id}`}
-                                          className="text-xs"
-                                        >
-                                          State
-                                        </Label>
-                                        <Input
-                                          id={`state-${business.id}`}
-                                          placeholder="FL"
-                                          value={
-                                            customerAddresses[business.id]
-                                              ?.state || ""
-                                          }
-                                          onChange={(e) =>
-                                            handleAddressChange(
-                                              business.id,
-                                              "state",
-                                              e.target.value,
-                                            )
-                                          }
-                                          className="mt-1"
-                                        />
-                                      </div>
-                                    </div>
                                     <div>
                                       <Label
-                                        htmlFor={`zip-${business.id}`}
+                                        htmlFor={`state-${business.id}`}
                                         className="text-xs"
                                       >
-                                        Zip Code
+                                        State
                                       </Label>
                                       <Input
-                                        id={`zip-${business.id}`}
-                                        placeholder="33101"
+                                        id={`state-${business.id}`}
+                                        placeholder="FL"
                                         value={
-                                          customerAddresses[business.id]?.zip ||
-                                          ""
+                                          customerAddresses[business.id]
+                                            ?.state || ""
                                         }
                                         onChange={(e) =>
                                           handleAddressChange(
                                             business.id,
-                                            "zip",
+                                            "state",
                                             e.target.value,
                                           )
                                         }
@@ -1230,8 +1238,32 @@ export default function BusinessAvailability() {
                                       />
                                     </div>
                                   </div>
+                                  <div>
+                                    <Label
+                                      htmlFor={`zip-${business.id}`}
+                                      className="text-xs"
+                                    >
+                                      Zip Code
+                                    </Label>
+                                    <Input
+                                      id={`zip-${business.id}`}
+                                      placeholder="33101"
+                                      value={
+                                        customerAddresses[business.id]?.zip || ""
+                                      }
+                                      onChange={(e) =>
+                                        handleAddressChange(
+                                          business.id,
+                                          "zip",
+                                          e.target.value,
+                                        )
+                                      }
+                                      className="mt-1"
+                                    />
+                                  </div>
                                 </div>
-                              )}
+                              </div>
+                            )}
 
                             <div className="flex items-center gap-4 text-sm text-foreground/60">
                               {business.verification_status === "approved" && (
