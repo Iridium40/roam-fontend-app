@@ -518,11 +518,24 @@ const ProviderBooking = () => {
       });
     } catch (error: any) {
       console.error("Error submitting booking:", error);
-      const errorMessage =
-        error?.message ||
-        error?.details ||
-        error?.error?.message ||
-        "Failed to submit booking. Please try again.";
+
+      // Improved error message extraction for Supabase errors
+      let errorMessage = "Failed to submit booking. Please try again.";
+
+      if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      } else if (error?.code) {
+        errorMessage = `Database error (${error.code}): Please try again.`;
+      }
+
       toast({
         title: "Error",
         description: errorMessage,
