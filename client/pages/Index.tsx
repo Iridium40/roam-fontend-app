@@ -1447,7 +1447,7 @@ export default function Index() {
       {/* Promotional Deals */}
       <section className="py-12 bg-background/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">
               <span className="text-roam-blue">Special</span>&nbsp;Promotions
             </h2>
