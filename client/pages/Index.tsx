@@ -765,14 +765,6 @@ export default function Index() {
               ) : (
                 <>
                   <Button
-                    variant="outline"
-                    onClick={handleMyBookings}
-                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                  >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    My Bookings
-                  </Button>
-                  <Button
                     variant="ghost"
                     onClick={handleSignIn}
                     className="text-foreground hover:text-roam-blue"
@@ -784,6 +776,14 @@ export default function Index() {
                     className="bg-roam-blue hover:bg-roam-blue/90"
                   >
                     Sign Up
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleMyBookings}
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    My Bookings
                   </Button>
                   <Button
                     asChild
