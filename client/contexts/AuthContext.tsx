@@ -23,6 +23,7 @@ interface AuthContextType {
     phone?: string;
   }) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithGoogleIdToken: (idToken: string, nonce: string) => Promise<void>;
   signInWithApple: () => Promise<void>;
   resendVerificationEmail: (email: string) => Promise<void>;
   updateCustomerProfile: (profileData: {
