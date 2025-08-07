@@ -544,6 +544,17 @@ const ProviderBooking = () => {
       // Use auth.users.id as the customer_id for the booking
       const customerId = user?.id; // This should be the auth.users.id from the authenticated session
 
+      if (!customerId) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to complete your booking.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("Submitting booking with customer_id:", customerId);
+
       // Create booking record
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
