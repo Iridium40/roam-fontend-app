@@ -123,10 +123,10 @@ const ProviderBooking = () => {
   }, [promotionId]);
 
   useEffect(() => {
-    if (user && isCustomer) {
+    if ((user || customer) && isCustomer) {
       fetchCustomerProfile();
     }
-  }, [user, isCustomer]);
+  }, [user, customer, isCustomer]);
 
   const fetchProviderData = async () => {
     try {
