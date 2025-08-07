@@ -41,10 +41,13 @@ export function Header() {
               Become a Provider
             </Link>
             <Button
+              asChild
               variant="outline"
               className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
             >
-              Sign In
+              <Link to="/provider-portal">
+                Sign In
+              </Link>
             </Button>
             <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
               <Link to="/provider-portal">
@@ -93,10 +96,13 @@ export function Header() {
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
                 <Button
+                  asChild
                   variant="outline"
                   className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
                 >
-                  Sign In
+                  <Link to="/provider-portal">
+                    Sign In
+                  </Link>
                 </Button>
                 <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
                   <Link to="/provider-portal">
