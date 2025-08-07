@@ -436,7 +436,28 @@ export default function Index() {
             "Transformed promotions (expired filtered):",
             transformedPromotions,
           );
-          setPromotions(transformedPromotions);
+
+          // Add a mock percentage promotion to showcase 20% OFF badge
+          const mockPercentagePromotion = {
+            id: 'mock-percentage-1',
+            title: 'Weekend Wellness Special',
+            description: 'Get 20% off all wellness services this weekend. Perfect time to treat yourself to some self-care!',
+            startDate: new Date().toISOString(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            businessId: null,
+            imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800',
+            promoCode: 'WELLNESS20',
+            savingsType: 'percentage',
+            savingsAmount: 20,
+            savingsMaxAmount: 50,
+            serviceId: null,
+            business: null,
+            service: null,
+          };
+
+          setPromotions([...transformedPromotions, mockPercentagePromotion]);
         }
       } catch (error: any) {
         console.error("Error fetching data:", error);
