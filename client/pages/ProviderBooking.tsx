@@ -304,18 +304,19 @@ const ProviderBooking = () => {
 
   const fetchCustomerProfile = async () => {
     try {
-      const customerId = customer?.customer_id || customer?.id || user?.id;
-      if (!customerId) {
-        console.log("No customer ID available for profile fetch");
+      // Use auth.users.id for the customer profile lookup
+      const authUserId = user?.id;
+      if (!authUserId) {
+        console.log("No authenticated user ID available for profile fetch");
         return;
       }
 
-      console.log("Fetching customer profile for ID:", customerId);
+      console.log("Fetching customer profile for auth user ID:", authUserId);
 
       const { data: profile, error } = await supabase
         .from("customer_profiles")
         .select("*")
-        .eq("user_id", customerId)
+        .eq("user_id", authUserId) // customer_profiles.user_id = auth.users.id
         .single();
 
       if (error) {
