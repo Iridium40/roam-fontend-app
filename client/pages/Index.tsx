@@ -688,13 +688,12 @@ export default function Index() {
   };
 
   const nextPopularSlide = () => {
-    setCurrentPopularSlide((prev) => (prev + 1) % popularServices.length);
+    const maxSlides = Math.max(0, filteredPopularServices.length - 3);
+    setCurrentPopularSlide((prev) => Math.min(prev + 1, maxSlides));
   };
 
   const prevPopularSlide = () => {
-    setCurrentPopularSlide(
-      (prev) => (prev - 1 + popularServices.length) % popularServices.length,
-    );
+    setCurrentPopularSlide((prev) => Math.max(prev - 1, 0));
   };
 
   const filteredBusinesses = featuredBusinesses.filter((business) => {
