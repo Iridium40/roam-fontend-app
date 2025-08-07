@@ -78,6 +78,36 @@ export default function Index() {
   const [popularServices, setPopularServices] = useState<any[]>([]);
   const [featuredBusinesses, setFeaturedBusinesses] = useState<any[]>([]);
   const [promotions, setPromotions] = useState<any[]>([]);
+
+  // Category icon mapping function
+  const getCategoryIcon = (category: string) => {
+    const cat = category.toLowerCase();
+
+    if (cat.includes("healthcare") || cat.includes("medical") || cat.includes("health")) {
+      return Stethoscope;
+    }
+    if (cat.includes("beauty") || cat.includes("wellness") || cat.includes("spa")) {
+      return Scissors;
+    }
+    if (cat.includes("fitness") || cat.includes("gym") || cat.includes("workout")) {
+      return Dumbbell;
+    }
+    if (cat.includes("home") || cat.includes("cleaning") || cat.includes("repair")) {
+      return Home;
+    }
+    if (cat.includes("business") || cat.includes("professional")) {
+      return Briefcase;
+    }
+    if (cat.includes("automotive") || cat.includes("car")) {
+      return Car;
+    }
+    if (cat.includes("technology") || cat.includes("tech")) {
+      return Smartphone;
+    }
+
+    // Default icon
+    return Building;
+  };
   const [loading, setLoading] = useState(true);
 
   const handleBusinessShare = (business: any) => {
