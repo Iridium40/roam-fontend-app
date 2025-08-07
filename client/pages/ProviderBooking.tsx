@@ -325,6 +325,15 @@ const ProviderBooking = () => {
           "Error details:",
           error.message || error.details || error,
         );
+
+        // If no profile exists but user is authenticated, populate with basic user data
+        if (error.code === 'PGRST116' && user?.email) {
+          console.log("No customer profile found, using auth user data");
+          setBookingForm((prev) => ({
+            ...prev,
+            customerEmail: user.email || "",
+          }));
+        }
         return;
       }
 
