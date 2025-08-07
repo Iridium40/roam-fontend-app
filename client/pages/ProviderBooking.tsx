@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -78,6 +79,7 @@ const ProviderBooking = () => {
   const { businessId } = useParams<{ businessId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, isCustomer } = useAuth();
 
   // Get URL parameters for provider preference, service selection, date and time
   const urlParams = new URLSearchParams(window.location.search);
@@ -94,6 +96,7 @@ const ProviderBooking = () => {
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
   const [promotionData, setPromotionData] = useState<any>(null);
+  const [customerProfile, setCustomerProfile] = useState<any>(null);
   const [expandedDescriptions, setExpandedDescriptions] = useState<{
     [key: string]: boolean;
   }>({});
@@ -118,6 +121,12 @@ const ProviderBooking = () => {
       fetchPromotionData();
     }
   }, [promotionId]);
+
+  useEffect(() => {
+    if (user && isCustomer) {
+      fetchCustomerProfile();
+    }
+  }, [user, isCustomer]);
 
   const fetchProviderData = async () => {
     try {
