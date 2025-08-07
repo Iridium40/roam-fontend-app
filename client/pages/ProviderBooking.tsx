@@ -1283,7 +1283,10 @@ const ProviderBooking = () => {
                   <Label htmlFor="preferredDate">Preferred Date *</Label>
                   <Input
                     id="preferredDate"
+                    name="preferredDate"
                     type="date"
+                    autoComplete="bday"
+                    required
                     value={bookingForm.preferredDate}
                     onChange={(e) =>
                       setBookingForm((prev) => ({
