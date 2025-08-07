@@ -753,7 +753,8 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
       {/* Google One Tap - only show when not authenticated */}
-      {!isCustomer && import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID && (
+      {/* Google One Tap - temporarily disabled due to OAuth configuration issues */}
+      {false && !isCustomer && import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID && (
         <GoogleOneTap
           clientId={import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID}
           onSuccess={() => {
