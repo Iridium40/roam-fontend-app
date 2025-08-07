@@ -660,13 +660,12 @@ export default function Index() {
   }, [selectedCategory, searchQuery, selectedDelivery]);
 
   const nextServiceSlide = () => {
-    setCurrentServiceSlide((prev) => (prev + 1) % featuredServices.length);
+    const maxSlides = Math.max(0, filteredFeaturedServices.length - 3);
+    setCurrentServiceSlide((prev) => Math.min(prev + 1, maxSlides));
   };
 
   const prevServiceSlide = () => {
-    setCurrentServiceSlide(
-      (prev) => (prev - 1 + featuredServices.length) % featuredServices.length,
-    );
+    setCurrentServiceSlide((prev) => Math.max(prev - 1, 0));
   };
 
   const nextPromotionSlide = () => {
