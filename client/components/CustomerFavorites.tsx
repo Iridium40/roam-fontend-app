@@ -304,8 +304,16 @@ export function CustomerFavorites() {
                 <Card key={provider.id} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
-                      <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0">
-                        <User className="w-8 h-8 text-white" />
+                      <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {provider.image_url ? (
+                          <img
+                            src={provider.image_url}
+                            alt={`${provider.first_name} ${provider.last_name}`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-8 h-8 text-white" />
+                        )}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-2">
