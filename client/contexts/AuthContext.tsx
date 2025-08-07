@@ -563,10 +563,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signInWithApple = async () => {
     setLoading(true);
     try {
+      // Determine the appropriate redirect URL based on environment
+      const redirectTo = import.meta.env.DEV
+        ? `${window.location.origin}/home`
+        : `${window.location.origin}/home`;
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "apple",
         options: {
-          redirectTo: window.location.origin,
+          redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
 
@@ -577,6 +586,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // The OAuth flow will redirect, so we don't need to handle the response here
       // The session will be handled when the user returns from OAuth
+      console.log("Apple OAuth initiated successfully");
     } catch (error: any) {
       console.error("Apple sign-in error:", error);
       throw error;
