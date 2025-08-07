@@ -168,6 +168,20 @@ const ProviderBooking = () => {
     }
   }, [user?.email, bookingForm.customerEmail]);
 
+  // Update form when selected location changes
+  useEffect(() => {
+    if (selectedLocation && !bookingForm.customerAddress) {
+      console.log("Populating form with selected location:", selectedLocation);
+      setBookingForm((prev) => ({
+        ...prev,
+        customerAddress: selectedLocation.address_line1 || "",
+        customerCity: selectedLocation.city || "",
+        customerState: selectedLocation.state || "",
+        customerZip: selectedLocation.postal_code || "",
+      }));
+    }
+  }, [selectedLocation, bookingForm.customerAddress]);
+
   const fetchProviderData = async () => {
     try {
       setLoading(true);
