@@ -339,7 +339,7 @@ export default function MyBookings() {
               </div>
             </div>
             <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-              <Link to="/">
+              <Link to="/home">
                 <Calendar className="w-4 h-4 mr-2" />
                 Book New Service
               </Link>
