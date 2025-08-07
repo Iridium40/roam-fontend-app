@@ -140,7 +140,12 @@ const ProviderBooking = () => {
     // Load customer location from URL parameters or database
     if (customerLocationId) {
       fetchCustomerLocation(customerLocationId);
-    } else if (customerAddress && customerCity && customerState && customerZip) {
+    } else if (
+      customerAddress &&
+      customerCity &&
+      customerState &&
+      customerZip
+    ) {
       // Use location data from URL parameters
       setSelectedLocation({
         address_line1: customerAddress,
@@ -149,7 +154,13 @@ const ProviderBooking = () => {
         postal_code: customerZip,
       });
     }
-  }, [customerLocationId, customerAddress, customerCity, customerState, customerZip]);
+  }, [
+    customerLocationId,
+    customerAddress,
+    customerCity,
+    customerState,
+    customerZip,
+  ]);
 
   useEffect(() => {
     if (user && isCustomer) {
@@ -381,7 +392,7 @@ const ProviderBooking = () => {
         );
 
         // If no profile exists but user is authenticated, populate with basic user data
-        if (error.code === 'PGRST116' && user?.email) {
+        if (error.code === "PGRST116" && user?.email) {
           console.log("No customer profile found, using auth user data");
           setBookingForm((prev) => ({
             ...prev,
@@ -394,7 +405,9 @@ const ProviderBooking = () => {
       if (profile) {
         setCustomerProfile(profile);
         // Pre-populate the form with customer data
-        const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
+        const fullName = [profile.first_name, profile.last_name]
+          .filter(Boolean)
+          .join(" ");
 
         // Fetch the customer's most recent location
         const { data: customerLocations } = await supabase
@@ -647,7 +660,8 @@ const ProviderBooking = () => {
       ) {
         toast({
           title: "Missing information",
-          description: "Please fill in all required fields including your complete address",
+          description:
+            "Please fill in all required fields including your complete address",
           variant: "destructive",
         });
         return;
@@ -695,7 +709,9 @@ const ProviderBooking = () => {
 
         if (locationError) {
           console.error("Error creating customer location:", locationError);
-          throw new Error("Failed to save customer location. Please try again.");
+          throw new Error(
+            "Failed to save customer location. Please try again.",
+          );
         }
 
         customerLocationId = customerLocation.id;
@@ -704,7 +720,9 @@ const ProviderBooking = () => {
         console.error("Customer location creation failed:", locationError);
         toast({
           title: "Location Error",
-          description: locationError.message || "Failed to save your address. Please try again.",
+          description:
+            locationError.message ||
+            "Failed to save your address. Please try again.",
           variant: "destructive",
         });
         return;
@@ -1316,13 +1334,15 @@ const ProviderBooking = () => {
                       </div>
                     )}
                     <div className="text-gray-600">
-                      {selectedLocation.city}, {selectedLocation.state} {selectedLocation.postal_code}
+                      {selectedLocation.city}, {selectedLocation.state}{" "}
+                      {selectedLocation.postal_code}
                     </div>
-                    {selectedLocation.country && selectedLocation.country !== 'US' && (
-                      <div className="text-gray-600">
-                        {selectedLocation.country}
-                      </div>
-                    )}
+                    {selectedLocation.country &&
+                      selectedLocation.country !== "US" && (
+                        <div className="text-gray-600">
+                          {selectedLocation.country}
+                        </div>
+                      )}
                   </div>
                   <div className="mt-3 pt-3 border-t">
                     <p className="text-xs text-gray-500">

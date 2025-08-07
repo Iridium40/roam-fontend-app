@@ -54,7 +54,8 @@ export const updateCustomerProfileViaEdgeFunction = async (
         const errorData = JSON.parse(responseText);
         errorMessage = errorData.error || errorData.message || responseText;
       } catch {
-        errorMessage = responseText || `HTTP ${response.status} - ${response.statusText}`;
+        errorMessage =
+          responseText || `HTTP ${response.status} - ${response.statusText}`;
       }
 
       // Handle specific error types
@@ -65,23 +66,24 @@ export const updateCustomerProfileViaEdgeFunction = async (
           `Database conflict occurred: ${errorMessage}. Please try again or contact support.`,
         );
       } else {
-        throw new Error(
-          `Failed to update customer profile: ${errorMessage}`,
-        );
+        throw new Error(`Failed to update customer profile: ${errorMessage}`);
       }
     }
 
     console.log("Successfully updated customer profile via Edge Function");
     return; // Success, exit early
-
   } catch (edgeFunctionError: any) {
-    console.warn("Edge Function failed, falling back to REST API:", edgeFunctionError.message);
+    console.warn(
+      "Edge Function failed, falling back to REST API:",
+      edgeFunctionError.message,
+    );
 
     // If it's a network error (Failed to fetch), try the fallback
-    if (edgeFunctionError.message?.includes('Failed to fetch') ||
-        edgeFunctionError.message?.includes('ERR_NETWORK') ||
-        edgeFunctionError.message?.includes('TypeError')) {
-
+    if (
+      edgeFunctionError.message?.includes("Failed to fetch") ||
+      edgeFunctionError.message?.includes("ERR_NETWORK") ||
+      edgeFunctionError.message?.includes("TypeError")
+    ) {
       console.log("Using REST API fallback approach...");
 
       // Fallback to REST API approach
@@ -144,19 +146,21 @@ export const updateCustomerProfileViaEdgeFunction = async (
 
         if (!restResponse.ok) {
           const restResponseText = await restResponse.text();
-          throw new Error(`REST API failed: HTTP ${restResponse.status} - ${restResponseText}`);
+          throw new Error(
+            `REST API failed: HTTP ${restResponse.status} - ${restResponseText}`,
+          );
         }
 
-        console.log("Successfully updated customer profile via REST API fallback");
+        console.log(
+          "Successfully updated customer profile via REST API fallback",
+        );
         return; // Success
-
       } catch (restError: any) {
         console.error("REST API fallback also failed:", restError);
         throw new Error(
           `Both Edge Function and REST API failed. Edge Function: ${edgeFunctionError.message}, REST API: ${restError.message}`,
         );
       }
-
     } else {
       // If it's not a network error, re-throw the original Edge Function error
       throw edgeFunctionError;

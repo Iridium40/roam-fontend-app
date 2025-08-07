@@ -816,7 +816,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
 
         // Use Edge Function for customer profile updates
-        const { updateCustomerProfileViaEdgeFunction } = await import("@/lib/directSupabase_new");
+        const { updateCustomerProfileViaEdgeFunction } = await import(
+          "@/lib/directSupabase_new"
+        );
         await updateCustomerProfileViaEdgeFunction(
           directSupabaseAPI.baseURL,
           directSupabaseAPI.apiKey,
@@ -830,7 +832,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             date_of_birth: profileData.dateOfBirth || null,
             bio: profileData.bio || null,
             image_url: profileData.imageUrl || null,
-          }
+          },
         );
 
         console.log(

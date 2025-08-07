@@ -903,7 +903,9 @@ class DirectSupabaseAPI {
     };
 
     // Function to try operation and read response safely
-    const tryOperationWithResponse = async (useUserToken = false): Promise<{response: Response, text: string}> => {
+    const tryOperationWithResponse = async (
+      useUserToken = false,
+    ): Promise<{ response: Response; text: string }> => {
       const resp = await tryOperation(useUserToken);
       const text = await safeReadResponseText(resp);
       return { response: resp, text };
