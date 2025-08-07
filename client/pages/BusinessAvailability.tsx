@@ -1029,6 +1029,51 @@ export default function BusinessAvailability() {
                                     Delivery Address:
                                   </label>
                                   <div className="space-y-3 p-3 border rounded-lg bg-gray-50">
+                                    {/* Saved Locations Selector */}
+                                    {savedLocations.length > 0 && (
+                                      <div>
+                                        <Label className="text-xs">
+                                          Select from saved addresses:
+                                        </Label>
+                                        <Select
+                                          value={
+                                            customerAddresses[business.id]
+                                              ?.selectedLocationId || "new"
+                                          }
+                                          onValueChange={(value) =>
+                                            handleSavedLocationSelect(
+                                              business.id,
+                                              value,
+                                            )
+                                          }
+                                        >
+                                          <SelectTrigger className="mt-1">
+                                            <SelectValue placeholder="Choose an address" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="new">
+                                              Enter new address
+                                            </SelectItem>
+                                            {savedLocations.map((location) => (
+                                              <SelectItem
+                                                key={location.id}
+                                                value={location.id}
+                                              >
+                                                <div className="flex flex-col text-left">
+                                                  <span className="font-medium">
+                                                    {location.address_line1}
+                                                  </span>
+                                                  <span className="text-xs text-gray-500">
+                                                    {location.city}, {location.state}{" "}
+                                                    {location.postal_code}
+                                                  </span>
+                                                </div>
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                    )}
                                     <div>
                                       <Label
                                         htmlFor={`address-${business.id}`}
