@@ -850,6 +850,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           );
         }
 
+        // Handle user existence errors (HTTP 409 foreign key constraint)
+        if (
+          dbError.message &&
+          (dbError.message.includes("does not exist in auth.users table") ||
+            dbError.message.includes("HTTP 409") ||
+            dbError.message.includes("foreign key constraint"))
+        ) {
+          console.log(
+            "AuthContext updateCustomerProfile: User does not exist, clearing session",
+          );
+          await signOut();
+          throw new Error(
+            "Your account is no longer valid. Please sign up again to continue.",
+          );
+        }
+
         // Re-throw the error so the UI can show it to the user
         throw new Error(
           `Database update failed: ${dbError.message || dbError}`,
