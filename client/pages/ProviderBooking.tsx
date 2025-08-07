@@ -331,12 +331,18 @@ const ProviderBooking = () => {
       if (profile) {
         setCustomerProfile(profile);
         // Pre-populate the form with customer data
+        const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
         setBookingForm((prev) => ({
           ...prev,
-          customerName: profile.full_name || "",
-          customerEmail: profile.email || user.email || "",
+          customerName: fullName || "",
+          customerEmail: profile.email || user?.email || "",
           customerPhone: profile.phone || "",
         }));
+        console.log("Pre-populated booking form with customer data:", {
+          customerName: fullName,
+          customerEmail: profile.email || user?.email,
+          customerPhone: profile.phone,
+        });
       }
     } catch (error: any) {
       console.error("Error fetching customer profile:", error);
