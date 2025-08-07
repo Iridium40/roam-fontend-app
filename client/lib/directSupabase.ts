@@ -881,10 +881,6 @@ class DirectSupabaseAPI {
       }
     };
 
-    // Try with anon key first
-    response = await tryOperation(false);
-    let responseText = "";
-
     // Function to safely read response text
     const safeReadResponseText = async (resp: Response): Promise<string> => {
       try {
@@ -906,25 +902,34 @@ class DirectSupabaseAPI {
       }
     };
 
+    // Function to try operation and read response safely
+    const tryOperationWithResponse = async (useUserToken = false): Promise<{response: Response, text: string}> => {
+      const resp = await tryOperation(useUserToken);
+      const text = await safeReadResponseText(resp);
+      return { response: resp, text };
+    };
+
+    // Try with anon key first
+    let result = await tryOperationWithResponse(false);
+    response = result.response;
+    let responseText = result.text;
+
     // If anon key fails with auth/permission error, try with user token
     if (!response.ok && (response.status === 401 || response.status === 403)) {
-      responseText = await safeReadResponseText(response);
-
       if (this.accessToken) {
         console.log(
           "DirectSupabase updateCustomerProfile: Anon key failed, trying with user token...",
         );
         authMethod = "user";
-        response = await tryOperation(true);
-        responseText = await safeReadResponseText(response);
+        // Get fresh response with user token
+        result = await tryOperationWithResponse(true);
+        response = result.response;
+        responseText = result.text;
       } else {
         console.log(
           "DirectSupabase updateCustomerProfile: No user token available for fallback",
         );
       }
-    } else {
-      // Read response text for successful response or non-auth errors
-      responseText = await safeReadResponseText(response);
     }
 
     console.log("DirectSupabase updateCustomerProfile: Response", {
