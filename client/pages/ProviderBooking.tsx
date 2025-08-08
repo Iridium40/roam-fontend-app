@@ -1677,25 +1677,6 @@ const ProviderBooking = () => {
                       </div>
                     )}
 
-                    {/* Debug: Show promotion info even if no discount yet */}
-            {promotionData && getDiscountAmount() === 0 && (
-              <div className="flex justify-between items-center text-amber-600 text-sm">
-                <span className="flex items-center">
-                  <Badge variant="secondary" className="mr-2 text-xs bg-amber-100 text-amber-800">
-                    {promotionData.promo_code}
-                  </Badge>
-                  Promotion Applied
-                </span>
-                <span>
-                  Debug: {JSON.stringify({
-                    type: promotionData.savings_type,
-                    amount: promotionData.savings_amount,
-                    subtotal: getSubtotal()
-                  })}
-                </span>
-              </div>
-            )}
-
                     <div className="flex justify-between items-center text-gray-600">
                       <span>Platform Fees (15%)</span>
                       <span>${getPlatformFees().toFixed(2)}</span>
@@ -1909,19 +1890,6 @@ const ProviderBooking = () => {
                       Promotion Discount
                     </span>
                     <span className="font-semibold">-${getDiscountAmount().toFixed(2)}</span>
-                  </div>
-                )}
-
-                {/* Debug: Show promotion info even if no discount yet */}
-                {promotionData && getDiscountAmount() === 0 && (
-                  <div className="flex justify-between text-amber-600 text-sm">
-                    <span className="flex items-center">
-                      <Badge variant="secondary" className="mr-2 text-xs bg-amber-100 text-amber-800">
-                        {promotionData.promo_code}
-                      </Badge>
-                      Promotion Applied
-                    </span>
-                    <span>No discount yet</span>
                   </div>
                 )}
 
