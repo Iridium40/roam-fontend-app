@@ -181,8 +181,12 @@ const ProviderBooking = () => {
 
   useEffect(() => {
     if (customer && isCustomer) {
-      console.log("Pre-populating customer form with authenticated customer data:", customer);
-      const fullName = `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
+      console.log(
+        "Pre-populating customer form with authenticated customer data:",
+        customer,
+      );
+      const fullName =
+        `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
       setBookingForm((prev) => ({
         ...prev,
         customerName: fullName,
@@ -215,9 +219,15 @@ const ProviderBooking = () => {
 
   // Force customer profile data population when booking modal opens
   useEffect(() => {
-    if (isBookingModalOpen && customer && isCustomer && !bookingForm.customerName) {
+    if (
+      isBookingModalOpen &&
+      customer &&
+      isCustomer &&
+      !bookingForm.customerName
+    ) {
       console.log("Booking modal opened, ensuring customer data is populated");
-      const fullName = `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
+      const fullName =
+        `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
       setBookingForm((prev) => ({
         ...prev,
         customerName: fullName,
@@ -396,7 +406,8 @@ const ProviderBooking = () => {
           // Show user-friendly error for missing service
           toast({
             title: "Service Not Available",
-            description: "The selected service is no longer available from this business. Please choose another service.",
+            description:
+              "The selected service is no longer available from this business. Please choose another service.",
             variant: "destructive",
           });
 
@@ -408,7 +419,9 @@ const ProviderBooking = () => {
             .single();
 
           if (globalService) {
-            console.log(`Service "${globalService.name}" exists globally but is not offered by this business`);
+            console.log(
+              `Service "${globalService.name}" exists globally but is not offered by this business`,
+            );
             toast({
               title: "Service Not Offered",
               description: `This business does not currently offer "${globalService.name}". Please browse their available services below.`,
@@ -424,7 +437,8 @@ const ProviderBooking = () => {
       if (!services || services.length === 0) {
         toast({
           title: "No Services Available",
-          description: "This business currently has no active services available for booking.",
+          description:
+            "This business currently has no active services available for booking.",
           variant: "destructive",
         });
       }
@@ -613,8 +627,11 @@ const ProviderBooking = () => {
         .single();
 
       // If not found by ID and we have a promo code, try to find by promo code
-      if (error && error.code === 'PGRST116' && promoCode) {
-        console.log("Promotion not found by ID, trying by promo code:", promoCode);
+      if (error && error.code === "PGRST116" && promoCode) {
+        console.log(
+          "Promotion not found by ID, trying by promo code:",
+          promoCode,
+        );
         const { data: promoByCode, error: promoError } = await supabase
           .from("promotions")
           .select(
@@ -649,20 +666,27 @@ const ProviderBooking = () => {
       if (error) {
         console.error("Error fetching promotion:", error);
         // If promotion not found, try to create a default promotion for demo purposes
-        if (error.code === 'PGRST116' && (promoCode === 'BOTOX25' || promoCode === 'SAVE20')) {
+        if (
+          error.code === "PGRST116" &&
+          (promoCode === "BOTOX25" || promoCode === "SAVE20")
+        ) {
           console.log(`Creating demo promotion for ${promoCode}`);
-          const discountPercent = promoCode === 'SAVE20' ? 20 : 25;
+          const discountPercent = promoCode === "SAVE20" ? 20 : 25;
           const demoPromotion = {
             id: promotionId,
-            title: promoCode === 'SAVE20' ? "Weekend Yoga Special" : "Botox Special",
-            description: promoCode === 'SAVE20' ? "Get 20% off all yoga services this weekend" : "25% off Botox services",
+            title:
+              promoCode === "SAVE20" ? "Weekend Yoga Special" : "Botox Special",
+            description:
+              promoCode === "SAVE20"
+                ? "Get 20% off all yoga services this weekend"
+                : "25% off Botox services",
             promo_code: promoCode,
             savings_type: "percentage",
             savings_amount: discountPercent,
             savings_max_amount: 100,
             is_active: true,
             business_id: businessId,
-            service_id: selectedServiceId
+            service_id: selectedServiceId,
           };
           setPromotionData(demoPromotion);
           console.log("Demo promotion data set:", demoPromotion);
@@ -684,7 +708,10 @@ const ProviderBooking = () => {
 
       // Verify promo code matches if provided
       if (promoCode && promotion.promo_code !== promoCode) {
-        console.warn("Promo code mismatch:", { expected: promotion.promo_code, provided: promoCode });
+        console.warn("Promo code mismatch:", {
+          expected: promotion.promo_code,
+          provided: promoCode,
+        });
         return;
       }
 
@@ -795,7 +822,10 @@ const ProviderBooking = () => {
 
       // Apply maximum discount cap if specified
       if (promotionData.savings_max_amount) {
-        return Math.min(percentageDiscount, Number(promotionData.savings_max_amount));
+        return Math.min(
+          percentageDiscount,
+          Number(promotionData.savings_max_amount),
+        );
       }
 
       return percentageDiscount;
@@ -832,24 +862,32 @@ const ProviderBooking = () => {
       const baseRequiredFields = [
         !bookingForm.customerName,
         !bookingForm.customerEmail,
-        !bookingForm.preferredDate
+        !bookingForm.preferredDate,
       ];
 
       // Address fields only required for customer_location delivery type
-      const addressRequiredFields = deliveryType === "customer_location" ? [
-        !bookingForm.customerAddress,
-        !bookingForm.customerCity,
-        !bookingForm.customerState,
-        !bookingForm.customerZip
-      ] : [];
+      const addressRequiredFields =
+        deliveryType === "customer_location"
+          ? [
+              !bookingForm.customerAddress,
+              !bookingForm.customerCity,
+              !bookingForm.customerState,
+              !bookingForm.customerZip,
+            ]
+          : [];
 
-      const allRequiredFields = [...baseRequiredFields, ...addressRequiredFields];
+      const allRequiredFields = [
+        ...baseRequiredFields,
+        ...addressRequiredFields,
+      ];
 
-      if (allRequiredFields.some(field => field)) {
-        const missingAddressFields = deliveryType === "customer_location" && addressRequiredFields.some(field => field);
+      if (allRequiredFields.some((field) => field)) {
+        const missingAddressFields =
+          deliveryType === "customer_location" &&
+          addressRequiredFields.some((field) => field);
         toast({
           title: "Missing information",
-          description: missingAddressFields 
+          description: missingAddressFields
             ? "Please fill in all required fields including your complete address"
             : "Please fill in all required fields",
           variant: "destructive",
@@ -873,7 +911,8 @@ const ProviderBooking = () => {
       if (!customerId && !bookingForm.customerEmail) {
         toast({
           title: "Customer information required",
-          description: "Please provide your email address to complete the booking.",
+          description:
+            "Please provide your email address to complete the booking.",
           variant: "destructive",
         });
         return;
@@ -896,8 +935,12 @@ const ProviderBooking = () => {
       }
 
       // Set location IDs based on delivery type
-      const customerLocationId = deliveryType === "customer_location" ? selectedLocation?.id : null;
-      const businessLocationId = deliveryType === "business_location" ? (locationId || location?.id) : null;
+      const customerLocationId =
+        deliveryType === "customer_location" ? selectedLocation?.id : null;
+      const businessLocationId =
+        deliveryType === "business_location"
+          ? locationId || location?.id
+          : null;
 
       console.log("Booking location debug:", {
         deliveryType,
@@ -905,22 +948,28 @@ const ProviderBooking = () => {
         businessLocationId,
         selectedLocation: selectedLocation?.id,
         locationId,
-        locationFromState: location?.id
+        locationFromState: location?.id,
       });
 
       // Create booking record
       // Find the correct service ID - use selectedServiceId from URL or find from services
-      const serviceToBook = selectedServiceId 
-        ? services.find(s => s.service_id === selectedServiceId || s.id === selectedServiceId)
+      const serviceToBook = selectedServiceId
+        ? services.find(
+            (s) =>
+              s.service_id === selectedServiceId || s.id === selectedServiceId,
+          )
         : null;
-      
+
       const actualServiceId = serviceToBook?.service_id || selectedServiceId;
 
       console.log("Service booking debug:", {
         selectedServiceId,
         serviceToBook,
         actualServiceId,
-        selectedItems: selectedItems.map(item => ({ id: item.id, type: item.type }))
+        selectedItems: selectedItems.map((item) => ({
+          id: item.id,
+          type: item.type,
+        })),
       });
 
       // Debug location IDs before payload construction
@@ -929,8 +978,8 @@ const ProviderBooking = () => {
         businessLocationId,
         deliveryType,
         locationId,
-        'location?.id': location?.id,
-        'selectedLocation?.id': selectedLocation?.id
+        "location?.id": location?.id,
+        "selectedLocation?.id": selectedLocation?.id,
       });
 
       const bookingPayload = {
@@ -976,7 +1025,7 @@ const ProviderBooking = () => {
           booking_id: booking.id,
           discount_applied: discountAmount,
           original_amount: originalAmount,
-          final_amount: finalAmount
+          final_amount: finalAmount,
         });
 
         const { error: promotionError } = await supabase
@@ -990,7 +1039,10 @@ const ProviderBooking = () => {
           });
 
         if (promotionError) {
-          console.error("Error creating promotion usage record:", promotionError);
+          console.error(
+            "Error creating promotion usage record:",
+            promotionError,
+          );
           // Don't throw error here - booking was successful, promotion tracking is secondary
         }
       }
@@ -1000,16 +1052,22 @@ const ProviderBooking = () => {
         booking_id: booking.id,
         total_amount: getTotalAmount().toString(),
         service_fee: (getTotalAmount() * 0.15).toString(),
-        customer_email: customerId ? customer?.email || user?.email || bookingForm.customerEmail : bookingForm.customerEmail,
-        customer_name: customerId ? `${customer?.first_name || ''} ${customer?.last_name || ''}`.trim() : bookingForm.customerName,
-        business_name: providerData?.business_name || '',
-        service_name: selectedItems.find(item => item.type === 'service')?.name || 'Service',
+        customer_email: customerId
+          ? customer?.email || user?.email || bookingForm.customerEmail
+          : bookingForm.customerEmail,
+        customer_name: customerId
+          ? `${customer?.first_name || ""} ${customer?.last_name || ""}`.trim()
+          : bookingForm.customerName,
+        business_name: providerData?.business_name || "",
+        service_name:
+          selectedItems.find((item) => item.type === "service")?.name ||
+          "Service",
       });
 
       // Add promotion info if applicable
       if (promotionData && promoCode) {
-        paymentParams.set('promo_code', promoCode);
-        paymentParams.set('discount_amount', getDiscountAmount().toString());
+        paymentParams.set("promo_code", promoCode);
+        paymentParams.set("discount_amount", getDiscountAmount().toString());
       }
 
       // Navigate to payment page
@@ -1096,20 +1154,23 @@ const ProviderBooking = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Button asChild variant="ghost" size="sm">
-                <Link to={(() => {
-                  // Construct URL to go back to business profile for provider selection
-                  const params = new URLSearchParams();
-                  if (selectedServiceId) params.set("service", selectedServiceId);
-                  if (preSelectedDate) params.set("date", preSelectedDate);
-                  if (preSelectedTime) params.set("time", preSelectedTime);
-                  if (promotionId) params.set("promotion", promotionId);
-                  if (promoCode) params.set("promo_code", promoCode);
-                  if (deliveryType) params.set("deliveryType", deliveryType);
-                  if (locationId) params.set("location", locationId);
+                <Link
+                  to={(() => {
+                    // Construct URL to go back to business profile for provider selection
+                    const params = new URLSearchParams();
+                    if (selectedServiceId)
+                      params.set("service", selectedServiceId);
+                    if (preSelectedDate) params.set("date", preSelectedDate);
+                    if (preSelectedTime) params.set("time", preSelectedTime);
+                    if (promotionId) params.set("promotion", promotionId);
+                    if (promoCode) params.set("promo_code", promoCode);
+                    if (deliveryType) params.set("deliveryType", deliveryType);
+                    if (locationId) params.set("location", locationId);
 
-                  const queryString = params.toString();
-                  return `/business/${businessId}${queryString ? `?${queryString}` : ''}`;
-                })()}>
+                    const queryString = params.toString();
+                    return `/business/${businessId}${queryString ? `?${queryString}` : ""}`;
+                  })()}
+                >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Provider Selection
                 </Link>
@@ -1206,16 +1267,16 @@ const ProviderBooking = () => {
                   </h3>
                   <p className="text-green-700">
                     {promotionData.description ||
-                     `Save ${promotionData.savings_type === 'percentage'
-                       ? `${promotionData.savings_amount}%`
-                       : `$${promotionData.savings_amount}`} on this service`}
+                      `Save ${
+                        promotionData.savings_type === "percentage"
+                          ? `${promotionData.savings_amount}%`
+                          : `$${promotionData.savings_amount}`
+                      } on this service`}
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-green-600">
-                  Promotion Active
-                </div>
+                <div className="text-sm text-green-600">Promotion Active</div>
                 {getDiscountAmount() > 0 && (
                   <div className="text-lg font-bold text-green-800">
                     Save ${getDiscountAmount().toFixed(2)}
@@ -1513,8 +1574,18 @@ const ProviderBooking = () => {
                 <CardContent>
                   <div className="text-center py-8">
                     <div className="text-gray-500 mb-4">
-                      <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <svg
+                        className="w-16 h-16 mx-auto mb-4 text-gray-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
                       </svg>
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1642,7 +1713,8 @@ const ProviderBooking = () => {
                 <CardContent>
                   <div className="space-y-2 text-sm">
                     <div className="font-medium text-gray-900">
-                      {selectedLocation.address_line1 || selectedLocation.street_address}
+                      {selectedLocation.address_line1 ||
+                        selectedLocation.street_address}
                     </div>
                     {selectedLocation.address_line2 && (
                       <div className="text-gray-600">
@@ -1705,19 +1777,27 @@ const ProviderBooking = () => {
                     {promotionData && (
                       <div className="flex justify-between items-center text-green-600">
                         <span className="flex items-center">
-                          <Badge variant="secondary" className="mr-2 text-xs bg-green-100 text-green-800">
+                          <Badge
+                            variant="secondary"
+                            className="mr-2 text-xs bg-green-100 text-green-800"
+                          >
                             {promotionData.promo_code}
                           </Badge>
-                          Promotion Discount ({promotionData.savings_amount}% off)
+                          Promotion Discount ({promotionData.savings_amount}%
+                          off)
                         </span>
-                        <span className="font-semibold">-${getDiscountAmount().toFixed(2)}</span>
+                        <span className="font-semibold">
+                          -${getDiscountAmount().toFixed(2)}
+                        </span>
                       </div>
                     )}
 
                     {/* Temporary debug info */}
                     {promotionData && (
                       <div className="text-xs text-gray-500 mt-1">
-                        Debug: type={promotionData.savings_type}, amount={promotionData.savings_amount}, subtotal=${getSubtotal()}
+                        Debug: type={promotionData.savings_type}, amount=
+                        {promotionData.savings_amount}, subtotal=$
+                        {getSubtotal()}
                       </div>
                     )}
 
@@ -1928,12 +2008,17 @@ const ProviderBooking = () => {
                 {promotionData && getDiscountAmount() > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span className="flex items-center">
-                      <Badge variant="secondary" className="mr-2 text-xs bg-green-100 text-green-800">
+                      <Badge
+                        variant="secondary"
+                        className="mr-2 text-xs bg-green-100 text-green-800"
+                      >
                         {promotionData.promo_code}
                       </Badge>
                       Promotion Discount
                     </span>
-                    <span className="font-semibold">-${getDiscountAmount().toFixed(2)}</span>
+                    <span className="font-semibold">
+                      -${getDiscountAmount().toFixed(2)}
+                    </span>
                   </div>
                 )}
 

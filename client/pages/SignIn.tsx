@@ -157,8 +157,12 @@ export default function SignIn() {
       console.error("Google auth error:", error);
 
       let errorMessage = "Failed to sign in with Google";
-      if (error.message?.includes("origin") || error.message?.includes("client ID")) {
-        errorMessage = "Google Sign-In is not configured for this domain. Please use email/password sign-in.";
+      if (
+        error.message?.includes("origin") ||
+        error.message?.includes("client ID")
+      ) {
+        errorMessage =
+          "Google Sign-In is not configured for this domain. Please use email/password sign-in.";
       }
 
       toast({

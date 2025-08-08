@@ -51,31 +51,30 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
       try {
         // In development, Netlify functions might not be available
         const functionUrl = import.meta.env.DEV
-          ? "/api/create-payment-intent"  // Fallback for development
+          ? "/api/create-payment-intent" // Fallback for development
           : "/.netlify/functions/create-payment-intent";
 
-        const response = await fetch(functionUrl,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              bookingId,
-              totalAmount,
-              serviceFee,
-              customerEmail,
-              customerName,
-              businessName,
-              serviceName,
-            }),
+        const response = await fetch(functionUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({
+            bookingId,
+            totalAmount,
+            serviceFee,
+            customerEmail,
+            customerName,
+            businessName,
+            serviceName,
+          }),
+        });
 
         // Check response status before reading body
         if (!response.ok) {
-          console.error("Payment intent request failed:",
-            `${response.status} ${response.statusText} - ${response.url}`
+          console.error(
+            "Payment intent request failed:",
+            `${response.status} ${response.statusText} - ${response.url}`,
           );
 
           // Clone response to avoid body stream issues
@@ -84,16 +83,24 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           try {
             const errorData = await response.json();
             console.error("Error response data:", errorData);
-            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            throw new Error(
+              errorData.error || `HTTP error! status: ${response.status}`,
+            );
           } catch (jsonError) {
-            console.error("Failed to parse error response as JSON, trying text...");
+            console.error(
+              "Failed to parse error response as JSON, trying text...",
+            );
             try {
               const responseText = await responseClone.text();
               console.error("Error response text:", responseText);
-              throw new Error(`HTTP ${response.status}: ${responseText || response.statusText}`);
+              throw new Error(
+                `HTTP ${response.status}: ${responseText || response.statusText}`,
+              );
             } catch (textError) {
               console.error("Failed to read response body:", textError);
-              throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+              throw new Error(
+                `HTTP error! status: ${response.status} ${response.statusText}`,
+              );
             }
           }
         }
@@ -108,14 +115,20 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         // Provide specific error messages for common issues
         let errorTitle = "Payment Setup Failed";
-        let errorDescription = "Unable to initialize payment. Please try again.";
+        let errorDescription =
+          "Unable to initialize payment. Please try again.";
 
         if (error.message?.includes("Stripe secret key not configured")) {
           errorTitle = "Payment Configuration Error";
-          errorDescription = "Payment system is not properly configured. Please contact support.";
-        } else if (error.message?.includes("network") || error.message?.includes("fetch")) {
+          errorDescription =
+            "Payment system is not properly configured. Please contact support.";
+        } else if (
+          error.message?.includes("network") ||
+          error.message?.includes("fetch")
+        ) {
           errorTitle = "Network Error";
-          errorDescription = "Unable to connect to payment service. Please check your internet connection.";
+          errorDescription =
+            "Unable to connect to payment service. Please check your internet connection.";
         }
 
         toast({
