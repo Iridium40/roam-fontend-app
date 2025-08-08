@@ -1162,7 +1162,8 @@ export default function BusinessAvailability() {
                                       <Select
                                         value={
                                           customerAddresses[business.id]
-                                            ?.selectedLocationId || "new"
+                                            ?.selectedLocationId ||
+                                          (savedLocations.length === 1 ? savedLocations[0].id : "new")
                                         }
                                         onValueChange={(value) =>
                                           handleSavedLocationSelect(
