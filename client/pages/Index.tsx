@@ -48,7 +48,7 @@ import {
   Briefcase,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CustomerAuthModal } from "@/components/CustomerAuthModal";
 import { CustomerAvatarDropdown } from "@/components/CustomerAvatarDropdown";
@@ -691,9 +691,18 @@ export default function Index() {
     setCurrentServiceSlide(0);
   }, [selectedCategory, searchQuery, selectedDelivery]);
 
+  // Featured Services: paginate into pages of 3
+  const servicePages = useMemo(() => {
+    const pages: any[][] = [];
+    for (let i = 0; i < filteredFeaturedServices.length; i += 3) {
+      pages.push(filteredFeaturedServices.slice(i, i + 3));
+    }
+    return pages;
+  }, [filteredFeaturedServices]);
+
   const nextServiceSlide = () => {
-    const maxSlides = Math.max(0, filteredFeaturedServices.length - 3);
-    setCurrentServiceSlide((prev) => Math.min(prev + 1, maxSlides));
+    const maxPage = Math.max(0, servicePages.length - 1);
+    setCurrentServiceSlide((prev) => Math.min(prev + 1, maxPage));
   };
 
   const prevServiceSlide = () => {
@@ -710,8 +719,8 @@ export default function Index() {
   };
 
   const nextBusinessSlide = () => {
-    const maxSlides = Math.max(0, filteredBusinesses.length - 3);
-    setCurrentBusinessSlide((prev) => Math.min(prev + 1, maxSlides));
+    const maxPage = Math.max(0, businessPages.length - 1);
+    setCurrentBusinessSlide((prev) => Math.min(prev + 1, maxPage));
   };
 
   const prevBusinessSlide = () => {
@@ -749,6 +758,15 @@ export default function Index() {
 
     return matchesSearch && matchesCategory && matchesDelivery;
   });
+
+  // Featured Businesses: paginate into pages of 3
+  const businessPages = useMemo(() => {
+    const pages: any[][] = [];
+    for (let i = 0; i < filteredBusinesses.length; i += 3) {
+      pages.push(filteredBusinesses.slice(i, i + 3));
+    }
+    return pages;
+  }, [filteredBusinesses]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
@@ -1341,34 +1359,43 @@ export default function Index() {
           {filteredFeaturedServices.length > 0 ? (
             <div className="relative overflow-hidden">
               {/* Navigation Arrows */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={prevServiceSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={nextServiceSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-              <div
-                className="flex gap-8 transition-transform duration-300 ease-in-out"
-                style={{
-                  transform: `translateX(-${currentServiceSlide * (100 / 3)}%)`,
-                  width: "calc(100% + 2rem)",
-                }}
-              >
-                {filteredFeaturedServices.map((service, index) => (
-                  <Card
-                    key={service.id}
-                    className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0"
-                    style={{ minWidth: "calc(33.333% - 0.667rem)" }}
+              {servicePages.length > 1 && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={prevServiceSlide}
+                    disabled={currentServiceSlide === 0}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={nextServiceSlide}
+                    disabled={currentServiceSlide >= servicePages.length - 1}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-300 ease-in-out"
+                  style={{
+                    transform: `translateX(-${currentServiceSlide * 100}%)`,
+                    width: `${Math.max(1, servicePages.length) * 100}%`,
+                  }}
+                >
+                  {servicePages.map((page, pageIndex) => (
+                    <div key={`services-page-${pageIndex}`} className="flex gap-8 w-full flex-none">
+                      {page.map((service) => (
+                        <Card
+                          key={service.id}
+                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none"
+                          style={{ minWidth: "calc((100% - 4rem) / 3)" }}
                   >
                     <div className="relative">
                       <img
@@ -1446,8 +1473,11 @@ export default function Index() {
                         </Link>
                       </Button>
                     </CardContent>
-                  </Card>
-                ))}
+                        </Card>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -1472,10 +1502,10 @@ export default function Index() {
             </div>
           )}
 
-          {/* Carousel indicators - only show when there are services */}
-          {filteredFeaturedServices.length > 0 && (
+          {/* Carousel indicators - only show when there are multiple pages */}
+          {servicePages.length > 1 && (
             <div className="flex justify-center mt-6 gap-2">
-              {filteredFeaturedServices.map((_, index) => (
+              {servicePages.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentServiceSlide(index)}
@@ -1736,7 +1766,8 @@ export default function Index() {
                 transform: `translateX(-${currentPopularSlide * 100}%)`,
               }}
             >
-              {filteredPopularServices.map((service) => (
+              {filteredPopularServices.map((service) => {
+                return (
                 <div key={service.id} className="w-full flex-shrink-0 px-2">
                   <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl">
                     {/* Hero Image Section */}
@@ -1828,7 +1859,8 @@ export default function Index() {
                     </CardContent>
                   </Card>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Dots Indicator */}
@@ -1959,7 +1991,7 @@ export default function Index() {
           {filteredBusinesses.length > 0 ? (
             <div className="relative overflow-hidden">
               {/* Navigation Arrows */}
-              {filteredBusinesses.length > 3 && (
+              {businessPages.length > 1 && (
                 <>
                   <Button
                     variant="outline"
@@ -1974,23 +2006,24 @@ export default function Index() {
                     variant="outline"
                     size="sm"
                     onClick={nextBusinessSlide}
-                    disabled={
-                      currentBusinessSlide >= filteredBusinesses.length - 3
-                    }
+                    disabled={currentBusinessSlide >= businessPages.length - 1}
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </Button>
                 </>
               )}
-              <div
-                className="flex gap-8 transition-transform duration-300 ease-in-out"
-                style={{
-                  transform: `translateX(-${currentBusinessSlide * (100 / 3)}%)`,
-                  width: "calc(100% + 2rem)",
-                }}
-              >
-                {filteredBusinesses.map((business, index) => (
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-300 ease-in-out"
+                  style={{
+                    transform: `translateX(-${currentBusinessSlide * 100}%)`,
+                    width: `${Math.max(1, businessPages.length) * 100}%`,
+                  }}
+                >
+                  {businessPages.map((page, pageIndex) => (
+                    <div key={`businesses-page-${pageIndex}`} className="flex gap-8 w-full flex-none">
+                      {page.map((business) => (
                   <Card
                     key={business.id}
                     className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
@@ -2132,8 +2165,11 @@ export default function Index() {
                         </div>
                       </div>
                     </CardContent>
-                  </Card>
-                ))}
+                        </Card>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
