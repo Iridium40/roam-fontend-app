@@ -1128,6 +1128,42 @@ const ProviderBooking = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Promotion Banner */}
+        {promotionData && (
+          <div className="mb-8 bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Badge className="bg-green-500 text-white">
+                    {promotionData.promo_code}
+                  </Badge>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-green-800">
+                    {promotionData.title || "Special Promotion"}
+                  </h3>
+                  <p className="text-green-700">
+                    {promotionData.description ||
+                     `Save ${promotionData.savings_type === 'percentage'
+                       ? `${promotionData.savings_amount}%`
+                       : `$${promotionData.savings_amount}`} on this service`}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm text-green-600">
+                  Promotion Active
+                </div>
+                {getDiscountAmount() > 0 && (
+                  <div className="text-lg font-bold text-green-800">
+                    Save ${getDiscountAmount().toFixed(2)}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
