@@ -748,9 +748,16 @@ const ProviderBooking = () => {
     if (
       !promotionData ||
       !promotionData.savings_type ||
-      !promotionData.savings_amount
+      promotionData.savings_amount === null ||
+      promotionData.savings_amount === undefined
     ) {
-      console.log("No discount - missing promotion data:", { promotionData, hasType: !!promotionData?.savings_type, hasAmount: !!promotionData?.savings_amount });
+      console.log("No discount - missing promotion data:", {
+        hasPromotion: !!promotionData,
+        hasType: !!promotionData?.savings_type,
+        hasAmount: promotionData?.savings_amount !== null && promotionData?.savings_amount !== undefined,
+        rawAmount: promotionData?.savings_amount,
+        promotionData
+      });
       return 0;
     }
 
@@ -759,16 +766,22 @@ const ProviderBooking = () => {
       subtotal,
       savingsType: promotionData.savings_type,
       savingsAmount: promotionData.savings_amount,
-      maxAmount: promotionData.savings_max_amount
+      maxAmount: promotionData.savings_max_amount,
+      selectedItemsLength: selectedItems.length
     });
+
+    if (subtotal <= 0) {
+      console.log("No subtotal to apply discount to");
+      return 0;
+    }
 
     if (promotionData.savings_type === "percentage") {
       const percentageDiscount =
-        (subtotal * promotionData.savings_amount) / 100;
+        (subtotal * Number(promotionData.savings_amount)) / 100;
 
       // Apply maximum discount cap if specified
       if (promotionData.savings_max_amount) {
-        const finalDiscount = Math.min(percentageDiscount, promotionData.savings_max_amount);
+        const finalDiscount = Math.min(percentageDiscount, Number(promotionData.savings_max_amount));
         console.log("Percentage discount with cap:", { percentageDiscount, cap: promotionData.savings_max_amount, finalDiscount });
         return finalDiscount;
       }
@@ -777,7 +790,7 @@ const ProviderBooking = () => {
       return percentageDiscount;
     } else if (promotionData.savings_type === "fixed_amount") {
       // Fixed amount discount, but don't let it exceed the subtotal
-      const fixedDiscount = Math.min(promotionData.savings_amount, subtotal);
+      const fixedDiscount = Math.min(Number(promotionData.savings_amount), subtotal);
       console.log("Fixed amount discount:", fixedDiscount);
       return fixedDiscount;
     }
