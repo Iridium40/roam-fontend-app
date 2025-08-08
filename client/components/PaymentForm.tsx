@@ -157,27 +157,22 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         // Check response status before reading body
         if (!response.ok) {
-          // If we get a 404 in development, use mock mode
-          if (response.status === 404 && isDevelopment) {
-            console.warn("Netlify functions not available in development. Using mock payment mode.");
-            setClientSecret("pi_mock_development_client_secret_for_testing");
-            return;
+          // If we get a 404, try fallback endpoint immediately
+          if (response.status === 404) {
+            console.warn("Netlify functions not available (404). Trying fallback endpoint...");
+            throw new Error(`Netlify function not found (404) - will try fallback`);
           }
 
-          // Clone response before reading to avoid "body already used" error
-          const responseClone = response.clone();
+          // For other errors, try to get error message
           let errorMessage = `HTTP error! status: ${response.status}`;
-
           try {
+            // Clone response before reading to avoid "body already used" error
+            const responseClone = response.clone();
             const errorData = await response.json();
             errorMessage = errorData.error || errorMessage;
           } catch (jsonError) {
-            try {
-              const errorText = await responseClone.text();
-              errorMessage = errorText || errorMessage;
-            } catch (textError) {
-              console.error("Could not parse error response:", textError);
-            }
+            // If JSON parsing fails, response body might be text or empty
+            console.warn("Could not parse error response as JSON");
           }
 
           throw new Error(errorMessage);
