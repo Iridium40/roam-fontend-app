@@ -1048,35 +1048,54 @@ export default function BusinessProfile() {
 
                           {/* Delivery Type Badge */}
                           {service.delivery_type && (
-                            <Badge
-                              variant="outline"
-                              className={`text-xs mb-4 ${
-                                service.delivery_type === "customer_location"
-                                  ? "border-green-500 text-green-700 bg-green-50"
-                                  : service.delivery_type ===
-                                      "business_location"
-                                    ? "border-blue-500 text-blue-700 bg-blue-50"
-                                    : "border-purple-500 text-purple-700 bg-purple-50"
-                              }`}
-                            >
-                              {service.delivery_type === "customer_location" ? (
+                            <div className="flex gap-2 mb-4">
+                              {service.delivery_type === "both_locations" ? (
                                 <>
-                                  <Car className="w-3 h-3 mr-1" />
-                                  Mobile
-                                </>
-                              ) : service.delivery_type ===
-                                "business_location" ? (
-                                <>
-                                  <Building className="w-3 h-3 mr-1" />
-                                  Business
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs border-blue-500 text-blue-700 bg-blue-50"
+                                  >
+                                    <Building className="w-3 h-3 mr-1" />
+                                    Business
+                                  </Badge>
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs border-green-500 text-green-700 bg-green-50"
+                                  >
+                                    <Car className="w-3 h-3 mr-1" />
+                                    Mobile
+                                  </Badge>
                                 </>
                               ) : (
-                                <>
-                                  <Video className="w-3 h-3 mr-1" />
-                                  Virtual
-                                </>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-xs ${
+                                    service.delivery_type === "customer_location"
+                                      ? "border-green-500 text-green-700 bg-green-50"
+                                      : service.delivery_type === "business_location"
+                                        ? "border-blue-500 text-blue-700 bg-blue-50"
+                                        : "border-purple-500 text-purple-700 bg-purple-50"
+                                  }`}
+                                >
+                                  {service.delivery_type === "customer_location" ? (
+                                    <>
+                                      <Car className="w-3 h-3 mr-1" />
+                                      Mobile
+                                    </>
+                                  ) : service.delivery_type === "business_location" ? (
+                                    <>
+                                      <Building className="w-3 h-3 mr-1" />
+                                      Business
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Video className="w-3 h-3 mr-1" />
+                                      Virtual
+                                    </>
+                                  )}
+                                </Badge>
                               )}
-                            </Badge>
+                            </div>
                           )}
                         </div>
 
