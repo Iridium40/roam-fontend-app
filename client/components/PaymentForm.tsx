@@ -10,6 +10,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import { Loader2, CreditCard, Lock } from 'lucide-react';
 
 // Initialize Stripe
@@ -41,29 +43,104 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
+  const { customer, isCustomer } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState<string>('');
   const [paymentIntentId, setPaymentIntentId] = useState<string>('');
+  const [stripeCustomerId, setStripeCustomerId] = useState<string>('');
+
+  // Function to sync Stripe customer ID to Supabase
+  const syncStripeCustomerToSupabase = async (stripeCustomerId: string) => {
+    console.log('Stripe sync debug:', { 
+      isCustomer, 
+      customer, 
+      customerUserId: customer?.user_id, 
+      stripeCustomerId 
+    });
+    
+    if (!isCustomer || !customer?.user_id || !stripeCustomerId) {
+      console.log('Skipping Stripe customer sync - not authenticated customer or missing IDs');
+      return;
+    }
+
+    try {
+      // Check if stripe profile already exists
+      const { data: existingProfile, error: fetchError } = await supabase
+        .from('customer_stripe_profiles')
+        .select('id')
+        .eq('user_id', customer.user_id)
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error('Error checking existing Stripe profile:', fetchError);
+        return;
+      }
+
+      if (existingProfile) {
+        // Update existing profile
+        const { error } = await supabase
+          .from('customer_stripe_profiles')
+          .update({ 
+            stripe_customer_id: stripeCustomerId,
+            stripe_email: customerEmail 
+          })
+          .eq('user_id', customer.user_id);
+
+        if (error) {
+          console.error('Error updating Stripe customer profile:', error);
+        } else {
+          console.log('Stripe customer profile updated successfully');
+        }
+      } else {
+        // Create new profile
+        const { error } = await supabase
+          .from('customer_stripe_profiles')
+          .insert({
+            user_id: customer.user_id,
+            stripe_customer_id: stripeCustomerId,
+            stripe_email: customerEmail
+          });
+
+        if (error) {
+          console.error('Error creating Stripe customer profile:', error);
+        } else {
+          console.log('Successfully created Stripe customer profile:', stripeCustomerId);
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing Stripe customer ID:', error);
+    }
+  };
 
   // Create payment intent when component mounts
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
+        // Check if we're in development and Netlify functions aren't available
+        const isDevelopment = window.location.hostname === 'localhost';
+
         const response = await fetch('/.netlify/functions/create-payment-intent', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            bookingId,
-            totalAmount,
-            serviceFee,
-            customerEmail,
-            customerName,
-            businessName,
-            serviceName,
+            bookingId: bookingId,
+            totalAmount: totalAmount,
+            serviceFee: serviceFee,
+            customerEmail: customerEmail,
+            customerName: customerName,
+            businessName: businessName,
+            serviceName: serviceName,
           }),
         });
+
+        // If we get a 404 in development, use mock mode
+        if (!response.ok && response.status === 404 && isDevelopment) {
+          console.warn('Netlify functions not available in development. Using mock payment mode.');
+          // Return a mock client secret for development testing
+          return 'pi_mock_development_client_secret_for_testing';
+        }
 
         const data = await response.json();
 
@@ -73,8 +150,21 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         setClientSecret(data.clientSecret);
         setPaymentIntentId(data.paymentIntentId);
+        setStripeCustomerId(data.stripeCustomerId || '');
+
+        // Sync Stripe customer ID to Supabase if available
+        if (data.stripeCustomerId) {
+          await syncStripeCustomerToSupabase(data.stripeCustomerId);
+        }
       } catch (error: any) {
         console.error('Error creating payment intent:', error);
+
+        // In development, if fetch fails completely, use mock mode
+        if (window.location.hostname === 'localhost') {
+          console.warn('Using mock payment mode for development');
+          setClientSecret('pi_mock_development_client_secret_for_testing');
+        }
+
         onPaymentError(error.message);
         toast({
           title: 'Payment Setup Failed',

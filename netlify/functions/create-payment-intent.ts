@@ -60,25 +60,61 @@ const handler: Handler = async (event, context) => {
     // Convert to cents (Stripe expects amounts in cents)
     const amountInCents = Math.round(totalAmount * 100);
 
+    // Create or retrieve Stripe customer
+    let stripeCustomer;
+    try {
+      // First, try to find existing customer by email
+      const existingCustomers = await stripe.customers.list({
+        email: customerEmail,
+        limit: 1,
+      });
+
+      if (existingCustomers.data.length > 0) {
+        stripeCustomer = existingCustomers.data[0];
+      } else {
+        // Create new Stripe customer
+        stripeCustomer = await stripe.customers.create({
+          email: customerEmail,
+          name: customerName,
+          metadata: {
+            booking_id: bookingId,
+            source: 'roam_booking_platform'
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error creating/retrieving Stripe customer:', error);
+      // Continue without customer if there's an error
+      stripeCustomer = null;
+    }
+
     // Create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntentData: any = {
       amount: amountInCents,
       currency: 'usd',
-      customer_email: customerEmail,
       metadata: {
         booking_id: bookingId,
         service_fee: serviceFee ? (serviceFee * 100).toString() : '0',
         customer_name: customerName || '',
+        customer_email: customerEmail || '',
         business_name: businessName || '',
         service_name: serviceName || '',
-        payment_type: 'booking_payment'
+        payment_type: 'booking_payment',
+        stripe_customer_id: stripeCustomer?.id || ''
       },
       description: `Booking payment for ${serviceName || 'service'} at ${businessName || 'business'}`,
       receipt_email: customerEmail,
       automatic_payment_methods: {
         enabled: true,
       },
-    });
+    };
+
+    // Associate with Stripe customer if available
+    if (stripeCustomer) {
+      paymentIntentData.customer = stripeCustomer.id;
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create(paymentIntentData);
 
     return {
       statusCode: 200,
@@ -86,8 +122,7 @@ const handler: Handler = async (event, context) => {
       body: JSON.stringify({
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
-        amount: totalAmount,
-        currency: 'usd'
+        stripeCustomerId: stripeCustomer?.id || null,
       }),
     };
 

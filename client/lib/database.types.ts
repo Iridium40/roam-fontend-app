@@ -875,6 +875,7 @@ export interface AuthUser {
 
 export interface AuthCustomer {
   id: string;
+  user_id: string; // Add user_id for foreign key relationships
   email: string;
   customer_id: string;
   first_name: string;

@@ -162,19 +162,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               );
             } else {
               // Check if user is a customer instead
-              console.log(
-                "AuthContext: Provider not found, checking for customer profile...",
-              );
-
-              const { data: customerProfile } = await supabase
-                .from("customer_profiles")
-                .select("*")
-                .eq("user_id", session.user.id)
-                .single();
-
-              if (customerProfile) {
-                const customerData = {
-                  id: customerProfile.id,
+              if (session?.user) {
                   email: customerProfile.email,
                   customer_id: customerProfile.id,
                   first_name: customerProfile.first_name,
@@ -182,6 +170,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                   phone: customerProfile.phone,
                   image_url: customerProfile.image_url,
                 };
+                
+                console.log('Customer data structure:', customerData);
 
                 setCustomer(customerData);
                 setUserType("customer");
@@ -458,6 +448,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         customerData = {
           id: customerProfile.id,
+          user_id: customerProfile.user_id,
           email: customerProfile.email,
           customer_id: customerProfile.id,
           first_name: customerProfile.first_name,
@@ -609,6 +600,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Set existing customer data
           const customerData = {
             id: customerProfile.id,
+            user_id: customerProfile.user_id,
             email: customerProfile.email,
             customer_id: customerProfile.id,
             first_name: customerProfile.first_name,
@@ -737,6 +729,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const customerData = {
         id: customerProfile.id,
+        user_id: customerProfile.user_id, // Add user_id for foreign key relationships
         email: customerProfile.email,
         customer_id: customerProfile.id,
         first_name: customerProfile.first_name,
