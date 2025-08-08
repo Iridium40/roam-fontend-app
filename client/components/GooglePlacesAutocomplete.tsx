@@ -173,7 +173,7 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     };
 
     loadGoogleMapsScript().catch((error) => {
-      console.error("Failed to load Google Maps:", error);
+      console.warn("Google Maps unavailable, using manual input:", error);
       if (
         error.message.includes("billing") ||
         error.message.includes("Billing")
