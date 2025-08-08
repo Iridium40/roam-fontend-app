@@ -224,7 +224,17 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
             setClientSecret(fallbackData.clientSecret);
             setPaymentIntentId(fallbackData.paymentIntentId);
             setStripeCustomerId(fallbackData.stripeCustomerId || "");
-            console.log("Payment intent created via fallback endpoint");
+            console.log("✅ Payment intent successfully created via fallback endpoint:", {
+              paymentIntentId: fallbackData.paymentIntentId,
+              hasClientSecret: !!fallbackData.clientSecret
+            });
+
+            // Show success toast to confirm payment setup worked
+            toast({
+              title: "Payment Ready",
+              description: "Payment system initialized successfully.",
+              variant: "default",
+            });
             return;
           } else {
             console.error("Fallback endpoint failed with status:", fallbackResponse.status);
