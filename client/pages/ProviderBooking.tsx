@@ -809,6 +809,7 @@ const ProviderBooking = () => {
           booking_date: bookingForm.preferredDate,
           start_time: bookingForm.preferredTime || "09:00",
           admin_notes: bookingForm.notes,
+          promotion_id: promotionId || null, // Store the promotion ID for promo code tracking
           total_amount: getTotalAmount(),
           booking_status: "pending",
           payment_status: "pending",
