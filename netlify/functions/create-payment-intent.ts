@@ -115,3 +115,4 @@ const handler: Handler = async (event, context) => {
 };
 
 export { handler };
+export default handler;
