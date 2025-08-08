@@ -45,6 +45,10 @@ export default function BusinessAvailability() {
 
   const selectedDate = searchParams.get("date");
   const selectedTime = searchParams.get("time");
+  const promotionId = searchParams.get("promotion");
+  const promoCode = searchParams.get("promo_code");
+  const businessId = searchParams.get("business_id");
+  const autoBook = searchParams.get("auto_book") === "true";
 
   const [service, setService] = useState<any>(null);
   const [availableBusinesses, setAvailableBusinesses] = useState<any[]>([]);
