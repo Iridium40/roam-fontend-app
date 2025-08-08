@@ -5,23 +5,14 @@ import {
   useStripe,
   useElements,
   PaymentElement,
-<<<<<<< HEAD
-} from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { useToast } from '../hooks/use-toast';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import { Loader2, CreditCard, Lock } from 'lucide-react';
-=======
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useToast } from "../hooks/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+import { supabase } from "../lib/supabase";
 import { Loader2, CreditCard, Lock } from "lucide-react";
->>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
 
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -71,10 +62,9 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   }, [isCustomer, customer?.user_id]);
   
   const [isLoading, setIsLoading] = useState(false);
-<<<<<<< HEAD
-  const [clientSecret, setClientSecret] = useState<string>('');
-  const [paymentIntentId, setPaymentIntentId] = useState<string>('');
-  const [stripeCustomerId, setStripeCustomerId] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [paymentIntentId, setPaymentIntentId] = useState<string>("");
+  const [stripeCustomerId, setStripeCustomerId] = useState<string>("");
 
   // Function to sync Stripe customer ID to Supabase
   const syncStripeCustomerToSupabase = async (stripeCustomerId: string) => {
@@ -138,35 +128,14 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
       console.error('Error syncing Stripe customer ID:', error);
     }
   };
-=======
-  const [clientSecret, setClientSecret] = useState<string>("");
-  const [paymentIntentId, setPaymentIntentId] = useState<string>("");
->>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
 
   // Create payment intent when component mounts
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
-<<<<<<< HEAD
         // Check if we're in development and Netlify functions aren't available
-        const isDevelopment = window.location.hostname === 'localhost';
+        const isDevelopment = window.location.hostname === "localhost";
 
-        const response = await fetch('/.netlify/functions/create-payment-intent', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            bookingId: bookingId,
-            totalAmount: totalAmount,
-            serviceFee: serviceFee,
-            customerEmail: customerEmail,
-            customerName: customerName,
-            businessName: businessName,
-            serviceName: serviceName,
-          }),
-        });
-=======
         const response = await fetch(
           "/.netlify/functions/create-payment-intent",
           {
@@ -188,6 +157,13 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         // Check response status before reading body
         if (!response.ok) {
+          // If we get a 404 in development, use mock mode
+          if (response.status === 404 && isDevelopment) {
+            console.warn("Netlify functions not available in development. Using mock payment mode.");
+            setClientSecret("pi_mock_development_client_secret_for_testing");
+            return;
+          }
+          
           const errorData = await response
             .json()
             .catch(() => ({ error: "Unknown error" }));
@@ -195,38 +171,25 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
             errorData.error || `HTTP error! status: ${response.status}`,
           );
         }
->>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
-
-        // If we get a 404 in development, use mock mode
-        if (!response.ok && response.status === 404 && isDevelopment) {
-          console.warn('Netlify functions not available in development. Using mock payment mode.');
-          // Return a mock client secret for development testing
-          return 'pi_mock_development_client_secret_for_testing';
-        }
 
         const data = await response.json();
 
         setClientSecret(data.clientSecret);
         setPaymentIntentId(data.paymentIntentId);
-        setStripeCustomerId(data.stripeCustomerId || '');
-
+        setStripeCustomerId(data.stripeCustomerId || "");
+        
         // Sync Stripe customer ID to Supabase if available
         if (data.stripeCustomerId) {
           await syncStripeCustomerToSupabase(data.stripeCustomerId);
         }
       } catch (error: any) {
-<<<<<<< HEAD
-        console.error('Error creating payment intent:', error);
+        console.error("Error creating payment intent:", error);
 
         // In development, if fetch fails completely, use mock mode
-        if (window.location.hostname === 'localhost') {
-          console.warn('Using mock payment mode for development');
-          setClientSecret('pi_mock_development_client_secret_for_testing');
+        if (window.location.hostname === "localhost") {
+          setClientSecret("pi_mock_development_client_secret_for_testing");
         }
 
-=======
-        console.error("Error creating payment intent:", error);
->>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
         onPaymentError(error.message);
         toast({
           title: "Payment Setup Failed",
