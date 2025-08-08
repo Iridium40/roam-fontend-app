@@ -163,13 +163,24 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
             setClientSecret("pi_mock_development_client_secret_for_testing");
             return;
           }
-          
-          const errorData = await response
-            .json()
-            .catch(() => ({ error: "Unknown error" }));
-          throw new Error(
-            errorData.error || `HTTP error! status: ${response.status}`,
-          );
+
+          // Clone response before reading to avoid "body already used" error
+          const responseClone = response.clone();
+          let errorMessage = `HTTP error! status: ${response.status}`;
+
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } catch (jsonError) {
+            try {
+              const errorText = await responseClone.text();
+              errorMessage = errorText || errorMessage;
+            } catch (textError) {
+              console.error("Could not parse error response:", textError);
+            }
+          }
+
+          throw new Error(errorMessage);
         }
 
         const data = await response.json();
