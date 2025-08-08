@@ -29,5 +29,8 @@ export function createServer() {
   // File upload route
   app.post("/api/upload-document", handleFileUpload, uploadDocument);
 
+  // Payment routes
+  app.post("/api/create-payment-intent", createPaymentIntent);
+
   return app;
 }
