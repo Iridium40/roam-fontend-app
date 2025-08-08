@@ -1595,9 +1595,10 @@ export default function Index() {
               )}
               <div className="overflow-hidden">
                 <div
-                  className="flex gap-6 transition-transform duration-300 ease-in-out"
+                  className="flex transition-transform duration-300 ease-in-out"
                   style={{
-                    transform: `translateX(-${currentPromotionSlide * (100/3)}%)`,
+                    transform: `translateX(-${currentPromotionSlide * 100}%)`,
+                    width: `${Math.max(1, promotionPages.length) * 100}%`,
                   }}
                 >
                   {promotionalDeals.map((promotion, index) => (
