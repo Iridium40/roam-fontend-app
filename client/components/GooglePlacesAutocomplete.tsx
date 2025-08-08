@@ -41,9 +41,13 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   // Debug API key source in cloud environment
   console.log("Google Maps API Key Debug:", {
     fromEnv: !!import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    keyPrefix: GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
+    envValue: import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
+    finalKey: GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
     domain: window.location.hostname,
-    url: window.location.href
+    protocol: window.location.protocol,
+    url: window.location.href,
+    isDev: import.meta.env.DEV,
+    mode: import.meta.env.MODE
   });
 
   const loadGoogleMapsScript = () => {
