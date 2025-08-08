@@ -80,9 +80,11 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       };
 
       script.onerror = (error) => {
-        console.error("Failed to load Google Maps script:", error);
+        console.warn("Google Maps script failed to load, falling back to manual input:", error);
         setIsLoading(false);
-        reject(new Error("Failed to load Google Maps"));
+        setIsGoogleMapsLoaded(false);
+        // Don't reject, just continue without Google Maps
+        resolve();
       };
 
       document.head.appendChild(script);
