@@ -65,11 +65,13 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           }),
         });
 
-        const data = await response.json();
-
+        // Check response status before reading body
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to create payment intent');
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
 
         setClientSecret(data.clientSecret);
         setPaymentIntentId(data.paymentIntentId);
