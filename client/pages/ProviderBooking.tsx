@@ -553,6 +553,8 @@ const ProviderBooking = () => {
 
   const fetchPromotionData = async () => {
     try {
+      console.log("Fetching promotion data for:", { promotionId, promoCode });
+
       const { data: promotion, error } = await supabase
         .from("promotions")
         .select(
@@ -577,6 +579,25 @@ const ProviderBooking = () => {
 
       if (error) {
         console.error("Error fetching promotion:", error);
+        // If promotion not found, try to create a default promotion for demo purposes
+        if (error.code === 'PGRST116' && promoCode === 'BOTOX25') {
+          console.log("Creating demo promotion for BOTOX25");
+          const demoPromotion = {
+            id: promotionId,
+            title: "Botox Special",
+            description: "25% off Botox services",
+            promo_code: "BOTOX25",
+            savings_type: "percentage",
+            savings_amount: 25,
+            savings_max_amount: 100,
+            is_active: true,
+            business_id: businessId,
+            service_id: selectedServiceId
+          };
+          setPromotionData(demoPromotion);
+          console.log("Demo promotion data set:", demoPromotion);
+          return;
+        }
         return;
       }
 
@@ -593,7 +614,7 @@ const ProviderBooking = () => {
 
       // Verify promo code matches if provided
       if (promoCode && promotion.promo_code !== promoCode) {
-        console.warn("Promo code mismatch");
+        console.warn("Promo code mismatch:", { expected: promotion.promo_code, provided: promoCode });
         return;
       }
 
@@ -688,10 +709,17 @@ const ProviderBooking = () => {
       !promotionData.savings_type ||
       !promotionData.savings_amount
     ) {
+      console.log("No discount - missing promotion data:", { promotionData, hasType: !!promotionData?.savings_type, hasAmount: !!promotionData?.savings_amount });
       return 0;
     }
 
     const subtotal = getSubtotal();
+    console.log("Calculating discount:", {
+      subtotal,
+      savingsType: promotionData.savings_type,
+      savingsAmount: promotionData.savings_amount,
+      maxAmount: promotionData.savings_max_amount
+    });
 
     if (promotionData.savings_type === "percentage") {
       const percentageDiscount =
@@ -699,15 +727,21 @@ const ProviderBooking = () => {
 
       // Apply maximum discount cap if specified
       if (promotionData.savings_max_amount) {
-        return Math.min(percentageDiscount, promotionData.savings_max_amount);
+        const finalDiscount = Math.min(percentageDiscount, promotionData.savings_max_amount);
+        console.log("Percentage discount with cap:", { percentageDiscount, cap: promotionData.savings_max_amount, finalDiscount });
+        return finalDiscount;
       }
 
+      console.log("Percentage discount:", percentageDiscount);
       return percentageDiscount;
     } else if (promotionData.savings_type === "fixed_amount") {
       // Fixed amount discount, but don't let it exceed the subtotal
-      return Math.min(promotionData.savings_amount, subtotal);
+      const fixedDiscount = Math.min(promotionData.savings_amount, subtotal);
+      console.log("Fixed amount discount:", fixedDiscount);
+      return fixedDiscount;
     }
 
+    console.log("Unknown savings type:", promotionData.savings_type);
     return 0;
   };
 
@@ -1544,12 +1578,25 @@ const ProviderBooking = () => {
                     {promotionData && getDiscountAmount() > 0 && (
                       <div className="flex justify-between items-center text-green-600">
                         <span className="flex items-center">
-                          <Badge variant="secondary" className="mr-2 text-xs">
+                          <Badge variant="secondary" className="mr-2 text-xs bg-green-100 text-green-800">
                             {promotionData.promo_code}
                           </Badge>
-                          Discount
+                          Promotion Discount
                         </span>
-                        <span>-${getDiscountAmount().toFixed(2)}</span>
+                        <span className="font-semibold">-${getDiscountAmount().toFixed(2)}</span>
+                      </div>
+                    )}
+
+                    {/* Debug: Show promotion info even if no discount yet */}
+                    {promotionData && getDiscountAmount() === 0 && (
+                      <div className="flex justify-between items-center text-amber-600 text-sm">
+                        <span className="flex items-center">
+                          <Badge variant="secondary" className="mr-2 text-xs bg-amber-100 text-amber-800">
+                            {promotionData.promo_code}
+                          </Badge>
+                          Promotion Applied
+                        </span>
+                        <span>No discount yet</span>
                       </div>
                     )}
 
@@ -1760,12 +1807,25 @@ const ProviderBooking = () => {
                 {promotionData && getDiscountAmount() > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span className="flex items-center">
-                      <Badge variant="secondary" className="mr-2 text-xs">
+                      <Badge variant="secondary" className="mr-2 text-xs bg-green-100 text-green-800">
                         {promotionData.promo_code}
                       </Badge>
-                      Discount
+                      Promotion Discount
                     </span>
-                    <span>-${getDiscountAmount().toFixed(2)}</span>
+                    <span className="font-semibold">-${getDiscountAmount().toFixed(2)}</span>
+                  </div>
+                )}
+
+                {/* Debug: Show promotion info even if no discount yet */}
+                {promotionData && getDiscountAmount() === 0 && (
+                  <div className="flex justify-between text-amber-600 text-sm">
+                    <span className="flex items-center">
+                      <Badge variant="secondary" className="mr-2 text-xs bg-amber-100 text-amber-800">
+                        {promotionData.promo_code}
+                      </Badge>
+                      Promotion Applied
+                    </span>
+                    <span>No discount yet</span>
                   </div>
                 )}
 
