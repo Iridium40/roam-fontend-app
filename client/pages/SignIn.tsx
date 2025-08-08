@@ -273,8 +273,7 @@ export default function SignIn() {
                     <Button
                       type="submit"
                       className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      disabled={true}
-                    title="Google Sign-In temporarily unavailable - domain not configured"
+                      disabled={loading}
                     >
                       {loading ? (
                         <>
@@ -303,8 +302,7 @@ export default function SignIn() {
                     variant="outline"
                     onClick={handleGoogleAuth}
                     className="w-full"
-                    disabled={true}
-                    title="Google Sign-In temporarily unavailable - domain not configured"
+                    disabled={loading}
                   >
                     <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                       <path
@@ -467,8 +465,7 @@ export default function SignIn() {
                     <Button
                       type="submit"
                       className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      disabled={true}
-                    title="Google Sign-In temporarily unavailable - domain not configured"
+                      disabled={loading}
                     >
                       {loading ? (
                         <>
@@ -497,8 +494,7 @@ export default function SignIn() {
                     variant="outline"
                     onClick={handleGoogleAuth}
                     className="w-full"
-                    disabled={true}
-                    title="Google Sign-In temporarily unavailable - domain not configured"
+                    disabled={loading}
                   >
                     <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                       <path
