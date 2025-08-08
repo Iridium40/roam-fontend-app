@@ -950,7 +950,7 @@ export default function Index() {
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source
-            src="https://videos.pexels.com/video-files/33301276/14184772_640_360_60fps.mp4"
+            src="https://videos.pexels.com/video-files/857195/pexels-video-857195.mp4"
             type="video/mp4"
           />
         </video>
