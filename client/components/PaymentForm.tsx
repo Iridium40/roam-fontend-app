@@ -222,10 +222,17 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           console.error("Fallback endpoint also failed:", fallbackError);
         }
 
-        // In development, if both endpoints fail, use mock mode
-        if (window.location.hostname === "localhost") {
-          console.warn("Both payment endpoints failed, using mock mode for development");
+        // If both endpoints fail, use mock mode for development/testing
+        const isDevelopment = window.location.hostname === "localhost" || window.location.hostname.includes("fly.dev");
+        if (isDevelopment) {
+          console.warn("Both payment endpoints failed, using mock mode for development/testing");
           setClientSecret("pi_mock_development_client_secret_for_testing");
+          setPaymentIntentId("pi_mock_payment_intent_id");
+          toast({
+            title: "Development Mode",
+            description: "Using mock payment for testing purposes.",
+            variant: "default",
+          });
           return;
         }
 
