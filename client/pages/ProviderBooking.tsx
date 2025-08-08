@@ -1527,84 +1527,32 @@ const ProviderBooking = () => {
                 </div>
               </div>
 
-              {/* Service Location */}
+              {/* Service Location - Read Only */}
               <div className="space-y-4">
-                <h4 className="font-medium">Service Location</h4>
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <Label htmlFor="customerAddress">Street Address *</Label>
-                    <Input
-                      id="customerAddress"
-                      name="customerAddress"
-                      autoComplete="street-address"
-                      required
-                      value={bookingForm.customerAddress}
-                      onChange={(e) =>
-                        setBookingForm((prev) => ({
-                          ...prev,
-                          customerAddress: e.target.value,
-                        }))
-                      }
-                      placeholder="Enter your street address"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="customerCity">City *</Label>
-                      <Input
-                        id="customerCity"
-                        name="customerCity"
-                        autoComplete="address-level2"
-                        required
-                        value={bookingForm.customerCity}
-                        onChange={(e) =>
-                          setBookingForm((prev) => ({
-                            ...prev,
-                            customerCity: e.target.value,
-                          }))
-                        }
-                        placeholder="City"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="customerState">State *</Label>
-                      <Input
-                        id="customerState"
-                        name="customerState"
-                        autoComplete="address-level1"
-                        required
-                        value={bookingForm.customerState}
-                        onChange={(e) =>
-                          setBookingForm((prev) => ({
-                            ...prev,
-                            customerState: e.target.value,
-                          }))
-                        }
-                        placeholder="State"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="customerZip">ZIP Code *</Label>
-                      <Input
-                        id="customerZip"
-                        name="customerZip"
-                        autoComplete="postal-code"
-                        required
-                        value={bookingForm.customerZip}
-                        onChange={(e) =>
-                          setBookingForm((prev) => ({
-                            ...prev,
-                            customerZip: e.target.value,
-                          }))
-                        }
-                        placeholder="ZIP"
-                      />
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Service Location</h4>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate(-1)}
+                    className="text-roam-blue border-roam-blue hover:bg-roam-blue hover:text-white"
+                  >
+                    Change Location
+                  </Button>
                 </div>
+                <Card className="bg-gray-50 border border-gray-200">
+                  <CardContent className="p-4">
+                    <div className="space-y-2">
+                      <div className="font-medium text-gray-900">
+                        {bookingForm.customerAddress}
+                      </div>
+                      <div className="text-gray-600">
+                        {bookingForm.customerCity}, {bookingForm.customerState} {bookingForm.customerZip}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
