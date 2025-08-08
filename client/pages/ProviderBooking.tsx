@@ -1039,10 +1039,13 @@ const ProviderBooking = () => {
           });
 
         if (promotionError) {
-          console.error(
-            "Error creating promotion usage record:",
-            promotionError,
-          );
+          console.error("Error creating promotion usage record:", {
+            error: promotionError,
+            message: promotionError.message,
+            details: promotionError.details,
+            hint: promotionError.hint,
+            code: promotionError.code
+          });
           // Don't throw error here - booking was successful, promotion tracking is secondary
         }
       }
