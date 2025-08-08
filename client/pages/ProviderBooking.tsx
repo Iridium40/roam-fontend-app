@@ -732,19 +732,30 @@ const ProviderBooking = () => {
 
   const submitBooking = async () => {
     try {
-      if (
-        !bookingForm.customerName ||
-        !bookingForm.customerEmail ||
-        !bookingForm.customerAddress ||
-        !bookingForm.customerCity ||
-        !bookingForm.customerState ||
-        !bookingForm.customerZip ||
+      // Base required fields
+      const baseRequiredFields = [
+        !bookingForm.customerName,
+        !bookingForm.customerEmail,
         !bookingForm.preferredDate
-      ) {
+      ];
+
+      // Address fields only required for customer_location delivery type
+      const addressRequiredFields = deliveryType === "customer_location" ? [
+        !bookingForm.customerAddress,
+        !bookingForm.customerCity,
+        !bookingForm.customerState,
+        !bookingForm.customerZip
+      ] : [];
+
+      const allRequiredFields = [...baseRequiredFields, ...addressRequiredFields];
+
+      if (allRequiredFields.some(field => field)) {
+        const missingAddressFields = deliveryType === "customer_location" && addressRequiredFields.some(field => field);
         toast({
           title: "Missing information",
-          description:
-            "Please fill in all required fields including your complete address",
+          description: missingAddressFields 
+            ? "Please fill in all required fields including your complete address"
+            : "Please fill in all required fields",
           variant: "destructive",
         });
         return;
