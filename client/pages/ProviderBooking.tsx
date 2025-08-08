@@ -420,6 +420,15 @@ const ProviderBooking = () => {
         }
       }
 
+      // Check if business has any active services
+      if (!services || services.length === 0) {
+        toast({
+          title: "No Services Available",
+          description: "This business currently has no active services available for booking.",
+          variant: "destructive",
+        });
+      }
+
       setProviderData({
         business,
         services: services || [],
