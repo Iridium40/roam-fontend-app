@@ -1817,7 +1817,12 @@ export default function Index() {
                     width: `${Math.max(1, popularPages.length) * 100}%`,
                   }}
                 >
-                  {filteredPopularServices.map((service) => (
+                  {popularPages.map((page, pageIndex) => (
+                    <div
+                      key={`popular-page-${pageIndex}`}
+                      className="flex gap-6 w-full flex-none"
+                    >
+                      {page.map((service) => (
                     <Card
                       key={service.id}
                       className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[calc(33.333%-1rem)]"
@@ -1894,6 +1899,8 @@ export default function Index() {
                         </Button>
                       </CardContent>
                     </Card>
+                      ))}
+                    </div>
                   ))}
                 </div>
               </div>
