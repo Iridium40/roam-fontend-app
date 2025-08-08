@@ -385,30 +385,54 @@ export function useFavorites() {
         return false;
       }
 
-      try {
-        const { data, error } = await supabase
-          .from("customer_favorite_businesses")
-          .select("id")
-          .eq("customer_id", customer.id)
-          .eq("business_id", businessId)
-          .maybeSingle();
+      // Retry logic for network issues
+      const maxRetries = 3;
+      let retryCount = 0;
 
-        if (error) {
+      while (retryCount < maxRetries) {
+        try {
+          const { data, error } = await supabase
+            .from("customer_favorite_businesses")
+            .select("id")
+            .eq("customer_id", customer.id)
+            .eq("business_id", businessId)
+            .maybeSingle();
+
+          if (error) {
+            console.error(
+              "Error checking if business is favorited:",
+              error?.message || error,
+            );
+            return false;
+          }
+
+          return !!data;
+        } catch (error: any) {
+          retryCount++;
+
+          // Check if it's a network error that might benefit from retry
+          const isNetworkError =
+            error?.message?.includes("Failed to fetch") ||
+            error?.message?.includes("ERR_NETWORK") ||
+            error?.message?.includes("ERR_CONNECTION_CLOSED") ||
+            error?.name === "TypeError";
+
+          if (isNetworkError && retryCount < maxRetries) {
+            console.warn(`Retrying business favorite check (${retryCount}/${maxRetries})...`);
+            // Wait before retrying (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            continue;
+          }
+
           console.error(
             "Error checking if business is favorited:",
             error?.message || error,
           );
           return false;
         }
-
-        return !!data;
-      } catch (error) {
-        console.error(
-          "Error checking if business is favorited:",
-          error?.message || error,
-        );
-        return false;
       }
+
+      return false;
     },
     [isCustomer, customer?.id],
   );
@@ -539,30 +563,54 @@ export function useFavorites() {
         return false;
       }
 
-      try {
-        const { data, error } = await supabase
-          .from("customer_favorite_providers")
-          .select("id")
-          .eq("customer_id", customer.id)
-          .eq("provider_id", providerId)
-          .maybeSingle();
+      // Retry logic for network issues
+      const maxRetries = 3;
+      let retryCount = 0;
 
-        if (error) {
+      while (retryCount < maxRetries) {
+        try {
+          const { data, error } = await supabase
+            .from("customer_favorite_providers")
+            .select("id")
+            .eq("customer_id", customer.id)
+            .eq("provider_id", providerId)
+            .maybeSingle();
+
+          if (error) {
+            console.error(
+              "Error checking if provider is favorited:",
+              error?.message || error,
+            );
+            return false;
+          }
+
+          return !!data;
+        } catch (error: any) {
+          retryCount++;
+
+          // Check if it's a network error that might benefit from retry
+          const isNetworkError =
+            error?.message?.includes("Failed to fetch") ||
+            error?.message?.includes("ERR_NETWORK") ||
+            error?.message?.includes("ERR_CONNECTION_CLOSED") ||
+            error?.name === "TypeError";
+
+          if (isNetworkError && retryCount < maxRetries) {
+            console.warn(`Retrying provider favorite check (${retryCount}/${maxRetries})...`);
+            // Wait before retrying (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            continue;
+          }
+
           console.error(
             "Error checking if provider is favorited:",
             error?.message || error,
           );
           return false;
         }
-
-        return !!data;
-      } catch (error) {
-        console.error(
-          "Error checking if provider is favorited:",
-          error?.message || error,
-        );
-        return false;
       }
+
+      return false;
     },
     [isCustomer, customer?.id],
   );
