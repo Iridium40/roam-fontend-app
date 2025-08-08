@@ -1447,6 +1447,62 @@ export default function BusinessProfile() {
       </div>
 
       {/* Provider Selection Modal */}
+      {/* Delivery Type Selection Modal */}
+      <Dialog open={deliveryTypeModalOpen} onOpenChange={setDeliveryTypeModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Choose Service Location</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-gray-600">
+              This service can be delivered at a business location or as a mobile service.
+              Please choose your preferred option:
+            </p>
+
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                className="w-full h-auto p-4 justify-start border-blue-500 hover:bg-blue-50"
+                onClick={() => handleDeliveryTypeSelection("business_location")}
+              >
+                <div className="flex items-center space-x-3">
+                  <Building className="w-5 h-5 text-blue-600" />
+                  <div className="text-left">
+                    <div className="font-medium">Business Location</div>
+                    <div className="text-sm text-gray-500">Service at the business location</div>
+                  </div>
+                </div>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="w-full h-auto p-4 justify-start border-green-500 hover:bg-green-50"
+                onClick={() => handleDeliveryTypeSelection("customer_location")}
+              >
+                <div className="flex items-center space-x-3">
+                  <Car className="w-5 h-5 text-green-600" />
+                  <div className="text-left">
+                    <div className="font-medium">Mobile Service</div>
+                    <div className="text-sm text-gray-500">Service comes to your location</div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={() => {
+                setDeliveryTypeModalOpen(false);
+                setPendingService(null);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <ProviderSelector
         isOpen={providerSelectorOpen}
         onClose={() => setProviderSelectorOpen(false)}
