@@ -1397,7 +1397,7 @@ export default function Index() {
                   {servicePages.map((page, pageIndex) => (
                     <div
                       key={`services-page-${pageIndex}`}
-                      className="flex gap-8 w-full flex-none"
+                      className="flex gap-6 w-full flex-none"
                     >
                       {page.map((service) => (
                         <Card
