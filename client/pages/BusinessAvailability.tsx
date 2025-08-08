@@ -119,6 +119,23 @@ export default function BusinessAvailability() {
     });
   }, [savedLocations, availableBusinesses, selectedDeliveryTypes]);
 
+  // Auto-select the first saved location if there's only one and it's not already selected
+  useEffect(() => {
+    if (savedLocations.length === 1 && availableBusinesses.length > 0) {
+      const defaultLocation = savedLocations[0];
+      availableBusinesses.forEach((business: any) => {
+        const isMobileFlow =
+          business.deliveryType === "mobile" ||
+          selectedDeliveryTypes[business.id] === "customer_location";
+
+        if (isMobileFlow && !customerAddresses[business.id]?.selectedLocationId) {
+          // Simulate the user selecting the location from dropdown
+          handleSavedLocationSelect(business.id, defaultLocation.id);
+        }
+      });
+    }
+  }, [savedLocations, availableBusinesses, selectedDeliveryTypes, customerAddresses]);
+
   const fetchCustomerLocations = async () => {
     try {
       // Use Supabase Auth user id as customer_id in customer_locations
