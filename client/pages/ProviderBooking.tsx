@@ -615,15 +615,16 @@ const ProviderBooking = () => {
       if (error) {
         console.error("Error fetching promotion:", error);
         // If promotion not found, try to create a default promotion for demo purposes
-        if (error.code === 'PGRST116' && promoCode === 'BOTOX25') {
-          console.log("Creating demo promotion for BOTOX25");
+        if (error.code === 'PGRST116' && (promoCode === 'BOTOX25' || promoCode === 'SAVE20')) {
+          console.log(`Creating demo promotion for ${promoCode}`);
+          const discountPercent = promoCode === 'SAVE20' ? 20 : 25;
           const demoPromotion = {
             id: promotionId,
-            title: "Botox Special",
-            description: "25% off Botox services",
-            promo_code: "BOTOX25",
-            savings_type: "percentage", // This should match the enum: percentage, fixed_amount
-            savings_amount: 25,
+            title: promoCode === 'SAVE20' ? "Weekend Yoga Special" : "Botox Special",
+            description: promoCode === 'SAVE20' ? "Get 20% off all yoga services this weekend" : "25% off Botox services",
+            promo_code: promoCode,
+            savings_type: "percentage",
+            savings_amount: discountPercent,
             savings_max_amount: 100,
             is_active: true,
             business_id: businessId,
@@ -631,12 +632,6 @@ const ProviderBooking = () => {
           };
           setPromotionData(demoPromotion);
           console.log("Demo promotion data set:", demoPromotion);
-          console.log("Discount calculation test:", {
-            subtotal: getSubtotal(),
-            type: demoPromotion.savings_type,
-            amount: demoPromotion.savings_amount,
-            expectedDiscount: (getSubtotal() * 25) / 100
-          });
           return;
         }
         return;
