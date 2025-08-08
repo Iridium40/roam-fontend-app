@@ -835,10 +835,16 @@ const ProviderBooking = () => {
         throw bookingError;
       }
 
+      // Create success message with promo code info if applicable
+      let successMessage = "Your booking request has been submitted. The provider will contact you shortly.";
+      if (promotionData && promoCode) {
+        const savings = getDiscountAmount();
+        successMessage += ` You saved $${savings.toFixed(2)} with promo code ${promoCode}!`;
+      }
+
       toast({
         title: "Booking submitted!",
-        description:
-          "Your booking request has been submitted. The provider will contact you shortly.",
+        description: successMessage,
       });
 
       setIsBookingModalOpen(false);
