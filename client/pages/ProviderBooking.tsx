@@ -392,6 +392,31 @@ const ProviderBooking = () => {
           addItemToBooking(serviceToAdd, "service");
         } else {
           console.warn("Service not found with ID:", selectedServiceId);
+
+          // Show user-friendly error for missing service
+          toast({
+            title: "Service Not Available",
+            description: "The selected service is no longer available from this business. Please choose another service.",
+            variant: "destructive",
+          });
+
+          // Check if the service exists in the global services table but not for this business
+          const { data: globalService } = await supabase
+            .from("services")
+            .select("name, description")
+            .eq("id", selectedServiceId)
+            .single();
+
+          if (globalService) {
+            console.log(`Service "${globalService.name}" exists globally but is not offered by this business`);
+            toast({
+              title: "Service Not Offered",
+              description: `This business does not currently offer "${globalService.name}". Please browse their available services below.`,
+              variant: "destructive",
+            });
+          } else {
+            console.log("Service does not exist in global services table");
+          }
         }
       }
 
