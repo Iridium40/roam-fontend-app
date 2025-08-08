@@ -1350,15 +1350,15 @@ export default function BusinessAvailability() {
                               <>
                                 <Badge
                                   variant="secondary"
-                                  className="bg-green-100 text-green-800"
-                                >
-                                  Mobile
-                                </Badge>
-                                <Badge
-                                  variant="secondary"
                                   className="bg-blue-100 text-blue-800"
                                 >
                                   Business
+                                </Badge>
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-green-100 text-green-800"
+                                >
+                                  Mobile
                                 </Badge>
                               </>
                             ) : (
