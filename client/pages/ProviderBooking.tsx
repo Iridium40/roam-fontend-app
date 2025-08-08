@@ -802,28 +802,33 @@ const ProviderBooking = () => {
       });
 
       // Create booking record
+      const bookingPayload = {
+        business_id: businessId, // Required: Business ID from URL params
+        provider_id: preferredProviderId || null, // Provider ID from URL params
+        service_id:
+          selectedItems.find((item) => item.type === "service")?.id ||
+          selectedItems[0]?.id,
+        customer_id: customerId || null, // Customer ID for authenticated users
+        customer_location_id: customerLocationId,
+        business_location_id: businessLocationId,
+        delivery_type: deliveryType || "customer_location",
+        guest_name: !customerId ? bookingForm.customerName : null, // Only use guest fields if not authenticated
+        guest_email: !customerId ? bookingForm.customerEmail : null,
+        guest_phone: !customerId ? bookingForm.customerPhone : null,
+        booking_date: bookingForm.preferredDate,
+        start_time: bookingForm.preferredTime || "09:00",
+        admin_notes: bookingForm.notes,
+        promotion_id: promotionId || null, // Store the promotion ID for promo code tracking
+        total_amount: getTotalAmount(),
+        booking_status: "pending",
+        payment_status: "pending",
+      };
+
+      console.log("Final booking payload:", bookingPayload);
+
       const { data: booking, error: bookingError } = await supabase
         .from("bookings")
-        .insert({
-          provider_id: preferredProviderId || null, // Use the selected provider ID
-          service_id:
-            selectedItems.find((item) => item.type === "service")?.id ||
-            selectedItems[0]?.id,
-          customer_id: customerId || null, // Use proper customer ID
-          customer_location_id: customerLocationId,
-          business_location_id: businessLocationId,
-          delivery_type: deliveryType || "customer_location",
-          guest_name: !customerId ? bookingForm.customerName : null, // Only use guest fields if not authenticated
-          guest_email: !customerId ? bookingForm.customerEmail : null,
-          guest_phone: !customerId ? bookingForm.customerPhone : null,
-          booking_date: bookingForm.preferredDate,
-          start_time: bookingForm.preferredTime || "09:00",
-          admin_notes: bookingForm.notes,
-          promotion_id: promotionId || null, // Store the promotion ID for promo code tracking
-          total_amount: getTotalAmount(),
-          booking_status: "pending",
-          payment_status: "pending",
-        })
+        .insert(bookingPayload)
         .select()
         .single();
 
@@ -1420,7 +1425,7 @@ const ProviderBooking = () => {
                 <CardContent>
                   <div className="space-y-2 text-sm">
                     <div className="font-medium text-gray-900">
-                      {selectedLocation.street_address}
+                      {selectedLocation.address_line1 || selectedLocation.street_address}
                     </div>
                     {selectedLocation.address_line2 && (
                       <div className="text-gray-600">
