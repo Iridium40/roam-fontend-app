@@ -421,6 +421,11 @@ export default function BusinessProfile() {
       // Preserve date and time parameters from the current URL
       const selectedDate = searchParams.get("date");
       const selectedTime = searchParams.get("time");
+      const promotionId = searchParams.get("promotion");
+      const promoCode = searchParams.get("promo_code");
+      const deliveryType = searchParams.get("deliveryType");
+      const location = searchParams.get("location");
+      const address = searchParams.get("address");
 
       let bookingUrl = `/book/${businessId}?service=${selectedService.id}`;
       if (providerId) {
@@ -431,6 +436,21 @@ export default function BusinessProfile() {
       }
       if (selectedTime) {
         bookingUrl += `&time=${selectedTime}`;
+      }
+      if (promotionId) {
+        bookingUrl += `&promotion=${promotionId}`;
+      }
+      if (promoCode) {
+        bookingUrl += `&promo_code=${promoCode}`;
+      }
+      if (deliveryType) {
+        bookingUrl += `&deliveryType=${deliveryType}`;
+      }
+      if (location) {
+        bookingUrl += `&location=${location}`;
+      }
+      if (address) {
+        bookingUrl += `&address=${address}`;
       }
 
       navigate(bookingUrl);
