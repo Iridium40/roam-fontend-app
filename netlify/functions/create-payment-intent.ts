@@ -60,12 +60,12 @@ const handler: Handler = async (event, context) => {
       keyPrefix: process.env.STRIPE_SECRET_KEY?.substring(0, 10),
     });
 
-    if (!process.env.STRIPE_SECRET_KEY) {
+    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_YOUR_STRIPE_SECRET_KEY_HERE') {
       return {
         statusCode: 500,
         headers,
         body: JSON.stringify({
-          error: 'Stripe secret key not configured'
+          error: 'Stripe secret key not configured. Please set STRIPE_SECRET_KEY environment variable with a valid Stripe secret key.'
         }),
       };
     }
