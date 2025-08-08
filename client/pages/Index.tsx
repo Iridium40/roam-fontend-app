@@ -1811,9 +1811,10 @@ export default function Index() {
               )}
               <div className="overflow-hidden">
                 <div
-                  className="flex gap-6 transition-transform duration-300 ease-in-out"
+                  className="flex transition-transform duration-300 ease-in-out"
                   style={{
-                    transform: `translateX(-${currentPopularSlide * (100/3)}%)`,
+                    transform: `translateX(-${currentPopularSlide * 100}%)`,
+                    width: `${Math.max(1, popularPages.length) * 100}%`,
                   }}
                 >
                   {filteredPopularServices.map((service) => (
