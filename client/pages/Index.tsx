@@ -1805,10 +1805,10 @@ export default function Index() {
                   {filteredPopularServices.map((service) => (
                     <Card
                       key={service.id}
-                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%] min-w-full md:min-w-[24%]"
+                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%]"
                     >
                       {/* Hero Image Section */}
-                      <div className="relative h-56 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
+                      <div className="relative h-64 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
                         <img
                           src={service.image}
                           alt={service.title}
