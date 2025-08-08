@@ -1346,14 +1346,31 @@ export default function BusinessAvailability() {
                         {/* Service Details */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <Badge
-                              variant="secondary"
-                              className={
-                                getDeliveryBadge(business.deliveryType).color
-                              }
-                            >
-                              {getDeliveryBadge(business.deliveryType).label}
-                            </Badge>
+                            {business.deliveryType === "both_locations" ? (
+                              <>
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-green-100 text-green-800"
+                                >
+                                  Mobile
+                                </Badge>
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-blue-100 text-blue-800"
+                                >
+                                  Business
+                                </Badge>
+                              </>
+                            ) : (
+                              <Badge
+                                variant="secondary"
+                                className={
+                                  getDeliveryBadge(business.deliveryType).color
+                                }
+                              >
+                                {getDeliveryBadge(business.deliveryType).label}
+                              </Badge>
+                            )}
                             <span className="text-sm text-foreground/60">
                               Open: {business.openTime} - {business.closeTime}
                             </span>
