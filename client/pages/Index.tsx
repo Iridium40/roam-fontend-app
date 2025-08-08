@@ -755,14 +755,6 @@ export default function Index() {
     setCurrentBusinessSlide((prev) => Math.max(prev - 1, 0));
   };
 
-  const nextPopularSlide = () => {
-    const maxSlides = Math.max(0, filteredPopularServices.length - 3);
-    setCurrentPopularSlide((prev) => Math.min(prev + 1, maxSlides));
-  };
-
-  const prevPopularSlide = () => {
-    setCurrentPopularSlide((prev) => Math.max(prev - 1, 0));
-  };
 
   const filteredBusinesses = featuredBusinesses.filter((business) => {
     const matchesSearch =
