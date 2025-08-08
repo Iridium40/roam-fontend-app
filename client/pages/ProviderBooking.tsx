@@ -269,21 +269,36 @@ const ProviderBooking = () => {
       }
 
       // Fetch business services
+      console.log("Fetching services for business:", businessId, "selected service:", selectedServiceId);
+
       const { data: services, error: servicesError } = await supabase
         .from("business_services")
         .select(
           `
           *,
           services:service_id (
+            id,
             name,
             description,
             image_url,
-            duration_minutes
+            duration_minutes,
+            is_active
           )
         `,
         )
         .eq("business_id", businessId)
         .eq("is_active", true);
+
+      console.log("Business services query result:", {
+        services: services?.map(s => ({
+          id: s.id,
+          service_id: s.service_id,
+          name: s.services?.name,
+          is_active: s.is_active,
+          service_is_active: s.services?.is_active
+        })),
+        error: servicesError
+      });
 
       if (servicesError) {
         console.error(
