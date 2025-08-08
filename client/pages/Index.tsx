@@ -1571,7 +1571,7 @@ export default function Index() {
           {promotionalDeals.length > 0 ? (
             <div className="relative">
               {/* Navigation Arrows */}
-              {promotionalDeals.length > 3 && (
+              {promotionPages.length > 1 && (
                 <>
                   <Button
                     variant="outline"
