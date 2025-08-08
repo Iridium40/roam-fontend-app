@@ -188,8 +188,8 @@ export default function BusinessAvailability() {
     try {
       setLoading(true);
 
-      // First fetch the service details
-      const { data: serviceData, error: serviceError } = await supabase
+      // First fetch the service details (without .single() to avoid PGRST116 error)
+      const { data: serviceDataArray, error: serviceError } = await supabase
         .from("services")
         .select(
           `
@@ -202,12 +202,11 @@ export default function BusinessAvailability() {
         `,
         )
         .eq("id", serviceId)
-        .eq("is_active", true)
-        .single();
+        .eq("is_active", true);
 
       console.log(
         "Service query result:",
-        JSON.stringify({ serviceData, serviceError }, null, 2),
+        JSON.stringify({ serviceDataArray, serviceError }, null, 2),
       );
 
       if (serviceError) {
@@ -220,8 +219,9 @@ export default function BusinessAvailability() {
         );
       }
 
+      const serviceData = serviceDataArray?.[0];
       if (!serviceData) {
-        console.error("No service found with ID:", serviceId);
+        console.error("No active service found with ID:", serviceId);
         // Use fallback service data for testing
         const fallbackService = {
           id: serviceId,
@@ -351,7 +351,7 @@ export default function BusinessAvailability() {
 
         // Try to fetch the specific business that offers 60 Minute Massage
         try {
-          const { data: specificBusiness, error: specificError } =
+          const { data: specificBusinessArray, error: specificError } =
             await supabase
               .from("business_profiles")
               .select(
@@ -370,8 +370,9 @@ export default function BusinessAvailability() {
               website_url
             `,
               )
-              .eq("id", "a3b483e5-b375-4a83-8c1e-223452f23397")
-              .single();
+              .eq("id", "a3b483e5-b375-4a83-8c1e-223452f23397");
+
+          const specificBusiness = specificBusinessArray?.[0];
 
           if (specificBusiness && !specificError) {
             console.log("Found specific business:", specificBusiness);

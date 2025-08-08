@@ -93,8 +93,7 @@ export default function ServiceBookingFlow() {
         `,
         )
         .eq("id", serviceId)
-        .eq("is_active", true)
-        .single();
+        .eq("is_active", true);
 
       // Check for authentication error
       if (serviceResponse.status === 401 && retryCount === 0) {
@@ -119,8 +118,12 @@ export default function ServiceBookingFlow() {
         }
       }
 
-      const { data: serviceData, error } = serviceResponse;
+      const { data: serviceDataArray, error } = serviceResponse;
+      const serviceData = serviceDataArray?.[0];
       if (error || !serviceData) {
+        console.error("Service query error:", error);
+        console.error("Service ID requested:", serviceId);
+        console.error("Query result:", serviceDataArray);
         throw new Error("Service not found");
       }
 

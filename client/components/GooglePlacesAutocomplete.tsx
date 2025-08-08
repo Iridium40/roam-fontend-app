@@ -36,7 +36,7 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   // Google Maps API key
   const GOOGLE_MAPS_API_KEY =
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY ||
-    "AIzaSyCo_xpvt_4a5383FSZ8qJo_2M4cGplpPk8";
+    "AIzaSyDuTYClctxxl_cq2Hr8gKbuOY-1-t4bqfw";
 
   const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
@@ -80,9 +80,14 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       };
 
       script.onerror = (error) => {
-        console.error("Failed to load Google Maps script:", error);
+        console.warn(
+          "Google Maps script failed to load, falling back to manual input:",
+          error,
+        );
         setIsLoading(false);
-        reject(new Error("Failed to load Google Maps"));
+        setIsGoogleMapsLoaded(false);
+        // Don't reject, just continue without Google Maps
+        resolve();
       };
 
       document.head.appendChild(script);
@@ -171,7 +176,7 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     };
 
     loadGoogleMapsScript().catch((error) => {
-      console.error("Failed to load Google Maps:", error);
+      console.warn("Google Maps unavailable, using manual input:", error);
       if (
         error.message.includes("billing") ||
         error.message.includes("Billing")
