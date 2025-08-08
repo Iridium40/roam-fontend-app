@@ -90,6 +90,19 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
         timestamp: new Date().toISOString()
       });
 
+      // Test if we can reach Google Maps API endpoint
+      fetch(`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`, { method: 'HEAD' })
+        .then(response => {
+          console.log("Google Maps API endpoint test:", {
+            status: response.status,
+            ok: response.ok,
+            headers: Object.fromEntries(response.headers.entries())
+          });
+        })
+        .catch(error => {
+          console.error("Google Maps API endpoint unreachable:", error);
+        });
+
       window.initGoogleMaps = () => {
         console.log("Google Maps script loaded successfully");
       console.log("API Key (first 10 chars):", GOOGLE_MAPS_API_KEY?.substring(0, 10));
