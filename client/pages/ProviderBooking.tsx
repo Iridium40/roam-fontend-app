@@ -422,6 +422,8 @@ const ProviderBooking = () => {
           setBookingForm((prev) => ({
             ...prev,
             customerEmail: user.email || "",
+            customerName: user.user_metadata?.full_name || user.user_metadata?.name || "",
+            customerPhone: user.user_metadata?.phone || "",
           }));
         }
         return;
