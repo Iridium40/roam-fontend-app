@@ -1773,6 +1773,23 @@ export default function Index() {
                   ))}
                 </div>
               </div>
+
+              {/* Carousel indicators - only show when there are multiple pages */}
+              {promotionPages.length > 1 && (
+                <div className="flex justify-center mt-6 gap-2">
+                  {promotionPages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentPromotionSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-colors ${
+                        index === currentPromotionSlide
+                          ? "bg-roam-blue"
+                          : "bg-gray-300 hover:bg-gray-400"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-12">
