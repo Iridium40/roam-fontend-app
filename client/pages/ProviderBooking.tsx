@@ -138,16 +138,20 @@ const ProviderBooking = () => {
   }, [promotionId]);
 
   useEffect(() => {
-    // Load customer location from URL parameters or database
-    if (customerLocationId) {
-      fetchCustomerLocation(customerLocationId);
+    // Load location based on delivery type
+    if (locationId) {
+      if (deliveryType === "business_location") {
+        fetchBusinessLocation(locationId);
+      } else if (deliveryType === "customer_location") {
+        fetchCustomerLocation(locationId);
+      }
     } else if (
       customerAddress &&
       customerCity &&
       customerState &&
       customerZip
     ) {
-      // Use location data from URL parameters
+      // Use location data from URL parameters (for customer addresses)
       setSelectedLocation({
         address_line1: customerAddress,
         city: customerCity,
@@ -156,7 +160,8 @@ const ProviderBooking = () => {
       });
     }
   }, [
-    customerLocationId,
+    locationId,
+    deliveryType,
     customerAddress,
     customerCity,
     customerState,
