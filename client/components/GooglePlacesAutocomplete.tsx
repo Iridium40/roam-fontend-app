@@ -128,13 +128,30 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
       script.onerror = (error) => {
         console.warn(
-          "Google Maps script failed to load, falling back to manual input:",
+          "Google Maps script failed to load (network restricted), falling back to manual input:",
           error,
         );
         setIsLoading(false);
         setIsGoogleMapsLoaded(false);
+        setBillingError(true);
         // Don't reject, just continue without Google Maps
         resolve();
+      };
+
+      // Add timeout to prevent hanging
+      const timeout = setTimeout(() => {
+        console.warn("Google Maps script loading timeout, falling back to manual input");
+        setIsLoading(false);
+        setIsGoogleMapsLoaded(false);
+        setBillingError(true);
+        resolve();
+      }, 10000); // 10 second timeout
+
+      // Clear timeout if script loads successfully
+      const originalInitGoogleMaps = window.initGoogleMaps;
+      window.initGoogleMaps = () => {
+        clearTimeout(timeout);
+        if (originalInitGoogleMaps) originalInitGoogleMaps();
       };
 
       document.head.appendChild(script);
