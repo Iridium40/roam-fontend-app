@@ -622,7 +622,7 @@ const ProviderBooking = () => {
             title: "Botox Special",
             description: "25% off Botox services",
             promo_code: "BOTOX25",
-            savings_type: "percentage",
+            savings_type: "percentage", // This should match the enum: percentage, fixed_amount
             savings_amount: 25,
             savings_max_amount: 100,
             is_active: true,
@@ -631,6 +631,12 @@ const ProviderBooking = () => {
           };
           setPromotionData(demoPromotion);
           console.log("Demo promotion data set:", demoPromotion);
+          console.log("Discount calculation test:", {
+            subtotal: getSubtotal(),
+            type: demoPromotion.savings_type,
+            amount: demoPromotion.savings_amount,
+            expectedDiscount: (getSubtotal() * 25) / 100
+          });
           return;
         }
         return;
