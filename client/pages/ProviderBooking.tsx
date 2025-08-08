@@ -754,6 +754,20 @@ const ProviderBooking = () => {
 
       console.log("Submitting booking with customer_id:", customerId);
 
+      // Log promo code application
+      if (promotionData && promoCode) {
+        const discount = getDiscountAmount();
+        console.log("Applying promo code:", {
+          promoCode: promoCode,
+          promotionId: promotionId,
+          discountAmount: discount,
+          originalTotal: getSubtotal(),
+          finalTotal: getTotalAmount(),
+          savingsType: promotionData.savings_type,
+          savingsAmount: promotionData.savings_amount
+        });
+      }
+
       // First, create the customer location
       let customerLocationId = null;
       try {
