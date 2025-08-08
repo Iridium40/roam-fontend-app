@@ -40,6 +40,7 @@ import NotFound from "./pages/NotFound";
 import ServiceBookingFlow from "./pages/ServiceBookingFlow";
 import BusinessAvailability from "./pages/BusinessAvailability";
 import BusinessServiceBooking from "./pages/BusinessServiceBooking";
+import Checkout from "./pages/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -225,6 +226,10 @@ const App = () => (
               <Route
                 path="/business/:businessId/book-service"
                 element={<BusinessServiceBooking />}
+              />
+              <Route
+                path="/checkout"
+                element={<Checkout />}
               />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
