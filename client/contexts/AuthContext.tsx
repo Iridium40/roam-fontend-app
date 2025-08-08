@@ -1,5 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
+import { toast } from "@/hooks/use-toast";
+
+console.log('🔥 AuthContext.tsx file is being loaded...');
+
 import type {
   AuthUser,
   AuthCustomer,
@@ -62,9 +67,10 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  console.log('🚀 AuthProvider component is mounting...');
   const [user, setUser] = useState<AuthUser | null>(null);
   const [customer, setCustomer] = useState<AuthCustomer | null>(null);
-  const [userType, setUserType] = useState<UserType | null>(null);
+  const [userType, setUserType] = useState<"provider" | "customer" | null>(null);
   const [loading, setLoading] = useState(true);
 
   const clearStoredData = () => {
@@ -106,9 +112,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.log("AuthContext: Provider session restored", userData);
           } else if (storedUserType === "customer" && storedCustomer) {
             const customerData = JSON.parse(storedCustomer);
-            setCustomer(customerData);
-            setUserType("customer");
-            console.log("AuthContext: Customer session restored", customerData);
+            console.log("🔐 AuthContext: Customer session restored from localStorage", customerData);
+            console.log("🔐 AuthContext: Customer user_id from localStorage:", customerData.user_id);
+            
+            // If user_id is missing from stored data, clear localStorage and fetch fresh data
+            if (!customerData.user_id) {
+              console.log("🔐 AuthContext: user_id missing from localStorage, clearing and fetching fresh data...");
+              clearStoredData();
+              // Continue to fresh session fetch below
+            } else {
+              setCustomer(customerData);
+              setUserType("customer");
+              setLoading(false);
+              return;
+            }
           }
 
           setLoading(false);
@@ -231,7 +248,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoading(false);
       }
     };
-
+    
+    console.log('🔐 AuthContext: useEffect triggered, initializing auth...');
     initializeAuth();
   }, []);
 
