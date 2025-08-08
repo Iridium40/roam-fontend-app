@@ -65,8 +65,17 @@ export default function BusinessAvailability() {
   const [savedLocations, setSavedLocations] = useState<any[]>([]);
 
   useEffect(() => {
+    console.log("BusinessAvailability component params:", {
+      serviceId,
+      selectedDate,
+      selectedTime,
+      url: window.location.href
+    });
+
     if (serviceId && selectedDate && selectedTime) {
       fetchAvailableBusinesses();
+    } else {
+      console.warn("Missing required parameters:", { serviceId, selectedDate, selectedTime });
     }
   }, [serviceId, selectedDate, selectedTime]);
 
