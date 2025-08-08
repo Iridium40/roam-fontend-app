@@ -142,6 +142,9 @@ export default function BusinessAvailability() {
 
       setSavedLocations(locations || []);
       console.log("[BA] Loaded customer saved locations count:", locations?.length || 0);
+      if (locations && locations.length > 0) {
+        console.log("[BA] First saved location structure:", locations[0]);
+      }
     } catch (error) {
       console.error("Error fetching customer locations:", error);
     }
