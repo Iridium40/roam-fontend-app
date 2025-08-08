@@ -193,12 +193,13 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
     loadGoogleMapsScript().catch((error) => {
       console.warn("Google Maps unavailable, using manual input:", error);
-      if (
-        error.message.includes("billing") ||
-        error.message.includes("Billing")
-      ) {
-        setBillingError(true);
-      }
+      console.error("Google Maps error details:", {
+        message: error.message,
+        stack: error.stack,
+        apiKey: GOOGLE_MAPS_API_KEY?.substring(0, 10) + "...",
+      });
+      setBillingError(true);
+      setIsLoading(false);
     });
 
     // Global error handler for Google Maps
