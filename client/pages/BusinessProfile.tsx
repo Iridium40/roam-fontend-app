@@ -423,6 +423,21 @@ export default function BusinessProfile() {
     }
   };
 
+  const handleDeliveryTypeSelection = (deliveryType: string) => {
+    if (pendingService) {
+      // Create a modified service object with the selected delivery type
+      const serviceWithDeliveryType = {
+        ...pendingService,
+        delivery_type: deliveryType
+      };
+
+      setSelectedService(serviceWithDeliveryType);
+      setDeliveryTypeModalOpen(false);
+      setPendingService(null);
+      setProviderSelectorOpen(true);
+    }
+  };
+
   const handleProviderSelection = (providerId: string | null) => {
     setSelectedProviderId(providerId);
     if (selectedService) {
