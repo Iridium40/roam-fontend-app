@@ -1571,14 +1571,13 @@ export default function Index() {
                 <div
                   className="flex gap-6 transition-transform duration-300 ease-in-out"
                   style={{
-                    transform: `translateX(-${currentPromotionSlide * 33.333}%)`,
-                    width: `${promotionalDeals.length * 33.333}%`,
+                    transform: `translateX(-${currentPromotionSlide * (100/3)}%)`,
                   }}
                 >
                   {promotionalDeals.map((promotion, index) => (
                     <Card
                       key={promotion.id}
-                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%] min-w-full md:min-w-[24%]"
+                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[calc(33.333%-1rem)]"
                     >
                       {/* Hero Section */}
                       <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
