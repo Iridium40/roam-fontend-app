@@ -70,9 +70,24 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         // Check response status before reading body
         if (!response.ok) {
-          const errorData = await response
-            .json()
-            .catch(() => ({ error: "Unknown error" }));
+          console.error("Payment intent request failed:", {
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+          });
+
+          // Try to get error details from response
+          const responseText = await response.text();
+          console.error("Response body:", responseText);
+
+          let errorData;
+          try {
+            errorData = JSON.parse(responseText);
+          } catch (parseError) {
+            console.error("Failed to parse error response as JSON:", parseError);
+            errorData = { error: `HTTP ${response.status}: ${responseText || response.statusText}` };
+          }
+
           throw new Error(
             errorData.error || `HTTP error! status: ${response.status}`,
           );
