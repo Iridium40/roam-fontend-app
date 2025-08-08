@@ -2024,7 +2024,7 @@ export default function Index() {
                   <Card
                     key={business.id}
                     className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                    style={{ minWidth: "calc(33.333% - 0.667rem)" }}
+                    style={{ width: "24%", minWidth: "24%", flexShrink: 0 }}
                   >
                     <CardContent className="p-0">
                       {/* Hero Cover Section */}
