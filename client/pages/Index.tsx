@@ -950,9 +950,10 @@ export default function Index() {
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source
-            src="https://videos.pexels.com/video-files/857195/pexels-video-857195.mp4"
+            src="https://videos.pexels.com/video-files/1409899/pexels-video-1409899.mp4"
             type="video/mp4"
           />
+          Your browser does not support the video tag.
         </video>
 
         {/* Dark overlay for text readability */}
