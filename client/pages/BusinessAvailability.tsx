@@ -780,6 +780,14 @@ export default function BusinessAvailability() {
     // Navigate to business profile with services tab active and service pre-selected
     let targetUrl = `/business/${business.id}?tab=services&service=${serviceId}&date=${selectedDate}&time=${selectedTime}`;
 
+    // Add promotion parameters if present
+    if (promotionId) {
+      targetUrl += `&promotion=${promotionId}`;
+    }
+    if (promoCode) {
+      targetUrl += `&promo_code=${promoCode}`;
+    }
+
     // Add delivery type information
     if (selectedDeliveryType) {
       targetUrl += `&deliveryType=${selectedDeliveryType}`;
