@@ -217,6 +217,10 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
             setStripeCustomerId(fallbackData.stripeCustomerId || "");
             console.log("Payment intent created via fallback endpoint");
             return;
+          } else {
+            console.error("Fallback endpoint failed with status:", fallbackResponse.status);
+            const fallbackErrorText = await fallbackResponse.text().catch(() => "Could not read response");
+            console.error("Fallback endpoint error:", fallbackErrorText);
           }
         } catch (fallbackError) {
           console.error("Fallback endpoint also failed:", fallbackError);
