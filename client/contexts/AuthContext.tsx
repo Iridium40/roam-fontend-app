@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../lib/supabase";
 import { User } from "@supabase/supabase-js";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "../hooks/use-toast";
 
 console.log('🔥 AuthContext.tsx file is being loaded...');
 
@@ -9,7 +9,7 @@ import type {
   AuthUser,
   AuthCustomer,
   ProviderRole,
-} from "@/lib/database.types";
+} from "../lib/database.types";
 
 type UserType = "provider" | "customer";
 
@@ -102,7 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           });
 
           // Restore the access token to the directSupabaseAPI
-          const { directSupabaseAPI } = await import("@/lib/directSupabase");
+          const { directSupabaseAPI } = await import("../lib/directSupabase");
           directSupabaseAPI.currentAccessToken = storedToken;
 
           if (storedUserType === "provider" && storedUser) {
@@ -520,7 +520,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log("AuthContext signUpCustomer: Starting registration...");
 
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      const { directSupabaseAPI } = await import("../lib/directSupabase");
 
       // Create auth user first
       const authData = await directSupabaseAPI.signUpWithPassword(
@@ -803,7 +803,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log("AuthContext updateCustomerProfile: Starting update...");
 
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      const { directSupabaseAPI } = await import("../lib/directSupabase");
 
       // Ensure we have a valid access token
       const storedToken = localStorage.getItem("roam_access_token");
@@ -841,7 +841,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Use Edge Function for customer profile updates
         const { updateCustomerProfileViaEdgeFunction } = await import(
-          "@/lib/directSupabase_new"
+          "../lib/directSupabase_new"
         );
         await updateCustomerProfileViaEdgeFunction(
           directSupabaseAPI.baseURL,
@@ -963,7 +963,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log("AuthContext uploadCustomerAvatar: Starting upload...");
 
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      const { directSupabaseAPI } = await import("../lib/directSupabase");
 
       // Upload file to Supabase storage
       const uploadResult = await directSupabaseAPI.uploadCustomerAvatar(
@@ -996,7 +996,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async () => {
     try {
-      const { directSupabaseAPI } = await import("@/lib/directSupabase");
+      const { directSupabaseAPI } = await import("../lib/directSupabase");
       await directSupabaseAPI.signOut();
     } catch (error) {
       console.warn("SignOut error:", error);

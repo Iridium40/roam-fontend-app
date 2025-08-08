@@ -44,6 +44,23 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   const elements = useElements();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
+  
+  // Debug log to see what customer data is available
+  console.log('💳 PaymentForm: Customer data debug:', { 
+    isCustomer, 
+    customer, 
+    customerHasUserId: !!customer?.user_id,
+    customerKeys: customer ? Object.keys(customer) : 'no customer'
+  });
+  
+  // Test Stripe sync directly since we have customer data with user_id
+  useEffect(() => {
+    if (isCustomer && customer?.user_id) {
+      console.log('🧪 Testing Stripe sync with mock customer ID...');
+      syncStripeCustomerToSupabase('cus_test_mock_customer_id');
+    }
+  }, [isCustomer, customer?.user_id]);
+  
   const [isLoading, setIsLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState<string>('');
   const [paymentIntentId, setPaymentIntentId] = useState<string>('');
