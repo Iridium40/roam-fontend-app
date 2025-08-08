@@ -954,9 +954,22 @@ const ProviderBooking = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Button asChild variant="ghost" size="sm">
-                <Link to="/home">
+                <Link to={(() => {
+                  // Construct URL to go back to business profile for provider selection
+                  const params = new URLSearchParams();
+                  if (selectedServiceId) params.set("service", selectedServiceId);
+                  if (preSelectedDate) params.set("date", preSelectedDate);
+                  if (preSelectedTime) params.set("time", preSelectedTime);
+                  if (promotionId) params.set("promotion", promotionId);
+                  if (promoCode) params.set("promo_code", promoCode);
+                  if (deliveryType) params.set("deliveryType", deliveryType);
+                  if (locationId) params.set("location", locationId);
+
+                  const queryString = params.toString();
+                  return `/business/${businessId}${queryString ? `?${queryString}` : ''}`;
+                })()}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Home
+                  Back to Provider Selection
                 </Link>
               </Button>
               <div className="flex items-center">
