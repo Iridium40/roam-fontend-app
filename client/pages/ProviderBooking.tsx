@@ -1651,6 +1651,13 @@ const ProviderBooking = () => {
                       </div>
                     )}
 
+                    {/* Temporary debug info */}
+                    {promotionData && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        Debug: type={promotionData.savings_type}, amount={promotionData.savings_amount}, subtotal=${getSubtotal()}
+                      </div>
+                    )}
+
                     <div className="flex justify-between items-center text-gray-600">
                       <span>Platform Fees (15%)</span>
                       <span>${getPlatformFees().toFixed(2)}</span>
