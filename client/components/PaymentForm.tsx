@@ -198,11 +198,16 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           await syncStripeCustomerToSupabase(data.stripeCustomerId);
         }
       } catch (error: any) {
-        console.error("Error creating payment intent:", error);
+        // Don't log as error if it's just the expected Netlify 404
+        if (error.message.includes("Using fallback endpoint")) {
+          console.log("🔄 Netlify function unavailable, trying Express server...");
+        } else {
+          console.error("Error creating payment intent:", error);
+        }
 
         // Try fallback server endpoint if Netlify functions fail
         try {
-          console.log("Trying fallback server endpoint...");
+          console.log("🚀 Attempting payment via Express server endpoint...");
           const fallbackResponse = await fetch("/api/create-payment-intent", {
             method: "POST",
             headers: {
