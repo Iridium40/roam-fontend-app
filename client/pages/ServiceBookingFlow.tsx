@@ -26,9 +26,16 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function ServiceBookingFlow() {
   const { serviceId } = useParams<{ serviceId: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
+
+  // Extract promotion and business parameters
+  const promotionId = searchParams.get("promotion");
+  const promoCode = searchParams.get("promo_code");
+  const businessId = searchParams.get("business_id");
+  const autoBook = searchParams.get("auto_book") === "true";
 
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
