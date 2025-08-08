@@ -41,13 +41,14 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
   // Debug API key source in cloud environment
   console.log("Google Maps API Key Debug:", {
     fromEnv: !!import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    envValue: import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
+    envValue:
+      import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
     finalKey: GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
     domain: window.location.hostname,
     protocol: window.location.protocol,
     url: window.location.href,
     isDev: import.meta.env.DEV,
-    mode: import.meta.env.MODE
+    mode: import.meta.env.MODE,
   });
 
   const loadGoogleMapsScript = () => {
@@ -86,28 +87,31 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       script.defer = true;
 
       console.log("Loading Google Maps script:", {
-        url: scriptUrl.replace(GOOGLE_MAPS_API_KEY, 'API_KEY_HIDDEN'),
-        timestamp: new Date().toISOString()
+        url: scriptUrl.replace(GOOGLE_MAPS_API_KEY, "API_KEY_HIDDEN"),
+        timestamp: new Date().toISOString(),
       });
 
       window.initGoogleMaps = () => {
         console.log("Google Maps script loaded successfully");
-      console.log("API Key (first 10 chars):", GOOGLE_MAPS_API_KEY?.substring(0, 10));
+        console.log(
+          "API Key (first 10 chars):",
+          GOOGLE_MAPS_API_KEY?.substring(0, 10),
+        );
 
-      // Test if Places API is actually working
-      try {
-        if (window.google?.maps?.places) {
-          console.log("Places API is available");
-        } else {
-          console.error("Places API not available after script load");
+        // Test if Places API is actually working
+        try {
+          if (window.google?.maps?.places) {
+            console.log("Places API is available");
+          } else {
+            console.error("Places API not available after script load");
+          }
+        } catch (e) {
+          console.error("Error accessing Places API:", e);
         }
-      } catch (e) {
-        console.error("Error accessing Places API:", e);
-      }
 
-      setIsGoogleMapsLoaded(true);
-      setIsLoading(false);
-      resolve();
+        setIsGoogleMapsLoaded(true);
+        setIsLoading(false);
+        resolve();
       };
 
       // Handle Google Maps authentication/billing failures
@@ -140,7 +144,9 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
       // Add timeout to prevent hanging
       const timeout = setTimeout(() => {
-        console.warn("Google Maps script loading timeout, falling back to manual input");
+        console.warn(
+          "Google Maps script loading timeout, falling back to manual input",
+        );
         setIsLoading(false);
         setIsGoogleMapsLoaded(false);
         setBillingError(true);
