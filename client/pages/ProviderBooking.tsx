@@ -411,24 +411,62 @@ const ProviderBooking = () => {
             variant: "destructive",
           });
 
-          // Check if the service exists in the global services table but not for this business
-          const { data: globalService } = await supabase
+          // Debug: Check what services are available for this business
+          console.log("Available business services:", services.map(s => ({
+            business_service_id: s.id,
+            service_id: s.service_id,
+            service_name: s.services?.name,
+            is_active: s.is_active
+          })));
+
+          // Check if the service exists in the global services table
+          const { data: globalService, error: globalServiceError } = await supabase
             .from("services")
-            .select("name, description")
+            .select("id, name, description, is_active")
             .eq("id", selectedServiceId)
             .single();
 
+          console.log("Global service lookup:", { globalService, globalServiceError });
+
           if (globalService) {
-            console.log(
-              `Service "${globalService.name}" exists globally but is not offered by this business`,
-            );
-            toast({
-              title: "Service Not Offered",
-              description: `This business does not currently offer "${globalService.name}". Please browse their available services below.`,
-              variant: "destructive",
-            });
+            // Check if this service is offered by the business but maybe inactive
+            const { data: businessServiceMapping } = await supabase
+              .from("business_services")
+              .select("id, is_active, business_price, custom_price")
+              .eq("business_id", businessId)
+              .eq("service_id", selectedServiceId);
+
+            console.log("Business service mapping:", businessServiceMapping);
+
+            if (businessServiceMapping && businessServiceMapping.length > 0) {
+              const mapping = businessServiceMapping[0];
+              if (!mapping.is_active) {
+                toast({
+                  title: "Service Temporarily Unavailable",
+                  description: `"${globalService.name}" is temporarily unavailable from this business. Please choose another service.`,
+                  variant: "destructive",
+                });
+              } else {
+                toast({
+                  title: "Service Found But Not Loaded",
+                  description: `"${globalService.name}" exists but wasn't loaded. Please refresh the page.`,
+                  variant: "destructive",
+                });
+              }
+            } else {
+              toast({
+                title: "Service Not Offered",
+                description: `This business does not currently offer "${globalService.name}". Please browse their available services below.`,
+                variant: "destructive",
+              });
+            }
           } else {
             console.log("Service does not exist in global services table");
+            toast({
+              title: "Service Not Found",
+              description: "The requested service could not be found in our system.",
+              variant: "destructive",
+            });
           }
         }
       }
