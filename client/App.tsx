@@ -144,7 +144,7 @@ const App = () => (
               <Route
                 path="/customer/bookings"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute redirectTo="/sign-in">
                     <MyBookings />
                   </ProtectedRoute>
                 }
@@ -153,7 +153,7 @@ const App = () => (
               <Route
                 path="/customer/profile"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute redirectTo="/sign-in">
                     <CustomerProfile />
                   </ProtectedRoute>
                 }
@@ -162,7 +162,7 @@ const App = () => (
               <Route
                 path="/customer/settings"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute redirectTo="/sign-in">
                     <CustomerSettings />
                   </ProtectedRoute>
                 }
@@ -171,7 +171,7 @@ const App = () => (
               <Route
                 path="/customer/transactions"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute redirectTo="/sign-in">
                     <CustomerTransactions />
                   </ProtectedRoute>
                 }
@@ -180,7 +180,7 @@ const App = () => (
               <Route
                 path="/customer/favorites"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute redirectTo="/sign-in">
                     <CustomerFavorites />
                   </ProtectedRoute>
                 }
@@ -189,7 +189,7 @@ const App = () => (
               <Route
                 path="/customer/locations"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute redirectTo="/sign-in">
                     <CustomerLocations />
                   </ProtectedRoute>
                 }

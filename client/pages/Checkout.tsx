@@ -229,8 +229,19 @@ export default function Checkout() {
         description: "Your booking has been successfully submitted.",
       });
 
-      // Navigate to booking confirmation or my bookings
-      navigate("/customer/bookings");
+      // Navigate based on authentication status
+      if (customer && isCustomer) {
+        // Authenticated customer - go to their bookings
+        navigate("/customer/bookings");
+      } else {
+        // Guest booking - redirect to home with success message
+        navigate("/", { 
+          state: { 
+            bookingSuccess: true, 
+            bookingId: data.id 
+          } 
+        });
+      }
     } catch (error) {
       console.error("Error submitting booking:", error);
       toast({

@@ -757,16 +757,16 @@ const ProviderBooking = () => {
         isCustomer,
         authUserId: user?.id, // This is auth.users.id from the session
         customerData: customer,
-        isAuthenticated: !!user,
+        isAuthenticated: !!(user || customer),
       });
 
-      // Use auth.users.id as the customer_id for the booking
-      const customerId = user?.id; // This should be the auth.users.id from the authenticated session
+      // Use customer ID for authenticated customers, or allow guest booking
+      const customerId = customer?.customer_id || user?.id;
 
-      if (!customerId) {
+      if (!customerId && !bookingForm.customerEmail) {
         toast({
-          title: "Authentication required",
-          description: "Please sign in to complete your booking.",
+          title: "Customer information required",
+          description: "Please provide your email address to complete the booking.",
           variant: "destructive",
         });
         return;
