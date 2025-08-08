@@ -751,27 +751,12 @@ const ProviderBooking = () => {
       promotionData.savings_amount === null ||
       promotionData.savings_amount === undefined
     ) {
-      console.log("No discount - missing promotion data:", {
-        hasPromotion: !!promotionData,
-        hasType: !!promotionData?.savings_type,
-        hasAmount: promotionData?.savings_amount !== null && promotionData?.savings_amount !== undefined,
-        rawAmount: promotionData?.savings_amount,
-        promotionData
-      });
       return 0;
     }
 
     const subtotal = getSubtotal();
-    console.log("Calculating discount:", {
-      subtotal,
-      savingsType: promotionData.savings_type,
-      savingsAmount: promotionData.savings_amount,
-      maxAmount: promotionData.savings_max_amount,
-      selectedItemsLength: selectedItems.length
-    });
 
     if (subtotal <= 0) {
-      console.log("No subtotal to apply discount to");
       return 0;
     }
 
@@ -781,21 +766,15 @@ const ProviderBooking = () => {
 
       // Apply maximum discount cap if specified
       if (promotionData.savings_max_amount) {
-        const finalDiscount = Math.min(percentageDiscount, Number(promotionData.savings_max_amount));
-        console.log("Percentage discount with cap:", { percentageDiscount, cap: promotionData.savings_max_amount, finalDiscount });
-        return finalDiscount;
+        return Math.min(percentageDiscount, Number(promotionData.savings_max_amount));
       }
 
-      console.log("Percentage discount:", percentageDiscount);
       return percentageDiscount;
     } else if (promotionData.savings_type === "fixed_amount") {
       // Fixed amount discount, but don't let it exceed the subtotal
-      const fixedDiscount = Math.min(Number(promotionData.savings_amount), subtotal);
-      console.log("Fixed amount discount:", fixedDiscount);
-      return fixedDiscount;
+      return Math.min(Number(promotionData.savings_amount), subtotal);
     }
 
-    console.log("Unknown savings type:", promotionData.savings_type);
     return 0;
   };
 
