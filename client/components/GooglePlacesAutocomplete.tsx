@@ -81,11 +81,17 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
       // Handle Google Maps authentication/billing failures
       window.gm_authFailure = () => {
-        console.warn(
-          "Google Maps authentication/billing error - falling back to manual input"
-        );
+        console.error("Google Maps authentication failure detected");
+        console.error("API Key being used:", GOOGLE_MAPS_API_KEY);
+        console.error("Please check:");
+        console.error("1. API key is valid");
+        console.error("2. Places API is enabled");
+        console.error("3. Maps JavaScript API is enabled");
+        console.error("4. API key restrictions (domain, IP, etc.)");
+        console.error("5. Billing is properly configured");
         setIsGoogleMapsLoaded(false);
         setIsLoading(false);
+        setBillingError(true);
         resolve();
       };
 
