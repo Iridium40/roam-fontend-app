@@ -662,6 +662,11 @@ const ProviderBooking = () => {
     return selectedItems.reduce((total, item) => total + item.price, 0);
   };
 
+  const getPlatformFees = () => {
+    const subtotalAfterDiscount = getSubtotal() - getDiscountAmount();
+    return subtotalAfterDiscount * 0.15; // 15% platform fee
+  };
+
   const getDiscountAmount = () => {
     if (
       !promotionData ||
