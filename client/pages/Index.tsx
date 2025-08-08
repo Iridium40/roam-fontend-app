@@ -1402,15 +1402,13 @@ export default function Index() {
                       {page.map((service) => (
                         <Card
                           key={service.id}
-                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none"
-                          style={{ minWidth: "calc(100% - 2rem)" }}
-                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none w-full md:w-auto md:min-w-[calc((100%-4rem)/3)]"
+                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none w-full md:w-[24%] overflow-hidden"
                         >
-                          <div className="relative">
+                          <div className="relative h-64">
                             <img
                               src={service.image}
                               alt={service.title}
-                              className="w-full h-64 object-cover rounded-t-lg"
+                              className="w-full h-full object-cover"
                             />
                             <div className="absolute top-4 left-4">
                               <Badge
