@@ -1787,7 +1787,7 @@ export default function Index() {
           {filteredPopularServices.length > 0 ? (
             <div className="relative">
               {/* Navigation Arrows */}
-              {filteredPopularServices.length > 3 && (
+              {popularPages.length > 1 && (
                 <>
                   <Button
                     variant="outline"
