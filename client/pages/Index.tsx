@@ -1904,6 +1904,23 @@ export default function Index() {
                   ))}
                 </div>
               </div>
+
+              {/* Carousel indicators - only show when there are multiple pages */}
+              {popularPages.length > 1 && (
+                <div className="flex justify-center mt-6 gap-2">
+                  {popularPages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentPopularSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-colors ${
+                        index === currentPopularSlide
+                          ? "bg-roam-blue"
+                          : "bg-gray-300 hover:bg-gray-400"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-8">
