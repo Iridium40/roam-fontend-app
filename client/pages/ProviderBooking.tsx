@@ -163,7 +163,7 @@ const ProviderBooking = () => {
       ) {
         // Use individual location parameters (for backward compatibility)
         setSelectedLocation({
-          address_line1: customerAddress,
+          street_address: customerAddress,
           city: customerCity,
           state: customerState,
           postal_code: customerZip,
@@ -233,7 +233,7 @@ const ProviderBooking = () => {
       console.log("Populating form with selected location:", selectedLocation);
       setBookingForm((prev) => ({
         ...prev,
-        customerAddress: selectedLocation.address_line1 || "",
+        customerAddress: selectedLocation.street_address || "",
         customerCity: selectedLocation.city || "",
         customerState: selectedLocation.state || "",
         customerZip: selectedLocation.postal_code || "",
@@ -479,7 +479,7 @@ const ProviderBooking = () => {
           customerName: fullName || "",
           customerEmail: profile.email || user?.email || "",
           customerPhone: profile.phone || "",
-          customerAddress: locationToUse?.address_line1 || "",
+          customerAddress: locationToUse?.street_address || "",
           customerCity: locationToUse?.city || "",
           customerState: locationToUse?.state || "",
           customerZip: locationToUse?.postal_code || "",
@@ -489,7 +489,7 @@ const ProviderBooking = () => {
           customerName: fullName,
           customerEmail: profile.email || user?.email,
           customerPhone: profile.phone,
-          customerAddress: mostRecentLocation?.address_line1,
+          customerAddress: mostRecentLocation?.street_address,
           customerCity: mostRecentLocation?.city,
           customerState: mostRecentLocation?.state,
           customerZip: mostRecentLocation?.postal_code,
@@ -788,42 +788,18 @@ const ProviderBooking = () => {
         });
       }
 
-      // First, create the customer location
-      let customerLocationId = null;
-      try {
-        const { data: customerLocation, error: locationError } = await supabase
-          .from("customer_locations")
-          .insert({
-            customer_id: customerId,
-            address_line1: bookingForm.customerAddress,
-            city: bookingForm.customerCity,
-            state: bookingForm.customerState,
-            postal_code: bookingForm.customerZip,
-            is_active: true,
-          })
-          .select()
-          .single();
+      // Set location IDs based on delivery type
+      const customerLocationId = deliveryType === "customer_location" ? selectedLocation?.id : null;
+      const businessLocationId = deliveryType === "business_location" ? (locationId || location?.id) : null;
 
-        if (locationError) {
-          console.error("Error creating customer location:", locationError);
-          throw new Error(
-            "Failed to save customer location. Please try again.",
-          );
-        }
-
-        customerLocationId = customerLocation.id;
-        console.log("Customer location created:", customerLocationId);
-      } catch (locationError: any) {
-        console.error("Customer location creation failed:", locationError);
-        toast({
-          title: "Location Error",
-          description:
-            locationError.message ||
-            "Failed to save your address. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
+      console.log("Booking location debug:", {
+        deliveryType,
+        customerLocationId,
+        businessLocationId,
+        selectedLocation: selectedLocation?.id,
+        locationId,
+        locationFromState: location?.id
+      });
 
       // Create booking record
       const { data: booking, error: bookingError } = await supabase
@@ -834,12 +810,8 @@ const ProviderBooking = () => {
             selectedItems.find((item) => item.type === "service")?.id ||
             selectedItems[0]?.id,
           customer_id: customerId || null, // Use proper customer ID
-          customer_location_id:
-            deliveryType === "customer_location"
-              ? locationId || location?.id
-              : null,
-          business_location_id:
-            deliveryType === "business_location" ? location?.id : null,
+          customer_location_id: customerLocationId,
+          business_location_id: businessLocationId,
           delivery_type: deliveryType || "customer_location",
           guest_name: !customerId ? bookingForm.customerName : null, // Only use guest fields if not authenticated
           guest_email: !customerId ? bookingForm.customerEmail : null,
@@ -1106,7 +1078,7 @@ const ProviderBooking = () => {
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-gray-500" />
                       <span className="text-sm">
-                        {location.address_line1}, {location.city},{" "}
+                        {location.street_address}, {location.city},{" "}
                         {location.state} {location.postal_code}
                       </span>
                     </div>
@@ -1448,7 +1420,7 @@ const ProviderBooking = () => {
                 <CardContent>
                   <div className="space-y-2 text-sm">
                     <div className="font-medium text-gray-900">
-                      {selectedLocation.address_line1}
+                      {selectedLocation.street_address}
                     </div>
                     {selectedLocation.address_line2 && (
                       <div className="text-gray-600">
