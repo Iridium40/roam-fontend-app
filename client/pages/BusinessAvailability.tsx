@@ -351,7 +351,7 @@ export default function BusinessAvailability() {
 
         // Try to fetch the specific business that offers 60 Minute Massage
         try {
-          const { data: specificBusiness, error: specificError } =
+          const { data: specificBusinessArray, error: specificError } =
             await supabase
               .from("business_profiles")
               .select(
@@ -370,8 +370,9 @@ export default function BusinessAvailability() {
               website_url
             `,
               )
-              .eq("id", "a3b483e5-b375-4a83-8c1e-223452f23397")
-              .single();
+              .eq("id", "a3b483e5-b375-4a83-8c1e-223452f23397");
+
+          const specificBusiness = specificBusinessArray?.[0];
 
           if (specificBusiness && !specificError) {
             console.log("Found specific business:", specificBusiness);
