@@ -240,9 +240,13 @@ export function useFavorites() {
             error?.name === "TypeError";
 
           if (isNetworkError && retryCount < maxRetries) {
-            console.warn(`Retrying favorite check (${retryCount}/${maxRetries})...`);
+            console.warn(
+              `Retrying favorite check (${retryCount}/${maxRetries})...`,
+            );
             // Wait before retrying (exponential backoff)
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            await new Promise((resolve) =>
+              setTimeout(resolve, Math.pow(2, retryCount) * 1000),
+            );
             continue;
           }
 
@@ -418,9 +422,13 @@ export function useFavorites() {
             error?.name === "TypeError";
 
           if (isNetworkError && retryCount < maxRetries) {
-            console.warn(`Retrying business favorite check (${retryCount}/${maxRetries})...`);
+            console.warn(
+              `Retrying business favorite check (${retryCount}/${maxRetries})...`,
+            );
             // Wait before retrying (exponential backoff)
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            await new Promise((resolve) =>
+              setTimeout(resolve, Math.pow(2, retryCount) * 1000),
+            );
             continue;
           }
 
@@ -596,9 +604,13 @@ export function useFavorites() {
             error?.name === "TypeError";
 
           if (isNetworkError && retryCount < maxRetries) {
-            console.warn(`Retrying provider favorite check (${retryCount}/${maxRetries})...`);
+            console.warn(
+              `Retrying provider favorite check (${retryCount}/${maxRetries})...`,
+            );
             // Wait before retrying (exponential backoff)
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            await new Promise((resolve) =>
+              setTimeout(resolve, Math.pow(2, retryCount) * 1000),
+            );
             continue;
           }
 

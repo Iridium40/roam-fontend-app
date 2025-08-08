@@ -141,7 +141,10 @@ export default function BusinessAvailability() {
       }
 
       setSavedLocations(locations || []);
-      console.log("[BA] Loaded customer saved locations count:", locations?.length || 0);
+      console.log(
+        "[BA] Loaded customer saved locations count:",
+        locations?.length || 0,
+      );
       if (locations && locations.length > 0) {
         console.log("[BA] First saved location structure:", locations[0]);
       }
@@ -457,12 +460,14 @@ export default function BusinessAvailability() {
       if (autoBook && businessId) {
         // Filter to only show the specific business from the promotion
         finalBusinesses = transformedBusinesses.filter(
-          (business) => business.id === businessId
+          (business) => business.id === businessId,
         );
 
         // If the specific business isn't found in the results, we might need to fetch it separately
         if (finalBusinesses.length === 0) {
-          console.log("Promotion business not found in available businesses, this may indicate availability issues");
+          console.log(
+            "Promotion business not found in available businesses, this may indicate availability issues",
+          );
         }
       }
 
@@ -702,7 +707,10 @@ export default function BusinessAvailability() {
       setCustomerAddresses((prev) => ({
         ...prev,
         [businessId]: {
-          address: selectedLocation.street_address || selectedLocation.address_line1 || "",
+          address:
+            selectedLocation.street_address ||
+            selectedLocation.address_line1 ||
+            "",
           city: selectedLocation.city || "",
           state: selectedLocation.state || "",
           zip: selectedLocation.zip_code || selectedLocation.postal_code || "",
@@ -710,7 +718,10 @@ export default function BusinessAvailability() {
         },
       }));
       console.log("Updated customerAddresses for business:", businessId, {
-        address: selectedLocation.street_address || selectedLocation.address_line1 || "",
+        address:
+          selectedLocation.street_address ||
+          selectedLocation.address_line1 ||
+          "",
         city: selectedLocation.city || "",
         state: selectedLocation.state || "",
         zip: selectedLocation.zip_code || selectedLocation.postal_code || "",
@@ -759,8 +770,8 @@ export default function BusinessAvailability() {
       (business.deliveryType === "mobile"
         ? "customer_location"
         : business.deliveryType === "business_location"
-        ? "business_location"
-        : undefined);
+          ? "business_location"
+          : undefined);
     const selectedLocation = selectedLocations[business.id];
     const customerAddress = customerAddresses[business.id];
 
@@ -979,9 +990,7 @@ export default function BusinessAvailability() {
                                 {business.name}
                               </h3>
                               {business.is_featured && (
-                                <Badge
-                                  className="bg-roam-yellow text-gray-900 text-xs"
-                                >
+                                <Badge className="bg-roam-yellow text-gray-900 text-xs">
                                   <Star className="w-3 h-3 mr-1" />
                                   Featured
                                 </Badge>
@@ -1189,7 +1198,8 @@ export default function BusinessAvailability() {
                                       </Select>
                                     ) : (
                                       <div className="text-xs text-foreground/60 mt-1">
-                                        No saved addresses found for your account.
+                                        No saved addresses found for your
+                                        account.
                                       </div>
                                     )}
                                     <div className="mt-2">
@@ -1285,7 +1295,8 @@ export default function BusinessAvailability() {
                                       id={`zip-${business.id}`}
                                       placeholder="33101"
                                       value={
-                                        customerAddresses[business.id]?.zip || ""
+                                        customerAddresses[business.id]?.zip ||
+                                        ""
                                       }
                                       onChange={(e) =>
                                         handleAddressChange(

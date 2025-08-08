@@ -1390,89 +1390,92 @@ export default function Index() {
                   }}
                 >
                   {servicePages.map((page, pageIndex) => (
-                    <div key={`services-page-${pageIndex}`} className="flex gap-8 w-full flex-none">
+                    <div
+                      key={`services-page-${pageIndex}`}
+                      className="flex gap-8 w-full flex-none"
+                    >
                       {page.map((service) => (
                         <Card
                           key={service.id}
                           className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none"
                           style={{ minWidth: "calc((100% - 4rem) / 3)" }}
-                  >
-                    <div className="relative">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-64 object-cover rounded-t-lg"
-                      />
-                      <div className="absolute top-4 left-4">
-                        <Badge
-                          className={`${getCategoryColor(service.category)} text-white border-0`}
-                          icon={getCategoryIcon(service.category)}
                         >
-                          {service.category}
-                        </Badge>
-                      </div>
-                      <div className="absolute top-4 right-4 flex gap-2">
-                        <FavoriteButton
-                          type="service"
-                          itemId={service.id}
-                          size="sm"
-                          variant="ghost"
-                          className="bg-white/90 hover:bg-white"
-                        />
-                        <Badge
-                          variant="secondary"
-                          className="bg-white/90 text-gray-800"
-                        >
-                          <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
-                          {service.rating}
-                        </Badge>
-                      </div>
-                    </div>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-semibold mb-2">
-                        {service.title}
-                      </h3>
-                      <div className="mb-4">
-                        <p className="text-foreground/70">
-                          {getDisplayDescription(
-                            service.description,
-                            service.id,
-                          )}
-                        </p>
-                        {service.description.length > 200 && (
-                          <button
-                            onClick={() => toggleDescription(service.id)}
-                            className="md:hidden text-roam-blue text-sm font-medium hover:underline mt-1"
-                          >
-                            {expandedDescriptions.has(service.id)
-                              ? "Show less"
-                              : "Read more"}
-                          </button>
-                        )}
-                      </div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl font-bold text-roam-blue">
-                            {service.price}
-                          </span>
-                        </div>
-                        <Badge
-                          variant="outline"
-                          className="border-roam-blue text-roam-blue"
-                        >
-                          {service.duration}
-                        </Badge>
-                      </div>
-                      <Button
-                        asChild
-                        className="w-full bg-roam-blue hover:bg-roam-blue/90"
-                      >
-                        <Link to={`/book-service/${service.id}`}>
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Book This Service
-                        </Link>
-                      </Button>
-                    </CardContent>
+                          <div className="relative">
+                            <img
+                              src={service.image}
+                              alt={service.title}
+                              className="w-full h-64 object-cover rounded-t-lg"
+                            />
+                            <div className="absolute top-4 left-4">
+                              <Badge
+                                className={`${getCategoryColor(service.category)} text-white border-0`}
+                                icon={getCategoryIcon(service.category)}
+                              >
+                                {service.category}
+                              </Badge>
+                            </div>
+                            <div className="absolute top-4 right-4 flex gap-2">
+                              <FavoriteButton
+                                type="service"
+                                itemId={service.id}
+                                size="sm"
+                                variant="ghost"
+                                className="bg-white/90 hover:bg-white"
+                              />
+                              <Badge
+                                variant="secondary"
+                                className="bg-white/90 text-gray-800"
+                              >
+                                <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
+                                {service.rating}
+                              </Badge>
+                            </div>
+                          </div>
+                          <CardContent className="p-6">
+                            <h3 className="text-xl font-semibold mb-2">
+                              {service.title}
+                            </h3>
+                            <div className="mb-4">
+                              <p className="text-foreground/70">
+                                {getDisplayDescription(
+                                  service.description,
+                                  service.id,
+                                )}
+                              </p>
+                              {service.description.length > 200 && (
+                                <button
+                                  onClick={() => toggleDescription(service.id)}
+                                  className="md:hidden text-roam-blue text-sm font-medium hover:underline mt-1"
+                                >
+                                  {expandedDescriptions.has(service.id)
+                                    ? "Show less"
+                                    : "Read more"}
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl font-bold text-roam-blue">
+                                  {service.price}
+                                </span>
+                              </div>
+                              <Badge
+                                variant="outline"
+                                className="border-roam-blue text-roam-blue"
+                              >
+                                {service.duration}
+                              </Badge>
+                            </div>
+                            <Button
+                              asChild
+                              className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                            >
+                              <Link to={`/book-service/${service.id}`}>
+                                <Calendar className="w-4 h-4 mr-2" />
+                                Book This Service
+                              </Link>
+                            </Button>
+                          </CardContent>
                         </Card>
                       ))}
                     </div>
@@ -1565,7 +1568,7 @@ export default function Index() {
                   className="flex gap-6 transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPromotionSlide * 33.333}%)`,
-                    width: `${(promotionalDeals.length * 33.333)}%`,
+                    width: `${promotionalDeals.length * 33.333}%`,
                   }}
                 >
                   {promotionalDeals.map((promotion, index) => (
@@ -1793,7 +1796,7 @@ export default function Index() {
                   className="flex gap-6 transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPopularSlide * 33.333}%)`,
-                    width: `${(filteredPopularServices.length * 33.333)}%`,
+                    width: `${filteredPopularServices.length * 33.333}%`,
                   }}
                 >
                   {filteredPopularServices.map((service) => (
@@ -1880,7 +1883,9 @@ export default function Index() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-500">No popular services available at the moment.</p>
+              <p className="text-gray-500">
+                No popular services available at the moment.
+              </p>
             </div>
           )}
         </div>
@@ -1932,149 +1937,159 @@ export default function Index() {
                   }}
                 >
                   {businessPages.map((page, pageIndex) => (
-                    <div key={`businesses-page-${pageIndex}`} className="flex gap-8 w-full flex-none">
+                    <div
+                      key={`businesses-page-${pageIndex}`}
+                      className="flex gap-8 w-full flex-none"
+                    >
                       {page.map((business) => (
-                  <Card
-                    key={business.id}
-                    className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                    style={{ width: "24%", minWidth: "24%", flexShrink: 0 }}
-                  >
-                    <CardContent className="p-0">
-                      {/* Hero Cover Section */}
-                      <div
-                        className="relative h-48 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5"
-                        style={{
-                          backgroundImage: business.cover_image_url
-                            ? `url(${business.cover_image_url})`
-                            : undefined,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      >
-                        {/* Cover overlay */}
-                        {business.cover_image_url && (
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-                        )}
+                        <Card
+                          key={business.id}
+                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
+                          style={{
+                            width: "24%",
+                            minWidth: "24%",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <CardContent className="p-0">
+                            {/* Hero Cover Section */}
+                            <div
+                              className="relative h-48 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5"
+                              style={{
+                                backgroundImage: business.cover_image_url
+                                  ? `url(${business.cover_image_url})`
+                                  : undefined,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                              }}
+                            >
+                              {/* Cover overlay */}
+                              {business.cover_image_url && (
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                              )}
 
-                        {/* Action Buttons - Top Right */}
-                        <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
-                          <FavoriteButton
-                            type="business"
-                            itemId={business.id}
-                            size="sm"
-                            variant="ghost"
-                            className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
-                          />
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all backdrop-blur-sm"
-                            onClick={() => handleBusinessShare(business)}
-                          >
-                            <Share2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                              {/* Action Buttons - Top Right */}
+                              <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
+                                <FavoriteButton
+                                  type="business"
+                                  itemId={business.id}
+                                  size="sm"
+                                  variant="ghost"
+                                  className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
+                                />
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-roam-blue hover:scale-110 transition-all backdrop-blur-sm"
+                                  onClick={() => handleBusinessShare(business)}
+                                >
+                                  <Share2 className="w-4 h-4" />
+                                </Button>
+                              </div>
 
-                        {/* Business Logo - Overlapping */}
-                        <div className="absolute -bottom-8 left-6 z-20">
-                          <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center overflow-hidden border-4 border-white group-hover:scale-110 transition-transform duration-300">
-                            {business.image &&
-                            business.image !== "/api/placeholder/80/80" ? (
-                              <img
-                                src={business.image}
-                                alt={business.name}
-                                className="w-full h-full object-cover rounded-xl"
-                              />
-                            ) : (
-                              <Building className="w-8 h-8 text-roam-blue" />
-                            )}
-                          </div>
-                        </div>
+                              {/* Business Logo - Overlapping */}
+                              <div className="absolute -bottom-8 left-6 z-20">
+                                <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center overflow-hidden border-4 border-white group-hover:scale-110 transition-transform duration-300">
+                                  {business.image &&
+                                  business.image !==
+                                    "/api/placeholder/80/80" ? (
+                                    <img
+                                      src={business.image}
+                                      alt={business.name}
+                                      className="w-full h-full object-cover rounded-xl"
+                                    />
+                                  ) : (
+                                    <Building className="w-8 h-8 text-roam-blue" />
+                                  )}
+                                </div>
+                              </div>
 
-                        {/* Rating Badge - Overlapping */}
-                        <div className="absolute -bottom-4 right-6 z-20">
-                          <div className="flex items-center gap-1 bg-white px-3 py-2 rounded-full shadow-xl border border-gray-100">
-                            <Star className="w-4 h-4 text-roam-warning fill-current" />
-                            <span className="font-bold text-sm text-gray-900">
-                              {business.rating}
-                            </span>
-                            <span className="text-xs text-gray-600 font-medium">
-                              ({business.reviews})
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Content Section */}
-                      <div className="px-6 pt-12 pb-6 space-y-6">
-                        {/* Business Name */}
-                        <div>
-                          <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight mb-1">
-                            {business.name}
-                          </h3>
-                        </div>
-
-                        {/* Specialties */}
-                        <div className="space-y-3">
-                          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            Specialties
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {business.specialties
-                              .slice(0, 4)
-                              .map((specialty, index) => {
-                                // Convert to camel case
-                                const camelCaseSpecialty = specialty
-                                  .split(" ")
-                                  .map(
-                                    (word) =>
-                                      word.charAt(0).toUpperCase() +
-                                      word.slice(1).toLowerCase(),
-                                  )
-                                  .join(" ");
-
-                                return (
-                                  <span
-                                    key={specialty}
-                                    className="px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-roam-blue/8 to-roam-light-blue/8 text-roam-blue rounded-lg border border-roam-blue/15 hover:border-roam-blue/25 transition-colors"
-                                  >
-                                    {camelCaseSpecialty}
+                              {/* Rating Badge - Overlapping */}
+                              <div className="absolute -bottom-4 right-6 z-20">
+                                <div className="flex items-center gap-1 bg-white px-3 py-2 rounded-full shadow-xl border border-gray-100">
+                                  <Star className="w-4 h-4 text-roam-warning fill-current" />
+                                  <span className="font-bold text-sm text-gray-900">
+                                    {business.rating}
                                   </span>
-                                );
-                              })}
-                            {business.specialties.length > 4 && (
-                              <span className="px-3 py-1.5 text-xs font-medium bg-gray-50 text-gray-600 rounded-lg border border-gray-200">
-                                +{business.specialties.length - 4}
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                                  <span className="text-xs text-gray-600 font-medium">
+                                    ({business.reviews})
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex gap-3 pt-2">
-                          <Button
-                            asChild
-                            className="flex-1 bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                          >
-                            <Link to={`/business/${business.id}?tab=services`}>
-                              <Calendar className="w-4 h-4 mr-2" />
-                              Book
-                            </Link>
-                          </Button>
-                          <Button
-                            asChild
-                            variant="outline"
-                            className="flex-1 border-2 border-roam-blue/20 text-roam-blue hover:bg-roam-blue hover:text-white font-semibold py-3 rounded-2xl transition-all duration-300"
-                          >
-                            <Link to={`/business/${business.id}`}>
-                              <BookOpen className="w-4 h-4 mr-2" />
-                              View
-                            </Link>
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
+                            {/* Content Section */}
+                            <div className="px-6 pt-12 pb-6 space-y-6">
+                              {/* Business Name */}
+                              <div>
+                                <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight mb-1">
+                                  {business.name}
+                                </h3>
+                              </div>
+
+                              {/* Specialties */}
+                              <div className="space-y-3">
+                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                  Specialties
+                                </h4>
+                                <div className="flex flex-wrap gap-2">
+                                  {business.specialties
+                                    .slice(0, 4)
+                                    .map((specialty, index) => {
+                                      // Convert to camel case
+                                      const camelCaseSpecialty = specialty
+                                        .split(" ")
+                                        .map(
+                                          (word) =>
+                                            word.charAt(0).toUpperCase() +
+                                            word.slice(1).toLowerCase(),
+                                        )
+                                        .join(" ");
+
+                                      return (
+                                        <span
+                                          key={specialty}
+                                          className="px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-roam-blue/8 to-roam-light-blue/8 text-roam-blue rounded-lg border border-roam-blue/15 hover:border-roam-blue/25 transition-colors"
+                                        >
+                                          {camelCaseSpecialty}
+                                        </span>
+                                      );
+                                    })}
+                                  {business.specialties.length > 4 && (
+                                    <span className="px-3 py-1.5 text-xs font-medium bg-gray-50 text-gray-600 rounded-lg border border-gray-200">
+                                      +{business.specialties.length - 4}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Action Buttons */}
+                              <div className="flex gap-3 pt-2">
+                                <Button
+                                  asChild
+                                  className="flex-1 bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                                >
+                                  <Link
+                                    to={`/business/${business.id}?tab=services`}
+                                  >
+                                    <Calendar className="w-4 h-4 mr-2" />
+                                    Book
+                                  </Link>
+                                </Button>
+                                <Button
+                                  asChild
+                                  variant="outline"
+                                  className="flex-1 border-2 border-roam-blue/20 text-roam-blue hover:bg-roam-blue hover:text-white font-semibold py-3 rounded-2xl transition-all duration-300"
+                                >
+                                  <Link to={`/business/${business.id}`}>
+                                    <BookOpen className="w-4 h-4 mr-2" />
+                                    View
+                                  </Link>
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
                         </Card>
                       ))}
                     </div>

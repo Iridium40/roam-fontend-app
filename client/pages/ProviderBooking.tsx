@@ -184,7 +184,9 @@ const ProviderBooking = () => {
       fetchCustomerProfile();
     } else if (user && !isCustomer) {
       // If user is authenticated but not a customer, still try to populate basic info
-      console.log("User authenticated but not in customer role, using basic auth data");
+      console.log(
+        "User authenticated but not in customer role, using basic auth data",
+      );
       setBookingForm((prev) => ({
         ...prev,
         customerEmail: user.email || "",
@@ -430,7 +432,8 @@ const ProviderBooking = () => {
           setBookingForm((prev) => ({
             ...prev,
             customerEmail: user.email || "",
-            customerName: user.user_metadata?.full_name || user.user_metadata?.name || "",
+            customerName:
+              user.user_metadata?.full_name || user.user_metadata?.name || "",
             customerPhone: user.user_metadata?.phone || "",
           }));
         }
@@ -768,7 +771,7 @@ const ProviderBooking = () => {
           originalTotal: getSubtotal(),
           finalTotal: getTotalAmount(),
           savingsType: promotionData.savings_type,
-          savingsAmount: promotionData.savings_amount
+          savingsAmount: promotionData.savings_amount,
         });
       }
 
@@ -818,8 +821,12 @@ const ProviderBooking = () => {
             selectedItems.find((item) => item.type === "service")?.id ||
             selectedItems[0]?.id,
           customer_id: customerId || null, // Use proper customer ID
-          customer_location_id: deliveryType === "customer_location" ? (locationId || location?.id) : null,
-          business_location_id: deliveryType === "business_location" ? location?.id : null,
+          customer_location_id:
+            deliveryType === "customer_location"
+              ? locationId || location?.id
+              : null,
+          business_location_id:
+            deliveryType === "business_location" ? location?.id : null,
           delivery_type: deliveryType || "customer_location",
           guest_name: !customerId ? bookingForm.customerName : null, // Only use guest fields if not authenticated
           guest_email: !customerId ? bookingForm.customerEmail : null,
@@ -840,7 +847,8 @@ const ProviderBooking = () => {
       }
 
       // Create success message with promo code info if applicable
-      let successMessage = "Your booking request has been submitted. The provider will contact you shortly.";
+      let successMessage =
+        "Your booking request has been submitted. The provider will contact you shortly.";
       if (promotionData && promoCode) {
         const savings = getDiscountAmount();
         successMessage += ` You saved $${savings.toFixed(2)} with promo code ${promoCode}!`;
@@ -1602,7 +1610,8 @@ const ProviderBooking = () => {
                         {bookingForm.customerAddress}
                       </div>
                       <div className="text-gray-600">
-                        {bookingForm.customerCity}, {bookingForm.customerState} {bookingForm.customerZip}
+                        {bookingForm.customerCity}, {bookingForm.customerState}{" "}
+                        {bookingForm.customerZip}
                       </div>
                     </div>
                   </CardContent>
