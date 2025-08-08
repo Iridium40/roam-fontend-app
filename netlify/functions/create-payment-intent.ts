@@ -55,7 +55,18 @@ const handler: Handler = async (event, context) => {
     }
 
     // Initialize Stripe
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeSecretKey) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          error: 'Stripe secret key not configured. Please check environment variables.'
+        }),
+      };
+    }
+
+    const stripe = require('stripe')(stripeSecretKey);
 
     // Convert to cents (Stripe expects amounts in cents)
     const amountInCents = Math.round(totalAmount * 100);
