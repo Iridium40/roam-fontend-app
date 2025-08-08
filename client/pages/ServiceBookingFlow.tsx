@@ -93,8 +93,7 @@ export default function ServiceBookingFlow() {
         `,
         )
         .eq("id", serviceId)
-        .eq("is_active", true)
-        .single();
+        .eq("is_active", true);
 
       // Check for authentication error
       if (serviceResponse.status === 401 && retryCount === 0) {
