@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Elements,
   CardElement,
   useStripe,
   useElements,
   PaymentElement,
-} from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { useToast } from '../hooks/use-toast';
-import { Loader2, CreditCard, Lock } from 'lucide-react';
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { useToast } from "../hooks/use-toast";
+import { Loader2, CreditCard, Lock } from "lucide-react";
 
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -42,33 +42,40 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   const elements = useElements();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string>('');
-  const [paymentIntentId, setPaymentIntentId] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [paymentIntentId, setPaymentIntentId] = useState<string>("");
 
   // Create payment intent when component mounts
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
-        const response = await fetch('/.netlify/functions/create-payment-intent', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          "/.netlify/functions/create-payment-intent",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              bookingId,
+              totalAmount,
+              serviceFee,
+              customerEmail,
+              customerName,
+              businessName,
+              serviceName,
+            }),
           },
-          body: JSON.stringify({
-            bookingId,
-            totalAmount,
-            serviceFee,
-            customerEmail,
-            customerName,
-            businessName,
-            serviceName,
-          }),
-        });
+        );
 
         // Check response status before reading body
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+          const errorData = await response
+            .json()
+            .catch(() => ({ error: "Unknown error" }));
+          throw new Error(
+            errorData.error || `HTTP error! status: ${response.status}`,
+          );
         }
 
         const data = await response.json();
@@ -76,18 +83,26 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         setClientSecret(data.clientSecret);
         setPaymentIntentId(data.paymentIntentId);
       } catch (error: any) {
-        console.error('Error creating payment intent:', error);
+        console.error("Error creating payment intent:", error);
         onPaymentError(error.message);
         toast({
-          title: 'Payment Setup Failed',
-          description: 'Unable to initialize payment. Please try again.',
-          variant: 'destructive',
+          title: "Payment Setup Failed",
+          description: "Unable to initialize payment. Please try again.",
+          variant: "destructive",
         });
       }
     };
 
     createPaymentIntent();
-  }, [bookingId, totalAmount, serviceFee, customerEmail, customerName, businessName, serviceName]);
+  }, [
+    bookingId,
+    totalAmount,
+    serviceFee,
+    customerEmail,
+    customerName,
+    businessName,
+    serviceName,
+  ]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -105,32 +120,32 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           return_url: `${window.location.origin}/booking-success?booking_id=${bookingId}`,
           receipt_email: customerEmail,
         },
-        redirect: 'if_required',
+        redirect: "if_required",
       });
 
       if (error) {
-        console.error('Payment error:', error);
-        onPaymentError(error.message || 'Payment failed');
+        console.error("Payment error:", error);
+        onPaymentError(error.message || "Payment failed");
         toast({
-          title: 'Payment Failed',
-          description: error.message || 'Your payment could not be processed.',
-          variant: 'destructive',
+          title: "Payment Failed",
+          description: error.message || "Your payment could not be processed.",
+          variant: "destructive",
         });
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        console.log('Payment succeeded:', paymentIntent);
+      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        console.log("Payment succeeded:", paymentIntent);
         onPaymentSuccess(paymentIntent.id);
         toast({
-          title: 'Payment Successful!',
-          description: 'Your booking has been confirmed and paid.',
+          title: "Payment Successful!",
+          description: "Your booking has been confirmed and paid.",
         });
       }
     } catch (error: any) {
-      console.error('Payment processing error:', error);
+      console.error("Payment processing error:", error);
       onPaymentError(error.message);
       toast({
-        title: 'Payment Error',
-        description: 'An unexpected error occurred during payment.',
-        variant: 'destructive',
+        title: "Payment Error",
+        description: "An unexpected error occurred during payment.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
