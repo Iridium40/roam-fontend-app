@@ -55,17 +55,12 @@ const handler: Handler = async (event, context) => {
     }
 
     // Initialize Stripe
-    console.log('Environment check:', {
-      hasStripeKey: !!process.env.STRIPE_SECRET_KEY,
-      keyPrefix: process.env.STRIPE_SECRET_KEY?.substring(0, 10),
-    });
-
-    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_YOUR_STRIPE_SECRET_KEY_HERE') {
+    if (!process.env.STRIPE_SECRET_KEY) {
       return {
         statusCode: 500,
         headers,
         body: JSON.stringify({
-          error: 'Stripe secret key not configured. Please set STRIPE_SECRET_KEY environment variable with a valid Stripe secret key.'
+          error: 'Stripe secret key not configured. Please set STRIPE_SECRET_KEY environment variable.'
         }),
       };
     }
