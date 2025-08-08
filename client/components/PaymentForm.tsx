@@ -133,8 +133,17 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
-        // Check if we're in development and Netlify functions aren't available
-        const isDevelopment = window.location.hostname === "localhost";
+        // Check if we're in development environment
+        const isDevelopment = window.location.hostname === "localhost" ||
+                              window.location.hostname.includes("fly.dev") ||
+                              window.location.hostname.includes("vercel.app") ||
+                              window.location.hostname.includes("netlify.app");
+
+        console.log("Payment setup - Environment:", {
+          hostname: window.location.hostname,
+          isDevelopment,
+          origin: window.location.origin
+        });
 
         const response = await fetch(
           "/.netlify/functions/create-payment-intent",
