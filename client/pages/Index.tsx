@@ -948,12 +948,16 @@ export default function Index() {
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
+          poster="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
         >
           <source
-            src="https://player.vimeo.com/external/452904332.hd.mp4?s=47e3b36c87a318d96e3ee1d0f50dc1e0d6e0a7ce&profile_id=175"
+            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             type="video/mp4"
           />
-          Your browser does not support the video tag.
+          <source
+            src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4"
+            type="video/mp4"
+          />
         </video>
 
         {/* Dark overlay for text readability */}
