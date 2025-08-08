@@ -4,6 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleCreateLinkToken, handleExchangeToken } from "./routes/plaid";
 import { handleFileUpload, uploadDocument } from "./routes/upload";
+import { createPaymentIntent } from "./routes/payment";
 
 export function createServer() {
   const app = express();
