@@ -49,8 +49,12 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
-        const response = await fetch(
-          "/.netlify/functions/create-payment-intent",
+        // In development, Netlify functions might not be available
+        const functionUrl = import.meta.env.DEV
+          ? "/api/create-payment-intent"  // Fallback for development
+          : "/.netlify/functions/create-payment-intent";
+
+        const response = await fetch(functionUrl,
           {
             method: "POST",
             headers: {
