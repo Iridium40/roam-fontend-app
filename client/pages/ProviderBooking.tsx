@@ -204,6 +204,14 @@ const ProviderBooking = () => {
     }
   }, [user?.email, bookingForm.customerEmail]);
 
+  // Force customer profile data population when booking modal opens
+  useEffect(() => {
+    if (isBookingModalOpen && user && isCustomer && !bookingForm.customerName) {
+      console.log("Booking modal opened, ensuring customer data is populated");
+      fetchCustomerProfile();
+    }
+  }, [isBookingModalOpen, user, isCustomer, bookingForm.customerName]);
+
   // Update form when selected location changes
   useEffect(() => {
     if (selectedLocation && !bookingForm.customerAddress) {
