@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Elements,
   CardElement,
   useStripe,
   useElements,
   PaymentElement,
+<<<<<<< HEAD
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Button } from './ui/button';
@@ -13,6 +14,14 @@ import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { Loader2, CreditCard, Lock } from 'lucide-react';
+=======
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { useToast } from "../hooks/use-toast";
+import { Loader2, CreditCard, Lock } from "lucide-react";
+>>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
 
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -62,6 +71,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   }, [isCustomer, customer?.user_id]);
   
   const [isLoading, setIsLoading] = useState(false);
+<<<<<<< HEAD
   const [clientSecret, setClientSecret] = useState<string>('');
   const [paymentIntentId, setPaymentIntentId] = useState<string>('');
   const [stripeCustomerId, setStripeCustomerId] = useState<string>('');
@@ -128,11 +138,16 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
       console.error('Error syncing Stripe customer ID:', error);
     }
   };
+=======
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [paymentIntentId, setPaymentIntentId] = useState<string>("");
+>>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
 
   // Create payment intent when component mounts
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
+<<<<<<< HEAD
         // Check if we're in development and Netlify functions aren't available
         const isDevelopment = window.location.hostname === 'localhost';
 
@@ -151,6 +166,36 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
             serviceName: serviceName,
           }),
         });
+=======
+        const response = await fetch(
+          "/.netlify/functions/create-payment-intent",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              bookingId,
+              totalAmount,
+              serviceFee,
+              customerEmail,
+              customerName,
+              businessName,
+              serviceName,
+            }),
+          },
+        );
+
+        // Check response status before reading body
+        if (!response.ok) {
+          const errorData = await response
+            .json()
+            .catch(() => ({ error: "Unknown error" }));
+          throw new Error(
+            errorData.error || `HTTP error! status: ${response.status}`,
+          );
+        }
+>>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
 
         // If we get a 404 in development, use mock mode
         if (!response.ok && response.status === 404 && isDevelopment) {
@@ -161,10 +206,6 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to create payment intent');
-        }
-
         setClientSecret(data.clientSecret);
         setPaymentIntentId(data.paymentIntentId);
         setStripeCustomerId(data.stripeCustomerId || '');
@@ -174,6 +215,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           await syncStripeCustomerToSupabase(data.stripeCustomerId);
         }
       } catch (error: any) {
+<<<<<<< HEAD
         console.error('Error creating payment intent:', error);
 
         // In development, if fetch fails completely, use mock mode
@@ -182,17 +224,28 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           setClientSecret('pi_mock_development_client_secret_for_testing');
         }
 
+=======
+        console.error("Error creating payment intent:", error);
+>>>>>>> cd332ca82ca5e906167b6f25e0b19a41b99ea740
         onPaymentError(error.message);
         toast({
-          title: 'Payment Setup Failed',
-          description: 'Unable to initialize payment. Please try again.',
-          variant: 'destructive',
+          title: "Payment Setup Failed",
+          description: "Unable to initialize payment. Please try again.",
+          variant: "destructive",
         });
       }
     };
 
     createPaymentIntent();
-  }, [bookingId, totalAmount, serviceFee, customerEmail, customerName, businessName, serviceName]);
+  }, [
+    bookingId,
+    totalAmount,
+    serviceFee,
+    customerEmail,
+    customerName,
+    businessName,
+    serviceName,
+  ]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -210,32 +263,32 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           return_url: `${window.location.origin}/booking-success?booking_id=${bookingId}`,
           receipt_email: customerEmail,
         },
-        redirect: 'if_required',
+        redirect: "if_required",
       });
 
       if (error) {
-        console.error('Payment error:', error);
-        onPaymentError(error.message || 'Payment failed');
+        console.error("Payment error:", error);
+        onPaymentError(error.message || "Payment failed");
         toast({
-          title: 'Payment Failed',
-          description: error.message || 'Your payment could not be processed.',
-          variant: 'destructive',
+          title: "Payment Failed",
+          description: error.message || "Your payment could not be processed.",
+          variant: "destructive",
         });
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        console.log('Payment succeeded:', paymentIntent);
+      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        console.log("Payment succeeded:", paymentIntent);
         onPaymentSuccess(paymentIntent.id);
         toast({
-          title: 'Payment Successful!',
-          description: 'Your booking has been confirmed and paid.',
+          title: "Payment Successful!",
+          description: "Your booking has been confirmed and paid.",
         });
       }
     } catch (error: any) {
-      console.error('Payment processing error:', error);
+      console.error("Payment processing error:", error);
       onPaymentError(error.message);
       toast({
-        title: 'Payment Error',
-        description: 'An unexpected error occurred during payment.',
-        variant: 'destructive',
+        title: "Payment Error",
+        description: "An unexpected error occurred during payment.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
