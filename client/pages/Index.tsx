@@ -1946,12 +1946,12 @@ export default function Index() {
                       {page.map((business) => (
                         <Card
                           key={business.id}
-                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%] min-w-full md:min-w-[24%]"
+                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%]"
                         >
                           <CardContent className="p-0">
                             {/* Hero Cover Section */}
                             <div
-                              className="relative h-48 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5"
+                              className="relative h-64 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5"
                               style={{
                                 backgroundImage: business.cover_image_url
                                   ? `url(${business.cover_image_url})`
