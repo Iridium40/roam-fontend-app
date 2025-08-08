@@ -100,9 +100,22 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
       } catch (error: any) {
         console.error("Error creating payment intent:", error);
         onPaymentError(error.message);
+
+        // Provide specific error messages for common issues
+        let errorTitle = "Payment Setup Failed";
+        let errorDescription = "Unable to initialize payment. Please try again.";
+
+        if (error.message?.includes("Stripe secret key not configured")) {
+          errorTitle = "Payment Configuration Error";
+          errorDescription = "Payment system is not properly configured. Please contact support.";
+        } else if (error.message?.includes("network") || error.message?.includes("fetch")) {
+          errorTitle = "Network Error";
+          errorDescription = "Unable to connect to payment service. Please check your internet connection.";
+        }
+
         toast({
-          title: "Payment Setup Failed",
-          description: "Unable to initialize payment. Please try again.",
+          title: errorTitle,
+          description: errorDescription,
           variant: "destructive",
         });
       }
