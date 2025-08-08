@@ -651,11 +651,10 @@ const ProviderBooking = () => {
   };
 
   const getTotalAmount = () => {
-    const subtotal = selectedItems.reduce(
-      (total, item) => total + item.price,
-      0,
-    );
-    return subtotal - getDiscountAmount();
+    const subtotal = getSubtotal();
+    const discount = getDiscountAmount();
+    const platformFees = getPlatformFees();
+    return subtotal - discount + platformFees;
   };
 
   const getSubtotal = () => {
