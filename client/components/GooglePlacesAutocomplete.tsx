@@ -38,6 +38,14 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY ||
     "AIzaSyDuTYClctxxl_cq2Hr8gKbuOY-1-t4bqfw";
 
+  // Debug API key source in cloud environment
+  console.log("Google Maps API Key Debug:", {
+    fromEnv: !!import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    keyPrefix: GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
+    domain: window.location.hostname,
+    url: window.location.href
+  });
+
   const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
       // Check if API key is available
