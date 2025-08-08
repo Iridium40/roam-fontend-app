@@ -709,6 +709,24 @@ export default function Index() {
     setCurrentServiceSlide((prev) => Math.max(prev - 1, 0));
   };
 
+  // Most Popular Services: paginate into pages of 3
+  const popularPages = useMemo(() => {
+    const pages: any[][] = [];
+    for (let i = 0; i < filteredPopularServices.length; i += 3) {
+      pages.push(filteredPopularServices.slice(i, i + 3));
+    }
+    return pages;
+  }, [filteredPopularServices]);
+
+  const nextPopularSlide = () => {
+    const maxPage = Math.max(0, popularPages.length - 1);
+    setCurrentPopularSlide((prev) => Math.min(prev + 1, maxPage));
+  };
+
+  const prevPopularSlide = () => {
+    setCurrentPopularSlide((prev) => Math.max(prev - 1, 0));
+  };
+
   const nextPromotionSlide = () => {
     const maxSlides = Math.max(0, promotionalDeals.length - 3);
     setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxSlides));
