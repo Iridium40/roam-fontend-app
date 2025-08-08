@@ -69,13 +69,17 @@ export default function BusinessAvailability() {
       serviceId,
       selectedDate,
       selectedTime,
-      url: window.location.href
+      url: window.location.href,
     });
 
     if (serviceId && selectedDate && selectedTime) {
       fetchAvailableBusinesses();
     } else {
-      console.warn("Missing required parameters:", { serviceId, selectedDate, selectedTime });
+      console.warn("Missing required parameters:", {
+        serviceId,
+        selectedDate,
+        selectedTime,
+      });
     }
   }, [serviceId, selectedDate, selectedTime]);
 
@@ -934,19 +938,21 @@ export default function BusinessAvailability() {
             Service Not Found
           </h1>
           <p className="text-foreground/60 mb-6">
-            The service you're looking for is no longer available or has been removed.
+            The service you're looking for is no longer available or has been
+            removed.
           </p>
           <div className="space-y-3">
-            <Button asChild className="bg-roam-blue hover:bg-roam-blue/90 w-full">
+            <Button
+              asChild
+              className="bg-roam-blue hover:bg-roam-blue/90 w-full"
+            >
               <Link to="/">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Home
               </Link>
             </Button>
             <Button asChild variant="outline" className="w-full">
-              <Link to="/services">
-                Browse All Services
-              </Link>
+              <Link to="/services">Browse All Services</Link>
             </Button>
           </div>
         </div>
