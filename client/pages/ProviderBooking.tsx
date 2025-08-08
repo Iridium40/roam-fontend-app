@@ -145,19 +145,30 @@ const ProviderBooking = () => {
       } else if (deliveryType === "customer_location") {
         fetchCustomerLocation(locationId);
       }
-    } else if (
-      customerAddress &&
-      customerCity &&
-      customerState &&
-      customerZip
-    ) {
-      // Use location data from URL parameters (for customer addresses)
-      setSelectedLocation({
-        address_line1: customerAddress,
-        city: customerCity,
-        state: customerState,
-        postal_code: customerZip,
-      });
+    } else {
+      // Check for JSON-encoded address data (from BusinessAvailability)
+      const addressParam = urlParams.get("address");
+      if (addressParam) {
+        try {
+          const addressData = JSON.parse(decodeURIComponent(addressParam));
+          setSelectedLocation(addressData);
+        } catch (error) {
+          console.error("Error parsing address data:", error);
+        }
+      } else if (
+        customerAddress &&
+        customerCity &&
+        customerState &&
+        customerZip
+      ) {
+        // Use individual location parameters (for backward compatibility)
+        setSelectedLocation({
+          address_line1: customerAddress,
+          city: customerCity,
+          state: customerState,
+          postal_code: customerZip,
+        });
+      }
     }
   }, [
     locationId,
