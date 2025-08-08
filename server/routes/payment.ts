@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import Stripe from "stripe";
 
 export const createPaymentIntent: RequestHandler = async (req, res) => {
   try {
@@ -26,8 +27,10 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       });
     }
 
-    // Initialize Stripe
-    const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+    // Initialize Stripe with proper ES import
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2024-12-18.acacia",
+    });
 
     // Convert to cents (Stripe expects amounts in cents)
     const amountInCents = Math.round(totalAmount * 100);
