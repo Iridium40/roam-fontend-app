@@ -180,6 +180,20 @@ export default function ServiceBookingFlow() {
       time: selectedTime,
     });
 
+    // Add promotion parameters if present
+    if (promotionId) {
+      bookingParams.set("promotion", promotionId);
+    }
+    if (promoCode) {
+      bookingParams.set("promo_code", promoCode);
+    }
+    if (businessId) {
+      bookingParams.set("business_id", businessId);
+    }
+    if (autoBook) {
+      bookingParams.set("auto_book", "true");
+    }
+
     navigate(
       `/book-service/${serviceId}/businesses?${bookingParams.toString()}`,
     );
@@ -429,7 +443,7 @@ export default function ServiceBookingFlow() {
 
                   {/* Help Text */}
                   <div className="text-sm text-foreground/60 space-y-2">
-                    <p>• Select your preferred date and time</p>
+                    <p>��� Select your preferred date and time</p>
                     <p>
                       • We'll show you businesses available during this time
                     </p>
