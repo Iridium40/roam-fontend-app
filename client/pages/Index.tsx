@@ -1398,7 +1398,8 @@ export default function Index() {
                         <Card
                           key={service.id}
                           className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none"
-                          style={{ minWidth: "calc((100% - 4rem) / 3)" }}
+                          style={{ minWidth: "calc(100% - 2rem)" }}
+                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none w-full md:w-auto md:min-w-[calc((100%-4rem)/3)]"
                         >
                           <div className="relative">
                             <img
