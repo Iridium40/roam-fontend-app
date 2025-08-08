@@ -39,11 +39,11 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: "usd",
-      customer_email: customerEmail,
       metadata: {
         booking_id: bookingId,
         service_fee: serviceFee ? (serviceFee * 100).toString() : "0",
         customer_name: customerName || "",
+        customer_email: customerEmail || "",
         business_name: businessName || "",
         service_name: serviceName || "",
         payment_type: "booking_payment",
