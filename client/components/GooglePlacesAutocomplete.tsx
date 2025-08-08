@@ -38,6 +38,19 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY ||
     "AIzaSyDuTYClctxxl_cq2Hr8gKbuOY-1-t4bqfw";
 
+  // Debug API key source in cloud environment
+  console.log("Google Maps API Key Debug:", {
+    fromEnv: !!import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    envValue:
+      import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
+    finalKey: GOOGLE_MAPS_API_KEY?.substring(0, 15) + "...",
+    domain: window.location.hostname,
+    protocol: window.location.protocol,
+    url: window.location.href,
+    isDev: import.meta.env.DEV,
+    mode: import.meta.env.MODE,
+  });
+
   const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
       // Check if API key is available
@@ -68,26 +81,83 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
       // Create and load the script
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
+      const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
+      script.src = scriptUrl;
       script.async = true;
       script.defer = true;
 
+      console.log("Loading Google Maps script:", {
+        url: scriptUrl.replace(GOOGLE_MAPS_API_KEY, "API_KEY_HIDDEN"),
+        timestamp: new Date().toISOString(),
+      });
+
       window.initGoogleMaps = () => {
         console.log("Google Maps script loaded successfully");
+        console.log(
+          "API Key (first 10 chars):",
+          GOOGLE_MAPS_API_KEY?.substring(0, 10),
+        );
+
+        // Test if Places API is actually working
+        try {
+          if (window.google?.maps?.places) {
+            console.log("Places API is available");
+          } else {
+            console.error("Places API not available after script load");
+          }
+        } catch (e) {
+          console.error("Error accessing Places API:", e);
+        }
+
         setIsGoogleMapsLoaded(true);
         setIsLoading(false);
         resolve();
       };
 
+      // Handle Google Maps authentication/billing failures
+      window.gm_authFailure = () => {
+        console.error("Google Maps authentication failure detected");
+        console.error("API Key being used:", GOOGLE_MAPS_API_KEY);
+        console.error("Please check:");
+        console.error("1. API key is valid");
+        console.error("2. Places API is enabled");
+        console.error("3. Maps JavaScript API is enabled");
+        console.error("4. API key restrictions (domain, IP, etc.)");
+        console.error("5. Billing is properly configured");
+        setIsGoogleMapsLoaded(false);
+        setIsLoading(false);
+        setBillingError(true);
+        resolve();
+      };
+
       script.onerror = (error) => {
         console.warn(
-          "Google Maps script failed to load, falling back to manual input:",
+          "Google Maps script failed to load (network restricted), falling back to manual input:",
           error,
         );
         setIsLoading(false);
         setIsGoogleMapsLoaded(false);
+        setBillingError(true);
         // Don't reject, just continue without Google Maps
         resolve();
+      };
+
+      // Add timeout to prevent hanging
+      const timeout = setTimeout(() => {
+        console.warn(
+          "Google Maps script loading timeout, falling back to manual input",
+        );
+        setIsLoading(false);
+        setIsGoogleMapsLoaded(false);
+        setBillingError(true);
+        resolve();
+      }, 10000); // 10 second timeout
+
+      // Clear timeout if script loads successfully
+      const originalInitGoogleMaps = window.initGoogleMaps;
+      window.initGoogleMaps = () => {
+        clearTimeout(timeout);
+        if (originalInitGoogleMaps) originalInitGoogleMaps();
       };
 
       document.head.appendChild(script);
@@ -177,12 +247,13 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
     loadGoogleMapsScript().catch((error) => {
       console.warn("Google Maps unavailable, using manual input:", error);
-      if (
-        error.message.includes("billing") ||
-        error.message.includes("Billing")
-      ) {
-        setBillingError(true);
-      }
+      console.error("Google Maps error details:", {
+        message: error.message,
+        stack: error.stack,
+        apiKey: GOOGLE_MAPS_API_KEY?.substring(0, 10) + "...",
+      });
+      setBillingError(true);
+      setIsLoading(false);
     });
 
     // Global error handler for Google Maps
