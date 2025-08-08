@@ -70,27 +70,28 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         // Check response status before reading body
         if (!response.ok) {
-          console.error("Payment intent request failed:", {
-            status: response.status,
-            statusText: response.statusText,
-            url: response.url,
-          });
-
-          // Try to get error details from response
-          const responseText = await response.text();
-          console.error("Response body:", responseText);
-
-          let errorData;
-          try {
-            errorData = JSON.parse(responseText);
-          } catch (parseError) {
-            console.error("Failed to parse error response as JSON:", parseError);
-            errorData = { error: `HTTP ${response.status}: ${responseText || response.statusText}` };
-          }
-
-          throw new Error(
-            errorData.error || `HTTP error! status: ${response.status}`,
+          console.error("Payment intent request failed:",
+            `${response.status} ${response.statusText} - ${response.url}`
           );
+
+          // Clone response to avoid body stream issues
+          const responseClone = response.clone();
+
+          try {
+            const errorData = await response.json();
+            console.error("Error response data:", errorData);
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+          } catch (jsonError) {
+            console.error("Failed to parse error response as JSON, trying text...");
+            try {
+              const responseText = await responseClone.text();
+              console.error("Error response text:", responseText);
+              throw new Error(`HTTP ${response.status}: ${responseText || response.statusText}`);
+            } catch (textError) {
+              console.error("Failed to read response body:", textError);
+              throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+            }
+          }
         }
 
         const data = await response.json();
