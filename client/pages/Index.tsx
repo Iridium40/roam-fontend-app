@@ -727,7 +727,25 @@ export default function Index() {
     setCurrentPopularSlide((prev) => Math.max(prev - 1, 0));
   };
 
+  // Special Promotions: paginate into pages of 3
+  const promotionPages = useMemo(() => {
+    const pages: any[][] = [];
+    for (let i = 0; i < promotionalDeals.length; i += 3) {
+      pages.push(promotionalDeals.slice(i, i + 3));
+    }
+    return pages;
+  }, [promotionalDeals]);
+
   const nextPromotionSlide = () => {
+    const maxPage = Math.max(0, promotionPages.length - 1);
+    setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxPage));
+  };
+
+  const prevPromotionSlide = () => {
+    setCurrentPromotionSlide((prev) => Math.max(prev - 1, 0));
+  };
+
+  const nextPromotionSlideOld = () => {
     const maxSlides = Math.max(0, promotionalDeals.length - 3);
     setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxSlides));
   };
