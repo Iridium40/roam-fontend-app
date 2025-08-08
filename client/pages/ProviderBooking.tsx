@@ -813,12 +813,34 @@ const ProviderBooking = () => {
       });
 
       // Create booking record
+      // Find the correct service ID - use selectedServiceId from URL or find from services
+      const serviceToBook = selectedServiceId 
+        ? services.find(s => s.service_id === selectedServiceId || s.id === selectedServiceId)
+        : null;
+      
+      const actualServiceId = serviceToBook?.service_id || selectedServiceId;
+
+      console.log("Service booking debug:", {
+        selectedServiceId,
+        serviceToBook,
+        actualServiceId,
+        selectedItems: selectedItems.map(item => ({ id: item.id, type: item.type }))
+      });
+
+      // Debug location IDs before payload construction
+      console.log("Location IDs before payload:", {
+        customerLocationId,
+        businessLocationId,
+        deliveryType,
+        locationId,
+        'location?.id': location?.id,
+        'selectedLocation?.id': selectedLocation?.id
+      });
+
       const bookingPayload = {
         business_id: businessId, // Required: Business ID from URL params
         provider_id: preferredProviderId || null, // Provider ID from URL params
-        service_id:
-          selectedItems.find((item) => item.type === "service")?.id ||
-          selectedItems[0]?.id,
+        service_id: actualServiceId,
         customer_id: customerId || null, // Customer ID for authenticated users
         customer_location_id: customerLocationId,
         business_location_id: businessLocationId,
@@ -829,8 +851,8 @@ const ProviderBooking = () => {
         booking_date: bookingForm.preferredDate,
         start_time: bookingForm.preferredTime || "09:00",
         admin_notes: bookingForm.notes,
-        promotion_id: promotionId || null, // Store the promotion ID for promo code tracking
         total_amount: getTotalAmount(),
+        service_fee: getTotalAmount() * 0.15, // Platform fee - 15% of total amount
         booking_status: "pending",
         payment_status: "pending",
       };
@@ -847,34 +869,57 @@ const ProviderBooking = () => {
         throw bookingError;
       }
 
-      // Create success message with promo code info if applicable
-      let successMessage =
-        "Your booking request has been submitted. The provider will contact you shortly.";
-      if (promotionData && promoCode) {
-        const savings = getDiscountAmount();
-        successMessage += ` You saved $${savings.toFixed(2)} with promo code ${promoCode}!`;
+      // Create promotion usage record if promotion was applied
+      if (promotionId && promotionData && booking.id) {
+        const originalAmount = getSubtotal();
+        const discountAmount = getDiscountAmount();
+        const finalAmount = getTotalAmount();
+
+        console.log("Creating promotion usage record:", {
+          promotion_id: promotionId,
+          booking_id: booking.id,
+          discount_applied: discountAmount,
+          original_amount: originalAmount,
+          final_amount: finalAmount
+        });
+
+        const { error: promotionError } = await supabase
+          .from("promotion_usage")
+          .insert({
+            promotion_id: promotionId,
+            booking_id: booking.id,
+            discount_applied: discountAmount,
+            original_amount: originalAmount,
+            final_amount: finalAmount,
+          });
+
+        if (promotionError) {
+          console.error("Error creating promotion usage record:", promotionError);
+          // Don't throw error here - booking was successful, promotion tracking is secondary
+        }
       }
 
-      toast({
-        title: "Booking submitted!",
-        description: successMessage,
+      // Redirect to payment page with booking details
+      const paymentParams = new URLSearchParams({
+        booking_id: booking.id,
+        total_amount: getTotalAmount().toString(),
+        service_fee: (getTotalAmount() * 0.15).toString(),
+        customer_email: customerId ? customer?.email || user?.email || bookingForm.customerEmail : bookingForm.customerEmail,
+        customer_name: customerId ? `${customer?.first_name || ''} ${customer?.last_name || ''}`.trim() : bookingForm.customerName,
+        business_name: providerData?.business_name || '',
+        service_name: selectedItems.find(item => item.type === 'service')?.name || 'Service',
       });
 
+      // Add promotion info if applicable
+      if (promotionData && promoCode) {
+        paymentParams.set('promo_code', promoCode);
+        paymentParams.set('discount_amount', getDiscountAmount().toString());
+      }
+
+      // Navigate to payment page
+      navigate(`/payment?${paymentParams.toString()}`);
+
       setIsBookingModalOpen(false);
-      setSelectedItems([]);
-      setBookingForm({
-        customerName: "",
-        customerEmail: "",
-        customerPhone: "",
-        customerAddress: "",
-        customerCity: "",
-        customerState: "",
-        customerZip: "",
-        preferredDate: "",
-        preferredTime: "",
-        notes: "",
-        items: [],
-      });
     } catch (error: any) {
       console.error("Error submitting booking:", error);
 

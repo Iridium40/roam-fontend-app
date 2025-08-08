@@ -41,6 +41,8 @@ import ServiceBookingFlow from "./pages/ServiceBookingFlow";
 import BusinessAvailability from "./pages/BusinessAvailability";
 import BusinessServiceBooking from "./pages/BusinessServiceBooking";
 import Checkout from "./pages/Checkout";
+import Payment from "./pages/Payment";
+import BookingSuccess from "./pages/BookingSuccess";
 import SignIn from "./pages/SignIn";
 
 const queryClient = new QueryClient();
@@ -230,6 +232,8 @@ const App = () => (
                 element={<BusinessServiceBooking />}
               />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/booking-success" element={<BookingSuccess />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
