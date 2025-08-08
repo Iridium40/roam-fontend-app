@@ -2165,6 +2165,23 @@ export default function Index() {
                   ))}
                 </div>
               </div>
+
+              {/* Carousel indicators - only show when there are multiple pages */}
+              {businessPages.length > 1 && (
+                <div className="flex justify-center mt-6 gap-2">
+                  {businessPages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentBusinessSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-colors ${
+                        index === currentBusinessSlide
+                          ? "bg-roam-blue"
+                          : "bg-gray-300 hover:bg-gray-400"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <Card className="p-12 text-center">
