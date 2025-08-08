@@ -106,12 +106,13 @@ export default function BusinessAvailability() {
           selectedDeliveryTypes[b.id] === "customer_location";
         if (isMobileFlow && !next[b.id]) {
           next[b.id] = {
-            address: defaultLoc.address_line1 || "",
+            address: defaultLoc.street_address || defaultLoc.address_line1 || "",
             city: defaultLoc.city || "",
             state: defaultLoc.state || "",
-            zip: defaultLoc.postal_code || "",
+            zip: defaultLoc.zip_code || defaultLoc.postal_code || "",
             selectedLocationId: defaultLoc.id,
           };
+          console.log("Auto-populated customer address for business:", b.id, next[b.id]);
         }
       });
       return next;
