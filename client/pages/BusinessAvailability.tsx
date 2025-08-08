@@ -448,8 +448,22 @@ export default function BusinessAvailability() {
           ) || [],
       }));
 
-      // If no businesses found, use fallback data
-      setAvailableBusinesses(transformedBusinesses);
+      // Filter businesses for auto_book promotions
+      let finalBusinesses = transformedBusinesses;
+
+      if (autoBook && businessId) {
+        // Filter to only show the specific business from the promotion
+        finalBusinesses = transformedBusinesses.filter(
+          (business) => business.id === businessId
+        );
+
+        // If the specific business isn't found in the results, we might need to fetch it separately
+        if (finalBusinesses.length === 0) {
+          console.log("Promotion business not found in available businesses, this may indicate availability issues");
+        }
+      }
+
+      setAvailableBusinesses(finalBusinesses);
 
       // Log the results for debugging
       console.log(
