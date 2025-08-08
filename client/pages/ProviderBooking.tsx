@@ -555,7 +555,8 @@ const ProviderBooking = () => {
     try {
       console.log("Fetching promotion data for:", { promotionId, promoCode });
 
-      const { data: promotion, error } = await supabase
+      // Try to find promotion by ID first
+      let { data: promotion, error } = await supabase
         .from("promotions")
         .select(
           `
@@ -576,6 +577,40 @@ const ProviderBooking = () => {
         .eq("id", promotionId)
         .eq("is_active", true)
         .single();
+
+      // If not found by ID and we have a promo code, try to find by promo code
+      if (error && error.code === 'PGRST116' && promoCode) {
+        console.log("Promotion not found by ID, trying by promo code:", promoCode);
+        const { data: promoByCode, error: promoError } = await supabase
+          .from("promotions")
+          .select(
+            `
+            id,
+            title,
+            description,
+            start_date,
+            end_date,
+            is_active,
+            promo_code,
+            savings_type,
+            savings_amount,
+            savings_max_amount,
+            service_id,
+            business_id
+          `,
+          )
+          .eq("promo_code", promoCode)
+          .eq("is_active", true)
+          .or(`business_id.is.null,business_id.eq.${businessId}`) // Allow universal promotions or business-specific
+          .limit(1)
+          .maybeSingle();
+
+        if (!promoError && promoByCode) {
+          promotion = promoByCode;
+          error = null;
+          console.log("Found promotion by promo code:", promotion);
+        }
+      }
 
       if (error) {
         console.error("Error fetching promotion:", error);
