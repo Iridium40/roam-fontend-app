@@ -240,10 +240,12 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           return;
         }
 
+        // For production, show error but don't break the flow
+        console.error("All payment endpoints failed in production");
         onPaymentError(error.message);
         toast({
           title: "Payment Setup Failed",
-          description: "Unable to initialize payment. Please try again.",
+          description: "Unable to initialize payment. Please contact support.",
           variant: "destructive",
         });
       }
