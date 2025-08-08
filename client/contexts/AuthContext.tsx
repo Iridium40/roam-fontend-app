@@ -162,7 +162,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               );
             } else {
               // Check if user is a customer instead
-              if (session?.user) {
+              console.log("Session user found, checking for customer profile", session.user.id);
+
+              const { data: customerProfile, error: customerError } = await supabase
+                .from("customer_profiles")
+                .select("id, user_id, email, first_name, last_name, phone, image_url")
+                .eq("user_id", session.user.id)
+                .single();
+
+              console.log('Customer profile query result:', { customerProfile, customerError });
+
+              if (customerProfile) {
+                const customerData = {
+                  id: customerProfile.id,
+                  user_id: customerProfile.user_id, // Add user_id for foreign key relationships
                   email: customerProfile.email,
                   customer_id: customerProfile.id,
                   first_name: customerProfile.first_name,
