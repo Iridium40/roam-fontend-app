@@ -1744,232 +1744,139 @@ export default function Index() {
       </section>
 
       {/* Popular Services */}
-      <section className="py-12">
+      <section className="py-12 bg-background/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold">
+            <h2 className="text-3xl font-bold mb-4">
               Most <span className="text-roam-blue">Popular Services</span>
             </h2>
-            <p className="text-lg text-foreground/70 mt-4">
+            <p className="text-lg text-foreground/70">
               Trending services in your area this month
             </p>
           </div>
 
-          {/* Mobile Carousel View */}
-          <div className="md:hidden relative overflow-hidden">
-            <div
-              className="flex transition-transform duration-300 ease-in-out"
-              style={{
-                transform: `translateX(-${currentPopularSlide * 100}%)`,
-              }}
-            >
-              {filteredPopularServices.map((service) => {
-                return (
-                <div key={service.id} className="w-full flex-shrink-0 px-2">
-                  <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl">
-                    {/* Hero Image Section */}
-                    <div className="relative h-52 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-
-                      {/* Floating Action Buttons */}
-                      <div className="absolute top-4 right-4 flex gap-2">
-                        <FavoriteButton
-                          type="service"
-                          itemId={service.id}
-                          size="sm"
-                          variant="ghost"
-                          className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
+          {filteredPopularServices.length > 0 ? (
+            <div className="relative">
+              {/* Navigation Arrows */}
+              {filteredPopularServices.length > 3 && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={prevPopularSlide}
+                    disabled={currentPopularSlide === 0}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={nextPopularSlide}
+                    disabled={
+                      currentPopularSlide >= filteredPopularServices.length - 3
+                    }
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:text-white shadow-lg disabled:opacity-50"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+              <div className="overflow-hidden">
+                <div
+                  className="flex gap-6 transition-transform duration-300 ease-in-out"
+                  style={{
+                    transform: `translateX(-${currentPopularSlide * 33.333}%)`,
+                    width: `${(filteredPopularServices.length * 33.333)}%`,
+                  }}
+                >
+                  {filteredPopularServices.map((service) => (
+                    <Card
+                      key={service.id}
+                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
+                      style={{ width: "24%", minWidth: "24%", flexShrink: 0 }}
+                    >
+                      {/* Hero Image Section */}
+                      <div className="relative h-56 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
+                        <img
+                          src={service.image}
+                          alt={service.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+
+                        {/* Floating Action Button */}
+                        <div className="absolute top-4 right-4">
+                          <FavoriteButton
+                            type="service"
+                            itemId={service.id}
+                            size="sm"
+                            variant="ghost"
+                            className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
+                          />
+                        </div>
+
+                        {/* Rating Badge - Bottom Right */}
+                        <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1 shadow-lg">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            <span className="text-sm font-medium text-gray-900">
+                              {service.rating}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Price Badge - Bottom Left */}
+                        <div className="absolute bottom-4 left-4">
+                          <div className="bg-roam-blue text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
+                            {service.price}
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Rating Badge - Bottom Right */}
-                      <div className="absolute bottom-4 right-4">
-                        <div className="flex items-center gap-1 bg-white/95 px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
-                          <Star className="w-4 h-4 text-roam-warning fill-current" />
-                          <span className="font-bold text-sm text-gray-900">
-                            {service.rating}
+                      <CardContent className="p-6">
+                        {/* Service Title & Category */}
+                        <div className="mb-4">
+                          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-roam-blue transition-colors">
+                            {service.title}
+                          </h3>
+                          <span className="inline-block px-3 py-1 text-xs font-medium bg-roam-blue/10 text-roam-blue rounded-full">
+                            {service.category}
                           </span>
                         </div>
-                      </div>
 
-                      {/* Price Badge - Bottom Left */}
-                      <div className="absolute bottom-4 left-4">
-                        <div className="bg-roam-blue text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
-                          {service.price}
-                        </div>
-                      </div>
-                    </div>
-
-                    <CardContent className="p-6 space-y-4">
-                      {/* Service Title & Category */}
-                      <div className="space-y-2">
-                        <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
-                          {service.title}
-                        </h3>
-                        <span className="inline-block px-3 py-1 text-xs font-medium bg-roam-blue/10 text-roam-blue rounded-full">
-                          {service.category}
-                        </span>
-                      </div>
-
-                      {/* Description */}
-                      <div className="space-y-2">
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                          {getDisplayDescription(
-                            service.description,
-                            service.id,
-                          )}
+                        {/* Description */}
+                        <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                          {service.description}
                         </p>
-                        {service.description &&
-                          service.description.length > 200 && (
-                            <button
-                              onClick={() => toggleDescription(service.id)}
-                              className="text-roam-blue text-xs font-medium hover:underline"
-                            >
-                              {expandedDescriptions.has(service.id)
-                                ? "Show less"
-                                : "Read more"}
-                            </button>
-                          )}
-                      </div>
 
-                      {/* Stats Row */}
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <Clock className="w-4 h-4 text-roam-blue" />
-                        <span>{service.duration}</span>
-                      </div>
+                        {/* Stats Row */}
+                        <div className="flex items-center gap-1 text-sm text-gray-600 mb-4">
+                          <Clock className="w-4 h-4 text-roam-blue" />
+                          <span>{service.duration}</span>
+                        </div>
 
-                      {/* Book Button */}
-                      <Button
-                        asChild
-                        className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                      >
-                        <Link to={`/book-service/${service.id}`}>
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Book Now
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-                );
-              })}
-            </div>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center mt-4 space-x-2">
-              {filteredPopularServices.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPopularSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    currentPopularSlide === index
-                      ? "bg-roam-blue"
-                      : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop Grid View */}
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {filteredPopularServices.map((service) => (
-              <Card
-                key={service.id}
-                className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl"
-              >
-                {/* Hero Image Section */}
-                <div className="relative h-48 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-
-                  {/* Floating Action Button */}
-                  <div className="absolute top-4 right-4">
-                    <FavoriteButton
-                      type="service"
-                      itemId={service.id}
-                      size="sm"
-                      variant="ghost"
-                      className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
-                    />
-                  </div>
-
-                  {/* Rating Badge - Bottom Right */}
-                  <div className="absolute bottom-4 right-4">
-                    <div className="flex items-center gap-1 bg-white/95 px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
-                      <Star className="w-4 h-4 text-roam-warning fill-current" />
-                      <span className="font-bold text-sm text-gray-900">
-                        {service.rating}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Price Badge - Bottom Left */}
-                  <div className="absolute bottom-4 left-4">
-                    <div className="bg-roam-blue text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
-                      {service.price}
-                    </div>
-                  </div>
-                </div>
-
-                <CardContent className="p-5 space-y-4">
-                  {/* Service Title & Category */}
-                  <div className="space-y-2">
-                    <h3 className="font-bold text-lg text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
-                      {service.title}
-                    </h3>
-                    <span className="inline-block px-3 py-1 text-xs font-medium bg-roam-blue/10 text-roam-blue rounded-full">
-                      {service.category}
-                    </span>
-                  </div>
-
-                  {/* Description */}
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                      {getDisplayDescription(service.description, service.id)}
-                    </p>
-                    {service.description &&
-                      service.description.length > 200 && (
-                        <button
-                          onClick={() => toggleDescription(service.id)}
-                          className="text-roam-blue text-xs font-medium hover:underline"
+                        {/* Book Button */}
+                        <Button
+                          asChild
+                          className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                         >
-                          {expandedDescriptions.has(service.id)
-                            ? "Show less"
-                            : "Read more"}
-                        </button>
-                      )}
-                  </div>
-
-                  {/* Stats Row */}
-                  <div className="flex items-center gap-1 text-sm text-gray-600">
-                    <Clock className="w-4 h-4 text-roam-blue" />
-                    <span>{service.duration}</span>
-                  </div>
-
-                  {/* Book Button */}
-                  <Button
-                    asChild
-                    className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                  >
-                    <Link to={`/book-service/${service.id}`}>
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Book Now
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                          <Link to={`/book-service/${service.id}`}>
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Book Now
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No popular services available at the moment.</p>
+            </div>
+          )}
         </div>
       </section>
 
