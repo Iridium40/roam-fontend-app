@@ -196,9 +196,42 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
       } catch (error: any) {
         console.error("Error creating payment intent:", error);
 
-        // In development, if fetch fails completely, use mock mode
+        // Try fallback server endpoint if Netlify functions fail
+        try {
+          console.log("Trying fallback server endpoint...");
+          const fallbackResponse = await fetch("/api/create-payment-intent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              bookingId,
+              totalAmount,
+              serviceFee,
+              customerEmail,
+              customerName,
+              businessName,
+              serviceName,
+            }),
+          });
+
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            setClientSecret(fallbackData.clientSecret);
+            setPaymentIntentId(fallbackData.paymentIntentId);
+            setStripeCustomerId(fallbackData.stripeCustomerId || "");
+            console.log("Payment intent created via fallback endpoint");
+            return;
+          }
+        } catch (fallbackError) {
+          console.error("Fallback endpoint also failed:", fallbackError);
+        }
+
+        // In development, if both endpoints fail, use mock mode
         if (window.location.hostname === "localhost") {
+          console.warn("Both payment endpoints failed, using mock mode for development");
           setClientSecret("pi_mock_development_client_secret_for_testing");
+          return;
         }
 
         onPaymentError(error.message);
