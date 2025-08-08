@@ -1798,8 +1798,7 @@ export default function Index() {
                 <div
                   className="flex gap-6 transition-transform duration-300 ease-in-out"
                   style={{
-                    transform: `translateX(-${currentPopularSlide * 33.333}%)`,
-                    width: `${filteredPopularServices.length * 33.333}%`,
+                    transform: `translateX(-${currentPopularSlide * (100/3)}%)`,
                   }}
                 >
                   {filteredPopularServices.map((service) => (
