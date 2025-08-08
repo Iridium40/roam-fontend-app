@@ -405,8 +405,14 @@ export default function BusinessProfile() {
         }
       }
 
-      setSelectedService(service);
-      setProviderSelectorOpen(true);
+      // Check if service offers both delivery types
+      if (service.delivery_type === "both_locations") {
+        setPendingService(service);
+        setDeliveryTypeModalOpen(true);
+      } else {
+        setSelectedService(service);
+        setProviderSelectorOpen(true);
+      }
     } catch (error) {
       console.error("Error handling book service:", error);
       toast({
