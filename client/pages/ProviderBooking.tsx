@@ -692,6 +692,12 @@ const ProviderBooking = () => {
       });
       return;
     }
+
+    // Refresh customer profile data when opening booking modal
+    if (user && isCustomer) {
+      fetchCustomerProfile();
+    }
+
     setBookingForm((prev) => ({ ...prev, items: selectedItems }));
     setIsBookingModalOpen(true);
   };
