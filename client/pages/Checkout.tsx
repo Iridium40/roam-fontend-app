@@ -86,14 +86,19 @@ export default function Checkout() {
 
   // Pre-populate customer information for authenticated users
   useEffect(() => {
+    console.log("Checkout useEffect - customer:", customer, "isCustomer:", isCustomer);
     if (customer && isCustomer) {
       console.log("Pre-populating customer form with authenticated user data:", customer);
+      const fullName = `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
+      console.log("Generated full name:", fullName);
       setCustomerForm(prev => ({
         ...prev,
-        customerName: `${customer.first_name || ""} ${customer.last_name || ""}`.trim(),
+        customerName: fullName,
         customerEmail: customer.email || "",
         customerPhone: customer.phone || "",
       }));
+    } else {
+      console.log("Not pre-populating - customer:", !!customer, "isCustomer:", isCustomer);
     }
   }, [customer, isCustomer]);
 

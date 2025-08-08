@@ -180,8 +180,15 @@ const ProviderBooking = () => {
   ]);
 
   useEffect(() => {
-    if (user && isCustomer) {
-      fetchCustomerProfile();
+    if (customer && isCustomer) {
+      console.log("Pre-populating customer form with authenticated customer data:", customer);
+      const fullName = `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
+      setBookingForm((prev) => ({
+        ...prev,
+        customerName: fullName,
+        customerEmail: customer.email || "",
+        customerPhone: customer.phone || "",
+      }));
     } else if (user && !isCustomer) {
       // If user is authenticated but not a customer, still try to populate basic info
       console.log(
@@ -193,7 +200,7 @@ const ProviderBooking = () => {
         customerName: user.user_metadata?.full_name || "",
       }));
     }
-  }, [user, isCustomer]);
+  }, [customer, isCustomer, user]);
 
   // Ensure email is populated if user is authenticated but form is empty
   useEffect(() => {
@@ -208,11 +215,17 @@ const ProviderBooking = () => {
 
   // Force customer profile data population when booking modal opens
   useEffect(() => {
-    if (isBookingModalOpen && user && isCustomer && !bookingForm.customerName) {
+    if (isBookingModalOpen && customer && isCustomer && !bookingForm.customerName) {
       console.log("Booking modal opened, ensuring customer data is populated");
-      fetchCustomerProfile();
+      const fullName = `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
+      setBookingForm((prev) => ({
+        ...prev,
+        customerName: fullName,
+        customerEmail: customer.email || "",
+        customerPhone: customer.phone || "",
+      }));
     }
-  }, [isBookingModalOpen, user, isCustomer, bookingForm.customerName]);
+  }, [isBookingModalOpen, customer, isCustomer, bookingForm.customerName]);
 
   // Update form when selected location changes
   useEffect(() => {
