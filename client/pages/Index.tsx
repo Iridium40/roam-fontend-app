@@ -1562,20 +1562,17 @@ export default function Index() {
               )}
               <div className="overflow-hidden">
                 <div
-                  className="flex gap-8 transition-transform duration-300 ease-in-out"
+                  className="flex gap-6 transition-transform duration-300 ease-in-out"
                   style={{
-                    transform: `translateX(-${currentPromotionSlide * (100 / 3)}%)`,
-                    width:
-                      promotionalDeals.length <= 3
-                        ? "100%"
-                        : `${Math.ceil(promotionalDeals.length / 3) * 100}%`,
+                    transform: `translateX(-${currentPromotionSlide * 33.333}%)`,
+                    width: `${(promotionalDeals.length * 33.333)}%`,
                   }}
                 >
                   {promotionalDeals.map((promotion, index) => (
                     <Card
                       key={promotion.id}
                       className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                      style={{ minWidth: "calc(33.333% - 0.667rem)" }}
+                      style={{ width: "calc(33.333% - 1rem)", minWidth: "calc(33.333% - 1rem)", flexShrink: 0 }}
                     >
                       {/* Hero Section */}
                       <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
