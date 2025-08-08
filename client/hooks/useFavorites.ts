@@ -207,30 +207,54 @@ export function useFavorites() {
         return false;
       }
 
-      try {
-        const { data, error } = await supabase
-          .from("customer_favorite_services")
-          .select("id")
-          .eq("customer_id", customer.id)
-          .eq("service_id", serviceId)
-          .maybeSingle();
+      // Retry logic for network issues
+      const maxRetries = 3;
+      let retryCount = 0;
 
-        if (error) {
+      while (retryCount < maxRetries) {
+        try {
+          const { data, error } = await supabase
+            .from("customer_favorite_services")
+            .select("id")
+            .eq("customer_id", customer.id)
+            .eq("service_id", serviceId)
+            .maybeSingle();
+
+          if (error) {
+            console.error(
+              "Error checking if service is favorited:",
+              error?.message || error,
+            );
+            return false;
+          }
+
+          return !!data;
+        } catch (error: any) {
+          retryCount++;
+
+          // Check if it's a network error that might benefit from retry
+          const isNetworkError =
+            error?.message?.includes("Failed to fetch") ||
+            error?.message?.includes("ERR_NETWORK") ||
+            error?.message?.includes("ERR_CONNECTION_CLOSED") ||
+            error?.name === "TypeError";
+
+          if (isNetworkError && retryCount < maxRetries) {
+            console.warn(`Retrying favorite check (${retryCount}/${maxRetries})...`);
+            // Wait before retrying (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            continue;
+          }
+
           console.error(
             "Error checking if service is favorited:",
             error?.message || error,
           );
           return false;
         }
-
-        return !!data;
-      } catch (error) {
-        console.error(
-          "Error checking if service is favorited:",
-          error?.message || error,
-        );
-        return false;
       }
+
+      return false;
     },
     [isCustomer, customer?.id],
   );
