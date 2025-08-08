@@ -458,9 +458,14 @@ export default function BusinessProfile() {
   };
 
   const handleBookBusiness = () => {
-    // Preserve date and time parameters from the current URL
+    // Preserve all parameters from the current URL
     const selectedDate = searchParams.get("date");
     const selectedTime = searchParams.get("time");
+    const promotionId = searchParams.get("promotion");
+    const promoCode = searchParams.get("promo_code");
+    const deliveryType = searchParams.get("deliveryType");
+    const location = searchParams.get("location");
+    const address = searchParams.get("address");
 
     let bookingUrl = `/book/${businessId}`;
     const params = new URLSearchParams();
@@ -470,6 +475,21 @@ export default function BusinessProfile() {
     }
     if (selectedTime) {
       params.append("time", selectedTime);
+    }
+    if (promotionId) {
+      params.append("promotion", promotionId);
+    }
+    if (promoCode) {
+      params.append("promo_code", promoCode);
+    }
+    if (deliveryType) {
+      params.append("deliveryType", deliveryType);
+    }
+    if (location) {
+      params.append("location", location);
+    }
+    if (address) {
+      params.append("address", address);
     }
 
     if (params.toString()) {
