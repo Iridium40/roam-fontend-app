@@ -1943,12 +1943,7 @@ export default function Index() {
                       {page.map((business) => (
                         <Card
                           key={business.id}
-                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                          style={{
-                            width: "24%",
-                            minWidth: "24%",
-                            flexShrink: 0,
-                          }}
+                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%] min-w-full md:min-w-[24%]"
                         >
                           <CardContent className="p-0">
                             {/* Hero Cover Section */}
