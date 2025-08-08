@@ -222,20 +222,17 @@ export default function BusinessAvailability() {
       const serviceData = serviceDataArray?.[0];
       if (!serviceData) {
         console.error("No active service found with ID:", serviceId);
-        // Use fallback service data for testing
-        const fallbackService = {
-          id: serviceId,
-          name: "60 Minute Massage",
-          description: "Relaxing full-body massage therapy session",
-          min_price: 85,
-          duration_minutes: 60,
-          image_url:
-            "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=500&h=300&fit=crop",
-        };
-        setService(fallbackService);
-        console.log("Using fallback service data:", fallbackService);
+        console.error("This service may have been deactivated or removed");
+        console.error("Query returned:", serviceDataArray);
+
+        // Set error state to show proper error message to user
+        setService(null);
+        setAvailableBusinesses([]);
+        setLoading(false);
+        return;
       } else {
         setService(serviceData);
+        console.log("Service data fetched successfully:", serviceData);
       }
 
       // Get day of week from selected date (parse as local date)
