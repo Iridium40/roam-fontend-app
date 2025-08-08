@@ -745,14 +745,6 @@ export default function Index() {
     setCurrentPromotionSlide((prev) => Math.max(prev - 1, 0));
   };
 
-  const nextPromotionSlideOld = () => {
-    const maxSlides = Math.max(0, promotionalDeals.length - 3);
-    setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxSlides));
-  };
-
-  const prevPromotionSlide = () => {
-    setCurrentPromotionSlide((prev) => Math.max(prev - 1, 0));
-  };
 
   const nextBusinessSlide = () => {
     const maxPage = Math.max(0, businessPages.length - 1);
