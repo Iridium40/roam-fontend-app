@@ -1684,24 +1684,29 @@ const ProviderBooking = () => {
                 ))}
                 <Separator />
 
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${getSubtotal().toFixed(2)}</span>
+                </div>
+
                 {promotionData && getDiscountAmount() > 0 && (
-                  <>
-                    <div className="flex justify-between">
-                      <span>Subtotal</span>
-                      <span>${getSubtotal().toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-green-600">
-                      <span className="flex items-center">
-                        <Badge variant="secondary" className="mr-2 text-xs">
-                          {promotionData.promo_code}
-                        </Badge>
-                        Discount
-                      </span>
-                      <span>-${getDiscountAmount().toFixed(2)}</span>
-                    </div>
-                    <Separator />
-                  </>
+                  <div className="flex justify-between text-green-600">
+                    <span className="flex items-center">
+                      <Badge variant="secondary" className="mr-2 text-xs">
+                        {promotionData.promo_code}
+                      </Badge>
+                      Discount
+                    </span>
+                    <span>-${getDiscountAmount().toFixed(2)}</span>
+                  </div>
                 )}
+
+                <div className="flex justify-between text-gray-600">
+                  <span>Platform Fees (15%)</span>
+                  <span>${getPlatformFees().toFixed(2)}</span>
+                </div>
+
+                <Separator />
 
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
