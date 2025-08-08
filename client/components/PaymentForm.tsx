@@ -168,8 +168,8 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         if (!response.ok) {
           // If we get a 404, try fallback endpoint immediately
           if (response.status === 404) {
-            console.warn("Netlify functions not available (404). Trying fallback endpoint...");
-            throw new Error(`Netlify function not found (404) - will try fallback`);
+            console.log("ℹ️ Netlify functions not deployed, using Express server fallback...");
+            throw new Error(`Using fallback endpoint`);
           }
 
           // For other errors, try to get error message
