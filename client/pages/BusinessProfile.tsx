@@ -74,6 +74,8 @@ export default function BusinessProfile() {
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
     null,
   );
+  const [deliveryTypeModalOpen, setDeliveryTypeModalOpen] = useState(false);
+  const [pendingService, setPendingService] = useState<any>(null);
 
   useEffect(() => {
     if (businessId) {
