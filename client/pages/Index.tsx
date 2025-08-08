@@ -1601,10 +1601,10 @@ export default function Index() {
                       {page.map((promotion, index) => (
                     <Card
                       key={promotion.id}
-                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[calc(33.333%-1rem)]"
+                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%]"
                     >
                       {/* Hero Section */}
-                      <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
+                      <div className="relative h-64 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
                         {promotion.imageUrl ? (
                           <img
                             src={promotion.imageUrl}
@@ -1850,7 +1850,7 @@ export default function Index() {
                       {page.map((service) => (
                     <Card
                       key={service.id}
-                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[calc(33.333%-1rem)]"
+                      className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%]"
                     >
                       {/* Hero Image Section */}
                       <div className="relative h-64 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
