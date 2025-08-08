@@ -266,6 +266,27 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
     setIsLoading(true);
 
     try {
+      // Handle mock payment for development/testing
+      if (clientSecret === "pi_mock_development_client_secret_for_testing") {
+        console.log("Processing mock payment for development");
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate payment processing
+
+        const mockPaymentIntent = {
+          id: "pi_mock_payment_intent_" + Date.now(),
+          status: "succeeded",
+          amount: Math.round(totalAmount * 100),
+          currency: "usd"
+        };
+
+        console.log("Mock payment succeeded:", mockPaymentIntent);
+        onPaymentSuccess(mockPaymentIntent.id);
+        toast({
+          title: "Mock Payment Successful!",
+          description: "Your booking has been confirmed (development mode).",
+        });
+        return;
+      }
+
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
