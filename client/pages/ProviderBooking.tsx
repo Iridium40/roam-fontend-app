@@ -182,6 +182,14 @@ const ProviderBooking = () => {
   useEffect(() => {
     if (user && isCustomer) {
       fetchCustomerProfile();
+    } else if (user && !isCustomer) {
+      // If user is authenticated but not a customer, still try to populate basic info
+      console.log("User authenticated but not in customer role, using basic auth data");
+      setBookingForm((prev) => ({
+        ...prev,
+        customerEmail: user.email || "",
+        customerName: user.user_metadata?.full_name || "",
+      }));
     }
   }, [user, isCustomer]);
 
