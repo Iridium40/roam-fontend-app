@@ -915,6 +915,36 @@ export default function BusinessAvailability() {
     );
   }
 
+  // Show error if service not found
+  if (!service) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="text-6xl mb-4">🔍</div>
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            Service Not Found
+          </h1>
+          <p className="text-foreground/60 mb-6">
+            The service you're looking for is no longer available or has been removed.
+          </p>
+          <div className="space-y-3">
+            <Button asChild className="bg-roam-blue hover:bg-roam-blue/90 w-full">
+              <Link to="/">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Home
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/services">
+                Browse All Services
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
       {/* Navigation */}
