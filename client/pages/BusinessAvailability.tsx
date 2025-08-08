@@ -225,8 +225,9 @@ export default function BusinessAvailability() {
         setService(serviceData);
       }
 
-      // Get day of week from selected date
-      const date = new Date(selectedDate!);
+      // Get day of week from selected date (parse as local date)
+      const [year, month, day] = selectedDate!.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
       const dayOfWeek = date.getDay();
 
       // Try a simpler business query first to debug
@@ -568,7 +569,9 @@ export default function BusinessAvailability() {
       return timeType === "open" ? "9:00 AM" : "5:00 PM"; // Default times
     }
 
-    const date = new Date(selectedDate);
+    // Parse date as local date to avoid timezone conversion issues
+    const [year, month, day] = selectedDate.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     const dayNames = [
       "Sunday",
       "Monday",
@@ -604,7 +607,9 @@ export default function BusinessAvailability() {
     }
 
     // Get day name from date
-    const date = new Date(selectedDate);
+    // Parse date as local date to avoid timezone conversion issues
+    const [year, month, day] = selectedDate.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     const dayNames = [
       "Sunday",
       "Monday",
