@@ -1644,13 +1644,13 @@ const ProviderBooking = () => {
                       <span>${getSubtotal().toFixed(2)}</span>
                     </div>
 
-                    {promotionData && getDiscountAmount() > 0 && (
+                    {promotionData && (
                       <div className="flex justify-between items-center text-green-600">
                         <span className="flex items-center">
                           <Badge variant="secondary" className="mr-2 text-xs bg-green-100 text-green-800">
                             {promotionData.promo_code}
                           </Badge>
-                          Promotion Discount
+                          Promotion Discount ({promotionData.savings_amount}% off)
                         </span>
                         <span className="font-semibold">-${getDiscountAmount().toFixed(2)}</span>
                       </div>
