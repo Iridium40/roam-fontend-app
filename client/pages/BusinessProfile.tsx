@@ -597,7 +597,7 @@ export default function BusinessProfile() {
                     const time = searchParams.get("time");
 
                     if (serviceId && date && time) {
-                      return `/business-availability/${serviceId}?date=${date}&time=${time}`;
+                      return `/book-service/${serviceId}/businesses?date=${date}&time=${time}`;
                     }
                     return "/home";
                   })()}
