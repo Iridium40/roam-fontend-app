@@ -106,13 +106,18 @@ export default function BusinessAvailability() {
           selectedDeliveryTypes[b.id] === "customer_location";
         if (isMobileFlow && !next[b.id]) {
           next[b.id] = {
-            address: defaultLoc.street_address || defaultLoc.address_line1 || "",
+            address:
+              defaultLoc.street_address || defaultLoc.address_line1 || "",
             city: defaultLoc.city || "",
             state: defaultLoc.state || "",
             zip: defaultLoc.zip_code || defaultLoc.postal_code || "",
             selectedLocationId: defaultLoc.id,
           };
-          console.log("Auto-populated customer address for business:", b.id, next[b.id]);
+          console.log(
+            "Auto-populated customer address for business:",
+            b.id,
+            next[b.id],
+          );
         }
       });
       return next;
@@ -128,13 +133,21 @@ export default function BusinessAvailability() {
           business.deliveryType === "mobile" ||
           selectedDeliveryTypes[business.id] === "customer_location";
 
-        if (isMobileFlow && !customerAddresses[business.id]?.selectedLocationId) {
+        if (
+          isMobileFlow &&
+          !customerAddresses[business.id]?.selectedLocationId
+        ) {
           // Simulate the user selecting the location from dropdown
           handleSavedLocationSelect(business.id, defaultLocation.id);
         }
       });
     }
-  }, [savedLocations, availableBusinesses, selectedDeliveryTypes, customerAddresses]);
+  }, [
+    savedLocations,
+    availableBusinesses,
+    selectedDeliveryTypes,
+    customerAddresses,
+  ]);
 
   const fetchCustomerLocations = async () => {
     try {
@@ -226,7 +239,7 @@ export default function BusinessAvailability() {
       }
 
       // Get day of week from selected date (parse as local date)
-      const [year, month, day] = selectedDate!.split('-').map(Number);
+      const [year, month, day] = selectedDate!.split("-").map(Number);
       const date = new Date(year, month - 1, day);
       const dayOfWeek = date.getDay();
 
@@ -570,7 +583,7 @@ export default function BusinessAvailability() {
     }
 
     // Parse date as local date to avoid timezone conversion issues
-    const [year, month, day] = selectedDate.split('-').map(Number);
+    const [year, month, day] = selectedDate.split("-").map(Number);
     const date = new Date(year, month - 1, day);
     const dayNames = [
       "Sunday",
@@ -608,7 +621,7 @@ export default function BusinessAvailability() {
 
     // Get day name from date
     // Parse date as local date to avoid timezone conversion issues
-    const [year, month, day] = selectedDate.split('-').map(Number);
+    const [year, month, day] = selectedDate.split("-").map(Number);
     const date = new Date(year, month - 1, day);
     const dayNames = [
       "Sunday",
@@ -866,7 +879,7 @@ export default function BusinessAvailability() {
 
   const formatDate = (dateString: string) => {
     // Parse date as local date to avoid timezone conversion issues
-    const [year, month, day] = dateString.split('-').map(Number);
+    const [year, month, day] = dateString.split("-").map(Number);
     const date = new Date(year, month - 1, day); // month is 0-indexed
     return date.toLocaleDateString("en-US", {
       weekday: "long",
@@ -1188,7 +1201,9 @@ export default function BusinessAvailability() {
                                         value={
                                           customerAddresses[business.id]
                                             ?.selectedLocationId ||
-                                          (savedLocations.length === 1 ? savedLocations[0].id : "new")
+                                          (savedLocations.length === 1
+                                            ? savedLocations[0].id
+                                            : "new")
                                         }
                                         onValueChange={(value) =>
                                           handleSavedLocationSelect(
