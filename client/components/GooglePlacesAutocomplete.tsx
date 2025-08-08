@@ -79,6 +79,16 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
         resolve();
       };
 
+      // Handle Google Maps authentication/billing failures
+      window.gm_authFailure = () => {
+        console.warn(
+          "Google Maps authentication/billing error - falling back to manual input"
+        );
+        setIsGoogleMapsLoaded(false);
+        setIsLoading(false);
+        resolve();
+      };
+
       script.onerror = (error) => {
         console.warn(
           "Google Maps script failed to load, falling back to manual input:",
