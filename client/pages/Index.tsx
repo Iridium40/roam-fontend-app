@@ -1700,15 +1700,21 @@ export default function Index() {
                           <Link
                             to={(() => {
                               const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
-                              const serviceParam = promotion.service
-                                ? `&service_id=${promotion.service.id}`
-                                : "";
 
-                              if (promotion.business) {
-                                return `/business/${promotion.business.id}?${baseParams}${serviceParam}`;
-                              } else if (promotion.service) {
+                              // If promotion has both business and service defaulted, start the booking flow
+                              if (promotion.business && promotion.service) {
+                                return `/book-service/${promotion.service.id}?${baseParams}&business_id=${promotion.business.id}&auto_book=true`;
+                              }
+                              // If only business, go to business profile
+                              else if (promotion.business) {
+                                return `/business/${promotion.business.id}?${baseParams}`;
+                              }
+                              // If only service, start service booking flow
+                              else if (promotion.service) {
                                 return `/book-service/${promotion.service.id}?${baseParams}`;
-                              } else {
+                              }
+                              // Default fallback
+                              else {
                                 return `/services?${baseParams}`;
                               }
                             })()}
