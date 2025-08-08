@@ -1572,7 +1572,7 @@ export default function Index() {
                     <Card
                       key={promotion.id}
                       className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0"
-                      style={{ width: "calc(30% - 1rem)", minWidth: "calc(30% - 1rem)", flexShrink: 0 }}
+                      style={{ width: "25%", minWidth: "25%", flexShrink: 0 }}
                     >
                       {/* Hero Section */}
                       <div className="relative h-56 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
