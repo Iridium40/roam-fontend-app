@@ -118,8 +118,12 @@ export default function ServiceBookingFlow() {
         }
       }
 
-      const { data: serviceData, error } = serviceResponse;
+      const { data: serviceDataArray, error } = serviceResponse;
+      const serviceData = serviceDataArray?.[0];
       if (error || !serviceData) {
+        console.error("Service query error:", error);
+        console.error("Service ID requested:", serviceId);
+        console.error("Query result:", serviceDataArray);
         throw new Error("Service not found");
       }
 
