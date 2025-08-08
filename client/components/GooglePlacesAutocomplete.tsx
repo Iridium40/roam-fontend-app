@@ -74,9 +74,22 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
       window.initGoogleMaps = () => {
         console.log("Google Maps script loaded successfully");
-        setIsGoogleMapsLoaded(true);
-        setIsLoading(false);
-        resolve();
+      console.log("API Key (first 10 chars):", GOOGLE_MAPS_API_KEY?.substring(0, 10));
+
+      // Test if Places API is actually working
+      try {
+        if (window.google?.maps?.places) {
+          console.log("Places API is available");
+        } else {
+          console.error("Places API not available after script load");
+        }
+      } catch (e) {
+        console.error("Error accessing Places API:", e);
+      }
+
+      setIsGoogleMapsLoaded(true);
+      setIsLoading(false);
+      resolve();
       };
 
       // Handle Google Maps authentication/billing failures
