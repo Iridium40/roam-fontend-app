@@ -6,7 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Loader2, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -15,17 +22,17 @@ export default function SignIn() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
-  
+
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   // Sign In Form
   const [signInForm, setSignInForm] = useState({
     email: "",
     password: "",
   });
-  
+
   // Sign Up Form
   const [signUpForm, setSignUpForm] = useState({
     firstName: "",
@@ -80,7 +87,7 @@ export default function SignIn() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (signUpForm.password !== signUpForm.confirmPassword) {
       toast({
         title: "Password Mismatch",
@@ -215,7 +222,10 @@ export default function SignIn() {
                         type="email"
                         value={signInForm.email}
                         onChange={(e) =>
-                          setSignInForm(prev => ({ ...prev, email: e.target.value }))
+                          setSignInForm((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
                         }
                         placeholder="Enter your email"
                         required
@@ -230,7 +240,10 @@ export default function SignIn() {
                           type={showPassword ? "text" : "password"}
                           value={signInForm.password}
                           onChange={(e) =>
-                            setSignInForm(prev => ({ ...prev, password: e.target.value }))
+                            setSignInForm((prev) => ({
+                              ...prev,
+                              password: e.target.value,
+                            }))
                           }
                           placeholder="Enter your password"
                           required
@@ -316,7 +329,10 @@ export default function SignIn() {
                           id="signup-firstName"
                           value={signUpForm.firstName}
                           onChange={(e) =>
-                            setSignUpForm(prev => ({ ...prev, firstName: e.target.value }))
+                            setSignUpForm((prev) => ({
+                              ...prev,
+                              firstName: e.target.value,
+                            }))
                           }
                           placeholder="First name"
                           required
@@ -328,7 +344,10 @@ export default function SignIn() {
                           id="signup-lastName"
                           value={signUpForm.lastName}
                           onChange={(e) =>
-                            setSignUpForm(prev => ({ ...prev, lastName: e.target.value }))
+                            setSignUpForm((prev) => ({
+                              ...prev,
+                              lastName: e.target.value,
+                            }))
                           }
                           placeholder="Last name"
                           required
@@ -343,7 +362,10 @@ export default function SignIn() {
                         type="email"
                         value={signUpForm.email}
                         onChange={(e) =>
-                          setSignUpForm(prev => ({ ...prev, email: e.target.value }))
+                          setSignUpForm((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
                         }
                         placeholder="Enter your email"
                         required
@@ -357,7 +379,10 @@ export default function SignIn() {
                         type="tel"
                         value={signUpForm.phone}
                         onChange={(e) =>
-                          setSignUpForm(prev => ({ ...prev, phone: e.target.value }))
+                          setSignUpForm((prev) => ({
+                            ...prev,
+                            phone: e.target.value,
+                          }))
                         }
                         placeholder="Enter your phone number"
                       />
@@ -371,7 +396,10 @@ export default function SignIn() {
                           type={showPassword ? "text" : "password"}
                           value={signUpForm.password}
                           onChange={(e) =>
-                            setSignUpForm(prev => ({ ...prev, password: e.target.value }))
+                            setSignUpForm((prev) => ({
+                              ...prev,
+                              password: e.target.value,
+                            }))
                           }
                           placeholder="Create a password"
                           required
@@ -393,14 +421,19 @@ export default function SignIn() {
                     </div>
 
                     <div>
-                      <Label htmlFor="signup-confirmPassword">Confirm Password</Label>
+                      <Label htmlFor="signup-confirmPassword">
+                        Confirm Password
+                      </Label>
                       <div className="relative">
                         <Input
                           id="signup-confirmPassword"
                           type={showConfirmPassword ? "text" : "password"}
                           value={signUpForm.confirmPassword}
                           onChange={(e) =>
-                            setSignUpForm(prev => ({ ...prev, confirmPassword: e.target.value }))
+                            setSignUpForm((prev) => ({
+                              ...prev,
+                              confirmPassword: e.target.value,
+                            }))
                           }
                           placeholder="Confirm your password"
                           required
@@ -410,7 +443,9 @@ export default function SignIn() {
                           variant="ghost"
                           size="sm"
                           className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                         >
                           {showConfirmPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -483,10 +518,7 @@ export default function SignIn() {
           <div className="text-center mt-6">
             <p className="text-sm text-foreground/60">
               Need help?{" "}
-              <Link
-                to="/contact"
-                className="text-roam-blue hover:underline"
-              >
+              <Link to="/contact" className="text-roam-blue hover:underline">
                 Contact Support
               </Link>
             </p>
