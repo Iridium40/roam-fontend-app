@@ -695,16 +695,23 @@ export default function BusinessAvailability() {
       (loc) => loc.id === locationId,
     );
     if (selectedLocation) {
+      console.log("Selected location data:", selectedLocation);
       setCustomerAddresses((prev) => ({
         ...prev,
         [businessId]: {
-          address: selectedLocation.address_line1 || "",
+          address: selectedLocation.street_address || selectedLocation.address_line1 || "",
           city: selectedLocation.city || "",
           state: selectedLocation.state || "",
-          zip: selectedLocation.postal_code || "",
+          zip: selectedLocation.zip_code || selectedLocation.postal_code || "",
           selectedLocationId: locationId,
         },
       }));
+      console.log("Updated customerAddresses for business:", businessId, {
+        address: selectedLocation.street_address || selectedLocation.address_line1 || "",
+        city: selectedLocation.city || "",
+        state: selectedLocation.state || "",
+        zip: selectedLocation.zip_code || selectedLocation.postal_code || "",
+      });
     }
   };
 
