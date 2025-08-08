@@ -80,9 +80,15 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
 
       // Create and load the script
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
+      const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
+      script.src = scriptUrl;
       script.async = true;
       script.defer = true;
+
+      console.log("Loading Google Maps script:", {
+        url: scriptUrl.replace(GOOGLE_MAPS_API_KEY, 'API_KEY_HIDDEN'),
+        timestamp: new Date().toISOString()
+      });
 
       window.initGoogleMaps = () => {
         console.log("Google Maps script loaded successfully");
