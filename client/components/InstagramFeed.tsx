@@ -99,7 +99,7 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
           >
             <div className="relative">
               <img
-                src={post.image}
+                src={post.media_url}
                 alt="Instagram post"
                 className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
               />
@@ -109,11 +109,11 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
                   <div className="flex items-center justify-center gap-6 mb-3">
                     <div className="flex items-center gap-2">
                       <Heart className="w-5 h-5" />
-                      <span className="font-semibold">{post.likes}</span>
+                      <span className="font-semibold">{post.likes || 0}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MessageCircle className="w-5 h-5" />
-                      <span className="font-semibold">{post.comments}</span>
+                      <span className="font-semibold">{post.comments || 0}</span>
                     </div>
                   </div>
                   <p className="text-sm font-medium">View on Instagram</p>
@@ -122,17 +122,17 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
             </div>
             <CardContent className="p-4">
               <p className="text-sm text-foreground/80 leading-relaxed">
-                {truncateCaption(post.caption)}
+                {truncateCaption(post.caption || '')}
               </p>
               <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
                 <div className="flex items-center gap-4 text-sm text-foreground/60">
                   <div className="flex items-center gap-1">
                     <Heart className="w-4 h-4" />
-                    <span>{post.likes}</span>
+                    <span>{post.likes || 0}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <MessageCircle className="w-4 h-4" />
-                    <span>{post.comments}</span>
+                    <span>{post.comments || 0}</span>
                   </div>
                 </div>
                 <a
