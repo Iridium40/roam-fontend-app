@@ -20,6 +20,14 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist/spa",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          stripe: ['@stripe/stripe-js', '@stripe/react-stripe-js'],
+        }
+      }
+    }
   },
   plugins: [react(), expressPlugin()],
   resolve: {
