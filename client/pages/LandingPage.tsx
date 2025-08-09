@@ -28,6 +28,7 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import GoogleOneTap from "@/components/GoogleOneTap";
+import InstagramFeed from "@/components/InstagramFeed";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, BookOpen, ExternalLink } from "lucide-react";
