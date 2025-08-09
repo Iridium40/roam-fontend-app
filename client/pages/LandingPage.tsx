@@ -118,9 +118,9 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-roam-light-blue/5 to-roam-yellow/10">
       {/* Google One Tap - only show when not authenticated */}
-      {!isCustomer && import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID && (
+      {!isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
         <GoogleOneTap
-          clientId={import.meta.env.VITE_PUBLIC_GOOGLE_CLIENT_ID}
+          clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSuccess={() => {
             console.log("Google One Tap sign-in successful");
           }}
@@ -174,7 +174,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 relative">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-6 bg-roam-light-blue/20 text-roam-blue border-roam-light-blue/30 px-4 py-2">
-              🎉 Now Available in Your Area
+              ��� Now Available in Your Area
             </Badge>
             <h1 className="text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
               Book Services
