@@ -28,6 +28,179 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import GoogleOneTap from "@/components/GoogleOneTap";
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Play, BookOpen, ExternalLink } from "lucide-react";
+
+// Service Explorer Tabs Component
+function ServiceExplorerTabs() {
+  const [activeTab, setActiveTab] = useState("beauty");
+
+  const tabCategories = {
+    beauty: {
+      title: "Beauty",
+      services: [
+        "Hair & Makeup",
+        "Injectables",
+        "Skin Care",
+        "Spray Tan",
+        "Nail Services",
+        "Eyebrow & Lash"
+      ]
+    },
+    fitness: {
+      title: "Fitness",
+      services: [
+        "Personal Training",
+        "Yoga Instruction",
+        "Nutrition Coaching",
+        "Pilates",
+        "Massage Therapy",
+        "Sports Training"
+      ]
+    },
+    wellness: {
+      title: "Wellness",
+      services: [
+        "Mental Health",
+        "Life Coaching",
+        "Meditation",
+        "Acupuncture",
+        "Chiropractic",
+        "Reiki & Energy"
+      ]
+    },
+    lifestyle: {
+      title: "Lifestyle",
+      services: [
+        "Personal Chef",
+        "House Cleaning",
+        "Organization",
+        "Event Planning",
+        "Pet Services",
+        "Tutoring"
+      ]
+    }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 mb-8 h-14">
+          {Object.entries(tabCategories).map(([key, category]) => (
+            <TabsTrigger
+              key={key}
+              value={key}
+              className="text-lg font-semibold data-[state=active]:bg-roam-blue data-[state=active]:text-white"
+            >
+              {category.title}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {Object.entries(tabCategories).map(([key, category]) => (
+          <TabsContent key={key} value={key} className="mt-0">
+            <div className="grid lg:grid-cols-3 gap-8">
+              {/* Services Sidebar */}
+              <div className="lg:col-span-1">
+                <Card className="h-full bg-gradient-to-br from-roam-light-blue/10 to-roam-blue/5 border-roam-blue/20">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold text-roam-blue mb-6">
+                      {category.title} Services
+                    </h3>
+                    <div className="space-y-3">
+                      {category.services.map((service, index) => (
+                        <div key={index} className="flex items-center gap-3 group cursor-pointer">
+                          <div className="w-2 h-2 bg-roam-blue rounded-full"></div>
+                          <span className="text-foreground group-hover:text-roam-blue transition-colors font-medium">
+                            {service}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Blog Post */}
+              <div className="lg:col-span-1">
+                <Card className="h-full overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300">
+                  <div className="relative">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2Fc812f66efc8641e5a5e8b82ad8a50e3e?format=webp&width=800"
+                      alt="Blog post featured image"
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <Badge className="bg-roam-yellow text-gray-900 font-semibold">
+                        ROAM BLOG
+                      </Badge>
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <h4 className="text-sm font-medium text-roam-blue mb-2 uppercase tracking-wide">
+                      {category.title} News
+                    </h4>
+                    <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-roam-blue transition-colors">
+                      {key === 'beauty' && "Glow Goals: How a Spray Tan Lifts Your Look & Your Spirits"}
+                      {key === 'fitness' && "5 Benefits of Personal Training That Will Transform Your Fitness Journey"}
+                      {key === 'wellness' && "The Science Behind Mindfulness: Why Meditation Matters More Than Ever"}
+                      {key === 'lifestyle' && "Creating Work-Life Balance: Tips from Professional Life Coaches"}
+                    </h3>
+                    <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
+                      <BookOpen className="w-4 h-4" />
+                      <span>Read More</span>
+                      <ExternalLink className="w-4 h-4" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Video Interview */}
+              <div className="lg:col-span-1">
+                <Card className="h-full overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300">
+                  <div className="relative">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2Fc812f66efc8641e5a5e8b82ad8a50e3e?format=webp&width=800"
+                      alt="Provider spotlight video"
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center group-hover:bg-white transition-colors">
+                        <Play className="w-8 h-8 text-roam-blue ml-1" />
+                      </div>
+                    </div>
+                    <div className="absolute top-4 left-4">
+                      <Badge className="bg-red-600 text-white font-semibold">
+                        LIVE INTERVIEW
+                      </Badge>
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <h4 className="text-sm font-medium text-roam-blue mb-2 uppercase tracking-wide">
+                      {category.title} Provider Spotlight
+                    </h4>
+                    <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-roam-blue transition-colors">
+                      {key === 'beauty' && "Maureen: Hair Designer & Makeup Artist"}
+                      {key === 'fitness' && "Jake: Certified Personal Trainer & Nutrition Expert"}
+                      {key === 'wellness' && "Sarah: Licensed Therapist & Mindfulness Coach"}
+                      {key === 'lifestyle' && "Maria: Professional Organizer & Lifestyle Consultant"}
+                    </h3>
+                    <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
+                      <Video className="w-4 h-4" />
+                      <span>Watch Interview</span>
+                      <ExternalLink className="w-4 h-4" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
+  );
+}
 
 export default function LandingPage() {
   const { customer, isCustomer } = useAuth();
