@@ -81,18 +81,18 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
         <p className="text-xl text-foreground/70 max-w-2xl mx-auto mb-6">
           Stay connected with ROAM on Instagram for the latest updates, client transformations, and behind-the-scenes content.
         </p>
-        <Button 
+        <Button
           asChild
           className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-6 py-3"
         >
-          <a 
-            href="https://instagram.com/roamservices" 
-            target="_blank" 
+          <a
+            href="https://www.instagram.com/roam_yourbestlife/"
+            target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"
           >
             <Instagram className="w-5 h-5" />
-            Follow @roamservices
+            Follow @roam_yourbestlife
             <ExternalLink className="w-4 h-4" />
           </a>
         </Button>
