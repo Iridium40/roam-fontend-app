@@ -1,0 +1,51 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://apis.google.com https://accounts.google.com https://maps.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.stripe.com https://vssomyuyhicaxsgiaupo.supabase.co https://maps.googleapis.com https://accounts.google.com wss://vssomyuyhicaxsgiaupo.supabase.co; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com;"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(self)"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/create-payment-intent.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "env": {
+    "VITE_SUPABASE_URL": "https://vssomyuyhicaxsgiaupo.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzc29teXV5aGljYXhzZ2lhdXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NTM3MTUsImV4cCI6MjA2OTAyOTcxNX0.c4JrNgMGsrCaFP2VrF4pL6iUG8Ub8Hkcrm5345r7KHs",
+    "VITE_GOOGLE_CLIENT_ID": "332905057054-k2ft4b7nadjgm62qoiseg7r6n8rt18co.apps.googleusercontent.com",
+    "VITE_GOOGLE_MAPS_API_KEY": "AIzaSyDuTYClctxxl_cq2Hr8gKbuOY-1-t4bqfw",
+    "VITE_STRIPE_PUBLISHABLE_KEY": "pk_test_51RtWP3CpMcwgGgU0aiye0NpwchvfsZlO9Wf8iQx6rgd6tsSt3DTr7QREn46PMPTyubYfmxLWjT5jCUK83DmBlT5t00D3zTLJLM"
+  }
+}
