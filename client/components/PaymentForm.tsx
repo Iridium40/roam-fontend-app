@@ -296,53 +296,29 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
     setIsLoading(true);
 
     try {
-<<<<<<< HEAD
-      // Handle mock payment for development/testing
-      if (clientSecret === "pi_mock_development_client_secret_for_testing") {
-        console.log("Processing mock payment for development");
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate payment processing
-
-        const mockPaymentIntent = {
-          id: "pi_mock_payment_intent_" + Date.now(),
-          status: "succeeded",
-          amount: Math.round(totalAmount * 100),
-          currency: "usd"
-        };
-
-        console.log("Mock payment succeeded:", mockPaymentIntent);
-        onPaymentSuccess(mockPaymentIntent.id);
-        toast({
-          title: "Mock Payment Successful!",
-          description: "Your booking has been confirmed (development mode).",
-=======
       // Check if we're in mock development mode
       if (clientSecret.includes("mock")) {
         console.log("🧪 Mock payment processing in development mode");
-        
+
         // Simulate payment processing delay
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+
         // Simulate successful payment
         const mockPaymentIntentId = `pi_mock_${Date.now()}`;
         console.log("Mock payment succeeded:", mockPaymentIntentId);
-        
+
         onPaymentSuccess(mockPaymentIntentId);
         toast({
           title: "Payment Successful! (Mock Mode)",
           description: "Your booking has been confirmed. This was a simulated payment for development.",
->>>>>>> origin/main
         });
         return;
       }
 
-<<<<<<< HEAD
-=======
       // Real Stripe payment processing
       if (!stripe || !elements) {
         throw new Error("Stripe not initialized");
       }
-
->>>>>>> origin/main
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
