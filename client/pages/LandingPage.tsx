@@ -446,61 +446,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Service Categories */}
-      <section
-        id="services"
-        className="py-20 lg:py-32 bg-gradient-to-br from-roam-light-blue/5 to-roam-yellow/5"
-      >
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-              Popular Service Categories
-            </h2>
-            <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              Discover a wide range of professional services available at your
-              fingertips.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {serviceCategories.map((category, index) => (
-              <Card
-                key={index}
-                className="border-border/50 hover:border-roam-light-blue/50 transition-all duration-300 hover:shadow-xl group overflow-hidden"
-              >
-                <CardContent className="p-0">
-                  <div
-                    className={`h-32 bg-gradient-to-br ${category.color} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}
-                  >
-                    <category.icon className="w-12 h-12 text-white" />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-foreground mb-3">
-                      {category.title}
-                    </h3>
-                    <p className="text-foreground/70 leading-relaxed">
-                      {category.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button
-              asChild
-              size="lg"
-              className="bg-roam-blue hover:bg-roam-blue/90 text-white px-8 py-4 text-lg font-semibold"
-            >
-              <Link to="/home" className="flex items-center gap-2">
-                View All Services
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
 
       {/* Service Explorer */}
       <section className="py-20 lg:py-32 bg-white">
