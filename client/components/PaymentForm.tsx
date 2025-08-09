@@ -14,8 +14,14 @@ import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { Loader2, CreditCard, Lock } from "lucide-react";
 
-// Initialize Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+// Initialize Stripe with error handling for CSP issues
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY, {
+  stripeAccount: undefined, // Not using Stripe Connect
+}).catch((error) => {
+  console.error('Failed to load Stripe:', error);
+  console.warn('This might be due to Content Security Policy restrictions.');
+  return null;
+});
 
 interface PaymentFormProps {
   bookingId: string;
