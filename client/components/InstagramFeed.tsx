@@ -11,7 +11,7 @@ const mockInstagramPosts = [
     caption: 'Transform your look with our amazing beauty services! ✨ #ROAMBeauty #GlowUp',
     likes: 127,
     comments: 12,
-    permalink: 'https://instagram.com'
+    permalink: 'https://www.instagram.com/roam_yourbestlife/'
   },
   {
     id: '2', 
@@ -19,7 +19,7 @@ const mockInstagramPosts = [
     caption: 'Fitness goals achieved with our certified trainers 💪 #ROAMFitness #HealthyLifestyle',
     likes: 89,
     comments: 8,
-    permalink: 'https://instagram.com'
+    permalink: 'https://www.instagram.com/roam_yourbestlife/'
   },
   {
     id: '3',
@@ -27,7 +27,7 @@ const mockInstagramPosts = [
     caption: 'Wellness Wednesday: Find your inner peace with our meditation experts 🧘‍♀️ #ROAMWellness',
     likes: 156,
     comments: 15,
-    permalink: 'https://instagram.com'
+    permalink: 'https://www.instagram.com/roam_yourbestlife/'
   },
   {
     id: '4',
@@ -35,7 +35,7 @@ const mockInstagramPosts = [
     caption: 'Home organization made easy! Our lifestyle experts can help ✨ #ROAMLifestyle #OrganizedHome',
     likes: 203,
     comments: 24,
-    permalink: 'https://instagram.com'
+    permalink: 'https://www.instagram.com/roam_yourbestlife/'
   },
   {
     id: '5',
@@ -43,7 +43,7 @@ const mockInstagramPosts = [
     caption: 'Behind the scenes with our amazing service providers! 👥 #ROAMTeam #BehindTheScenes',
     likes: 78,
     comments: 6,
-    permalink: 'https://instagram.com'
+    permalink: 'https://www.instagram.com/roam_yourbestlife/'
   },
   {
     id: '6',
@@ -51,7 +51,7 @@ const mockInstagramPosts = [
     caption: 'Client transformation Tuesday! Another happy ROAM customer 🌟 #ROAMResults #Transformation',
     likes: 342,
     comments: 31,
-    permalink: 'https://instagram.com'
+    permalink: 'https://www.instagram.com/roam_yourbestlife/'
   }
 ];
 
