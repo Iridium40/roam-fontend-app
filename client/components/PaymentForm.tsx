@@ -289,13 +289,14 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!stripe || !elements || !clientSecret) {
+    if (!clientSecret) {
       return;
     }
 
     setIsLoading(true);
 
     try {
+<<<<<<< HEAD
       // Handle mock payment for development/testing
       if (clientSecret === "pi_mock_development_client_secret_for_testing") {
         console.log("Processing mock payment for development");
@@ -313,10 +314,35 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         toast({
           title: "Mock Payment Successful!",
           description: "Your booking has been confirmed (development mode).",
+=======
+      // Check if we're in mock development mode
+      if (clientSecret.includes("mock")) {
+        console.log("🧪 Mock payment processing in development mode");
+        
+        // Simulate payment processing delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Simulate successful payment
+        const mockPaymentIntentId = `pi_mock_${Date.now()}`;
+        console.log("Mock payment succeeded:", mockPaymentIntentId);
+        
+        onPaymentSuccess(mockPaymentIntentId);
+        toast({
+          title: "Payment Successful! (Mock Mode)",
+          description: "Your booking has been confirmed. This was a simulated payment for development.",
+>>>>>>> origin/main
         });
         return;
       }
 
+<<<<<<< HEAD
+=======
+      // Real Stripe payment processing
+      if (!stripe || !elements) {
+        throw new Error("Stripe not initialized");
+      }
+
+>>>>>>> origin/main
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -395,7 +421,31 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
           {/* Payment Element */}
           <div className="p-4 border rounded-lg">
-            <PaymentElement />
+            {clientSecret.includes("mock") ? (
+              // Development mode - show mock payment form
+              <div className="space-y-4">
+                <div className="text-center py-8">
+                  <div className="text-gray-600 mb-4">
+                    <CreditCard className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Development Mode
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Payment processing is in mock mode for development.
+                    Click "Pay" to simulate a successful payment.
+                  </p>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                    <p className="text-sm text-yellow-800">
+                      💡 To test real payments, run with <code className="bg-yellow-100 px-1 rounded">netlify dev</code>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Production mode - show real Stripe PaymentElement
+              <PaymentElement />
+            )}
           </div>
 
           {/* Security Notice */}
@@ -407,7 +457,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={!stripe || isLoading}
+            disabled={(!stripe && !clientSecret.includes("mock")) || isLoading}
             className="w-full"
             size="lg"
           >
