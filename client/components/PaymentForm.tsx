@@ -136,8 +136,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         // Check if we're in development environment
         const isDevelopment = window.location.hostname === "localhost" ||
                               window.location.hostname.includes("fly.dev") ||
-                              window.location.hostname.includes("vercel.app") ||
-                              window.location.hostname.includes("netlify.app");
+                              window.location.hostname.includes("vercel.app");
 
         console.log("Payment setup - Environment:", {
           hostname: window.location.hostname,
