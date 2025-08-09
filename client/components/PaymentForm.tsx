@@ -165,11 +165,9 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
         // Check response status before reading body
         if (!response.ok) {
-          // If we get a 404, try fallback endpoint immediately
-          if (response.status === 404) {
-            console.log("ℹ️ Netlify functions not deployed, using Express server fallback...");
-            throw new Error(`Using fallback endpoint`);
-          }
+          // Log error and throw to try fallback if needed
+          console.log(`❌ Primary API endpoint failed with status: ${response.status}`);
+          throw new Error(`API endpoint failed with status: ${response.status}`);
 
           // For other errors, try to get error message
           let errorMessage = `HTTP error! status: ${response.status}`;
