@@ -14,6 +14,19 @@
   status = 200
   to = "/.netlify/functions/api/:splat"
 
+# Netlify functions
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# SPA routing - catch all non-file requests and serve index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
 [[headers]]
   for = "/*"
   [headers.values]
