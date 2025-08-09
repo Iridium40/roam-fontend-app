@@ -459,6 +459,40 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 };
 
 const PaymentForm: React.FC<PaymentFormProps> = (props) => {
+  const [stripeError, setStripeError] = useState<string | null>(null);
+
+  // Handle Stripe loading errors
+  useEffect(() => {
+    stripePromise.then((stripe) => {
+      if (!stripe) {
+        setStripeError('Failed to load Stripe. This might be due to security restrictions.');
+      }
+    }).catch((error) => {
+      setStripeError(`Stripe loading error: ${error.message}`);
+    });
+  }, []);
+
+  if (stripeError) {
+    return (
+      <Card>
+        <CardContent className="text-center py-8">
+          <div className="text-red-600 mb-4">
+            <CreditCard className="h-12 w-12 mx-auto mb-2" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Payment System Unavailable
+          </h3>
+          <p className="text-gray-600 mb-4">
+            {stripeError}
+          </p>
+          <p className="text-sm text-gray-500">
+            Please try refreshing the page or contact support if the issue persists.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Elements stripe={stripePromise}>
       <PaymentFormContent {...props} />
