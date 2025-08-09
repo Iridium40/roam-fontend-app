@@ -146,7 +146,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         });
 
         const response = await fetch(
-          "/.netlify/functions/create-payment-intent",
+          "/api/create-payment-intent",
           {
             method: "POST",
             headers: {
