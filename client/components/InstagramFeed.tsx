@@ -162,14 +162,14 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
         <p className="text-foreground/70 mb-4">
           Want to see more? Check out our full Instagram profile!
         </p>
-        <Button 
+        <Button
           asChild
           variant="outline"
           className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
         >
-          <a 
-            href="https://instagram.com/roamservices" 
-            target="_blank" 
+          <a
+            href="https://www.instagram.com/roam_yourbestlife/"
+            target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"
           >
