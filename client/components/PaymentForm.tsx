@@ -413,7 +413,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
                   </p>
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                     <p className="text-sm text-yellow-800">
-                      💡 To test real payments, run with <code className="bg-yellow-100 px-1 rounded">netlify dev</code>
+                      💡 To test real payments, deploy to Vercel or run with proper Stripe configuration
                     </p>
                   </div>
                 </div>
