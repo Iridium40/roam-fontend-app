@@ -463,6 +463,13 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Instagram Feed */}
+      <section className="py-20 lg:py-32 bg-gradient-to-br from-purple-50/50 to-pink-50/50">
+        <div className="container mx-auto px-6">
+          <InstagramFeed />
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-6">
