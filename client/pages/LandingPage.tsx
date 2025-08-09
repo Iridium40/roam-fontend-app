@@ -329,6 +329,22 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Service Explorer */}
+      <section className="py-20 lg:py-32 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
+              Explore Our Services
+            </h2>
+            <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
+              Discover detailed service categories, read our latest insights, and meet our featured providers.
+            </p>
+          </div>
+
+          <ServiceExplorerTabs />
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-6">
