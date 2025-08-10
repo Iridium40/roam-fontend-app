@@ -438,7 +438,7 @@ export default function ServiceBookingFlow() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4" />
-                          <span>{selectedTime}</span>
+                          <span>{formatTimeToAMPM(selectedTime)}</span>
                         </div>
                       </div>
                     </div>
