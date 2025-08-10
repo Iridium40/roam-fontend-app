@@ -116,7 +116,7 @@ export default function MyBookings() {
             `,
             )
             .eq("customer_id", customer.id)
-            .order("booking_date", { ascending: false })
+            .order("booking_date", { ascending: true })
             .limit(50);
         } else {
           console.log("No customer profile found - querying by guest_email:", currentUser.email);
@@ -151,7 +151,7 @@ export default function MyBookings() {
             `,
             )
             .eq("guest_email", currentUser.email)
-            .order("booking_date", { ascending: false })
+            .order("booking_date", { ascending: true })
             .limit(50);
         }
 
