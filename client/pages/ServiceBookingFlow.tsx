@@ -419,7 +419,7 @@ export default function ServiceBookingFlow() {
                               : "hover:border-roam-blue hover:text-roam-blue"
                           }
                         >
-                          {time}
+                          {formatTimeToAMPM(time)}
                         </Button>
                       ))}
                     </div>
