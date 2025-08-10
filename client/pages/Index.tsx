@@ -1386,7 +1386,7 @@ export default function Index() {
           {filteredFeaturedServices.length > 0 ? (
             <div className="relative overflow-hidden">
               {/* Navigation Arrows */}
-              {servicePages.length > 1 && (
+              {filteredFeaturedServices.length > 1 && (
                 <>
                   <Button
                     variant="outline"
