@@ -125,36 +125,38 @@ function ServiceExplorerTabs() {
 
               {/* Blog Post */}
               <div className="lg:col-span-1">
-                <Card className="h-full overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300">
-                  <div className="relative">
-                    <img
-                      src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2Fc812f66efc8641e5a5e8b82ad8a50e3e?format=webp&width=800"
-                      alt="Blog post featured image"
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-roam-yellow text-gray-900 font-semibold">
-                        ROAM BLOG
-                      </Badge>
+                <Link to="/blog" className="block h-full">
+                  <Card className="h-full overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300">
+                    <div className="relative">
+                      <img
+                        src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2Fc812f66efc8641e5a5e8b82ad8a50e3e?format=webp&width=800"
+                        alt="Blog post featured image"
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-roam-yellow text-gray-900 font-semibold">
+                          ROAM BLOG
+                        </Badge>
+                      </div>
                     </div>
-                  </div>
-                  <CardContent className="p-6">
-                    <h4 className="text-sm font-medium text-roam-blue mb-2 uppercase tracking-wide">
-                      {category.title} News
-                    </h4>
-                    <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-roam-blue transition-colors">
-                      {key === 'beauty' && "Glow Goals: How a Spray Tan Lifts Your Look & Your Spirits"}
-                      {key === 'fitness' && "5 Benefits of Personal Training That Will Transform Your Fitness Journey"}
-                      {key === 'wellness' && "The Science Behind Mindfulness: Why Meditation Matters More Than Ever"}
-                      {key === 'lifestyle' && "Creating Work-Life Balance: Tips from Professional Life Coaches"}
-                    </h3>
-                    <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
-                      <BookOpen className="w-4 h-4" />
-                      <span>Read More</span>
-                      <ExternalLink className="w-4 h-4" />
-                    </div>
-                  </CardContent>
-                </Card>
+                    <CardContent className="p-6">
+                      <h4 className="text-sm font-medium text-roam-blue mb-2 uppercase tracking-wide">
+                        {category.title} News
+                      </h4>
+                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-roam-blue transition-colors">
+                        {key === 'beauty' && "Glow Goals: How a Spray Tan Lifts Your Look & Your Spirits"}
+                        {key === 'fitness' && "5 Benefits of Personal Training That Will Transform Your Fitness Journey"}
+                        {key === 'wellness' && "The Science Behind Mindfulness: Why Meditation Matters More Than Ever"}
+                        {key === 'lifestyle' && "Creating Work-Life Balance: Tips from Professional Life Coaches"}
+                      </h3>
+                      <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
+                        <BookOpen className="w-4 h-4" />
+                        <span>Read More</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               </div>
 
               {/* Video Interview */}
