@@ -19,18 +19,14 @@ import {
   Mail,
   MessageSquare,
   Smartphone,
-  Moon,
-  Sun,
   Globe,
   Save,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTheme } from "@/contexts/ThemeContext";
 
 export default function CustomerSettings() {
   const { customer } = useAuth();
-  const { theme, setTheme, isDark } = useTheme();
   const [settings, setSettings] = useState({
     // Notification Preferences
     emailNotifications: true,
