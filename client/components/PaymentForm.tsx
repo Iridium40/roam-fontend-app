@@ -482,6 +482,11 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     appearance: {
       theme: "stripe" as const,
     },
+    paymentMethodTypes: ["card"],
+    wallets: {
+      applePay: "auto",
+      googlePay: "auto",
+    },
   };
 
   return (
