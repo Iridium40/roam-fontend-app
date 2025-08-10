@@ -66,12 +66,13 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
     console.log("💰 Amount calculation:", { originalAmount: amount, amountInCents });
 
     // Create payment intent
+    console.log("🚀 Creating payment intent with Stripe...");
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: "usd",
       metadata: {
         booking_id: bookingId,
-        service_fee: serviceFee ? (serviceFee * 100).toString() : "0",
+        service_fee: serviceFee ? (parseFloat(serviceFee) * 100).toString() : "0",
         customer_name: customerName || "",
         customer_email: customerEmail || "",
         business_name: businessName || "",
@@ -85,10 +86,17 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       },
     });
 
+    console.log("✅ Payment intent created successfully:", {
+      id: paymentIntent.id,
+      amount: paymentIntent.amount,
+      currency: paymentIntent.currency,
+      status: paymentIntent.status,
+    });
+
     res.status(200).json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
-      amount: totalAmount,
+      amount: amount,
       currency: "usd",
     });
   } catch (error: any) {
