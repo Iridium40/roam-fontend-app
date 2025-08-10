@@ -362,12 +362,11 @@ export default function LandingPage() {
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
-              Book Services
-              <span className="block bg-gradient-to-r from-roam-yellow to-white bg-clip-text text-transparent">
-                That Come to You
-              </span>
-            </h1>
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F7cfc25ed4dd34d6c99c1cfed81ba3f06?format=webp&width=800"
+              alt="ROAM Logo"
+              className="h-24 lg:h-32 w-auto mx-auto mb-6 drop-shadow-lg"
+            />
             <p className="text-xl lg:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
               From mobile beauty treatments to in-home fitness training,
               discover verified professionals who bring premium services
