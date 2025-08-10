@@ -36,11 +36,7 @@
       ]
     }
   ],
-  "functions": {
-    "api/create-payment-intent.ts": {
-      "runtime": "@vercel/node"
-    }
-  },
+
   "env": {
     "VITE_PUBLIC_SUPABASE_URL": "https://vssomyuyhicaxsgiaupo.supabase.co",
     "VITE_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzc29teXV5aGljYXhzZ2lhdXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NTM3MTUsImV4cCI6MjA2OTAyOTcxNX0.c4JrNgMGsrCaFP2VrF4pL6iUG8Ub8Hkcrm5345r7KHs",
