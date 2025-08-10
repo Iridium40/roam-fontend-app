@@ -390,8 +390,8 @@ export default function LandingPage() {
           <iframe
             src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
             className="absolute inset-0 w-full h-full"
-            style={{ 
-              filter: "brightness(0.7)", 
+            style={{
+              filter: "brightness(0.7)",
               pointerEvents: "none",
               minWidth: "100%",
               minHeight: "100%",
@@ -399,7 +399,7 @@ export default function LandingPage() {
               height: "56.25vw", // 16:9 aspect ratio
               left: "50%",
               top: "50%",
-              transform: "translate(-50%, -50%)"
+              transform: "translate(-50%, -50%)",
             }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
