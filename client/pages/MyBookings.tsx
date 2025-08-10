@@ -495,19 +495,19 @@ export default function MyBookings() {
                   value="upcoming"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
                 >
-                  Upcoming ({upcomingBookings.length})
+                  Upcoming ({allUpcomingBookings.length})
                 </TabsTrigger>
                 <TabsTrigger
                   value="active"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
                 >
-                  Active ({activeBookings.length})
+                  Active ({allActiveBookings.length})
                 </TabsTrigger>
                 <TabsTrigger
                   value="past"
                   className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
                 >
-                  Past ({pastBookings.length})
+                  Past ({allPastBookings.length})
                 </TabsTrigger>
               </TabsList>
 
