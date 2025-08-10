@@ -514,7 +514,7 @@ export default function MyBookings() {
               </TabsList>
 
               <TabsContent value="upcoming" className="space-y-4">
-                {upcomingBookings.length === 0 ? (
+                {allUpcomingBookings.length === 0 ? (
                   <Card className="p-12 text-center">
                     <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">
@@ -531,9 +531,45 @@ export default function MyBookings() {
                     </Button>
                   </Card>
                 ) : (
-                  upcomingBookings.map((booking) => (
-                    <BookingCard key={booking.id} booking={booking} />
-                  ))
+                  <>
+                    <div className="space-y-4">
+                      {upcomingBookings.map((booking) => (
+                        <BookingCard key={booking.id} booking={booking} />
+                      ))}
+                    </div>
+
+                    {/* Pagination Controls for Upcoming */}
+                    {getTotalPages(allUpcomingBookings.length) > 1 && (
+                      <div className="flex items-center justify-between pt-4">
+                        <div className="text-sm text-foreground/60">
+                          Showing {((currentPage.upcoming - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPage.upcoming * ITEMS_PER_PAGE, allUpcomingBookings.length)} of {allUpcomingBookings.length} bookings
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange('upcoming', 'prev')}
+                            disabled={currentPage.upcoming === 1}
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            Previous
+                          </Button>
+                          <span className="text-sm font-medium">
+                            Page {currentPage.upcoming} of {getTotalPages(allUpcomingBookings.length)}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange('upcoming', 'next')}
+                            disabled={currentPage.upcoming === getTotalPages(allUpcomingBookings.length)}
+                          >
+                            Next
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </TabsContent>
 
