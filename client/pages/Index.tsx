@@ -1401,7 +1401,9 @@ export default function Index() {
                     variant="outline"
                     size="sm"
                     onClick={nextServiceSlide}
-                    disabled={currentServiceSlide >= filteredFeaturedServices.length - 1}
+                    disabled={
+                      currentServiceSlide >= filteredFeaturedServices.length - 1
+                    }
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
                     <ChevronRight className="w-4 h-4" />
