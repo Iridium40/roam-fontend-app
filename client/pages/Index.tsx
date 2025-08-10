@@ -1414,12 +1414,14 @@ export default function Index() {
                   {servicePages.map((page, pageIndex) => (
                     <div
                       key={`services-page-${pageIndex}`}
-                      className="flex gap-0 sm:gap-4 w-full flex-none px-0 sm:px-3"
+                      className="block sm:flex gap-0 sm:gap-4 w-full flex-none px-0 sm:px-3"
                     >
-                      {page.map((service) => (
+                      {page.map((service, serviceIndex) => (
                         <Card
                           key={service.id}
-                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0 w-full sm:w-[48%] md:w-[32%] overflow-hidden"
+                          className={`hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0 overflow-hidden ${
+                            serviceIndex === 0 ? 'block' : 'hidden sm:block'
+                          } w-full sm:w-[48%] md:w-[32%]`}
                         >
                           <div className="relative h-64">
                             <img
