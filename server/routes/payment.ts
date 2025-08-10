@@ -3,6 +3,12 @@ import Stripe from "stripe";
 
 export const createPaymentIntent: RequestHandler = async (req, res) => {
   try {
+    console.log("💳 Payment Intent Request:", {
+      method: req.method,
+      headers: req.headers,
+      body: req.body,
+    });
+
     const {
       bookingId,
       totalAmount,
@@ -13,9 +19,29 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       serviceName,
     } = req.body;
 
+    console.log("💳 Extracted values:", {
+      bookingId,
+      totalAmount,
+      serviceFee,
+      customerEmail,
+      customerName,
+      businessName,
+      serviceName,
+    });
+
     if (!bookingId || !totalAmount || !customerEmail) {
+      console.log("❌ Missing required fields:", { bookingId, totalAmount, customerEmail });
       return res.status(400).json({
         error: "Booking ID, total amount, and customer email are required",
+      });
+    }
+
+    // Validate totalAmount is a number
+    const amount = typeof totalAmount === 'string' ? parseFloat(totalAmount) : totalAmount;
+    if (isNaN(amount) || amount <= 0) {
+      console.log("❌ Invalid amount:", { totalAmount, parsedAmount: amount });
+      return res.status(400).json({
+        error: "Total amount must be a valid positive number",
       });
     }
 
