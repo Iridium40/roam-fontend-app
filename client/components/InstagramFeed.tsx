@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Instagram, Heart, MessageCircle, ExternalLink, Loader2, AlertCircle } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Instagram,
+  Heart,
+  MessageCircle,
+  ExternalLink,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 
 interface InstagramPost {
   id: string;
-  media_type?: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
+  media_type?: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
   media_url: string;
   caption?: string;
   timestamp?: string;
@@ -19,11 +26,14 @@ interface InstagramFeedProps {
   maxPosts?: number;
 }
 
-export default function InstagramFeed({ className = '', maxPosts = 6 }: InstagramFeedProps) {
+export default function InstagramFeed({
+  className = "",
+  maxPosts = 6,
+}: InstagramFeedProps) {
   const [posts, setPosts] = useState<InstagramPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [dataSource, setDataSource] = useState<string>('');
+  const [dataSource, setDataSource] = useState<string>("");
 
   useEffect(() => {
     fetchInstagramPosts();
@@ -33,19 +43,19 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/instagram-feed?limit=${maxPosts}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setPosts(data.data);
         setDataSource(data.source);
         console.log(`Instagram data loaded from: ${data.source}`);
       } else {
-        throw new Error(data.error || 'Failed to fetch Instagram data');
+        throw new Error(data.error || "Failed to fetch Instagram data");
       }
     } catch (err: any) {
-      console.error('Error fetching Instagram posts:', err);
+      console.error("Error fetching Instagram posts:", err);
       setError(err.message);
       setPosts([]);
     } finally {
@@ -55,7 +65,7 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
 
   const truncateCaption = (caption: string, maxLength: number = 80) => {
     if (caption.length <= maxLength) return caption;
-    return caption.substring(0, maxLength) + '...';
+    return caption.substring(0, maxLength) + "...";
   };
 
   return (
@@ -69,15 +79,16 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
           </h2>
         </div>
         <p className="text-xl text-foreground/70 max-w-2xl mx-auto mb-6">
-          Stay connected with ROAM on Instagram for the latest updates, client transformations, and behind-the-scenes content.
+          Stay connected with ROAM on Instagram for the latest updates, client
+          transformations, and behind-the-scenes content.
         </p>
-        <Button 
+        <Button
           asChild
           className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-6 py-3"
         >
-          <a 
-            href="https://www.instagram.com/roam_yourbestlife/" 
-            target="_blank" 
+          <a
+            href="https://www.instagram.com/roam_yourbestlife/"
+            target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"
           >
@@ -92,7 +103,9 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
       {loading && (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-8 h-8 animate-spin text-roam-blue" />
-          <span className="ml-2 text-foreground/70">Loading Instagram posts...</span>
+          <span className="ml-2 text-foreground/70">
+            Loading Instagram posts...
+          </span>
         </div>
       )}
 
@@ -106,20 +119,20 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
           <p className="text-foreground/70 mb-4">
             Don't worry! You can still visit our Instagram directly.
           </p>
-          <Button 
+          <Button
             onClick={fetchInstagramPosts}
             variant="outline"
             className="mr-3"
           >
             Try Again
           </Button>
-          <Button 
+          <Button
             asChild
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
           >
-            <a 
-              href="https://www.instagram.com/roam_yourbestlife/" 
-              target="_blank" 
+            <a
+              href="https://www.instagram.com/roam_yourbestlife/"
+              target="_blank"
               rel="noopener noreferrer"
             >
               Visit Instagram
@@ -132,7 +145,10 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
       {!loading && posts.length > 0 && dataSource && (
         <div className="text-center mb-6">
           <span className="text-xs text-foreground/50 bg-foreground/5 px-2 py-1 rounded">
-            Data source: {dataSource === 'instagram_api' ? 'Live Instagram API' : 'Fallback Content'}
+            Data source:{" "}
+            {dataSource === "instagram_api"
+              ? "Live Instagram API"
+              : "Fallback Content"}
           </span>
         </div>
       )}
@@ -142,8 +158,8 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <Card 
-                key={post.id} 
+              <Card
+                key={post.id}
                 className="overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 border-border/50"
               >
                 <div className="relative">
@@ -158,11 +174,15 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
                       <div className="flex items-center justify-center gap-6 mb-3">
                         <div className="flex items-center gap-2">
                           <Heart className="w-5 h-5" />
-                          <span className="font-semibold">{post.likes || 0}</span>
+                          <span className="font-semibold">
+                            {post.likes || 0}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MessageCircle className="w-5 h-5" />
-                          <span className="font-semibold">{post.comments || 0}</span>
+                          <span className="font-semibold">
+                            {post.comments || 0}
+                          </span>
                         </div>
                       </div>
                       <p className="text-sm font-medium">View on Instagram</p>
@@ -171,7 +191,7 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
                 </div>
                 <CardContent className="p-4">
                   <p className="text-sm text-foreground/80 leading-relaxed">
-                    {truncateCaption(post.caption || '')}
+                    {truncateCaption(post.caption || "")}
                   </p>
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
                     <div className="flex items-center gap-4 text-sm text-foreground/60">
@@ -203,14 +223,14 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
             <p className="text-foreground/70 mb-4">
               Want to see more? Check out our full Instagram profile!
             </p>
-            <Button 
+            <Button
               asChild
               variant="outline"
               className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
             >
-              <a 
-                href="https://www.instagram.com/roam_yourbestlife/" 
-                target="_blank" 
+              <a
+                href="https://www.instagram.com/roam_yourbestlife/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >
@@ -232,13 +252,13 @@ export default function InstagramFeed({ className = '', maxPosts = 6 }: Instagra
           <p className="text-foreground/70 mb-4">
             Check out our Instagram profile for the latest content!
           </p>
-          <Button 
+          <Button
             asChild
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
           >
-            <a 
-              href="https://www.instagram.com/roam_yourbestlife/" 
-              target="_blank" 
+            <a
+              href="https://www.instagram.com/roam_yourbestlife/"
+              target="_blank"
               rel="noopener noreferrer"
             >
               Visit Instagram

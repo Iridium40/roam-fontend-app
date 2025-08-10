@@ -1,6 +1,7 @@
 # Instagram Basic Display API Setup Guide
 
 ## Overview
+
 The Instagram feed is now configured to use the Instagram Basic Display API to fetch real posts from your account @roam_yourbestlife. If the API is not configured, it will fall back to mock content.
 
 ## Step 1: Create Facebook App
@@ -45,11 +46,13 @@ The Instagram feed is now configured to use the Instagram Basic Display API to f
 ## Step 6: Generate Access Token
 
 1. Use this URL format to get authorization code:
+
 ```
 https://api.instagram.com/oauth/authorize?client_id={app-id}&redirect_uri={redirect-uri}&scope=user_profile,user_media&response_type=code
 ```
 
 2. Replace with your values:
+
    - `{app-id}`: Your Instagram App ID
    - `{redirect-uri}`: Your redirect URI (URL encoded)
 
@@ -107,11 +110,13 @@ curl -i -X GET "https://graph.instagram.com/refresh_access_token?grant_type=ig_r
 ### Common Issues:
 
 1. **"Invalid OAuth access token"**
+
    - Token expired (refresh it)
    - Wrong token format
    - App not properly configured
 
 2. **"Instagram API returned 400"**
+
    - Check app permissions
    - Verify Instagram account is added as tester
    - Confirm redirect URI matches
@@ -123,6 +128,7 @@ curl -i -X GET "https://graph.instagram.com/refresh_access_token?grant_type=ig_r
 ### Fallback Behavior:
 
 The app gracefully handles API failures:
+
 - Shows loading spinner during fetch
 - Displays error message with retry button
 - Falls back to mock content if API unavailable

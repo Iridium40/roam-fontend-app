@@ -46,8 +46,8 @@ function ServiceExplorerTabs() {
         "Skin Care",
         "Spray Tan",
         "Nail Services",
-        "Eyebrow & Lash"
-      ]
+        "Eyebrow & Lash",
+      ],
     },
     fitness: {
       title: "Fitness",
@@ -57,8 +57,8 @@ function ServiceExplorerTabs() {
         "Nutrition Coaching",
         "Pilates",
         "Massage Therapy",
-        "Sports Training"
-      ]
+        "Sports Training",
+      ],
     },
     wellness: {
       title: "Wellness",
@@ -68,8 +68,8 @@ function ServiceExplorerTabs() {
         "Meditation",
         "Acupuncture",
         "Chiropractic",
-        "Reiki & Energy"
-      ]
+        "Reiki & Energy",
+      ],
     },
     lifestyle: {
       title: "Lifestyle",
@@ -79,9 +79,9 @@ function ServiceExplorerTabs() {
         "Organization",
         "Event Planning",
         "Pet Services",
-        "Tutoring"
-      ]
-    }
+        "Tutoring",
+      ],
+    },
   };
 
   return (
@@ -111,7 +111,10 @@ function ServiceExplorerTabs() {
                     </h3>
                     <div className="space-y-3">
                       {category.services.map((service, index) => (
-                        <div key={index} className="flex items-center gap-3 group cursor-pointer">
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 group cursor-pointer"
+                        >
                           <div className="w-2 h-2 bg-roam-blue rounded-full"></div>
                           <span className="text-foreground group-hover:text-roam-blue transition-colors font-medium">
                             {service}
@@ -144,10 +147,14 @@ function ServiceExplorerTabs() {
                         {category.title} News
                       </h4>
                       <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-roam-blue transition-colors">
-                        {key === 'beauty' && "Glow Goals: How a Spray Tan Lifts Your Look & Your Spirits"}
-                        {key === 'fitness' && "5 Benefits of Personal Training That Will Transform Your Fitness Journey"}
-                        {key === 'wellness' && "The Science Behind Mindfulness: Why Meditation Matters More Than Ever"}
-                        {key === 'lifestyle' && "Creating Work-Life Balance: Tips from Professional Life Coaches"}
+                        {key === "beauty" &&
+                          "Glow Goals: How a Spray Tan Lifts Your Look & Your Spirits"}
+                        {key === "fitness" &&
+                          "5 Benefits of Personal Training That Will Transform Your Fitness Journey"}
+                        {key === "wellness" &&
+                          "The Science Behind Mindfulness: Why Meditation Matters More Than Ever"}
+                        {key === "lifestyle" &&
+                          "Creating Work-Life Balance: Tips from Professional Life Coaches"}
                       </h3>
                       <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
                         <BookOpen className="w-4 h-4" />
@@ -184,10 +191,14 @@ function ServiceExplorerTabs() {
                       {category.title} Provider Spotlight
                     </h4>
                     <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-roam-blue transition-colors">
-                      {key === 'beauty' && "Maureen: Hair Designer & Makeup Artist"}
-                      {key === 'fitness' && "Jake: Certified Personal Trainer & Nutrition Expert"}
-                      {key === 'wellness' && "Sarah: Licensed Therapist & Mindfulness Coach"}
-                      {key === 'lifestyle' && "Maria: Professional Organizer & Lifestyle Consultant"}
+                      {key === "beauty" &&
+                        "Maureen: Hair Designer & Makeup Artist"}
+                      {key === "fitness" &&
+                        "Jake: Certified Personal Trainer & Nutrition Expert"}
+                      {key === "wellness" &&
+                        "Sarah: Licensed Therapist & Mindfulness Coach"}
+                      {key === "lifestyle" &&
+                        "Maria: Professional Organizer & Lifestyle Consultant"}
                     </h3>
                     <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
                       <Video className="w-4 h-4" />
@@ -351,7 +362,7 @@ export default function LandingPage() {
           <iframe
             src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.4)', pointerEvents: 'none' }}
+            style={{ filter: "brightness(0.4)", pointerEvents: "none" }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
             title="Background Video"
@@ -445,7 +456,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-
       {/* Service Explorer */}
       <section className="py-20 lg:py-32 bg-white">
         <div className="container mx-auto px-6">
@@ -454,7 +464,8 @@ export default function LandingPage() {
               Explore Our Services
             </h2>
             <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              Discover detailed service categories, read our latest insights, and meet our featured providers.
+              Discover detailed service categories, read our latest insights,
+              and meet our featured providers.
             </p>
           </div>
 
