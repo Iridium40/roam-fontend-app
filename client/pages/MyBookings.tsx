@@ -68,47 +68,84 @@ export default function MyBookings() {
 
         console.log("Fetching bookings for user:", currentUser.email);
         console.log("Current user object:", currentUser);
+        console.log("Customer object:", customer);
 
-        // First, let's check if there are ANY bookings with this email
-        const emailCheckResponse = await supabase
-          .from("bookings")
-          .select("id, guest_email, customer_email, customer_id, status")
-          .or(`guest_email.eq.${currentUser.email},customer_email.eq.${currentUser.email}`)
-          .limit(10);
+        let bookingsResponse;
 
-        console.log("Email check response:", emailCheckResponse);
+        // For authenticated users, query by customer_id, not guest_email
+        if (customer && customer.id) {
+          console.log("Authenticated user - querying by customer_id:", customer.id);
 
-        // Get bookings for this customer by guest email (simpler approach)
-        const bookingsResponse = await supabase
-          .from("bookings")
-          .select(
-            `
-            *,
-            services (
-              id,
-              name,
-              min_price
-            ),
-            customer_profiles (
-              id,
-              first_name,
-              last_name,
-              email,
-              image_url
-            ),
-            providers (
-              id,
-              first_name,
-              last_name,
-              location_id
+          bookingsResponse = await supabase
+            .from("bookings")
+            .select(
+              `
+              *,
+              services (
+                id,
+                name,
+                min_price
+              ),
+              customer_profiles (
+                id,
+                first_name,
+                last_name,
+                email,
+                image_url
+              ),
+              providers (
+                id,
+                first_name,
+                last_name,
+                location_id
+              ),
+              business_profiles (
+                id,
+                business_name
+              )
+            `,
             )
-          `,
-          )
-          .eq("guest_email", currentUser.email)
-          .order("booking_date", { ascending: false })
-          .limit(50);
+            .eq("customer_id", customer.id)
+            .order("booking_date", { ascending: false })
+            .limit(50);
+        } else {
+          console.log("No customer profile found - querying by guest_email:", currentUser.email);
 
-        console.log("Main bookings query response:", bookingsResponse);
+          bookingsResponse = await supabase
+            .from("bookings")
+            .select(
+              `
+              *,
+              services (
+                id,
+                name,
+                min_price
+              ),
+              customer_profiles (
+                id,
+                first_name,
+                last_name,
+                email,
+                image_url
+              ),
+              providers (
+                id,
+                first_name,
+                last_name,
+                location_id
+              ),
+              business_profiles (
+                id,
+                business_name
+              )
+            `,
+            )
+            .eq("guest_email", currentUser.email)
+            .order("booking_date", { ascending: false })
+            .limit(50);
+        }
+
+        console.log("Bookings query response:", bookingsResponse);
 
         // Check for authentication error
         if (bookingsResponse.status === 401 && retryCount === 0) {
