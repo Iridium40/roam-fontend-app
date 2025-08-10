@@ -18,15 +18,11 @@ import {
   MapPin,
   LogOut,
   ChevronDown,
-  Moon,
-  Sun,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTheme } from "@/contexts/ThemeContext";
 
 export const CustomerAvatarDropdown: React.FC = () => {
   const { customer, signOut } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
 
   if (!customer) return null;
 
