@@ -18,8 +18,8 @@ import { Loader2, CreditCard, Lock } from "lucide-react";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY, {
   stripeAccount: undefined, // Not using Stripe Connect
 }).catch((error) => {
-  console.error('Failed to load Stripe:', error);
-  console.warn('This might be due to Content Security Policy restrictions.');
+  console.error("Failed to load Stripe:", error);
+  console.warn("This might be due to Content Security Policy restrictions.");
   return null;
 });
 
@@ -52,25 +52,27 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   const elements = useElements();
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
-  
+
   // Debug log to see what customer data is available
-  console.log('💳 PaymentForm: Customer data debug:', { 
-    isCustomer, 
-    customer, 
+  console.log("💳 PaymentForm: Customer data debug:", {
+    isCustomer,
+    customer,
     customerHasUserId: !!customer?.user_id,
-    customerKeys: customer ? Object.keys(customer) : 'no customer'
+    customerKeys: customer ? Object.keys(customer) : "no customer",
   });
-  
+
   // Test Stripe sync directly since we have customer data with user_id
   useEffect(() => {
     if (isCustomer && customer?.user_id) {
-      console.log('🧪 Testing Stripe sync with mock customer ID...');
-      syncStripeCustomerToSupabase('cus_test_mock_customer_id');
+      console.log("🧪 Testing Stripe sync with mock customer ID...");
+      syncStripeCustomerToSupabase("cus_test_mock_customer_id");
     }
   }, [isCustomer, customer?.user_id]);
-  
+
   const [isLoading, setIsLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string>(passedClientSecret || "");
+  const [clientSecret, setClientSecret] = useState<string>(
+    passedClientSecret || "",
+  );
   const [paymentIntentId, setPaymentIntentId] = useState<string>("");
   const [stripeCustomerId, setStripeCustomerId] = useState<string>("");
 
@@ -83,67 +85,71 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
   // Function to sync Stripe customer ID to Supabase
   const syncStripeCustomerToSupabase = async (stripeCustomerId: string) => {
-    console.log('Stripe sync debug:', { 
-      isCustomer, 
-      customer, 
-      customerUserId: customer?.user_id, 
-      stripeCustomerId 
+    console.log("Stripe sync debug:", {
+      isCustomer,
+      customer,
+      customerUserId: customer?.user_id,
+      stripeCustomerId,
     });
-    
+
     if (!isCustomer || !customer?.user_id || !stripeCustomerId) {
-      console.log('Skipping Stripe customer sync - not authenticated customer or missing IDs');
+      console.log(
+        "Skipping Stripe customer sync - not authenticated customer or missing IDs",
+      );
       return;
     }
 
     try {
       // Check if stripe profile already exists
       const { data: existingProfile, error: fetchError } = await supabase
-        .from('customer_stripe_profiles')
-        .select('id')
-        .eq('user_id', customer.user_id)
+        .from("customer_stripe_profiles")
+        .select("id")
+        .eq("user_id", customer.user_id)
         .single();
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error('Error checking existing Stripe profile:', fetchError);
+      if (fetchError && fetchError.code !== "PGRST116") {
+        console.error("Error checking existing Stripe profile:", fetchError);
         return;
       }
 
       if (existingProfile) {
         // Update existing profile
         const { error } = await supabase
-          .from('customer_stripe_profiles')
-          .update({ 
+          .from("customer_stripe_profiles")
+          .update({
             stripe_customer_id: stripeCustomerId,
-            stripe_email: customerEmail 
+            stripe_email: customerEmail,
           })
-          .eq('user_id', customer.user_id);
+          .eq("user_id", customer.user_id);
 
         if (error) {
-          console.error('Error updating Stripe customer profile:', error);
+          console.error("Error updating Stripe customer profile:", error);
         } else {
-          console.log('Stripe customer profile updated successfully');
+          console.log("Stripe customer profile updated successfully");
         }
       } else {
         // Create new profile
         const { error } = await supabase
-          .from('customer_stripe_profiles')
+          .from("customer_stripe_profiles")
           .insert({
             user_id: customer.user_id,
             stripe_customer_id: stripeCustomerId,
-            stripe_email: customerEmail
+            stripe_email: customerEmail,
           });
 
         if (error) {
-          console.error('Error creating Stripe customer profile:', error);
+          console.error("Error creating Stripe customer profile:", error);
         } else {
-          console.log('Successfully created Stripe customer profile:', stripeCustomerId);
+          console.log(
+            "Successfully created Stripe customer profile:",
+            stripeCustomerId,
+          );
         }
       }
     } catch (error) {
-      console.error('Error syncing Stripe customer ID:', error);
+      console.error("Error syncing Stripe customer ID:", error);
     }
   };
-
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -160,7 +166,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         console.log("🧪 Mock payment processing in development mode");
 
         // Simulate payment processing delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         // Simulate successful payment
         const mockPaymentIntentId = `pi_mock_${Date.now()}`;
@@ -169,7 +175,8 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         onPaymentSuccess(mockPaymentIntentId);
         toast({
           title: "Payment Successful! (Mock Mode)",
-          description: "Your booking has been confirmed. This was a simulated payment for development.",
+          description:
+            "Your booking has been confirmed. This was a simulated payment for development.",
         });
         return;
       }
@@ -267,12 +274,13 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
                     Development Mode
                   </h3>
                   <p className="text-gray-600 mb-4">
-                    Payment processing is in mock mode for development.
-                    Click "Pay" to simulate a successful payment.
+                    Payment processing is in mock mode for development. Click
+                    "Pay" to simulate a successful payment.
                   </p>
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                     <p className="text-sm text-yellow-800">
-                      💡 To test real payments, deploy to Vercel or run with proper Stripe configuration
+                      💡 To test real payments, deploy to Vercel or run with
+                      proper Stripe configuration
                     </p>
                   </div>
                 </div>
@@ -322,13 +330,17 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
 
   // Handle Stripe loading errors
   useEffect(() => {
-    stripePromise.then((stripe) => {
-      if (!stripe) {
-        setStripeError('Failed to load Stripe. This might be due to security restrictions.');
-      }
-    }).catch((error) => {
-      setStripeError(`Stripe loading error: ${error.message}`);
-    });
+    stripePromise
+      .then((stripe) => {
+        if (!stripe) {
+          setStripeError(
+            "Failed to load Stripe. This might be due to security restrictions.",
+          );
+        }
+      })
+      .catch((error) => {
+        setStripeError(`Stripe loading error: ${error.message}`);
+      });
   }, []);
 
   // Initialize payment intent to get clientSecret
@@ -338,14 +350,14 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
         setIsInitializing(true);
         setPaymentError(null);
 
-        const response = await fetch('/api/create-payment-intent', {
-          method: 'POST',
+        const response = await fetch("/api/create-payment-intent", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             amount: props.totalAmount,
-            currency: 'usd',
+            currency: "usd",
             bookingId: props.bookingId,
             customerEmail: props.customerEmail,
             customerName: props.customerName,
@@ -359,14 +371,20 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           if (data.clientSecret) {
             setClientSecret(data.clientSecret);
           } else {
-            throw new Error('No client secret received from payment intent');
+            throw new Error("No client secret received from payment intent");
           }
         } else {
-          throw new Error(`Payment intent creation failed with status: ${response.status}`);
+          throw new Error(
+            `Payment intent creation failed with status: ${response.status}`,
+          );
         }
       } catch (error) {
-        console.error('Payment initialization error:', error);
-        setPaymentError(error instanceof Error ? error.message : 'Failed to initialize payment');
+        console.error("Payment initialization error:", error);
+        setPaymentError(
+          error instanceof Error
+            ? error.message
+            : "Failed to initialize payment",
+        );
       } finally {
         setIsInitializing(false);
       }
@@ -385,11 +403,10 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Payment System Unavailable
           </h3>
-          <p className="text-gray-600 mb-4">
-            {stripeError}
-          </p>
+          <p className="text-gray-600 mb-4">{stripeError}</p>
           <p className="text-sm text-gray-500">
-            Please try refreshing the page or contact support if the issue persists.
+            Please try refreshing the page or contact support if the issue
+            persists.
           </p>
         </CardContent>
       </Card>
@@ -406,9 +423,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Payment Initialization Failed
           </h3>
-          <p className="text-gray-600 mb-4">
-            {paymentError}
-          </p>
+          <p className="text-gray-600 mb-4">{paymentError}</p>
           <div className="space-y-2">
             <button
               onClick={() => window.location.reload()}
@@ -417,7 +432,8 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
               Try Again
             </button>
             <p className="text-sm text-gray-500">
-              Please try refreshing the page or contact support if the issue persists.
+              Please try refreshing the page or contact support if the issue
+              persists.
             </p>
           </div>
         </CardContent>
@@ -463,7 +479,7 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   const elementsOptions = {
     clientSecret,
     appearance: {
-      theme: 'stripe' as const,
+      theme: "stripe" as const,
     },
   };
 
