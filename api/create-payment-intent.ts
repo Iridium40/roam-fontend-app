@@ -56,7 +56,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     // Convert to cents (Stripe expects amounts in cents)
-    const amountInCents = Math.round(totalAmount * 100);
+    const amountInCents = Math.round(amount * 100);
 
     // Create or retrieve Stripe customer
     let stripeCustomer;
