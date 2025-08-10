@@ -628,7 +628,7 @@ export default function MyBookings() {
               </TabsContent>
 
               <TabsContent value="past" className="space-y-4">
-                {pastBookings.length === 0 ? (
+                {allPastBookings.length === 0 ? (
                   <Card className="p-12 text-center">
                     <CheckCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">
@@ -639,9 +639,45 @@ export default function MyBookings() {
                     </p>
                   </Card>
                 ) : (
-                  pastBookings.map((booking) => (
-                    <BookingCard key={booking.id} booking={booking} />
-                  ))
+                  <>
+                    <div className="space-y-4">
+                      {pastBookings.map((booking) => (
+                        <BookingCard key={booking.id} booking={booking} />
+                      ))}
+                    </div>
+
+                    {/* Pagination Controls for Past */}
+                    {getTotalPages(allPastBookings.length) > 1 && (
+                      <div className="flex items-center justify-between pt-4">
+                        <div className="text-sm text-foreground/60">
+                          Showing {((currentPage.past - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPage.past * ITEMS_PER_PAGE, allPastBookings.length)} of {allPastBookings.length} bookings
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange('past', 'prev')}
+                            disabled={currentPage.past === 1}
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            Previous
+                          </Button>
+                          <span className="text-sm font-medium">
+                            Page {currentPage.past} of {getTotalPages(allPastBookings.length)}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange('past', 'next')}
+                            disabled={currentPage.past === getTotalPages(allPastBookings.length)}
+                          >
+                            Next
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </TabsContent>
             </Tabs>
