@@ -17,6 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const {
       bookingId,
       totalAmount,
@@ -25,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       customerName,
       businessName,
       serviceName,
-    } = req.body;
+    } = body;
 
     if (!bookingId || !totalAmount || !customerEmail) {
       return res.status(400).json({
