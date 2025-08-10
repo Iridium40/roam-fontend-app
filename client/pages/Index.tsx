@@ -1420,7 +1420,7 @@ export default function Index() {
                         <Card
                           key={service.id}
                           className={`hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0 overflow-hidden ${
-                            serviceIndex === 0 ? 'block' : 'hidden sm:block'
+                            serviceIndex === 0 ? "block" : "hidden sm:block"
                           } w-full sm:w-[48%] md:w-[32%]`}
                         >
                           <div className="relative h-64">
