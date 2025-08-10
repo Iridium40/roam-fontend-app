@@ -94,7 +94,6 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       receipt_email: customerEmail,
       automatic_payment_methods: {
         enabled: true,
-        allow_redirects: "never"
       },
     });
 
