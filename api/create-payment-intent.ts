@@ -34,6 +34,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
+    // Ensure totalAmount is a valid number
+    const amount = typeof totalAmount === 'string' ? parseFloat(totalAmount) : totalAmount;
+    if (isNaN(amount) || amount <= 0) {
+      return res.status(400).json({
+        error: 'Total amount must be a valid positive number',
+      });
+    }
+
     // Check if Stripe secret key is available
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeSecretKey) {
