@@ -92,7 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       currency: 'usd',
       metadata: {
         booking_id: bookingId,
-        service_fee: serviceFee ? (serviceFee * 100).toString() : '0',
+        service_fee: serviceFee ? (parseFloat(serviceFee) * 100).toString() : '0',
         customer_name: customerName || '',
         customer_email: customerEmail || '',
         business_name: businessName || '',
