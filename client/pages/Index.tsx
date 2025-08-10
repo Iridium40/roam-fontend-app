@@ -959,7 +959,7 @@ export default function Index() {
       </nav>
 
       {/* Hero Section with Search */}
-      <section className="py-12 lg:py-20 relative overflow-hidden">
+      <section className="py-20 lg:py-32 relative overflow-hidden">
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full">
           <iframe
@@ -968,11 +968,15 @@ export default function Index() {
             style={{
               filter: "brightness(0.4)",
               pointerEvents: "none",
-              width: "110%",
-              height: "110%",
+              width: "100vw",
+              height: "56.25vw",
+              minWidth: "100%",
+              minHeight: "100%",
               border: "none",
-              transform: "translate(-5%, -5%)",
-              overflow: "hidden",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              objectFit: "cover",
             }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
