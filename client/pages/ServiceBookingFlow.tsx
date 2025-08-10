@@ -50,6 +50,14 @@ export default function ServiceBookingFlow() {
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [step, setStep] = useState(1);
 
+  // Helper function to convert 24-hour time to AM/PM format
+  const formatTimeToAMPM = (time24: string) => {
+    const [hours, minutes] = time24.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+    return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+  };
+
   // Generate time slots for booking
   const generateTimeSlots = () => {
     const slots = [];
