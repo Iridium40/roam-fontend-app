@@ -346,7 +346,20 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/5 via-transparent to-roam-yellow/5"></div>
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'brightness(0.4)' }}
+          >
+            <source src="https://videos.pexels.com/video-files/3662280/3662280-hd_1280_720_30fps.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/20 via-black/10 to-roam-yellow/20"></div>
+        </div>
         <div className="container mx-auto px-6 relative">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-6 bg-roam-light-blue/20 text-roam-blue border-roam-light-blue/30 px-4 py-2">
