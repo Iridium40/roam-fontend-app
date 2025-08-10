@@ -1845,7 +1845,6 @@ export default function Index() {
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPopularSlide * 100}%)`,
-                    width: `${Math.max(1, popularPages.length) * 100}%`,
                   }}
                 >
                   {popularPages.map((page, pageIndex) => (
