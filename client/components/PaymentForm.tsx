@@ -460,6 +460,8 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
 const PaymentForm: React.FC<PaymentFormProps> = (props) => {
   const [stripeError, setStripeError] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [isInitializing, setIsInitializing] = useState(true);
 
   // Handle Stripe loading errors
   useEffect(() => {
@@ -471,6 +473,65 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
       setStripeError(`Stripe loading error: ${error.message}`);
     });
   }, []);
+
+  // Initialize payment intent to get clientSecret
+  useEffect(() => {
+    const initializePayment = async () => {
+      try {
+        setIsInitializing(true);
+        const response = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: props.totalAmount,
+            currency: 'usd',
+            bookingId: props.bookingId,
+            customerEmail: props.customerEmail,
+            customerName: props.customerName,
+            businessName: props.businessName,
+            serviceName: props.serviceName,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setClientSecret(data.clientSecret);
+        } else {
+          // Try fallback endpoint
+          const fallbackResponse = await fetch('/server/payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              amount: props.totalAmount,
+              currency: 'usd',
+              bookingId: props.bookingId,
+              customerEmail: props.customerEmail,
+            }),
+          });
+
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            setClientSecret(fallbackData.clientSecret);
+          } else {
+            console.warn("Payment endpoints failed, using setup mode");
+            // Use setup mode for development
+            setClientSecret("setup");
+          }
+        }
+      } catch (error) {
+        console.error('Payment initialization error:', error);
+        setClientSecret("setup");
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+
+    initializePayment();
+  }, [props.totalAmount, props.bookingId, props.customerEmail]);
 
   if (stripeError) {
     return (
@@ -493,9 +554,27 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     );
   }
 
+  if (isInitializing || !clientSecret) {
+    return (
+      <Card>
+        <CardContent className="text-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Initializing payment...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const elementsOptions = {
+    clientSecret,
+    appearance: {
+      theme: 'stripe' as const,
+    },
+  };
+
   return (
-    <Elements stripe={stripePromise}>
-      <PaymentFormContent {...props} />
+    <Elements stripe={stripePromise} options={elementsOptions}>
+      <PaymentFormContent {...props} clientSecret={clientSecret} />
     </Elements>
   );
 };
