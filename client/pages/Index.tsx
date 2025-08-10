@@ -691,11 +691,12 @@ export default function Index() {
     setCurrentServiceSlide(0);
   }, [selectedCategory, searchQuery, selectedDelivery]);
 
-  // Featured Services: paginate into pages of 3
+  // Featured Services: paginate into pages of 2 for desktop, 1 for mobile
   const servicePages = useMemo(() => {
     const pages: any[][] = [];
-    for (let i = 0; i < filteredFeaturedServices.length; i += 3) {
-      pages.push(filteredFeaturedServices.slice(i, i + 3));
+    // Always paginate by 2 cards per page (will show 1 on mobile, 2 on desktop)
+    for (let i = 0; i < filteredFeaturedServices.length; i += 2) {
+      pages.push(filteredFeaturedServices.slice(i, i + 2));
     }
     return pages;
   }, [filteredFeaturedServices]);
@@ -1420,7 +1421,7 @@ export default function Index() {
                       {page.map((service) => (
                         <Card
                           key={service.id}
-                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0 w-full sm:w-[48%] lg:w-[32%] overflow-hidden"
+                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0 w-full md:w-1/2 overflow-hidden"
                         >
                           <div className="relative h-64">
                             <img
