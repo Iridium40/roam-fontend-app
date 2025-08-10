@@ -88,7 +88,24 @@ function ServiceExplorerTabs() {
   return (
     <div className="max-w-7xl mx-auto">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-8 h-14">
+        {/* Mobile Dropdown */}
+        <div className="md:hidden mb-8">
+          <Select value={activeTab} onValueChange={setActiveTab}>
+            <SelectTrigger className="w-full h-14 text-lg font-semibold">
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(tabCategories).map(([key, category]) => (
+                <SelectItem key={key} value={key} className="text-lg font-semibold">
+                  {category.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Desktop Tabs */}
+        <TabsList className="hidden md:grid w-full grid-cols-4 mb-8 h-14">
           {Object.entries(tabCategories).map(([key, category]) => (
             <TabsTrigger
               key={key}
