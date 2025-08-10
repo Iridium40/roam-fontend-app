@@ -362,9 +362,6 @@ export default function LandingPage() {
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6 bg-white/20 text-white border-white/30 px-4 py-2 backdrop-blur-sm">
-              🌟 Now Available in Your Area
-            </Badge>
             <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
               Book Services
               <span className="block bg-gradient-to-r from-roam-yellow to-white bg-clip-text text-transparent">
