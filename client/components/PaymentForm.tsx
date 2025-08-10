@@ -290,15 +290,15 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
               <PaymentElement
                 options={{
                   layout: {
-                    type: 'accordion',
+                    type: "accordion",
                     defaultCollapsed: false,
                     radios: false,
-                    spacedAccordionItems: true
+                    spacedAccordionItems: true,
                   },
                   wallets: {
-                    applePay: 'auto',
-                    googlePay: 'auto'
-                  }
+                    applePay: "auto",
+                    googlePay: "auto",
+                  },
                 }}
               />
             )}

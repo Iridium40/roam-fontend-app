@@ -75,7 +75,9 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
 
     // Create payment intent
     console.log("🚀 Creating payment intent with Stripe...");
-    console.log("🍎 Apple Pay should be available with automatic_payment_methods enabled");
+    console.log(
+      "🍎 Apple Pay should be available with automatic_payment_methods enabled",
+    );
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: "usd",
@@ -94,7 +96,7 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       receipt_email: customerEmail,
       automatic_payment_methods: {
         enabled: true,
-        allow_redirects: "never"
+        allow_redirects: "never",
       },
     });
 

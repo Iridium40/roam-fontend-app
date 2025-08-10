@@ -111,7 +111,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       receipt_email: customerEmail,
       automatic_payment_methods: {
         enabled: true,
-        allow_redirects: "never"
+        allow_redirects: "never",
       },
     };
 
