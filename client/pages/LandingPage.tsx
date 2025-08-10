@@ -402,23 +402,6 @@ export default function LandingPage() {
         <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-roam-blue/10 rounded-full blur-lg animate-pulse delay-500"></div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-white/50 backdrop-blur-sm">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl lg:text-4xl font-bold text-roam-blue mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-foreground/70 font-medium">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Features Section */}
       <section id="features" className="py-20 lg:py-32">
