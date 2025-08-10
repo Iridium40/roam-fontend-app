@@ -91,6 +91,7 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       },
       description: `Booking payment for ${serviceName || "service"} at ${businessName || "business"}`,
       receipt_email: customerEmail,
+      payment_method_types: ["card"],
       automatic_payment_methods: {
         enabled: true,
         allow_redirects: "never"
