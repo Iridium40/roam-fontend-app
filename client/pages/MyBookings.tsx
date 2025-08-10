@@ -56,6 +56,14 @@ export default function MyBookings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState({
+    upcoming: 1,
+    active: 1,
+    past: 1,
+  });
+  const ITEMS_PER_PAGE = 10;
+
   const currentUser = user || customer;
   // Fetch bookings data on component mount
   useEffect(() => {
