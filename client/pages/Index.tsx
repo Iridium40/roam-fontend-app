@@ -963,19 +963,21 @@ export default function Index() {
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full">
           <iframe
-            src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+            src="https://www.youtube-nocookie.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&cc_load_policy=0&disablekb=1&fs=0&start=0&end=999999"
             className="absolute inset-0"
             style={{
               filter: "brightness(0.4)",
               pointerEvents: "none",
-              width: "100%",
-              height: "100%",
+              width: "110%",
+              height: "110%",
               border: "none",
-              objectFit: "cover",
+              transform: "translate(-5%, -5%)",
+              overflow: "hidden",
             }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
             title="Background Video"
+            tabIndex={-1}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/20 via-black/10 to-roam-yellow/20 pointer-events-none"></div>
         </div>
