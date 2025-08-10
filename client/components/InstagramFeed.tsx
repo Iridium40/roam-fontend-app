@@ -44,7 +44,87 @@ export default function InstagramFeed({
       setLoading(true);
       setError(null);
 
+      // Check if we're in development mode and API route isn't available
+      const isDevelopment = import.meta.env.DEV;
+
+      if (isDevelopment) {
+        // Use mock data in development
+        console.log("Development mode: Using mock Instagram data");
+        const mockData = [
+          {
+            id: "1",
+            media_type: "IMAGE" as const,
+            media_url: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop",
+            caption: "Transform your look with our amazing beauty services! ✨ #ROAMBeauty #GlowUp #roam_yourbestlife",
+            timestamp: new Date().toISOString(),
+            permalink: "https://www.instagram.com/roam_yourbestlife/",
+            likes: 127,
+            comments: 12,
+          },
+          {
+            id: "2",
+            media_type: "IMAGE" as const,
+            media_url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
+            caption: "Fitness goals achieved with our certified trainers 💪 #ROAMFitness #HealthyLifestyle #roam_yourbestlife",
+            timestamp: new Date().toISOString(),
+            permalink: "https://www.instagram.com/roam_yourbestlife/",
+            likes: 89,
+            comments: 8,
+          },
+          {
+            id: "3",
+            media_type: "IMAGE" as const,
+            media_url: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=400&fit=crop",
+            caption: "Wellness Wednesday: Find your inner peace with our meditation experts 🧘‍♀️ #ROAMWellness #roam_yourbestlife",
+            timestamp: new Date().toISOString(),
+            permalink: "https://www.instagram.com/roam_yourbestlife/",
+            likes: 156,
+            comments: 15,
+          },
+          {
+            id: "4",
+            media_type: "IMAGE" as const,
+            media_url: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop",
+            caption: "Healthcare professionals you can trust 🏥 #ROAMHealthcare #TrustedCare #roam_yourbestlife",
+            timestamp: new Date().toISOString(),
+            permalink: "https://www.instagram.com/roam_yourbestlife/",
+            likes: 203,
+            comments: 24,
+          },
+          {
+            id: "5",
+            media_type: "IMAGE" as const,
+            media_url: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop",
+            caption: "Behind the scenes with our amazing service providers! 👥 #ROAMTeam #BehindTheScenes #roam_yourbestlife",
+            timestamp: new Date().toISOString(),
+            permalink: "https://www.instagram.com/roam_yourbestlife/",
+            likes: 78,
+            comments: 6,
+          },
+          {
+            id: "6",
+            media_type: "IMAGE" as const,
+            media_url: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=400&fit=crop",
+            caption: "Client transformation Tuesday! Another happy ROAM customer 🌟 #ROAMResults #Transformation #roam_yourbestlife",
+            timestamp: new Date().toISOString(),
+            permalink: "https://www.instagram.com/roam_yourbestlife/",
+            likes: 342,
+            comments: 31,
+          },
+        ];
+
+        setPosts(mockData.slice(0, maxPosts));
+        setDataSource("development_mock");
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(`/api/instagram-feed?limit=${maxPosts}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {
