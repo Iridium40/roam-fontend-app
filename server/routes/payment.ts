@@ -103,6 +103,8 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       amount: paymentIntent.amount,
       currency: paymentIntent.currency,
       status: paymentIntent.status,
+      automatic_payment_methods: paymentIntent.automatic_payment_methods,
+      payment_method_types: paymentIntent.payment_method_types,
     });
 
     res.status(200).json({
