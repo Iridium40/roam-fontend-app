@@ -961,26 +961,17 @@ export default function Index() {
       {/* Hero Section with Search */}
       <section className="py-12 lg:py-20 relative overflow-hidden">
         {/* Background Video */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
-        >
-          <source
-            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            type="video/mp4"
+        <div className="absolute inset-0 w-full h-full">
+          <iframe
+            src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'brightness(0.4)', pointerEvents: 'none' }}
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            title="Background Video"
           />
-          <source
-            src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4"
-            type="video/mp4"
-          />
-        </video>
-
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/20 via-black/10 to-roam-yellow/20 pointer-events-none"></div>
+        </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center mb-12">
             <div className="mb-6">
