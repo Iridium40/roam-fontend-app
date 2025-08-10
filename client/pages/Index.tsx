@@ -1416,96 +1416,92 @@ export default function Index() {
                     width: `${Math.max(1, servicePages.length) * 100}%`,
                   }}
                 >
-                  {servicePages.map((page, pageIndex) => (
+                  {filteredFeaturedServices.map((service, serviceIndex) => (
                     <div
-                      key={`services-page-${pageIndex}`}
-                      className="block sm:flex gap-0 sm:gap-4 w-full flex-none px-0 sm:px-3"
+                      key={`service-${service.id}`}
+                      className="w-full flex-none px-4"
                     >
-                      {page.map((service, serviceIndex) => (
-                        <Card
-                          key={service.id}
-                          className={`hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-shrink-0 overflow-hidden ${
-                            pageIndex === currentServiceSlide && serviceIndex === 0 ? "block" : pageIndex === currentServiceSlide ? "hidden sm:block" : "hidden"
-                          } w-full sm:w-[48%] md:w-[32%]`}
-                        >
-                          <div className="relative h-64">
-                            <img
-                              src={service.image}
-                              alt={service.title}
-                              className="w-full h-full object-cover"
-                            />
-                            <div className="absolute top-4 left-4">
-                              <Badge
-                                className={`${getCategoryColor(service.category)} text-white border-0`}
-                                icon={getCategoryIcon(service.category)}
-                              >
-                                {service.category}
-                              </Badge>
-                            </div>
-                            <div className="absolute top-4 right-4 flex gap-2">
-                              <FavoriteButton
-                                type="service"
-                                itemId={service.id}
-                                size="sm"
-                                variant="ghost"
-                                className="bg-white/90 hover:bg-white"
-                              />
-                              <Badge
-                                variant="secondary"
-                                className="bg-white/90 text-gray-800"
-                              >
-                                <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
-                                {service.rating}
-                              </Badge>
-                            </div>
-                          </div>
-                          <CardContent className="p-6">
-                            <h3 className="text-xl font-semibold mb-2">
-                              {service.title}
-                            </h3>
-                            <div className="mb-4">
-                              <p className="text-foreground/70">
-                                {getDisplayDescription(
-                                  service.description,
-                                  service.id,
-                                )}
-                              </p>
-                              {service.description.length > 200 && (
-                                <button
-                                  onClick={() => toggleDescription(service.id)}
-                                  className="md:hidden text-roam-blue text-sm font-medium hover:underline mt-1"
-                                >
-                                  {expandedDescriptions.has(service.id)
-                                    ? "Show less"
-                                    : "Read more"}
-                                </button>
-                              )}
-                            </div>
-                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-roam-blue">
-                                  {service.price}
-                                </span>
-                              </div>
-                              <Badge
-                                variant="outline"
-                                className="border-roam-blue text-roam-blue"
-                              >
-                                {service.duration}
-                              </Badge>
-                            </div>
-                            <Button
-                              asChild
-                              className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                      <Card
+                        key={service.id}
+                        className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 overflow-hidden w-full"
+                      >
+                        <div className="relative h-64">
+                          <img
+                            src={service.image}
+                            alt={service.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-4 left-4">
+                            <Badge
+                              className={`${getCategoryColor(service.category)} text-white border-0`}
+                              icon={getCategoryIcon(service.category)}
                             >
-                              <Link to={`/book-service/${service.id}`}>
-                                <Calendar className="w-4 h-4 mr-2" />
-                                Book This Service
-                              </Link>
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      ))}
+                              {service.category}
+                            </Badge>
+                          </div>
+                          <div className="absolute top-4 right-4 flex gap-2">
+                            <FavoriteButton
+                              type="service"
+                              itemId={service.id}
+                              size="sm"
+                              variant="ghost"
+                              className="bg-white/90 hover:bg-white"
+                            />
+                            <Badge
+                              variant="secondary"
+                              className="bg-white/90 text-gray-800"
+                            >
+                              <Star className="w-3 h-3 mr-1 text-roam-warning fill-current" />
+                              {service.rating}
+                            </Badge>
+                          </div>
+                        </div>
+                        <CardContent className="p-6">
+                          <h3 className="text-xl font-semibold mb-2">
+                            {service.title}
+                          </h3>
+                          <div className="mb-4">
+                            <p className="text-foreground/70">
+                              {getDisplayDescription(
+                                service.description,
+                                service.id,
+                              )}
+                            </p>
+                            {service.description.length > 200 && (
+                              <button
+                                onClick={() => toggleDescription(service.id)}
+                                className="md:hidden text-roam-blue text-sm font-medium hover:underline mt-1"
+                              >
+                                {expandedDescriptions.has(service.id)
+                                  ? "Show less"
+                                  : "Read more"}
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl font-bold text-roam-blue">
+                                {service.price}
+                              </span>
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className="border-roam-blue text-roam-blue"
+                            >
+                              {service.duration}
+                            </Badge>
+                          </div>
+                          <Button
+                            asChild
+                            className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                          >
+                            <Link to={`/book-service/${service.id}`}>
+                              <Calendar className="w-4 h-4 mr-2" />
+                              Book This Service
+                            </Link>
+                          </Button>
+                        </CardContent>
+                      </Card>
                     </div>
                   ))}
                 </div>
