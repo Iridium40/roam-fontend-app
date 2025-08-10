@@ -71,15 +71,15 @@ function ServiceExplorerTabs() {
         "Reiki & Energy",
       ],
     },
-    lifestyle: {
-      title: "Lifestyle",
+    healthcare: {
+      title: "Healthcare",
       services: [
-        "Personal Chef",
-        "House Cleaning",
-        "Organization",
-        "Event Planning",
-        "Pet Services",
-        "Tutoring",
+        "Physicians",
+        "Nurse Practitioners",
+        "Chiropractors",
+        "Physical Therapy",
+        "Mental Health",
+        "Medical Specialists",
       ],
     },
   };
@@ -153,8 +153,8 @@ function ServiceExplorerTabs() {
                           "5 Benefits of Personal Training That Will Transform Your Fitness Journey"}
                         {key === "wellness" &&
                           "The Science Behind Mindfulness: Why Meditation Matters More Than Ever"}
-                        {key === "lifestyle" &&
-                          "Creating Work-Life Balance: Tips from Professional Life Coaches"}
+                        {key === "healthcare" &&
+                          "Preventive Care: How Regular Check-ups Can Transform Your Health"}
                       </h3>
                       <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
                         <BookOpen className="w-4 h-4" />
@@ -197,8 +197,8 @@ function ServiceExplorerTabs() {
                         "Jake: Certified Personal Trainer & Nutrition Expert"}
                       {key === "wellness" &&
                         "Sarah: Licensed Therapist & Mindfulness Coach"}
-                      {key === "lifestyle" &&
-                        "Maria: Professional Organizer & Lifestyle Consultant"}
+                      {key === "healthcare" &&
+                        "Dr. Smith: Family Physician & Preventive Care Specialist"}
                     </h3>
                     <div className="flex items-center gap-2 text-roam-blue font-medium group-hover:gap-3 transition-all">
                       <Video className="w-4 h-4" />
