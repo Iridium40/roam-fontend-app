@@ -177,46 +177,6 @@ export default function MyBookings() {
         console.log("Found bookings:", bookingsData?.length || 0);
         console.log("Bookings data detail:", bookingsData);
 
-        // If no bookings found with guest_email, try customer_email as backup
-        if (!bookingsData || bookingsData.length === 0) {
-          console.log("No bookings found with guest_email, trying customer_email...");
-
-          const backupResponse = await supabase
-            .from("bookings")
-            .select(`
-              *,
-              services (
-                id,
-                name,
-                min_price
-              ),
-              customer_profiles (
-                id,
-                first_name,
-                last_name,
-                email,
-                image_url
-              ),
-              providers (
-                id,
-                first_name,
-                last_name,
-                location_id
-              )
-            `)
-            .eq("customer_email", currentUser.email)
-            .order("booking_date", { ascending: false })
-            .limit(50);
-
-          console.log("Backup query response:", backupResponse);
-
-          if (backupResponse.data && backupResponse.data.length > 0) {
-            console.log("Found bookings with customer_email!");
-            setBookings(backupResponse.data);
-            return;
-          }
-        }
-
         // Transform the database data to match the expected format
         const transformedBookings = (bookingsData || []).map((booking: any) => {
           const provider = booking.providers;
