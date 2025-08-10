@@ -142,18 +142,6 @@ export const CustomerAvatarDropdown: React.FC = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="w-full flex items-center cursor-pointer"
-          onClick={toggleTheme}
-        >
-          {isDark ? (
-            <Sun className="mr-2 h-4 w-4" />
-          ) : (
-            <Moon className="mr-2 h-4 w-4" />
-          )}
-          <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
           className="w-full flex items-center cursor-pointer text-red-600 focus:text-red-600"
           onClick={signOut}
         >
