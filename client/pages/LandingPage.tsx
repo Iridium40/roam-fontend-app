@@ -31,7 +31,13 @@ import GoogleOneTap from "@/components/GoogleOneTap";
 import InstagramFeed from "@/components/InstagramFeed";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Play, BookOpen, ExternalLink } from "lucide-react";
 
 // Service Explorer Tabs Component
@@ -96,7 +102,11 @@ function ServiceExplorerTabs() {
             </SelectTrigger>
             <SelectContent>
               {Object.entries(tabCategories).map(([key, category]) => (
-                <SelectItem key={key} value={key} className="text-lg font-semibold">
+                <SelectItem
+                  key={key}
+                  value={key}
+                  className="text-lg font-semibold"
+                >
                   {category.title}
                 </SelectItem>
               ))}
@@ -420,8 +430,6 @@ export default function LandingPage() {
         <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-roam-blue/10 rounded-full blur-lg animate-pulse delay-500"></div>
       </section>
 
-
-
       {/* Service Explorer */}
       <section className="py-20 lg:py-32 bg-white">
         <div className="container mx-auto px-6">
@@ -506,7 +514,6 @@ export default function LandingPage() {
           <InstagramFeed />
         </div>
       </section>
-
 
       {/* Testimonials */}
       <section
