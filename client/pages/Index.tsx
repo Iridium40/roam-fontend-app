@@ -713,8 +713,8 @@ export default function Index() {
   // Most Popular Services: paginate into pages of 3
   const popularPages = useMemo(() => {
     const pages: any[][] = [];
-    for (let i = 0; i < filteredPopularServices.length; i += 3) {
-      pages.push(filteredPopularServices.slice(i, i + 3));
+    for (let i = 0; i < filteredPopularServices.length; i += 2) {
+      pages.push(filteredPopularServices.slice(i, i + 2));
     }
     return pages;
   }, [filteredPopularServices]);
@@ -1851,12 +1851,12 @@ export default function Index() {
                   {popularPages.map((page, pageIndex) => (
                     <div
                       key={`popular-page-${pageIndex}`}
-                      className="flex gap-6 w-full flex-none"
+                      className="flex gap-4 lg:gap-6 w-full flex-none px-3"
                     >
                       {page.map((service) => (
                         <Card
                           key={service.id}
-                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%]"
+                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full sm:w-[calc(50%-12px)]"
                         >
                           {/* Hero Image Section */}
                           <div className="relative h-64 bg-gradient-to-br from-roam-blue/20 via-roam-light-blue/10 to-roam-yellow/5 overflow-hidden">
