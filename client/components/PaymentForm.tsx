@@ -33,6 +33,7 @@ interface PaymentFormProps {
   serviceName: string;
   onPaymentSuccess: (paymentIntentId: string) => void;
   onPaymentError: (error: string) => void;
+  clientSecret?: string;
 }
 
 const PaymentFormContent: React.FC<PaymentFormProps> = ({
