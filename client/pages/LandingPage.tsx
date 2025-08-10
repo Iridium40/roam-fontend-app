@@ -381,17 +381,6 @@ export default function LandingPage() {
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white hover:text-roam-blue px-8 py-4 text-lg font-semibold transition-all duration-300 backdrop-blur-sm"
-                asChild
-              >
-                <a href="#services" className="flex items-center gap-2">
-                  Explore Services
-                  <ChevronRight className="w-5 h-5" />
-                </a>
-              </Button>
             </div>
           </div>
         </div>
