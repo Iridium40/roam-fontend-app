@@ -47,11 +47,14 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
 
     // Check if Stripe secret key is available
     if (!process.env.STRIPE_SECRET_KEY) {
+      console.log("❌ Stripe secret key not configured");
       return res.status(500).json({
         error:
           "Stripe secret key not configured. Please set STRIPE_SECRET_KEY environment variable.",
       });
     }
+
+    console.log("✅ Stripe secret key is configured");
 
     // Initialize Stripe with proper ES import
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -59,7 +62,8 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
     });
 
     // Convert to cents (Stripe expects amounts in cents)
-    const amountInCents = Math.round(totalAmount * 100);
+    const amountInCents = Math.round(amount * 100);
+    console.log("💰 Amount calculation:", { originalAmount: amount, amountInCents });
 
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
