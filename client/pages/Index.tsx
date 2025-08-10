@@ -963,7 +963,7 @@ export default function Index() {
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <iframe
-            src="https://www.youtube-nocookie.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&cc_load_policy=0&disablekb=1&fs=0&color=white&theme=light&autohide=1&wmode=opaque&origin=https://localhost"
+            src="https://www.youtube-nocookie.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&cc_load_policy=0&disablekb=1&fs=0&color=white&theme=light&autohide=1&origin=https://localhost"
             className="absolute inset-0 w-full h-full"
             style={{
               pointerEvents: "none",
