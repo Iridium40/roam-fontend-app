@@ -967,17 +967,10 @@ export default function Index() {
             className="absolute inset-0 w-full h-full"
             style={{
               pointerEvents: "none",
-              width: "100vw",
-              height: "56.25vw",
-              minWidth: "100%",
-              minHeight: "100%",
+              width: "100%",
+              height: "100%",
               border: "none",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              objectFit: "cover",
               zIndex: -1,
-              opacity: 1,
             }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
