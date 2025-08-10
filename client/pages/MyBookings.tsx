@@ -574,7 +574,7 @@ export default function MyBookings() {
               </TabsContent>
 
               <TabsContent value="active" className="space-y-4">
-                {activeBookings.length === 0 ? (
+                {allActiveBookings.length === 0 ? (
                   <Card className="p-12 text-center">
                     <RefreshCw className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">
@@ -585,9 +585,45 @@ export default function MyBookings() {
                     </p>
                   </Card>
                 ) : (
-                  activeBookings.map((booking) => (
-                    <BookingCard key={booking.id} booking={booking} />
-                  ))
+                  <>
+                    <div className="space-y-4">
+                      {activeBookings.map((booking) => (
+                        <BookingCard key={booking.id} booking={booking} />
+                      ))}
+                    </div>
+
+                    {/* Pagination Controls for Active */}
+                    {getTotalPages(allActiveBookings.length) > 1 && (
+                      <div className="flex items-center justify-between pt-4">
+                        <div className="text-sm text-foreground/60">
+                          Showing {((currentPage.active - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPage.active * ITEMS_PER_PAGE, allActiveBookings.length)} of {allActiveBookings.length} bookings
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange('active', 'prev')}
+                            disabled={currentPage.active === 1}
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            Previous
+                          </Button>
+                          <span className="text-sm font-medium">
+                            Page {currentPage.active} of {getTotalPages(allActiveBookings.length)}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange('active', 'next')}
+                            disabled={currentPage.active === getTotalPages(allActiveBookings.length)}
+                          >
+                            Next
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </TabsContent>
 
