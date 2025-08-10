@@ -46,6 +46,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   serviceName,
   onPaymentSuccess,
   onPaymentError,
+  clientSecret: passedClientSecret,
 }) => {
   const stripe = useStripe();
   const elements = useElements();
