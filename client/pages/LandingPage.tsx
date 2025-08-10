@@ -391,7 +391,7 @@ export default function LandingPage() {
             src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
             className="absolute inset-0 w-full h-full"
             style={{ 
-              filter: "brightness(0.4)", 
+              filter: "brightness(0.7)", 
               pointerEvents: "none",
               minWidth: "100%",
               minHeight: "100%",
@@ -405,7 +405,7 @@ export default function LandingPage() {
             allow="autoplay; encrypted-media"
             title="Background Video"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/20 via-black/10 to-roam-yellow/20 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/10 via-black/5 to-roam-yellow/10 pointer-events-none"></div>
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
