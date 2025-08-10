@@ -999,6 +999,15 @@ export default function Index() {
               customers with verified professionals for premium services
               delivered anywhere.
             </p>
+            <div className="flex justify-center">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-roam-blue/20 via-roam-light-blue/20 to-roam-yellow/20 px-6 py-2 rounded-full backdrop-blur-sm border border-white/20">
+                <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                <span className="text-sm font-medium text-white uppercase tracking-wider">
+                  Discover Services
+                </span>
+                <div className="w-2 h-2 rounded-full bg-roam-yellow animate-pulse"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1008,13 +1017,6 @@ export default function Index() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Elegant Header Section */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-roam-blue/10 via-roam-light-blue/10 to-roam-yellow/10 px-6 py-2 rounded-full mb-6">
-              <div className="w-2 h-2 rounded-full bg-roam-blue animate-pulse"></div>
-              <span className="text-sm font-medium text-roam-blue uppercase tracking-wider">
-                Discover Services
-              </span>
-              <div className="w-2 h-2 rounded-full bg-roam-yellow animate-pulse"></div>
-            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Browse by{" "}
               <span className="bg-gradient-to-r from-roam-blue to-roam-light-blue bg-clip-text text-transparent">
