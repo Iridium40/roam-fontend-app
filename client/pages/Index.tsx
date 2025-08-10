@@ -1420,7 +1420,7 @@ export default function Index() {
                       {page.map((service) => (
                         <Card
                           key={service.id}
-                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none w-full md:w-[calc(25%-1.125rem)] overflow-hidden"
+                          className="hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 hover:border-roam-light-blue/50 flex-none w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] overflow-hidden"
                         >
                           <div className="relative h-64">
                             <img
