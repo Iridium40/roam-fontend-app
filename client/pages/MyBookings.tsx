@@ -67,6 +67,16 @@ export default function MyBookings() {
         setError(null);
 
         console.log("Fetching bookings for user:", currentUser.email);
+        console.log("Current user object:", currentUser);
+
+        // First, let's check if there are ANY bookings with this email
+        const emailCheckResponse = await supabase
+          .from("bookings")
+          .select("id, guest_email, customer_email, customer_id, status")
+          .or(`guest_email.eq.${currentUser.email},customer_email.eq.${currentUser.email}`)
+          .limit(10);
+
+        console.log("Email check response:", emailCheckResponse);
 
         // Get bookings for this customer by guest email (simpler approach)
         const bookingsResponse = await supabase
@@ -97,6 +107,8 @@ export default function MyBookings() {
           .eq("guest_email", currentUser.email)
           .order("booking_date", { ascending: false })
           .limit(50);
+
+        console.log("Main bookings query response:", bookingsResponse);
 
         // Check for authentication error
         if (bookingsResponse.status === 401 && retryCount === 0) {
