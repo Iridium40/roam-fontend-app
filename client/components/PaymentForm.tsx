@@ -396,12 +396,65 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
     );
   }
 
-  if (isInitializing || !clientSecret) {
+  if (paymentError) {
+    return (
+      <Card>
+        <CardContent className="text-center py-8">
+          <div className="text-red-600 mb-4">
+            <CreditCard className="h-12 w-12 mx-auto mb-2" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Payment Initialization Failed
+          </h3>
+          <p className="text-gray-600 mb-4">
+            {paymentError}
+          </p>
+          <div className="space-y-2">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-roam-blue text-white rounded-lg hover:bg-roam-blue/90 transition-colors"
+            >
+              Try Again
+            </button>
+            <p className="text-sm text-gray-500">
+              Please try refreshing the page or contact support if the issue persists.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isInitializing) {
     return (
       <Card>
         <CardContent className="text-center py-8">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Initializing payment...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!clientSecret) {
+    return (
+      <Card>
+        <CardContent className="text-center py-8">
+          <div className="text-yellow-600 mb-4">
+            <CreditCard className="h-12 w-12 mx-auto mb-2" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Payment Not Ready
+          </h3>
+          <p className="text-gray-600 mb-4">
+            Unable to initialize payment system. Please try again.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-roam-blue text-white rounded-lg hover:bg-roam-blue/90 transition-colors"
+          >
+            Refresh Page
+          </button>
         </CardContent>
       </Card>
     );
