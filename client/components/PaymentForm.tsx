@@ -287,7 +287,20 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
               </div>
             ) : (
               // Production mode - show real Stripe PaymentElement
-              <PaymentElement />
+              <PaymentElement
+                options={{
+                  layout: {
+                    type: 'accordion',
+                    defaultCollapsed: false,
+                    radios: false,
+                    spacedAccordionItems: true
+                  },
+                  wallets: {
+                    applePay: 'auto',
+                    googlePay: 'auto'
+                  }
+                }}
+              />
             )}
           </div>
 
