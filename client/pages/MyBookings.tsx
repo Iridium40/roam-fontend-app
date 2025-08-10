@@ -19,6 +19,8 @@ import {
   XCircle,
   RefreshCw,
   Loader2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
