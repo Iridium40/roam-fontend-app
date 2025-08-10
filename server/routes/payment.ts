@@ -30,14 +30,19 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
     });
 
     if (!bookingId || !totalAmount || !customerEmail) {
-      console.log("❌ Missing required fields:", { bookingId, totalAmount, customerEmail });
+      console.log("❌ Missing required fields:", {
+        bookingId,
+        totalAmount,
+        customerEmail,
+      });
       return res.status(400).json({
         error: "Booking ID, total amount, and customer email are required",
       });
     }
 
     // Validate totalAmount is a number
-    const amount = typeof totalAmount === 'string' ? parseFloat(totalAmount) : totalAmount;
+    const amount =
+      typeof totalAmount === "string" ? parseFloat(totalAmount) : totalAmount;
     if (isNaN(amount) || amount <= 0) {
       console.log("❌ Invalid amount:", { totalAmount, parsedAmount: amount });
       return res.status(400).json({
@@ -63,7 +68,10 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
 
     // Convert to cents (Stripe expects amounts in cents)
     const amountInCents = Math.round(amount * 100);
-    console.log("💰 Amount calculation:", { originalAmount: amount, amountInCents });
+    console.log("💰 Amount calculation:", {
+      originalAmount: amount,
+      amountInCents,
+    });
 
     // Create payment intent
     console.log("🚀 Creating payment intent with Stripe...");
@@ -72,7 +80,9 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       currency: "usd",
       metadata: {
         booking_id: bookingId,
-        service_fee: serviceFee ? (parseFloat(serviceFee) * 100).toString() : "0",
+        service_fee: serviceFee
+          ? (parseFloat(serviceFee) * 100).toString()
+          : "0",
         customer_name: customerName || "",
         customer_email: customerEmail || "",
         business_name: businessName || "",
