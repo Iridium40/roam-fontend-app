@@ -349,14 +349,20 @@ export default function LandingPage() {
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full">
           <iframe
-            src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&cc_load_policy=0&playsinline=1&enablejsapi=0"
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            style={{ filter: 'brightness(0.4)' }}
+            src="https://www.youtube-nocookie.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&cc_load_policy=0&playsinline=1&start=0"
+            className="absolute inset-0 w-full h-full"
+            style={{
+              filter: 'brightness(0.4)',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              pointerEvents: 'none'
+            }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
-            allowFullScreen={false}
+            title="Background Video"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/20 via-black/10 to-roam-yellow/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/20 via-black/10 to-roam-yellow/20 pointer-events-none"></div>
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
