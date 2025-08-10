@@ -348,16 +348,14 @@ export default function LandingPage() {
       <section className="relative py-20 lg:py-32 overflow-hidden">
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+          <iframe
+            src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&cc_load_policy=0&playsinline=1&enablejsapi=0"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             style={{ filter: 'brightness(0.4)' }}
-          >
-            <source src="https://videos.pexels.com/video-files/3662280/3662280-hd_1280_720_30fps.mp4" type="video/mp4" />
-          </video>
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen={false}
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-roam-blue/20 via-black/10 to-roam-yellow/20"></div>
         </div>
         <div className="container mx-auto px-6 relative z-10">
