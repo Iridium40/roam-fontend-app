@@ -70,9 +70,16 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
   }, [isCustomer, customer?.user_id]);
   
   const [isLoading, setIsLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string>("");
+  const [clientSecret, setClientSecret] = useState<string>(passedClientSecret || "");
   const [paymentIntentId, setPaymentIntentId] = useState<string>("");
   const [stripeCustomerId, setStripeCustomerId] = useState<string>("");
+
+  // Update clientSecret when passed prop changes
+  useEffect(() => {
+    if (passedClientSecret) {
+      setClientSecret(passedClientSecret);
+    }
+  }, [passedClientSecret]);
 
   // Function to sync Stripe customer ID to Supabase
   const syncStripeCustomerToSupabase = async (stripeCustomerId: string) => {
