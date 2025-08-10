@@ -386,11 +386,21 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative py-20 lg:py-32 overflow-hidden">
         {/* Video Background */}
-        <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
           <iframe
             src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: "brightness(0.4)", pointerEvents: "none" }}
+            className="absolute inset-0 w-full h-full"
+            style={{ 
+              filter: "brightness(0.4)", 
+              pointerEvents: "none",
+              minWidth: "100%",
+              minHeight: "100%",
+              width: "100vw",
+              height: "56.25vw", // 16:9 aspect ratio
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)"
+            }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
             title="Background Video"
