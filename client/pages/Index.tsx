@@ -1413,7 +1413,7 @@ export default function Index() {
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentServiceSlide * 100}%)`,
-                    width: `${Math.max(1, servicePages.length) * 100}%`,
+                    width: `${Math.max(1, filteredFeaturedServices.length) * 100}%`,
                   }}
                 >
                   {filteredFeaturedServices.map((service, serviceIndex) => (
