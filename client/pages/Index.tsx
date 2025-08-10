@@ -2004,18 +2004,17 @@ export default function Index() {
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentBusinessSlide * 100}%)`,
-                    width: `${Math.max(1, businessPages.length) * 100}%`,
                   }}
                 >
                   {businessPages.map((page, pageIndex) => (
                     <div
                       key={`businesses-page-${pageIndex}`}
-                      className="flex gap-8 w-full flex-none"
+                      className="flex gap-6 w-full flex-none px-4"
                     >
                       {page.map((business) => (
                         <Card
                           key={business.id}
-                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[24%]"
+                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
                         >
                           <CardContent className="p-0">
                             {/* Hero Cover Section */}
