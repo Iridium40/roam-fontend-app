@@ -390,7 +390,7 @@ export default function LandingPage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white px-8 py-4 text-lg font-semibold transition-all duration-300"
+                className="border-white text-white hover:bg-white hover:text-roam-blue px-8 py-4 text-lg font-semibold transition-all duration-300 backdrop-blur-sm"
                 asChild
               >
                 <a href="#services" className="flex items-center gap-2">
