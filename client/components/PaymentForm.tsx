@@ -356,7 +356,8 @@ const PaymentForm: React.FC<PaymentFormProps> = (props) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            amount: props.totalAmount,
+            totalAmount: props.totalAmount,
+            serviceFee: props.serviceFee,
             currency: "usd",
             bookingId: props.bookingId,
             customerEmail: props.customerEmail,
