@@ -38,7 +38,7 @@
   ],
   "functions": {
     "api/create-payment-intent.ts": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node"
     }
   },
   "env": {
