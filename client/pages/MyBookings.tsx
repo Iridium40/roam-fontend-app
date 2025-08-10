@@ -326,13 +326,50 @@ export default function MyBookings() {
     return configs[status as keyof typeof configs] || configs.pending;
   };
 
-  const upcomingBookings = bookings.filter(
+  // Filter bookings by status
+  const allUpcomingBookings = bookings.filter(
     (b) => b.status === "confirmed" || b.status === "pending",
   );
-  const pastBookings = bookings.filter(
+  const allPastBookings = bookings.filter(
     (b) => b.status === "completed" || b.status === "cancelled",
   );
-  const activeBookings = bookings.filter((b) => b.status === "in_progress");
+  const allActiveBookings = bookings.filter((b) => b.status === "in_progress");
+
+  // Pagination logic
+  const getPaginatedBookings = (bookings: any[], page: number) => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return bookings.slice(startIndex, endIndex);
+  };
+
+  const getTotalPages = (totalItems: number) => {
+    return Math.ceil(totalItems / ITEMS_PER_PAGE);
+  };
+
+  // Paginated booking arrays
+  const upcomingBookings = getPaginatedBookings(allUpcomingBookings, currentPage.upcoming);
+  const pastBookings = getPaginatedBookings(allPastBookings, currentPage.past);
+  const activeBookings = getPaginatedBookings(allActiveBookings, currentPage.active);
+
+  // Page navigation functions
+  const handlePageChange = (category: 'upcoming' | 'active' | 'past', direction: 'next' | 'prev') => {
+    setCurrentPage(prev => {
+      const totalItems = category === 'upcoming' ? allUpcomingBookings.length :
+                        category === 'active' ? allActiveBookings.length :
+                        allPastBookings.length;
+      const totalPages = getTotalPages(totalItems);
+      const currentPageNum = prev[category];
+
+      let newPage = currentPageNum;
+      if (direction === 'next' && currentPageNum < totalPages) {
+        newPage = currentPageNum + 1;
+      } else if (direction === 'prev' && currentPageNum > 1) {
+        newPage = currentPageNum - 1;
+      }
+
+      return { ...prev, [category]: newPage };
+    });
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
