@@ -966,12 +966,12 @@ export default function Index() {
             src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
             className="absolute inset-0"
             style={{
-              filter: 'brightness(0.4)',
-              pointerEvents: 'none',
-              width: '100%',
-              height: '100%',
-              border: 'none',
-              objectFit: 'cover'
+              filter: "brightness(0.4)",
+              pointerEvents: "none",
+              width: "100%",
+              height: "100%",
+              border: "none",
+              objectFit: "cover",
             }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
