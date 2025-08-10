@@ -31,6 +31,7 @@ import GoogleOneTap from "@/components/GoogleOneTap";
 import InstagramFeed from "@/components/InstagramFeed";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Play, BookOpen, ExternalLink } from "lucide-react";
 
 // Service Explorer Tabs Component
