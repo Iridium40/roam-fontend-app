@@ -403,37 +403,62 @@ export default function LandingPage() {
       </section>
 
 
-      {/* Features Section */}
+      {/* How It Works */}
       <section id="features" className="py-20 lg:py-32">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-              Why Choose ROAM?
+              How ROAM Works
             </h2>
             <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              We've reimagined how you access professional services, making it
-              easier, safer, and more convenient than ever before.
+              Getting the services you need has never been easier. Follow these
+              simple steps.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <Card
-                key={index}
-                className="border-border/50 hover:border-roam-light-blue/50 transition-all duration-300 hover:shadow-xl group"
-              >
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <feature.icon className="w-8 h-8 text-white" />
+          <div className="grid lg:grid-cols-3 gap-12">
+            {[
+              {
+                step: "1",
+                title: "Browse & Choose",
+                description:
+                  "Explore verified service providers in your area and read reviews from other customers",
+                icon: Users,
+              },
+              {
+                step: "2",
+                title: "Book & Schedule",
+                description:
+                  "Select your preferred time slot and location preference - mobile, in-business, or virtual",
+                icon: Calendar,
+              },
+              {
+                step: "3",
+                title: "Enjoy & Review",
+                description:
+                  "Receive your service from a professional provider and share your experience",
+                icon: Star,
+              },
+            ].map((step, index) => (
+              <div key={index} className="text-center relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto mb-6">
+                  <step.icon className="w-10 h-10 text-white" />
+                </div>
+                <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-roam-yellow text-roam-blue border-none px-3 py-1 text-sm font-bold">
+                  {step.step}
+                </Badge>
+                <h3 className="text-2xl font-semibold text-foreground mb-4">
+                  {step.title}
+                </h3>
+                <p className="text-foreground/70 leading-relaxed max-w-sm mx-auto">
+                  {step.description}
+                </p>
+                {index < 2 && (
+                  <div className="hidden lg:block absolute top-10 left-full w-12 transform -translate-x-6">
+                    <ArrowRight className="w-6 h-6 text-roam-light-blue" />
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-4">
-                    {feature.title}
-                  </h3>
-                  <p className="text-foreground/70 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
+                )}
+              </div>
             ))}
           </div>
         </div>
