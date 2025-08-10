@@ -36,7 +36,7 @@ export default function CustomerSettings() {
     promotionalEmails: false,
     serviceUpdates: true,
 
-    // App Preferences (only dark mode is now managed by theme context)
+    // App Preferences
 
     // Communication Preferences
     preferredContactMethod: "email",
