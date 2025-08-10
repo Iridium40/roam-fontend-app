@@ -109,9 +109,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
       description: `Booking payment for ${serviceName || "service"} at ${businessName || "business"}`,
       receipt_email: customerEmail,
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: [
+        "card",
+        "us_bank_account"
+      ],
     };
 
     // Associate with Stripe customer if available
