@@ -388,7 +388,7 @@ export default function LandingPage() {
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <iframe
-            src="https://www.youtube.com/embed/doLgEDQhESo?autoplay=1&mute=1&loop=1&playlist=doLgEDQhESo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+            src="https://www.youtube.com/embed/-g5P96JAif0?autoplay=1&mute=1&loop=1&playlist=-g5P96JAif0&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
             className="absolute inset-0 w-full h-full"
             style={{
               filter: "brightness(0.7)",
