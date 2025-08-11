@@ -1592,12 +1592,20 @@ const ProviderBooking = () => {
                     </div>
                   )}
                   {location && (
-                    <div className="flex items-center space-x-2">
-                      <MapPin className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">
-                        {location.street_address}, {location.city},{" "}
-                        {location.state} {location.postal_code}
-                      </span>
+                    <div className="flex items-start space-x-2">
+                      <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
+                      <div className="text-sm">
+                        <div className="font-medium text-gray-700 mb-1">Service Location</div>
+                        <div className="text-gray-600">
+                          {location.address_line1 || location.street_address}
+                          {location.address_line2 && (
+                            <div>{location.address_line2}</div>
+                          )}
+                          <div>
+                            {location.city}, {location.state} {location.postal_code}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
