@@ -1912,7 +1912,7 @@ const ProviderBooking = () => {
                           <div className="flex items-center">
                             <DollarSign className="h-4 w-4 mr-1 text-gray-500" />
                             <span className="font-semibold">
-                              ${addon.custom_price}
+                              ${addon.price}
                             </span>
                           </div>
 
