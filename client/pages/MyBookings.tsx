@@ -537,6 +537,20 @@ export default function MyBookings() {
                 />
               </div>
             </div>
+
+            {/* Real-time Notifications */}
+            <div className="flex items-center space-x-2">
+              <RealtimeBookingNotifications
+                userType="customer"
+                showConnectionStatus={true}
+                maxNotifications={5}
+              />
+              {isConnected && (
+                <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                  Live Updates
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </nav>
