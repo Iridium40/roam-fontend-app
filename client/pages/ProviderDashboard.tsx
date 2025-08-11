@@ -8684,100 +8684,101 @@ export default function ProviderDashboard() {
                           key={booking.id}
                           className="hover:shadow-md transition-shadow"
                         >
-                          <CardContent className="p-6">
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
-                                  <Calendar className="w-6 h-6 text-white" />
+                          <CardContent className="p-4 md:p-6">
+                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                              {/* Main Content */}
+                              <div className="flex items-start gap-3 md:gap-4 flex-1">
+                                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0">
+                                  <Calendar className="w-5 h-5 md:w-6 md:h-6 text-white" />
                                 </div>
-                                <div>
-                                  <h3 className="font-semibold">
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-semibold text-base md:text-lg mb-2">
                                     {booking.services?.name || "Service"}
                                   </h3>
+
+                                  {/* Provider Info */}
                                   {booking.providers && (
                                     <div className="flex items-center gap-2 mb-2">
-                                      <Users className="w-4 h-4" />
-                                      <span className="text-sm text-foreground/60">
+                                      <Users className="w-4 h-4 flex-shrink-0" />
+                                      <span className="text-sm text-foreground/60 truncate">
                                         Provider: {booking.providers.first_name}{" "}
                                         {booking.providers.last_name}
                                       </span>
                                     </div>
                                   )}
-                                  <div className="flex items-center gap-2 mb-2">
+
+                                  {/* Customer Info */}
+                                  <div className="flex items-center gap-2 mb-3">
                                     {booking.customer_profiles?.image_url ? (
                                       <img
-                                        src={
-                                          booking.customer_profiles.image_url
-                                        }
+                                        src={booking.customer_profiles.image_url}
                                         alt="Customer"
-                                        className="w-6 h-6 rounded-full object-cover"
+                                        className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                                       />
                                     ) : (
-                                      <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                      <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span className="text-xs text-gray-600">
-                                          {booking.customer_profiles?.first_name?.charAt(
-                                            0,
-                                          ) ||
+                                          {booking.customer_profiles?.first_name?.charAt(0) ||
                                             booking.guest_name?.charAt(0) ||
                                             "C"}
                                         </span>
                                       </div>
                                     )}
-                                    <p className="text-sm text-foreground/60">
-                                      {booking.customer_profiles?.first_name &&
-                                      booking.customer_profiles?.last_name
-                                        ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
-                                        : booking.guest_name || "Customer"}
-                                    </p>
-                                    {booking.customer_profiles?.email && (
-                                      <span className="text-xs text-foreground/40">
-                                        ��� {booking.customer_profiles.email}
-                                      </span>
-                                    )}
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm text-foreground/60 truncate">
+                                        {booking.customer_profiles?.first_name &&
+                                        booking.customer_profiles?.last_name
+                                          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                          : booking.guest_name || "Customer"}
+                                      </p>
+                                      {booking.customer_profiles?.email && (
+                                        <span className="text-xs text-foreground/40 block truncate">
+                                          {booking.customer_profiles.email}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
 
                                   {/* Booking Reference */}
                                   {booking.booking_reference && (
-                                    <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-lg border-l-4 border-roam-blue">
-                                      <Hash className="w-4 h-4 text-roam-blue" />
-                                      <div>
-                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                    <div className="flex items-start gap-2 mb-3 p-2 bg-gray-50 rounded-lg border-l-4 border-roam-blue">
+                                      <Hash className="w-4 h-4 text-roam-blue flex-shrink-0 mt-0.5" />
+                                      <div className="flex-1 min-w-0">
+                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide block">
                                           Booking Reference
                                         </span>
-                                        <p className="text-sm font-mono font-semibold text-gray-900">
+                                        <p className="text-sm font-mono font-semibold text-gray-900 truncate">
                                           {booking.booking_reference}
                                         </p>
                                       </div>
                                     </div>
                                   )}
 
-                                  <div className="flex items-center gap-4 text-sm text-foreground/60">
-                                    <div className="flex items-center gap-1">
-                                      <Calendar className="w-4 h-4" />
-                                      {new Date(
-                                        booking.booking_date,
-                                      ).toLocaleDateString()}
+                                  {/* Booking Details - Responsive */}
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-foreground/60">
+                                    <div className="flex items-center gap-2">
+                                      <Calendar className="w-4 h-4 flex-shrink-0" />
+                                      <span className="truncate">
+                                        {new Date(booking.booking_date).toLocaleDateString()}
+                                      </span>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                      <Clock className="w-4 h-4" />
-                                      {booking.start_time}
+                                    <div className="flex items-center gap-2">
+                                      <Clock className="w-4 h-4 flex-shrink-0" />
+                                      <span className="truncate">{booking.start_time}</span>
                                     </div>
-                                    <div className="flex items-start gap-1">
-                                      <DeliveryIcon className="w-4 h-4 mt-0.5" />
-                                      <div className="flex flex-col">
+                                    <div className="flex items-start gap-2 sm:col-span-2 lg:col-span-1">
+                                      <DeliveryIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                      <div className="flex-1 min-w-0">
                                         {(() => {
-                                          const location =
-                                            formatBookingLocation(booking);
+                                          const location = formatBookingLocation(booking);
                                           if (typeof location === "string") {
                                             return (
                                               <div className="flex items-center gap-2">
-                                                <span className="text-sm">
+                                                <span className="text-sm truncate flex-1">
                                                   {location}
                                                 </span>
                                                 <button
-                                                  onClick={() =>
-                                                    openGoogleMaps(location)
-                                                  }
+                                                  onClick={() => openGoogleMaps(location)}
                                                   className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                                                   title="Open in Google Maps for directions"
                                                 >
@@ -8789,22 +8790,18 @@ export default function ProviderDashboard() {
                                             return (
                                               <div className="flex items-start gap-2">
                                                 <div className="flex-1 min-w-0">
-                                                  <span className="text-sm font-medium">
+                                                  <span className="text-sm font-medium block truncate">
                                                     {location.name}
                                                   </span>
                                                   {location.address && (
-                                                    <span className="text-xs text-foreground/50 block max-w-44 truncate">
+                                                    <span className="text-xs text-foreground/50 block truncate">
                                                       {location.address}
                                                     </span>
                                                   )}
                                                 </div>
                                                 {location.address && (
                                                   <button
-                                                    onClick={() =>
-                                                      openGoogleMaps(
-                                                        location.address,
-                                                      )
-                                                    }
+                                                    onClick={() => openGoogleMaps(location.address)}
                                                     className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                                                     title="Open in Google Maps for directions"
                                                   >
@@ -8820,7 +8817,9 @@ export default function ProviderDashboard() {
                                   </div>
                                 </div>
                               </div>
-                              <div className="text-right">
+
+                              {/* Status and Price - Responsive */}
+                              <div className="flex items-center justify-between md:flex-col md:items-end md:text-right gap-4 md:gap-2 pt-3 md:pt-0 border-t md:border-t-0 md:min-w-0">
                                 <RealtimeStatusUpdate
                                   bookingId={booking.id}
                                   currentStatus={booking.booking_status}
@@ -8830,7 +8829,7 @@ export default function ProviderDashboard() {
                                     );
                                   }}
                                 />
-                                <p className="text-lg font-semibold text-roam-blue mt-2">
+                                <p className="text-lg md:text-xl font-semibold text-roam-blue">
                                   ${booking.total_amount || "0"}
                                 </p>
                               </div>
