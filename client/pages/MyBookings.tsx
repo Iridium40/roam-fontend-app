@@ -923,10 +923,14 @@ function BookingCard({ booking }: { booking: any }) {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
-            <Badge className={statusConfig.color}>
-              <statusConfig.icon className="w-3 h-3 mr-1" />
-              {statusConfig.label}
-            </Badge>
+            <RealtimeStatusUpdate
+              bookingId={booking.id}
+              currentStatus={booking.status}
+              onStatusChange={(newStatus) => {
+                // This will also be handled by the real-time hook
+                console.log(`Booking ${booking.id} status changed to ${newStatus}`);
+              }}
+            />
             {booking.status === "completed" &&
             new Date(booking.date) < new Date() ? (
               <Button
