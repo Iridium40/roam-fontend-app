@@ -7917,12 +7917,6 @@ export default function ProviderDashboard() {
                   Subscription
                 </TabsTrigger>
               )}
-              <TabsTrigger
-                value="share"
-                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-              >
-                Share
-              </TabsTrigger>
             </TabsList>
 
             {/* Bookings Tab */}
