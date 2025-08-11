@@ -1879,30 +1879,22 @@ const ProviderBooking = () => {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="font-semibold">
-                                {(addon as any).addons.name}
+                                {addon.name}
                               </h3>
-                              {selectedServiceId &&
-                                (
-                                  addon as any
-                                ).addons?.service_addon_eligibility?.some(
-                                  (eligibility: any) =>
-                                    eligibility.service_id ===
-                                      selectedServiceId &&
-                                    eligibility.is_recommended,
-                                ) && (
-                                  <Badge className="bg-green-100 text-green-800 text-xs">
-                                    Recommended
-                                  </Badge>
-                                )}
+                              {addon.is_recommended && (
+                                <Badge className="bg-green-100 text-green-800 text-xs">
+                                  Recommended
+                                </Badge>
+                              )}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">
-                              {(addon as any).addons.description}
+                              {addon.description}
                             </p>
                           </div>
-                          {(addon as any).addons.image_url && (
+                          {addon.image_url && (
                             <img
-                              src={(addon as any).addons.image_url}
-                              alt={(addon as any).addons.name}
+                              src={addon.image_url}
+                              alt={addon.name}
                               className="w-16 h-16 object-cover rounded ml-4"
                             />
                           )}
