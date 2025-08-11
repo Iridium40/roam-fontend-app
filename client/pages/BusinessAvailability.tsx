@@ -54,88 +54,79 @@ export default function BusinessAvailability() {
   const { customer, isCustomer } = useAuth();
 
   // Service category icon mapping
-  const getServiceIcon = (serviceName: string, categoryId?: string) => {
-    const name = serviceName?.toLowerCase() || "";
+  const getServiceIcon = (service: any) => {
+    // Try to get category type from the joined data
+    const categoryType = service?.service_subcategories?.service_categories?.service_category_type;
+    const subcategoryType = service?.service_subcategories?.service_subcategory_type;
+    const serviceName = service?.name?.toLowerCase() || "";
 
-    // Health & Wellness
-    if (
-      name.includes("weight loss") ||
-      name.includes("fitness") ||
-      name.includes("nutrition")
-    ) {
+    // Use category type if available
+    if (categoryType) {
+      switch (categoryType.toLowerCase()) {
+        case 'health_wellness':
+        case 'fitness':
+        case 'medical':
+          if (serviceName.includes("weight loss") || serviceName.includes("fitness")) {
+            return <Dumbbell className="w-5 h-5 text-roam-blue" />;
+          }
+          if (serviceName.includes("massage") || serviceName.includes("spa")) {
+            return <Heart className="w-5 h-5 text-roam-blue" />;
+          }
+          return <Stethoscope className="w-5 h-5 text-roam-blue" />;
+
+        case 'beauty':
+        case 'personal_care':
+          if (serviceName.includes("hair") || serviceName.includes("salon")) {
+            return <Scissors className="w-5 h-5 text-roam-blue" />;
+          }
+          return <Brush className="w-5 h-5 text-roam-blue" />;
+
+        case 'home_services':
+          if (serviceName.includes("repair") || serviceName.includes("maintenance")) {
+            return <Wrench className="w-5 h-5 text-roam-blue" />;
+          }
+          return <Home className="w-5 h-5 text-roam-blue" />;
+
+        case 'education':
+        case 'training':
+          return <GraduationCap className="w-5 h-5 text-roam-blue" />;
+
+        case 'photography':
+        case 'events':
+          return <Camera className="w-5 h-5 text-roam-blue" />;
+
+        case 'food':
+        case 'catering':
+          return <Utensils className="w-5 h-5 text-roam-blue" />;
+      }
+    }
+
+    // Fallback to name-based detection
+    if (serviceName.includes("weight loss") || serviceName.includes("fitness")) {
       return <Dumbbell className="w-5 h-5 text-roam-blue" />;
     }
-    if (
-      name.includes("massage") ||
-      name.includes("spa") ||
-      name.includes("wellness")
-    ) {
+    if (serviceName.includes("massage") || serviceName.includes("spa")) {
       return <Heart className="w-5 h-5 text-roam-blue" />;
     }
-    if (
-      name.includes("medical") ||
-      name.includes("health") ||
-      name.includes("therapy")
-    ) {
-      return <Stethoscope className="w-5 h-5 text-roam-blue" />;
-    }
-
-    // Beauty & Personal Care
-    if (
-      name.includes("hair") ||
-      name.includes("salon") ||
-      name.includes("barber")
-    ) {
+    if (serviceName.includes("hair") || serviceName.includes("salon")) {
       return <Scissors className="w-5 h-5 text-roam-blue" />;
     }
-    if (
-      name.includes("nail") ||
-      name.includes("beauty") ||
-      name.includes("makeup")
-    ) {
+    if (serviceName.includes("beauty") || serviceName.includes("makeup")) {
       return <Brush className="w-5 h-5 text-roam-blue" />;
     }
-
-    // Home & Professional Services
-    if (
-      name.includes("cleaning") ||
-      name.includes("home") ||
-      name.includes("house")
-    ) {
+    if (serviceName.includes("cleaning") || serviceName.includes("home")) {
       return <Home className="w-5 h-5 text-roam-blue" />;
     }
-    if (
-      name.includes("repair") ||
-      name.includes("maintenance") ||
-      name.includes("handyman")
-    ) {
+    if (serviceName.includes("repair") || serviceName.includes("maintenance")) {
       return <Wrench className="w-5 h-5 text-roam-blue" />;
     }
-
-    // Education & Training
-    if (
-      name.includes("tutoring") ||
-      name.includes("lesson") ||
-      name.includes("coaching")
-    ) {
+    if (serviceName.includes("tutoring") || serviceName.includes("lesson")) {
       return <GraduationCap className="w-5 h-5 text-roam-blue" />;
     }
-
-    // Photography & Events
-    if (
-      name.includes("photo") ||
-      name.includes("photography") ||
-      name.includes("video")
-    ) {
+    if (serviceName.includes("photo") || serviceName.includes("photography")) {
       return <Camera className="w-5 h-5 text-roam-blue" />;
     }
-
-    // Food & Catering
-    if (
-      name.includes("catering") ||
-      name.includes("food") ||
-      name.includes("chef")
-    ) {
+    if (serviceName.includes("catering") || serviceName.includes("food")) {
       return <Utensils className="w-5 h-5 text-roam-blue" />;
     }
 
