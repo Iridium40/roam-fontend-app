@@ -1254,21 +1254,23 @@ export default function MyBookings() {
                     </div>
 
                     <div
-                      className={`border rounded-lg p-3 ${cancellationDetails.isWithin24Hours ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200"}`}
+                      className={`border rounded-lg p-3 ${cancellationDetails.isPastBooking || cancellationDetails.isWithin24Hours ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200"}`}
                     >
                       <div className="flex items-start gap-2">
                         <AlertCircle
-                          className={`w-4 h-4 mt-0.5 flex-shrink-0 ${cancellationDetails.isWithin24Hours ? "text-red-600" : "text-yellow-600"}`}
+                          className={`w-4 h-4 mt-0.5 flex-shrink-0 ${cancellationDetails.isPastBooking || cancellationDetails.isWithin24Hours ? "text-red-600" : "text-yellow-600"}`}
                         />
                         <div
-                          className={`text-sm ${cancellationDetails.isWithin24Hours ? "text-red-800" : "text-yellow-800"}`}
+                          className={`text-sm ${cancellationDetails.isPastBooking || cancellationDetails.isWithin24Hours ? "text-red-800" : "text-yellow-800"}`}
                         >
                           <p className="font-medium">Cancellation Policy</p>
-                          {cancellationDetails.isWithin24Hours ? (
+                          {cancellationDetails.isPastBooking ? (
                             <p>
-                              This booking is within 24 hours of the appointment
-                              time. A 50% cancellation fee will be applied as
-                              per our policy.
+                              This booking is in the past. You may cancel it but no refund will be provided as per our policy.
+                            </p>
+                          ) : cancellationDetails.isWithin24Hours ? (
+                            <p>
+                              This booking is within 24 hours of the appointment time. You may cancel it but no refund will be provided as per our policy.
                             </p>
                           ) : (
                             <p>
