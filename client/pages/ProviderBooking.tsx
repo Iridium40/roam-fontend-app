@@ -1526,20 +1526,58 @@ const ProviderBooking = () => {
                     </div>
                   </div>
                   {preferredProvider && (
-                    <div className="flex items-center gap-2 p-2 bg-green-50 rounded-md">
-                      <Avatar className="w-6 h-6">
-                        <AvatarImage
-                          src={preferredProvider.image_url || undefined}
-                        />
-                        <AvatarFallback className="text-xs">
-                          {preferredProvider.first_name[0]}
-                          {preferredProvider.last_name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <p className="text-sm text-green-800">
-                        Preferred: {preferredProvider.first_name}{" "}
-                        {preferredProvider.last_name}
-                      </p>
+                    <div className="p-4 bg-green-50 border-green-200 border rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <UserCheck className="w-4 h-4 text-green-700" />
+                        <h4 className="font-semibold text-green-700">Preferred Provider Selected</h4>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage
+                            src={preferredProvider.image_url || undefined}
+                          />
+                          <AvatarFallback>
+                            {preferredProvider.first_name[0]}
+                            {preferredProvider.last_name[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="font-semibold text-green-800">
+                            {preferredProvider.first_name}{" "}
+                            {preferredProvider.last_name}
+                          </div>
+                          {preferredProvider.bio && (
+                            <p className="text-sm text-green-600 line-clamp-1">
+                              {preferredProvider.bio}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-4 mt-2">
+                            {preferredProvider.experience_years && (
+                              <span className="text-xs text-green-600">
+                                {preferredProvider.experience_years} years
+                                experience
+                              </span>
+                            )}
+                            {preferredProvider.average_rating && (
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3 h-3 text-green-600 fill-current" />
+                                <span className="text-xs text-green-600">
+                                  {preferredProvider.average_rating} (
+                                  {preferredProvider.total_reviews || 0} reviews)
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 p-3 bg-green-100 rounded-md">
+                        <p className="text-sm text-green-700">
+                          <strong>Note:</strong> This is your preferred provider for
+                          this booking. The business will try to assign this
+                          provider, but final assignment depends on availability and
+                          business approval.
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1766,66 +1804,6 @@ const ProviderBooking = () => {
               </CardContent>
             </Card>
 
-            {/* Provider Preference */}
-            {preferredProvider && (
-              <Card className="bg-green-50 border-green-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-green-700">
-                    <UserCheck className="w-5 h-5" />
-                    Preferred Provider Selected
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center space-x-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage
-                        src={preferredProvider.image_url || undefined}
-                      />
-                      <AvatarFallback>
-                        {preferredProvider.first_name[0]}
-                        {preferredProvider.last_name[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="font-semibold text-green-800">
-                        {preferredProvider.first_name}{" "}
-                        {preferredProvider.last_name}
-                      </div>
-                      {preferredProvider.bio && (
-                        <p className="text-sm text-green-600 line-clamp-1">
-                          {preferredProvider.bio}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 mt-2">
-                        {preferredProvider.experience_years && (
-                          <span className="text-xs text-green-600">
-                            {preferredProvider.experience_years} years
-                            experience
-                          </span>
-                        )}
-                        {preferredProvider.average_rating && (
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-green-600 fill-current" />
-                            <span className="text-xs text-green-600">
-                              {preferredProvider.average_rating} (
-                              {preferredProvider.total_reviews || 0} reviews)
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-3 p-3 bg-green-100 rounded-md">
-                    <p className="text-sm text-green-700">
-                      <strong>Note:</strong> This is your preferred provider for
-                      this booking. The business will try to assign this
-                      provider, but final assignment depends on availability and
-                      business approval.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
 
             {/* Add-ons */}
