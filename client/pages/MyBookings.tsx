@@ -21,6 +21,8 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
+  X,
+  Edit,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
