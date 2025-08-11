@@ -612,6 +612,7 @@ export default function ProviderDashboard() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
     useState<string>("all");
   const [
