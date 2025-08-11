@@ -757,22 +757,20 @@ export default function BusinessProfile() {
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="services" className="text-xs sm:text-sm">
-              <span className="hidden sm:inline">Services ({services.length})</span>
-              <span className="sm:hidden">Services</span>
-            </TabsTrigger>
-            <TabsTrigger value="hours">Hours</TabsTrigger>
-            <TabsTrigger value="team" className="text-xs sm:text-sm">
-              <span className="hidden sm:inline">Team ({providers.length})</span>
-              <span className="sm:hidden">Team</span>
-            </TabsTrigger>
-            <TabsTrigger value="reviews" className="text-xs sm:text-sm">
-              <span className="hidden sm:inline">Reviews ({reviews.length})</span>
-              <span className="sm:hidden">Reviews</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="mb-6">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full sm:w-64">
+                <SelectValue placeholder="Select a section" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="overview">Overview</SelectItem>
+                <SelectItem value="services">Services ({services.length})</SelectItem>
+                <SelectItem value="hours">Hours</SelectItem>
+                <SelectItem value="team">Team ({providers.length})</SelectItem>
+                <SelectItem value="reviews">Reviews ({reviews.length})</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
