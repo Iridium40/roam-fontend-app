@@ -605,13 +605,33 @@ export default function MyBookings() {
     }
 
     try {
+      // Calculate cancellation fee and refund amount based on 24-hour policy
+      const bookingDateTime = new Date(`${selectedBookingForCancel.date} ${selectedBookingForCancel.time}`);
+      const now = new Date();
+      const hoursUntilBooking = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+      // Extract total amount for calculations (remove $ and convert to number)
+      const totalAmount = parseFloat(selectedBookingForCancel.price?.replace('$', '') || '0');
+
+      // Apply cancellation policy
+      let cancellationFee = 0;
+      let refundAmount = totalAmount;
+
+      if (hoursUntilBooking <= 24 && hoursUntilBooking > 0) {
+        // Within 24 hours - apply cancellation fee (e.g., 50% of booking)
+        cancellationFee = totalAmount * 0.5;
+        refundAmount = totalAmount - cancellationFee;
+      }
+
       const { error } = await supabase
         .from('bookings')
         .update({
           booking_status: 'cancelled',
           cancelled_at: new Date().toISOString(),
           cancelled_by: currentUser.id,
-          cancellation_reason: cancellationReason.trim() || 'Cancelled by customer'
+          cancellation_reason: cancellationReason.trim() || 'Cancelled by customer',
+          cancellation_fee: cancellationFee,
+          refund_amount: refundAmount
         })
         .eq('id', selectedBookingForCancel.id);
 
@@ -627,7 +647,9 @@ export default function MyBookings() {
               status: 'cancelled',
               cancelled_at: new Date().toISOString(),
               cancelled_by: currentUser.id,
-              cancellation_reason: cancellationReason.trim() || 'Cancelled by customer'
+              cancellation_reason: cancellationReason.trim() || 'Cancelled by customer',
+              cancellation_fee: cancellationFee,
+              refund_amount: refundAmount
             }
           : booking
       ));
