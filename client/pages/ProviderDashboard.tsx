@@ -6362,7 +6362,7 @@ export default function ProviderDashboard() {
       // Update local state
       setBookings(prev => prev.map(booking =>
         booking.id === bookingId
-          ? { ...booking, booking_status: 'confirmed', updated_at: new Date().toISOString() }
+          ? { ...booking, booking_status: 'confirmed' }
           : booking
       ));
 
