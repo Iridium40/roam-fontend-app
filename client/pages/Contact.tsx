@@ -49,8 +49,8 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      // Send email using Netlify function
-      const response = await fetch("/.netlify/functions/send-contact-email", {
+      // Send email using Vercel API route
+      const response = await fetch("/api/send-contact-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
