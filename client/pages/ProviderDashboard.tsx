@@ -614,6 +614,24 @@ export default function ProviderDashboard() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Helper function to get current tab display name
+  const getCurrentTabName = () => {
+    switch (activeTab) {
+      case "bookings": return "Bookings";
+      case "conversations": return "Messages";
+      case "services-addons": return "Services";
+      case "business": return "Business";
+      case "providers": return "Staff";
+      case "locations": return "Locations";
+      case "provider-services": return "Services";
+      case "profile": return "Profile";
+      case "analytics": return "Analytics";
+      case "financial": return "Financial";
+      case "subscription": return "Subscription";
+      default: return "Menu";
+    }
+  };
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
     useState<string>("all");
   const [
