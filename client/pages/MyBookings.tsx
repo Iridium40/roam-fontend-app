@@ -34,7 +34,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -74,10 +79,12 @@ export default function MyBookings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [selectedBookingForCancel, setSelectedBookingForCancel] = useState<any>(null);
+  const [selectedBookingForCancel, setSelectedBookingForCancel] =
+    useState<any>(null);
   const [cancellationReason, setCancellationReason] = useState("");
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
-  const [selectedBookingForReschedule, setSelectedBookingForReschedule] = useState<any>(null);
+  const [selectedBookingForReschedule, setSelectedBookingForReschedule] =
+    useState<any>(null);
   const [newBookingDate, setNewBookingDate] = useState("");
   const [newBookingTime, setNewBookingTime] = useState("");
   const [rescheduleReason, setRescheduleReason] = useState("");
@@ -517,10 +524,11 @@ export default function MyBookings() {
   const calculateCancellationDetails = (booking: any) => {
     const bookingDateTime = new Date(`${booking.date} ${booking.time}`);
     const now = new Date();
-    const hoursUntilBooking = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+    const hoursUntilBooking =
+      (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
     // Extract total amount for calculations (remove $ and convert to number)
-    const totalAmount = parseFloat(booking.price?.replace('$', '') || '0');
+    const totalAmount = parseFloat(booking.price?.replace("$", "") || "0");
 
     // Apply cancellation policy
     let cancellationFee = 0;
@@ -539,13 +547,18 @@ export default function MyBookings() {
       cancellationFee,
       refundAmount,
       isWithin24Hours,
-      hoursUntilBooking
+      hoursUntilBooking,
     };
   };
 
   // Reschedule booking function
   const rescheduleBooking = async () => {
-    if (!selectedBookingForReschedule || !currentUser || !newBookingDate || !newBookingTime) {
+    if (
+      !selectedBookingForReschedule ||
+      !currentUser ||
+      !newBookingDate ||
+      !newBookingTime
+    ) {
       toast({
         title: "Error",
         description: "Please select both a new date and time.",
@@ -557,9 +570,11 @@ export default function MyBookings() {
     try {
       // First, get the current booking data to store original values
       const { data: currentBooking, error: fetchError } = await supabase
-        .from('bookings')
-        .select('booking_date, start_time, original_booking_date, original_start_time, reschedule_count')
-        .eq('id', selectedBookingForReschedule.id)
+        .from("bookings")
+        .select(
+          "booking_date, start_time, original_booking_date, original_start_time, reschedule_count",
+        )
+        .eq("id", selectedBookingForReschedule.id)
         .single();
 
       if (fetchError) {
@@ -567,48 +582,57 @@ export default function MyBookings() {
       }
 
       // Set original date/time if this is the first reschedule
-      const originalDate = currentBooking.original_booking_date || currentBooking.booking_date;
-      const originalTime = currentBooking.original_start_time || currentBooking.start_time;
+      const originalDate =
+        currentBooking.original_booking_date || currentBooking.booking_date;
+      const originalTime =
+        currentBooking.original_start_time || currentBooking.start_time;
       const newRescheduleCount = (currentBooking.reschedule_count || 0) + 1;
 
       const { error } = await supabase
-        .from('bookings')
+        .from("bookings")
         .update({
           booking_date: newBookingDate,
           start_time: newBookingTime,
-          booking_status: 'pending',
-          reschedule_reason: rescheduleReason.trim() || 'Rescheduled by customer',
+          booking_status: "pending",
+          reschedule_reason:
+            rescheduleReason.trim() || "Rescheduled by customer",
           rescheduled_at: new Date().toISOString(),
           rescheduled_by: currentUser.id,
           original_booking_date: originalDate,
           original_start_time: originalTime,
-          reschedule_count: newRescheduleCount
+          reschedule_count: newRescheduleCount,
         })
-        .eq('id', selectedBookingForReschedule.id);
+        .eq("id", selectedBookingForReschedule.id);
 
       if (error) {
         throw error;
       }
 
       // Update local state
-      setBookings(prev => prev.map(booking =>
-        booking.id === selectedBookingForReschedule.id
-          ? {
-              ...booking,
-              date: newBookingDate,
-              time: new Date(`1970-01-01T${newBookingTime}`).toLocaleTimeString(
-                [], { hour: "numeric", minute: "2-digit" }
-              ),
-              status: 'pending',
-              reschedule_reason: rescheduleReason.trim() || 'Rescheduled by customer',
-              rescheduled_at: new Date().toISOString(),
-              rescheduled_by: currentUser.id,
-              original_booking_date: originalDate,
-              original_start_time: originalTime,
-              reschedule_count: newRescheduleCount
-            }
-          : booking
-      ));
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === selectedBookingForReschedule.id
+            ? {
+                ...booking,
+                date: newBookingDate,
+                time: new Date(
+                  `1970-01-01T${newBookingTime}`,
+                ).toLocaleTimeString([], {
+                  hour: "numeric",
+                  minute: "2-digit",
+                }),
+                status: "pending",
+                reschedule_reason:
+                  rescheduleReason.trim() || "Rescheduled by customer",
+                rescheduled_at: new Date().toISOString(),
+                rescheduled_by: currentUser.id,
+                original_booking_date: originalDate,
+                original_start_time: originalTime,
+                reschedule_count: newRescheduleCount,
+              }
+            : booking,
+        ),
+      );
 
       // Close modal and reset state
       setShowRescheduleModal(false);
@@ -619,14 +643,15 @@ export default function MyBookings() {
 
       toast({
         title: "Reschedule Request Sent",
-        description: "Your reschedule request has been sent to the provider for approval.",
+        description:
+          "Your reschedule request has been sent to the provider for approval.",
       });
     } catch (error: any) {
-      console.error('Error rescheduling booking:', error);
-      let errorMessage = 'Unknown error occurred';
+      console.error("Error rescheduling booking:", error);
+      let errorMessage = "Unknown error occurred";
 
       if (error) {
-        if (typeof error === 'string') {
+        if (typeof error === "string") {
           errorMessage = error;
         } else if (error.message) {
           errorMessage = error.message;
@@ -658,12 +683,17 @@ export default function MyBookings() {
 
     try {
       // Calculate cancellation fee and refund amount based on 24-hour policy
-      const bookingDateTime = new Date(`${selectedBookingForCancel.date} ${selectedBookingForCancel.time}`);
+      const bookingDateTime = new Date(
+        `${selectedBookingForCancel.date} ${selectedBookingForCancel.time}`,
+      );
       const now = new Date();
-      const hoursUntilBooking = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+      const hoursUntilBooking =
+        (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
       // Extract total amount for calculations (remove $ and convert to number)
-      const totalAmount = parseFloat(selectedBookingForCancel.price?.replace('$', '') || '0');
+      const totalAmount = parseFloat(
+        selectedBookingForCancel.price?.replace("$", "") || "0",
+      );
 
       // Apply cancellation policy
       let cancellationFee = 0;
@@ -676,35 +706,39 @@ export default function MyBookings() {
       }
 
       const { error } = await supabase
-        .from('bookings')
+        .from("bookings")
         .update({
-          booking_status: 'cancelled',
+          booking_status: "cancelled",
           cancelled_at: new Date().toISOString(),
           cancelled_by: currentUser.id,
-          cancellation_reason: cancellationReason.trim() || 'Cancelled by customer',
+          cancellation_reason:
+            cancellationReason.trim() || "Cancelled by customer",
           cancellation_fee: cancellationFee,
-          refund_amount: refundAmount
+          refund_amount: refundAmount,
         })
-        .eq('id', selectedBookingForCancel.id);
+        .eq("id", selectedBookingForCancel.id);
 
       if (error) {
         throw error;
       }
 
       // Update local state
-      setBookings(prev => prev.map(booking =>
-        booking.id === selectedBookingForCancel.id
-          ? {
-              ...booking,
-              status: 'cancelled',
-              cancelled_at: new Date().toISOString(),
-              cancelled_by: currentUser.id,
-              cancellation_reason: cancellationReason.trim() || 'Cancelled by customer',
-              cancellation_fee: cancellationFee,
-              refund_amount: refundAmount
-            }
-          : booking
-      ));
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === selectedBookingForCancel.id
+            ? {
+                ...booking,
+                status: "cancelled",
+                cancelled_at: new Date().toISOString(),
+                cancelled_by: currentUser.id,
+                cancellation_reason:
+                  cancellationReason.trim() || "Cancelled by customer",
+                cancellation_fee: cancellationFee,
+                refund_amount: refundAmount,
+              }
+            : booking,
+        ),
+      );
 
       // Close modal and reset state
       setShowCancelModal(false);
@@ -712,22 +746,23 @@ export default function MyBookings() {
       setCancellationReason("");
 
       // Show appropriate cancellation message based on refund amount
-      const refundMessage = refundAmount === totalAmount
-        ? "Your booking has been cancelled successfully. Full refund will be processed."
-        : cancellationFee > 0
-        ? `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`
-        : "Your booking has been cancelled successfully.";
+      const refundMessage =
+        refundAmount === totalAmount
+          ? "Your booking has been cancelled successfully. Full refund will be processed."
+          : cancellationFee > 0
+            ? `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`
+            : "Your booking has been cancelled successfully.";
 
       toast({
         title: "Booking Cancelled",
         description: refundMessage,
       });
     } catch (error: any) {
-      console.error('Error cancelling booking:', error);
-      let errorMessage = 'Unknown error occurred';
+      console.error("Error cancelling booking:", error);
+      let errorMessage = "Unknown error occurred";
 
       if (error) {
-        if (typeof error === 'string') {
+        if (typeof error === "string") {
           errorMessage = error;
         } else if (error.message) {
           errorMessage = error.message;
@@ -918,7 +953,12 @@ export default function MyBookings() {
                   <>
                     <div className="space-y-4">
                       {upcomingBookings.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} onCancel={openCancelModal} onReschedule={openRescheduleModal} />
+                        <BookingCard
+                          key={booking.id}
+                          booking={booking}
+                          onCancel={openCancelModal}
+                          onReschedule={openRescheduleModal}
+                        />
                       ))}
                     </div>
 
@@ -982,7 +1022,12 @@ export default function MyBookings() {
                   <>
                     <div className="space-y-4">
                       {activeBookings.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} onCancel={openCancelModal} onReschedule={openRescheduleModal} />
+                        <BookingCard
+                          key={booking.id}
+                          booking={booking}
+                          onCancel={openCancelModal}
+                          onReschedule={openRescheduleModal}
+                        />
                       ))}
                     </div>
 
@@ -1046,7 +1091,12 @@ export default function MyBookings() {
                   <>
                     <div className="space-y-4">
                       {pastBookings.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} onCancel={openCancelModal} onReschedule={openRescheduleModal} />
+                        <BookingCard
+                          key={booking.id}
+                          booking={booking}
+                          onCancel={openCancelModal}
+                          onReschedule={openRescheduleModal}
+                        />
                       ))}
                     </div>
 
@@ -1112,20 +1162,28 @@ export default function MyBookings() {
             {selectedBookingForCancel && (
               <div className="p-3 bg-gray-50 rounded-lg">
                 <h4 className="font-medium text-sm">
-                  {selectedBookingForCancel.serviceName || selectedBookingForCancel.service || "Service"}
+                  {selectedBookingForCancel.serviceName ||
+                    selectedBookingForCancel.service ||
+                    "Service"}
                 </h4>
                 <p className="text-sm text-gray-600">
-                  Date: {formatDate(selectedBookingForCancel.date)} at {selectedBookingForCancel.time}
+                  Date: {formatDate(selectedBookingForCancel.date)} at{" "}
+                  {selectedBookingForCancel.time}
                 </p>
                 <p className="text-sm text-gray-600">
-                  Provider: {selectedBookingForCancel.provider?.name || "Provider"}
+                  Provider:{" "}
+                  {selectedBookingForCancel.provider?.name || "Provider"}
                 </p>
               </div>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="cancellation-reason" className="text-sm font-medium">
-                Reason for Cancellation <span className="text-gray-500">(Optional)</span>
+              <Label
+                htmlFor="cancellation-reason"
+                className="text-sm font-medium"
+              >
+                Reason for Cancellation{" "}
+                <span className="text-gray-500">(Optional)</span>
               </Label>
               <Textarea
                 id="cancellation-reason"
@@ -1140,57 +1198,85 @@ export default function MyBookings() {
               </p>
             </div>
 
-            {selectedBookingForCancel && (() => {
-              const cancellationDetails = calculateCancellationDetails(selectedBookingForCancel);
-              return (
-                <>
-                  {/* Cancellation Fee Breakdown */}
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                    <h4 className="font-medium text-sm mb-2">Cancellation Details</h4>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span>Booking Total:</span>
-                        <span className="font-medium">${cancellationDetails.totalAmount.toFixed(2)}</span>
-                      </div>
-                      {cancellationDetails.isWithin24Hours && (
-                        <>
-                          <div className="flex justify-between text-red-600">
-                            <span>Cancellation Fee:</span>
-                            <span className="font-medium">-${cancellationDetails.cancellationFee.toFixed(2)}</span>
-                          </div>
-                          <div className="border-t pt-1 mt-1">
-                            <div className="flex justify-between font-medium">
-                              <span>Refund Amount:</span>
-                              <span className="text-green-600">${cancellationDetails.refundAmount.toFixed(2)}</span>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      {!cancellationDetails.isWithin24Hours && (
-                        <div className="flex justify-between font-medium text-green-600">
-                          <span>Refund Amount:</span>
-                          <span>${cancellationDetails.refundAmount.toFixed(2)}</span>
+            {selectedBookingForCancel &&
+              (() => {
+                const cancellationDetails = calculateCancellationDetails(
+                  selectedBookingForCancel,
+                );
+                return (
+                  <>
+                    {/* Cancellation Fee Breakdown */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                      <h4 className="font-medium text-sm mb-2">
+                        Cancellation Details
+                      </h4>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span>Booking Total:</span>
+                          <span className="font-medium">
+                            ${cancellationDetails.totalAmount.toFixed(2)}
+                          </span>
                         </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className={`border rounded-lg p-3 ${cancellationDetails.isWithin24Hours ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${cancellationDetails.isWithin24Hours ? 'text-red-600' : 'text-yellow-600'}`} />
-                      <div className={`text-sm ${cancellationDetails.isWithin24Hours ? 'text-red-800' : 'text-yellow-800'}`}>
-                        <p className="font-medium">Cancellation Policy</p>
-                        {cancellationDetails.isWithin24Hours ? (
-                          <p>This booking is within 24 hours of the appointment time. A 50% cancellation fee will be applied as per our policy.</p>
-                        ) : (
-                          <p>This booking can be cancelled with a full refund as it's more than 24 hours away from the appointment time.</p>
+                        {cancellationDetails.isWithin24Hours && (
+                          <>
+                            <div className="flex justify-between text-red-600">
+                              <span>Cancellation Fee:</span>
+                              <span className="font-medium">
+                                -$
+                                {cancellationDetails.cancellationFee.toFixed(2)}
+                              </span>
+                            </div>
+                            <div className="border-t pt-1 mt-1">
+                              <div className="flex justify-between font-medium">
+                                <span>Refund Amount:</span>
+                                <span className="text-green-600">
+                                  ${cancellationDetails.refundAmount.toFixed(2)}
+                                </span>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        {!cancellationDetails.isWithin24Hours && (
+                          <div className="flex justify-between font-medium text-green-600">
+                            <span>Refund Amount:</span>
+                            <span>
+                              ${cancellationDetails.refundAmount.toFixed(2)}
+                            </span>
+                          </div>
                         )}
                       </div>
                     </div>
-                  </div>
-                </>
-              );
-            })()}
+
+                    <div
+                      className={`border rounded-lg p-3 ${cancellationDetails.isWithin24Hours ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200"}`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <AlertCircle
+                          className={`w-4 h-4 mt-0.5 flex-shrink-0 ${cancellationDetails.isWithin24Hours ? "text-red-600" : "text-yellow-600"}`}
+                        />
+                        <div
+                          className={`text-sm ${cancellationDetails.isWithin24Hours ? "text-red-800" : "text-yellow-800"}`}
+                        >
+                          <p className="font-medium">Cancellation Policy</p>
+                          {cancellationDetails.isWithin24Hours ? (
+                            <p>
+                              This booking is within 24 hours of the appointment
+                              time. A 50% cancellation fee will be applied as
+                              per our policy.
+                            </p>
+                          ) : (
+                            <p>
+                              This booking can be cancelled with a full refund
+                              as it's more than 24 hours away from the
+                              appointment time.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
 
             <div className="flex gap-2 pt-2">
               <Button
@@ -1231,17 +1317,22 @@ export default function MyBookings() {
                   {selectedBookingForReschedule.service || "Service"}
                 </h4>
                 <p className="text-sm text-gray-600">
-                  Current Date: {formatDate(selectedBookingForReschedule.date)} at {selectedBookingForReschedule.time}
+                  Current Date: {formatDate(selectedBookingForReschedule.date)}{" "}
+                  at {selectedBookingForReschedule.time}
                 </p>
                 <p className="text-sm text-gray-600">
-                  Provider: {selectedBookingForReschedule.provider?.name || "Provider"}
+                  Provider:{" "}
+                  {selectedBookingForReschedule.provider?.name || "Provider"}
                 </p>
               </div>
             )}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="new-booking-date" className="text-sm font-medium">
+                <Label
+                  htmlFor="new-booking-date"
+                  className="text-sm font-medium"
+                >
                   New Date <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -1249,14 +1340,17 @@ export default function MyBookings() {
                   type="date"
                   value={newBookingDate}
                   onChange={(e) => setNewBookingDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
+                  min={new Date().toISOString().split("T")[0]}
                   className="w-full"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="new-booking-time" className="text-sm font-medium">
+                <Label
+                  htmlFor="new-booking-time"
+                  className="text-sm font-medium"
+                >
                   New Time <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -1271,8 +1365,12 @@ export default function MyBookings() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="reschedule-reason" className="text-sm font-medium">
-                Reason for Rescheduling <span className="text-gray-500">(Optional)</span>
+              <Label
+                htmlFor="reschedule-reason"
+                className="text-sm font-medium"
+              >
+                Reason for Rescheduling{" "}
+                <span className="text-gray-500">(Optional)</span>
               </Label>
               <Textarea
                 id="reschedule-reason"
@@ -1289,7 +1387,10 @@ export default function MyBookings() {
                 <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-blue-800">
                   <p className="font-medium">Reschedule Policy</p>
-                  <p>Your booking will be set to pending status and the provider will need to confirm the new date and time.</p>
+                  <p>
+                    Your booking will be set to pending status and the provider
+                    will need to confirm the new date and time.
+                  </p>
                 </div>
               </div>
             </div>
@@ -1323,7 +1424,15 @@ export default function MyBookings() {
   );
 }
 
-function BookingCard({ booking, onCancel, onReschedule }: { booking: any; onCancel: (booking: any) => void; onReschedule: (booking: any) => void }) {
+function BookingCard({
+  booking,
+  onCancel,
+  onReschedule,
+}: {
+  booking: any;
+  onCancel: (booking: any) => void;
+  onReschedule: (booking: any) => void;
+}) {
   const statusConfig = {
     confirmed: {
       label: "Confirmed",
@@ -1369,7 +1478,9 @@ function BookingCard({ booking, onCancel, onReschedule }: { booking: any; onCanc
     return hoursUntilBooking <= 24 && hoursUntilBooking > 0;
   };
 
-  const canCancelBooking = (booking.status === "pending" || booking.status === "confirmed") && !isWithin24Hours();
+  const canCancelBooking =
+    (booking.status === "pending" || booking.status === "confirmed") &&
+    !isWithin24Hours();
 
   return (
     <Card className="hover:shadow-md transition-shadow">
