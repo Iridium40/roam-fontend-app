@@ -47,9 +47,13 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      // Send email using Supabase Edge Function
-      const { error } = await supabase.functions.invoke("send-contact-email", {
-        body: {
+      // Send email using Netlify function
+      const response = await fetch("/.netlify/functions/send-contact-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           to: "contactus@roamyourbestlife.com",
           from: formData.email,
           subject: `Contact Form: ${formData.subject}`,
@@ -61,11 +65,11 @@ export default function Contact() {
             <p><strong>Message:</strong></p>
             <p>${formData.message.replace(/\n/g, "<br>")}</p>
           `,
-        },
+        }),
       });
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        throw new Error("Failed to send message");
       }
 
       setIsSubmitted(true);
