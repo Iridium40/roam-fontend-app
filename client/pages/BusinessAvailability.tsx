@@ -1172,7 +1172,7 @@ export default function BusinessAvailability() {
                                     {business.locations.map((location: any) => (
                                       <div
                                         key={location.id}
-                                        className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                                        className={`border rounded-lg p-3 cursor-pointer transition-colors relative ${
                                           selectedLocations[business.id]?.id ===
                                           location.id
                                             ? "border-roam-blue bg-roam-blue/5"
@@ -1185,46 +1185,40 @@ export default function BusinessAvailability() {
                                           )
                                         }
                                       >
-                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                                          <div className="flex-1 min-w-0">
-                                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                                              <div className="flex items-center gap-2">
-                                                <MapPin className="w-4 h-4 text-roam-blue flex-shrink-0" />
-                                                <span className="font-medium text-sm sm:text-base">
-                                                  {location.location_name ||
-                                                    "Main Location"}
-                                                </span>
-                                              </div>
-                                              {location.is_primary && (
-                                                <Badge
-                                                  variant="secondary"
-                                                  className="text-xs self-start"
-                                                >
-                                                  Primary
-                                                </Badge>
-                                              )}
+                                        <Map
+                                          className="absolute top-2 right-2 w-4 h-4 text-foreground/60 hover:text-foreground cursor-pointer transition-colors"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            openInGoogleMaps(location);
+                                          }}
+                                        />
+                                        <div className="pr-6">
+                                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                                            <div className="flex items-center gap-2">
+                                              <MapPin className="w-4 h-4 text-roam-blue flex-shrink-0" />
+                                              <span className="font-medium text-sm sm:text-base">
+                                                {location.location_name ||
+                                                  "Main Location"}
+                                              </span>
                                             </div>
-                                            <p className="text-xs sm:text-sm text-foreground/60 break-words">
-                                              {[
-                                                location.address_line1,
-                                                location.city,
-                                                location.state,
-                                              ]
-                                                .filter(Boolean)
-                                                .join(", ")}
-                                            </p>
+                                            {location.is_primary && (
+                                              <Badge
+                                                variant="secondary"
+                                                className="text-xs self-start"
+                                              >
+                                                Primary
+                                              </Badge>
+                                            )}
                                           </div>
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              openInGoogleMaps(location);
-                                            }}
-                                            className="ml-2"
-                                          >
-                                            <Map className="w-4 h-4" />
-                                          </Button>
+                                          <p className="text-xs sm:text-sm text-foreground/60 break-words">
+                                            {[
+                                              location.address_line1,
+                                              location.city,
+                                              location.state,
+                                            ]
+                                              .filter(Boolean)
+                                              .join(", ")}
+                                          </p>
                                         </div>
                                       </div>
                                     ))}
