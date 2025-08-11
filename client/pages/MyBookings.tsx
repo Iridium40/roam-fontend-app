@@ -1140,16 +1140,57 @@ export default function MyBookings() {
               </p>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-yellow-800">
-                  <p className="font-medium">Cancellation Policy</p>
-                  <p className="mb-2">Bookings cannot be cancelled within 24 hours of the scheduled appointment time.</p>
-                  <p>Please check the cancellation policy for this service. Some bookings may have cancellation fees or restrictions.</p>
-                </div>
-              </div>
-            </div>
+            {selectedBookingForCancel && (() => {
+              const cancellationDetails = calculateCancellationDetails(selectedBookingForCancel);
+              return (
+                <>
+                  {/* Cancellation Fee Breakdown */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                    <h4 className="font-medium text-sm mb-2">Cancellation Details</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span>Booking Total:</span>
+                        <span className="font-medium">${cancellationDetails.totalAmount.toFixed(2)}</span>
+                      </div>
+                      {cancellationDetails.isWithin24Hours && (
+                        <>
+                          <div className="flex justify-between text-red-600">
+                            <span>Cancellation Fee:</span>
+                            <span className="font-medium">-${cancellationDetails.cancellationFee.toFixed(2)}</span>
+                          </div>
+                          <div className="border-t pt-1 mt-1">
+                            <div className="flex justify-between font-medium">
+                              <span>Refund Amount:</span>
+                              <span className="text-green-600">${cancellationDetails.refundAmount.toFixed(2)}</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      {!cancellationDetails.isWithin24Hours && (
+                        <div className="flex justify-between font-medium text-green-600">
+                          <span>Refund Amount:</span>
+                          <span>${cancellationDetails.refundAmount.toFixed(2)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className={`border rounded-lg p-3 ${cancellationDetails.isWithin24Hours ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${cancellationDetails.isWithin24Hours ? 'text-red-600' : 'text-yellow-600'}`} />
+                      <div className={`text-sm ${cancellationDetails.isWithin24Hours ? 'text-red-800' : 'text-yellow-800'}`}>
+                        <p className="font-medium">Cancellation Policy</p>
+                        {cancellationDetails.isWithin24Hours ? (
+                          <p>This booking is within 24 hours of the appointment time. A 50% cancellation fee will be applied as per our policy.</p>
+                        ) : (
+                          <p>This booking can be cancelled with a full refund as it's more than 24 hours away from the appointment time.</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
 
             <div className="flex gap-2 pt-2">
               <Button
