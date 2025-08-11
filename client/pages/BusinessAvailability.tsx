@@ -1408,12 +1408,6 @@ export default function BusinessAvailability() {
                             {/* Mobile-responsive business info and rating section */}
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-foreground/60">
-                                {business.verification_status === "approved" && (
-                                  <div className="flex items-center gap-1 text-green-600">
-                                    <Shield className="w-4 h-4 flex-shrink-0" />
-                                    <span>Verified</span>
-                                  </div>
-                                )}
                                 {business.years_in_business && (
                                   <span className="text-xs sm:text-sm">
                                     {business.years_in_business} years in business
