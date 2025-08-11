@@ -711,18 +711,18 @@ export default function BusinessProfile() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                       <FavoriteButton
                         type="business"
                         itemId={business.id}
                         size="lg"
                         variant="outline"
                         showText={true}
-                        className="border-gray-300 hover:border-red-300"
+                        className="border-gray-300 hover:border-red-300 w-full sm:w-auto"
                       />
                       <Button
                         size="lg"
-                        className="bg-roam-blue hover:bg-roam-blue/90"
+                        className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
                         onClick={handleBookBusiness}
                       >
                         <Calendar className="w-5 h-5 mr-2" />
