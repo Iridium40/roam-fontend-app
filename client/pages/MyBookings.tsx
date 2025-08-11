@@ -221,7 +221,9 @@ export default function MyBookings() {
                 : "Unknown Provider",
               rating: 4.9, // Default rating - would need to implement rating system
               phone: null, // Don't expose provider phone to customer
-              image: "/api/placeholder/60/60",
+              image: provider?.image_url || null,
+              firstName: provider?.first_name || "",
+              lastName: provider?.last_name || "",
             },
             date: booking.booking_date,
             time: booking.start_time
