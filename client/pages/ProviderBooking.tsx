@@ -308,20 +308,71 @@ const ProviderBooking = () => {
         );
       }
 
-      // Fetch service addons for the selected service using new schema
+      // Fetch business addons with proper three-tier structure
       let addons = [];
       let addonsError = null;
 
       if (selectedServiceId) {
-        // Query service_addon_eligibility to get addons available for this service
-        const { data: eligibleAddons, error: eligibilityError } = await supabase
-          .from("service_addon_eligibility")
+        // Query business addons that are eligible for the selected service
+        const { data: businessAddons, error: businessAddonsError } = await supabase
+          .from("business_addons")
           .select(
             `
             id,
-            service_id,
+            business_id,
             addon_id,
-            is_recommended,
+            business_price,
+            is_available,
+            service_addons:addon_id (
+              id,
+              name,
+              description,
+              image_url,
+              is_active,
+              service_addon_eligibility!inner (
+                service_id,
+                is_recommended
+              )
+            )
+          `,
+          )
+          .eq("business_id", businessId)
+          .eq("is_available", true)
+          .eq("service_addons.service_addon_eligibility.service_id", selectedServiceId);
+
+        if (businessAddonsError) {
+          addonsError = businessAddonsError;
+          console.error("Error fetching business addons:", businessAddonsError);
+        } else if (businessAddons) {
+          // Transform the data to match the expected format
+          addons = businessAddons
+            .filter(item => item.service_addons?.is_active)
+            .map(item => {
+              const eligibility = item.service_addons.service_addon_eligibility.find(
+                (e: any) => e.service_id === selectedServiceId
+              );
+              return {
+                id: item.addon_id,
+                name: item.service_addons.name,
+                description: item.service_addons.description,
+                image_url: item.service_addons.image_url,
+                is_recommended: eligibility?.is_recommended || false,
+                price: item.business_price,
+                business_addon_id: item.id, // Keep reference to business addon record
+              };
+            });
+        }
+      } else {
+        // If no service selected, get all business addons
+        const { data: allBusinessAddons, error: allBusinessAddonsError } = await supabase
+          .from("business_addons")
+          .select(
+            `
+            id,
+            business_id,
+            addon_id,
+            business_price,
+            is_available,
             service_addons:addon_id (
               id,
               name,
@@ -331,38 +382,23 @@ const ProviderBooking = () => {
             )
           `,
           )
-          .eq("service_id", selectedServiceId);
+          .eq("business_id", businessId)
+          .eq("is_available", true);
 
-        if (eligibilityError) {
-          addonsError = eligibilityError;
-          console.error("Error fetching addon eligibility:", eligibilityError);
-        } else if (eligibleAddons) {
-          // Transform the data to match the expected format
-          addons = eligibleAddons
+        if (allBusinessAddonsError) {
+          addonsError = allBusinessAddonsError;
+        } else {
+          addons = (allBusinessAddons || [])
             .filter(item => item.service_addons?.is_active)
             .map(item => ({
-              id: item.service_addons.id,
+              id: item.addon_id,
               name: item.service_addons.name,
               description: item.service_addons.description,
               image_url: item.service_addons.image_url,
-              is_recommended: item.is_recommended,
-              price: 25.00, // Default addon price - should be moved to business pricing table
+              is_recommended: false,
+              price: item.business_price,
+              business_addon_id: item.id,
             }));
-        }
-      } else {
-        // If no service selected, get all active service addons
-        const { data: allServiceAddons, error: allAddonsError } = await supabase
-          .from("service_addons")
-          .select("*")
-          .eq("is_active", true);
-
-        if (allAddonsError) {
-          addonsError = allAddonsError;
-        } else {
-          addons = (allServiceAddons || []).map(addon => ({
-            ...addon,
-            price: 25.00, // Default addon price
-          }));
         }
       }
 
