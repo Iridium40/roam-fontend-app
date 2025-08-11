@@ -375,13 +375,18 @@ const CalendarGrid = ({
   return (
     <div className="space-y-4">
       {/* Calendar Header with Navigation */}
-      <div className="flex items-center justify-between">
-        <Button variant="outline" size="sm" onClick={navigatePrevious}>
+      <div className="flex items-center justify-between py-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={navigatePrevious}
+          className="px-4 py-2 min-w-[100px]"
+        >
           ← Previous
         </Button>
 
-        <div className="text-center">
-          <h4 className="text-xl font-semibold">
+        <div className="text-center flex-1 mx-6">
+          <h4 className="text-xl font-semibold mb-2">
             {viewType === "week"
               ? `Week of ${calendarDays[0].toLocaleDateString()} - ${calendarDays[6].toLocaleDateString()}`
               : `${currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}`}
@@ -390,13 +395,18 @@ const CalendarGrid = ({
             variant="ghost"
             size="sm"
             onClick={goToToday}
-            className="mt-1"
+            className="px-4 py-1 text-roam-blue hover:bg-roam-blue/10"
           >
             Today
           </Button>
         </div>
 
-        <Button variant="outline" size="sm" onClick={navigateNext}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={navigateNext}
+          className="px-4 py-2 min-w-[100px]"
+        >
           Next →
         </Button>
       </div>
