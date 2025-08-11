@@ -869,10 +869,9 @@ function BookingCard({ booking }: { booking: any }) {
               <p className="text-sm font-medium">{deliveryLabel}</p>
               <div className="flex items-start gap-2">
                 <p className="text-sm text-foreground/60 flex-1">{booking.location}</p>
-                {booking.locationDetails && booking.locationDetails.coordinates.latitude && (
+                {booking.deliveryType === "business_location" && booking.location !== "Location TBD" && (
                   <button
                     onClick={() => {
-                      const { latitude, longitude } = booking.locationDetails.coordinates;
                       const address = booking.location;
 
                       // Detect platform and open appropriate maps app
@@ -880,15 +879,27 @@ function BookingCard({ booking }: { booking: any }) {
                       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
                       let mapsUrl;
-                      if (isIOS) {
-                        // iOS - prefer Apple Maps
-                        mapsUrl = `maps://maps.google.com/maps?daddr=${latitude},${longitude}&amp;ll=`;
-                      } else if (isMobile) {
-                        // Android - use Google Maps app
-                        mapsUrl = `geo:${latitude},${longitude}?q=${encodeURIComponent(address)}`;
+
+                      // Use GPS coordinates if available, otherwise use address
+                      if (booking.locationDetails && booking.locationDetails.coordinates.latitude) {
+                        const { latitude, longitude } = booking.locationDetails.coordinates;
+                        if (isIOS) {
+                          mapsUrl = `maps://maps.google.com/maps?daddr=${latitude},${longitude}&amp;ll=`;
+                        } else if (isMobile) {
+                          mapsUrl = `geo:${latitude},${longitude}?q=${encodeURIComponent(address)}`;
+                        } else {
+                          mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+                        }
                       } else {
-                        // Desktop - use Google Maps web
-                        mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+                        // Fallback to address-based navigation when no coordinates
+                        const encodedAddress = encodeURIComponent(address);
+                        if (isIOS) {
+                          mapsUrl = `maps://maps.google.com/maps?daddr=${encodedAddress}`;
+                        } else if (isMobile) {
+                          mapsUrl = `geo:0,0?q=${encodedAddress}`;
+                        } else {
+                          mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+                        }
                       }
 
                       window.open(mapsUrl, '_blank');
