@@ -6448,8 +6448,7 @@ export default function ProviderDashboard() {
           ? {
               ...booking,
               booking_status: 'declined',
-              decline_reason: declineReason.trim(),
-              updated_at: new Date().toISOString()
+              decline_reason: declineReason.trim()
             }
           : booking
       ));
