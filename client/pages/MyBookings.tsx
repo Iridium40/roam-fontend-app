@@ -1259,15 +1259,32 @@ function BookingCard({ booking, onCancel }: { booking: any; onCancel: (booking: 
                   <Edit className="w-4 h-4 mr-2" />
                   Reschedule
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
-                  onClick={() => onCancel(booking)}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Cancel
-                </Button>
+                {canCancelBooking ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
+                    onClick={() => onCancel(booking)}
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    Cancel
+                  </Button>
+                ) : isWithin24Hours() ? (
+                  <div className="flex flex-col items-end">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-gray-300 text-gray-400 cursor-not-allowed"
+                      disabled
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Cancel
+                    </Button>
+                    <p className="text-xs text-red-600 mt-1 max-w-[120px] text-right">
+                      Cannot cancel within 24 hours
+                    </p>
+                  </div>
+                ) : null}
               </>
             )}
           </div>
