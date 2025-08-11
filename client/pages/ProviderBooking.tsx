@@ -1379,7 +1379,7 @@ const ProviderBooking = () => {
                       <p className="font-medium">{business.business_name}</p>
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 text-roam-warning fill-current" />
-                        <span className="text-sm text-gray-600">{averageRating} ({totalReviews} reviews)</span>
+                        <span className="text-sm text-gray-600">{business.average_rating || 0} ({business.total_reviews || 0} reviews)</span>
                       </div>
                     </div>
                   </div>
