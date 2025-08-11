@@ -86,6 +86,8 @@ import {
   Wrench,
   Hash,
   Search,
+  ChevronDown,
+  User,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
