@@ -56,17 +56,22 @@ export default function BusinessAvailability() {
   // Service category icon mapping
   const getServiceIcon = (service: any) => {
     // Try to get category type from the joined data
-    const categoryType = service?.service_subcategories?.service_categories?.service_category_type;
-    const subcategoryType = service?.service_subcategories?.service_subcategory_type;
+    const categoryType =
+      service?.service_subcategories?.service_categories?.service_category_type;
+    const subcategoryType =
+      service?.service_subcategories?.service_subcategory_type;
     const serviceName = service?.name?.toLowerCase() || "";
 
     // Use category type if available
     if (categoryType) {
       switch (categoryType.toLowerCase()) {
-        case 'health_wellness':
-        case 'fitness':
-        case 'medical':
-          if (serviceName.includes("weight loss") || serviceName.includes("fitness")) {
+        case "health_wellness":
+        case "fitness":
+        case "medical":
+          if (
+            serviceName.includes("weight loss") ||
+            serviceName.includes("fitness")
+          ) {
             return <Dumbbell className="w-5 h-5 text-roam-blue" />;
           }
           if (serviceName.includes("massage") || serviceName.includes("spa")) {
@@ -74,35 +79,41 @@ export default function BusinessAvailability() {
           }
           return <Stethoscope className="w-5 h-5 text-roam-blue" />;
 
-        case 'beauty':
-        case 'personal_care':
+        case "beauty":
+        case "personal_care":
           if (serviceName.includes("hair") || serviceName.includes("salon")) {
             return <Scissors className="w-5 h-5 text-roam-blue" />;
           }
           return <Brush className="w-5 h-5 text-roam-blue" />;
 
-        case 'home_services':
-          if (serviceName.includes("repair") || serviceName.includes("maintenance")) {
+        case "home_services":
+          if (
+            serviceName.includes("repair") ||
+            serviceName.includes("maintenance")
+          ) {
             return <Wrench className="w-5 h-5 text-roam-blue" />;
           }
           return <Home className="w-5 h-5 text-roam-blue" />;
 
-        case 'education':
-        case 'training':
+        case "education":
+        case "training":
           return <GraduationCap className="w-5 h-5 text-roam-blue" />;
 
-        case 'photography':
-        case 'events':
+        case "photography":
+        case "events":
           return <Camera className="w-5 h-5 text-roam-blue" />;
 
-        case 'food':
-        case 'catering':
+        case "food":
+        case "catering":
           return <Utensils className="w-5 h-5 text-roam-blue" />;
       }
     }
 
     // Fallback to name-based detection
-    if (serviceName.includes("weight loss") || serviceName.includes("fitness")) {
+    if (
+      serviceName.includes("weight loss") ||
+      serviceName.includes("fitness")
+    ) {
       return <Dumbbell className="w-5 h-5 text-roam-blue" />;
     }
     if (serviceName.includes("massage") || serviceName.includes("spa")) {
