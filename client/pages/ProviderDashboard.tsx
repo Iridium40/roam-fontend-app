@@ -7281,9 +7281,16 @@ export default function ProviderDashboard() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm">
-                <Bell className="w-4 h-4" />
-              </Button>
+              <RealtimeBookingNotifications
+                userType="provider"
+                showConnectionStatus={true}
+                maxNotifications={10}
+              />
+              {isConnected && (
+                <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                  Live
+                </Badge>
+              )}
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />
                 Sign Out
