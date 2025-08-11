@@ -7861,31 +7861,17 @@ export default function ProviderDashboard() {
                 </div>
               )}
 
-              {/* Calendar View */}
-              {showCalendarView && (
-                <div className="mb-6 p-4 border rounded-lg bg-card">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">
-                      Calendar View -{" "}
-                      {calendarViewType === "week" ? "Week" : "Month"}
-                    </h3>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowCalendarView(false)}
-                    >
-                      Close
-                    </Button>
-                  </div>
-
-                  <CalendarGrid
-                    bookings={bookings}
-                    viewType={calendarViewType}
-                    currentDate={calendarDate}
-                    onDateChange={setCalendarDate}
-                  />
-                </div>
-              )}
+              {/* Calendar View - Always Visible */}
+              <div className="mb-6 p-4 border rounded-lg bg-card">
+                <CalendarGrid
+                  bookings={bookings}
+                  viewType={calendarViewType}
+                  currentDate={calendarDate}
+                  onDateChange={setCalendarDate}
+                  selectedDate={selectedDate}
+                  onDateSelect={setSelectedDate}
+                />
+              </div>
 
               {/* Only show sub-tabs for providers with provider role */}
               {provider?.provider_role === "provider" ? (
@@ -12682,7 +12668,7 @@ export default function ProviderDashboard() {
                       <li>• Your business information and description</li>
                       <li>• All available services with pricing</li>
                       <li>• Available add-ons and extras</li>
-                      <li>�� Easy booking form to request appointments</li>
+                      <li>• Easy booking form to request appointments</li>
                       <li>• Your contact information and location</li>
                     </ul>
                   </div>
