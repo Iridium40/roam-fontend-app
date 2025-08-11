@@ -8100,87 +8100,91 @@ export default function ProviderDashboard() {
 
               {/* Location and Provider Filters for Owners/Dispatchers */}
               {(isOwner || isDispatcher) && (
-                <div className="flex gap-4 items-center">
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="location-filter"
-                      className="text-sm font-medium"
-                    >
-                      Location:
-                    </Label>
-                    <Select
-                      value={selectedLocationFilter}
-                      onValueChange={handleLocationFilterChange}
-                    >
-                      <SelectTrigger className="w-48" id="location-filter">
-                        <SelectValue placeholder="Select location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Locations</SelectItem>
-                        {locations.map((location) => (
-                          <SelectItem key={location.id} value={location.id}>
-                            {location.location_name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                <div className="space-y-4 md:space-y-0">
+                  {/* Filters Grid - Responsive */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="location-filter"
+                        className="text-sm font-medium"
+                      >
+                        Location:
+                      </Label>
+                      <Select
+                        value={selectedLocationFilter}
+                        onValueChange={handleLocationFilterChange}
+                      >
+                        <SelectTrigger className="w-full" id="location-filter">
+                          <SelectValue placeholder="Select location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Locations</SelectItem>
+                          {locations.map((location) => (
+                            <SelectItem key={location.id} value={location.id}>
+                              {location.location_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="provider-filter"
+                        className="text-sm font-medium"
+                      >
+                        Provider:
+                      </Label>
+                      <Select
+                        value={selectedProviderFilter}
+                        onValueChange={setSelectedProviderFilter}
+                      >
+                        <SelectTrigger className="w-full" id="provider-filter">
+                          <SelectValue placeholder="Select provider" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Providers</SelectItem>
+                          {filteredProviders.map((provider) => (
+                            <SelectItem key={provider.id} value={provider.id}>
+                              {provider.first_name} {provider.last_name}
+                              {provider.business_locations?.name &&
+                                ` (${provider.business_locations.name})`}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="status-filter"
+                        className="text-sm font-medium"
+                      >
+                        Status:
+                      </Label>
+                      <Select
+                        value={selectedStatusFilter}
+                        onValueChange={setSelectedStatusFilter}
+                      >
+                        <SelectTrigger className="w-full" id="status-filter">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="confirmed">Confirmed</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                          <SelectItem value="no_show">No Show</SelectItem>
+                          <SelectItem value="declined">Declined</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="provider-filter"
-                      className="text-sm font-medium"
-                    >
-                      Provider:
-                    </Label>
-                    <Select
-                      value={selectedProviderFilter}
-                      onValueChange={setSelectedProviderFilter}
-                    >
-                      <SelectTrigger className="w-48" id="provider-filter">
-                        <SelectValue placeholder="Select provider" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Providers</SelectItem>
-                        {filteredProviders.map((provider) => (
-                          <SelectItem key={provider.id} value={provider.id}>
-                            {provider.first_name} {provider.last_name}
-                            {provider.business_locations?.name &&
-                              ` (${provider.business_locations.name})`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="status-filter"
-                      className="text-sm font-medium"
-                    >
-                      Status:
-                    </Label>
-                    <Select
-                      value={selectedStatusFilter}
-                      onValueChange={setSelectedStatusFilter}
-                    >
-                      <SelectTrigger className="w-48" id="status-filter">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="confirmed">Confirmed</SelectItem>
-                        <SelectItem value="in_progress">In Progress</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                        <SelectItem value="no_show">No Show</SelectItem>
-                        <SelectItem value="declined">Declined</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="text-sm text-foreground/60">
+                  {/* Results Count */}
+                  <div className="text-sm text-foreground/60 text-center md:text-left mt-4">
                     Showing {getFilteredBookings().length} bookings
                   </div>
                 </div>
