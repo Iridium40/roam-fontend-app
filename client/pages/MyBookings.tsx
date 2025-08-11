@@ -332,9 +332,9 @@ export default function MyBookings() {
   const allUpcomingBookings = bookings.filter(
     (b) => b.status === "confirmed" || b.status === "pending",
   );
-  const allPastBookings = bookings.filter(
-    (b) => b.status === "completed" || b.status === "cancelled",
-  );
+  const allPastBookings = bookings
+    .filter((b) => b.status === "completed" || b.status === "cancelled")
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const allActiveBookings = bookings.filter((b) => b.status === "in_progress");
 
   // Pagination logic
