@@ -309,10 +309,18 @@ export default function BusinessAvailability() {
           id,
           name,
           description,
-          category_id,
+          subcategory_id,
           min_price,
           duration_minutes,
-          image_url
+          image_url,
+          service_subcategories!inner(
+            id,
+            service_subcategory_type,
+            service_categories!inner(
+              id,
+              service_category_type
+            )
+          )
         `,
         )
         .eq("id", serviceId)
