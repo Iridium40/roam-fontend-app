@@ -804,17 +804,46 @@ function BookingCard({ booking }: { booking: any }) {
         )}
 
         <div className="flex flex-wrap gap-2">
-          {booking.status === "confirmed" && (
+          {/* Cancel and Reschedule actions for pending or confirmed bookings */}
+          {(booking.status === "pending" || booking.status === "confirmed") && (
             <>
               <Button
                 size="sm"
                 variant="outline"
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
+                onClick={() => {
+                  // TODO: Implement cancel booking functionality
+                  console.log("Cancel booking:", booking.id);
+                }}
               >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Message
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                onClick={() => {
+                  // TODO: Implement reschedule booking functionality
+                  console.log("Reschedule booking:", booking.id);
+                }}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Reschedule
               </Button>
             </>
+          )}
+
+          {/* Message button for confirmed bookings */}
+          {booking.status === "confirmed" && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Message
+            </Button>
           )}
           {booking.status === "completed" &&
             new Date(booking.date) >= new Date() && (
