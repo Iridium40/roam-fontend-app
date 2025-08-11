@@ -1453,6 +1453,18 @@ function BookingCard({
       icon: XCircle,
       description: "Booking was cancelled",
     },
+    declined: {
+      label: "Declined",
+      color: "bg-red-100 text-red-800",
+      icon: XCircle,
+      description: "Booking was declined by provider",
+    },
+    no_show: {
+      label: "No Show",
+      color: "bg-gray-100 text-gray-800",
+      icon: XCircle,
+      description: "Customer did not show up",
+    },
   }[booking.status];
 
   const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
