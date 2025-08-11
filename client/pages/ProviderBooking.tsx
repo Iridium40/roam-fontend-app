@@ -1312,9 +1312,144 @@ const ProviderBooking = () => {
           </div>
         )}
 
+        {/* Booking Summary - Primary Focus */}
+        <Card className="mb-8 border-2 border-roam-blue bg-roam-blue/5">
+          <CardHeader>
+            <CardTitle className="text-2xl text-roam-blue flex items-center gap-2">
+              <DollarSign className="w-6 h-6" />
+              Complete Your Booking
+            </CardTitle>
+            <p className="text-roam-blue/80">Review your service details and total cost</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left: Service Summary */}
+              <div className="space-y-4">
+                <h3 className="font-semibold">Your Service</h3>
+                {(() => {
+                  const selectedService = services.find(
+                    (service) =>
+                      service.service_id === selectedServiceId ||
+                      service.id === selectedServiceId,
+                  );
+                  return selectedService ? (
+                    <div className="p-4 border rounded-lg bg-background">
+                      <div className="flex items-start gap-3">
+                        {(selectedService as any).services.image_url && (
+                          <img
+                            src={(selectedService as any).services.image_url}
+                            alt={(selectedService as any).services.name}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <h4 className="font-medium">{(selectedService as any).services.name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {(selectedService as any).services.duration_minutes} minutes
+                          </p>
+                          {preSelectedDate && preSelectedTime && (
+                            <p className="text-sm text-roam-blue font-medium mt-1">
+                              {new Date(preSelectedDate).toLocaleDateString("en-US", {
+                                weekday: "long",
+                                month: "long",
+                                day: "numeric",
+                              })} at {preSelectedTime}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
+
+                {/* Business & Provider Info */}
+                <div className="p-4 border rounded-lg bg-background">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage
+                        src={business.logo_url || business.image_url || undefined}
+                        alt={business.business_name}
+                      />
+                      <AvatarFallback>
+                        {business.business_name.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{business.business_name}</p>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3 text-roam-warning fill-current" />
+                        <span className="text-sm text-gray-600">{averageRating} ({totalReviews} reviews)</span>
+                      </div>
+                    </div>
+                  </div>
+                  {preferredProvider && (
+                    <div className="flex items-center gap-2 p-2 bg-green-50 rounded-md">
+                      <Avatar className="w-6 h-6">
+                        <AvatarImage src={preferredProvider.image_url || undefined} />
+                        <AvatarFallback className="text-xs">
+                          {preferredProvider.first_name[0]}{preferredProvider.last_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="text-sm text-green-800">
+                        Preferred: {preferredProvider.first_name} {preferredProvider.last_name}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right: Pricing & Book Button */}
+              <div className="space-y-4">
+                <h3 className="font-semibold">Total Cost</h3>
+                <div className="p-6 border rounded-lg bg-background">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span>Service Price</span>
+                      <span className="font-medium">${servicePricing.basePrice}</span>
+                    </div>
+                    {selectedAddons.length > 0 && (
+                      <div className="border-t pt-3 space-y-2">
+                        <span className="text-sm font-medium text-gray-700">Add-ons:</span>
+                        {selectedAddons.map((addon) => (
+                          <div key={addon.id} className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">{addon.name}</span>
+                            <span>${addon.price}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="border-t pt-3 flex justify-between items-center text-lg font-bold">
+                      <span>Total</span>
+                      <span className="text-roam-blue">${servicePricing.totalPrice}</span>
+                    </div>
+                  </div>
+                  <Button
+                    size="lg"
+                    className="w-full bg-roam-blue hover:bg-roam-blue/90 text-white mt-6"
+                    onClick={handleBooking}
+                    disabled={!isFormValid() || isBooking}
+                  >
+                    {isBooking ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Booking...
+                      </>
+                    ) : (
+                      <>
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Book Now - ${servicePricing.totalPrice}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          {/* Secondary Content - Condensed */}
+          <div className="lg:col-span-2 space-y-6">
             {/* Business Info */}
             <Card>
               <CardHeader>
