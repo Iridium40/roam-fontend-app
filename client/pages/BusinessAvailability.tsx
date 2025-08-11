@@ -1099,7 +1099,7 @@ export default function BusinessAvailability() {
                                 <label className="text-sm font-medium text-foreground/70 mb-2 block">
                                   Choose Delivery Option:
                                 </label>
-                                <div className="grid grid-cols-2 gap-3 mb-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                                   <div
                                     className={`border rounded-lg p-3 cursor-pointer transition-colors ${
                                       selectedDeliveryTypes[business.id] ===
