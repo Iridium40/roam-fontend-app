@@ -24,6 +24,8 @@ import {
   Globe,
   Car,
   Quote,
+  Instagram,
+  Facebook,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -708,9 +710,22 @@ export default function LandingPage() {
                 professionals.
               </p>
               <div className="flex space-x-3">
-                <div className="w-10 h-10 bg-roam-light-blue/20 rounded-lg flex items-center justify-center hover:bg-roam-light-blue/30 transition-colors cursor-pointer">
-                  <Globe className="w-5 h-5 text-roam-blue" />
-                </div>
+                <a
+                  href="https://www.instagram.com/roam_yourbestlife/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-roam-light-blue/20 rounded-lg flex items-center justify-center hover:bg-roam-light-blue/30 transition-colors"
+                >
+                  <Instagram className="w-5 h-5 text-roam-blue" />
+                </a>
+                <a
+                  href="https://www.facebook.com/roamtheapp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-roam-light-blue/20 rounded-lg flex items-center justify-center hover:bg-roam-light-blue/30 transition-colors"
+                >
+                  <Facebook className="w-5 h-5 text-roam-blue" />
+                </a>
               </div>
             </div>
           </div>
