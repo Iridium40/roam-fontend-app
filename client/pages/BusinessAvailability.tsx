@@ -1143,7 +1143,7 @@ export default function BusinessAvailability() {
                 <div className="absolute inset-0 bg-gradient-to-br from-roam-blue/5 to-roam-light-blue/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative flex items-center gap-3">
                   <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
-                    <div className="w-5 h-5 rounded-full bg-roam-blue"></div>
+                    {getServiceIcon(service?.name || "")}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Service</p>
