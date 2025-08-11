@@ -834,15 +834,23 @@ function BookingCard({ booking }: { booking: any }) {
             </>
           )}
 
-          {/* Message button for confirmed bookings */}
+          {/* Message button for confirmed bookings only */}
           {booking.status === "confirmed" && (
             <Button
               size="sm"
               variant="outline"
               className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              onClick={() => {
+                // TODO: Implement messaging functionality with provider
+                console.log("Open messaging with provider for booking:", booking.id);
+                console.log("Provider:", booking.provider.name);
+                // Could navigate to a chat interface or open a modal
+                // navigate(`/bookings/${booking.id}/messages`);
+              }}
+              title={`Message ${booking.provider.name} about this booking`}
             >
               <MessageCircle className="w-4 h-4 mr-2" />
-              Message
+              Message Provider
             </Button>
           )}
           {booking.status === "completed" &&
