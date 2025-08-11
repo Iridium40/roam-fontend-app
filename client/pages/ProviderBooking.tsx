@@ -108,7 +108,7 @@ const ProviderBooking = () => {
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
 
   // Derived state: selectedAddons from selectedItems
-  const selectedAddons = selectedItems.filter(item => item.type === "addon");
+  const selectedAddons = selectedItems.filter((item) => item.type === "addon");
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
   const [promotionData, setPromotionData] = useState<any>(null);
   const [customerProfile, setCustomerProfile] = useState<any>(null);
@@ -274,7 +274,12 @@ const ProviderBooking = () => {
       }
 
       // Fetch business services
-      console.log("Fetching services for business:", businessId, "selected service:", selectedServiceId);
+      console.log(
+        "Fetching services for business:",
+        businessId,
+        "selected service:",
+        selectedServiceId,
+      );
 
       const { data: services, error: servicesError } = await supabase
         .from("business_services")
@@ -295,14 +300,14 @@ const ProviderBooking = () => {
         .eq("is_active", true);
 
       console.log("Business services query result:", {
-        services: services?.map(s => ({
+        services: services?.map((s) => ({
           id: s.id,
           service_id: s.service_id,
           name: s.services?.name,
           is_active: s.is_active,
-          service_is_active: s.services?.is_active
+          service_is_active: s.services?.is_active,
         })),
-        error: servicesError
+        error: servicesError,
       });
 
       if (servicesError) {
@@ -317,7 +322,12 @@ const ProviderBooking = () => {
       let addonsError = null;
 
       if (selectedServiceId) {
-        console.log("Fetching addons for service:", selectedServiceId, "and business:", businessId);
+        console.log(
+          "Fetching addons for service:",
+          selectedServiceId,
+          "and business:",
+          businessId,
+        );
 
         // Step 1: Get eligible addons for the selected service
         const { data: eligibleAddons, error: eligibilityError } = await supabase
@@ -339,42 +349,53 @@ const ProviderBooking = () => {
           .eq("service_id", selectedServiceId);
 
         if (eligibilityError) {
-          console.error("Error fetching service addon eligibility:", eligibilityError);
+          console.error(
+            "Error fetching service addon eligibility:",
+            eligibilityError,
+          );
           addonsError = eligibilityError;
         } else if (eligibleAddons && eligibleAddons.length > 0) {
           console.log("Found eligible addons:", eligibleAddons);
 
           // Step 2: Filter by business offerings and get custom pricing
-          const eligibleAddonIds = eligibleAddons.map(item => item.addon_id);
+          const eligibleAddonIds = eligibleAddons.map((item) => item.addon_id);
 
-          const { data: businessAddons, error: businessAddonsError } = await supabase
-            .from("business_addons")
-            .select("*")
-            .eq("business_id", businessId)
-            .eq("is_available", true)
-            .in("addon_id", eligibleAddonIds);
+          const { data: businessAddons, error: businessAddonsError } =
+            await supabase
+              .from("business_addons")
+              .select("*")
+              .eq("business_id", businessId)
+              .eq("is_available", true)
+              .in("addon_id", eligibleAddonIds);
 
           if (businessAddonsError) {
-            console.error("Error fetching business addons:", businessAddonsError);
+            console.error(
+              "Error fetching business addons:",
+              businessAddonsError,
+            );
             addonsError = businessAddonsError;
           } else {
             console.log("Found business addons:", businessAddons);
 
             // Combine the data
-            addons = (businessAddons || []).map(businessAddon => {
-              const eligibilityInfo = eligibleAddons.find(e => e.addon_id === businessAddon.addon_id);
-              const serviceAddon = eligibilityInfo?.service_addons;
+            addons = (businessAddons || [])
+              .map((businessAddon) => {
+                const eligibilityInfo = eligibleAddons.find(
+                  (e) => e.addon_id === businessAddon.addon_id,
+                );
+                const serviceAddon = eligibilityInfo?.service_addons;
 
-              return {
-                id: businessAddon.addon_id,
-                name: serviceAddon?.name || "Unknown Addon",
-                description: serviceAddon?.description || "",
-                image_url: serviceAddon?.image_url || null,
-                is_recommended: eligibilityInfo?.is_recommended || false,
-                price: businessAddon.custom_price || 0,
-                business_addon_id: businessAddon.id,
-              };
-            }).filter(addon => addon.name !== "Unknown Addon"); // Filter out invalid addons
+                return {
+                  id: businessAddon.addon_id,
+                  name: serviceAddon?.name || "Unknown Addon",
+                  description: serviceAddon?.description || "",
+                  image_url: serviceAddon?.image_url || null,
+                  is_recommended: eligibilityInfo?.is_recommended || false,
+                  price: businessAddon.custom_price || 0,
+                  business_addon_id: businessAddon.id,
+                };
+              })
+              .filter((addon) => addon.name !== "Unknown Addon"); // Filter out invalid addons
           }
         } else {
           console.log("No eligible addons found for this service");
@@ -469,21 +490,28 @@ const ProviderBooking = () => {
           });
 
           // Debug: Check what services are available for this business
-          console.log("Available business services:", services.map(s => ({
-            business_service_id: s.id,
-            service_id: s.service_id,
-            service_name: s.services?.name,
-            is_active: s.is_active
-          })));
+          console.log(
+            "Available business services:",
+            services.map((s) => ({
+              business_service_id: s.id,
+              service_id: s.service_id,
+              service_name: s.services?.name,
+              is_active: s.is_active,
+            })),
+          );
 
           // Check if the service exists in the global services table
-          const { data: globalService, error: globalServiceError } = await supabase
-            .from("services")
-            .select("id, name, description, is_active")
-            .eq("id", selectedServiceId)
-            .single();
+          const { data: globalService, error: globalServiceError } =
+            await supabase
+              .from("services")
+              .select("id, name, description, is_active")
+              .eq("id", selectedServiceId)
+              .single();
 
-          console.log("Global service lookup:", { globalService, globalServiceError });
+          console.log("Global service lookup:", {
+            globalService,
+            globalServiceError,
+          });
 
           if (globalService) {
             // Check if this service is offered by the business but maybe inactive
@@ -521,7 +549,8 @@ const ProviderBooking = () => {
             console.log("Service does not exist in global services table");
             toast({
               title: "Service Not Found",
-              description: "The requested service could not be found in our system.",
+              description:
+                "The requested service could not be found in our system.",
               variant: "destructive",
             });
           }
@@ -827,10 +856,12 @@ const ProviderBooking = () => {
       type,
       id: item.id,
       name:
-        type === "service"
-          ? (item as any).services.name
-          : (item as any).name,
-      price: (item as any).custom_price || (item as any).business_price || (item as any).price || 0,
+        type === "service" ? (item as any).services.name : (item as any).name,
+      price:
+        (item as any).custom_price ||
+        (item as any).business_price ||
+        (item as any).price ||
+        0,
       duration:
         type === "service"
           ? (item as any).services.duration_minutes
@@ -970,13 +1001,10 @@ const ProviderBooking = () => {
           ]
         : [];
 
-    const allRequiredFields = [
-      ...baseRequiredFields,
-      ...addressRequiredFields,
-    ];
+    const allRequiredFields = [...baseRequiredFields, ...addressRequiredFields];
 
     // Check if any required field is missing (true means field is empty)
-    const hasEmptyRequiredFields = allRequiredFields.some(isEmpty => isEmpty);
+    const hasEmptyRequiredFields = allRequiredFields.some((isEmpty) => isEmpty);
 
     // Must have at least one service selected
     const hasSelectedItems = selectedItems.length > 0;
@@ -1150,7 +1178,7 @@ const ProviderBooking = () => {
       if (selectedAddons.length > 0 && booking.id) {
         console.log("Creating booking addons:", selectedAddons);
 
-        const addonRecords = selectedAddons.map(addon => ({
+        const addonRecords = selectedAddons.map((addon) => ({
           booking_id: booking.id,
           addon_id: addon.id,
         }));
@@ -1198,7 +1226,7 @@ const ProviderBooking = () => {
             message: promotionError.message,
             details: promotionError.details,
             hint: promotionError.hint,
-            code: promotionError.code
+            code: promotionError.code,
           });
           // Don't throw error here - booking was successful, promotion tracking is secondary
         }
@@ -1367,11 +1395,9 @@ const ProviderBooking = () => {
                   <p className="text-gray-600">
                     {business.business_description}
                   </p>
-                  <div className="flex items-center space-x-4 mt-2">
-                  </div>
+                  <div className="flex items-center space-x-4 mt-2"></div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
-                </div>
+                <div className="flex flex-col sm:flex-row gap-3"></div>
               </div>
             </div>
           </div>
@@ -1422,7 +1448,9 @@ const ProviderBooking = () => {
               <DollarSign className="w-6 h-6" />
               Complete Your Booking
             </CardTitle>
-            <p className="text-roam-blue/80">Review your service details and total cost</p>
+            <p className="text-roam-blue/80">
+              Review your service details and total cost
+            </p>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1446,17 +1474,24 @@ const ProviderBooking = () => {
                           />
                         )}
                         <div className="flex-1">
-                          <h4 className="font-medium">{(selectedService as any).services.name}</h4>
+                          <h4 className="font-medium">
+                            {(selectedService as any).services.name}
+                          </h4>
                           <p className="text-sm text-gray-600">
-                            {(selectedService as any).services.duration_minutes} minutes
+                            {(selectedService as any).services.duration_minutes}{" "}
+                            minutes
                           </p>
                           {preSelectedDate && preSelectedTime && (
                             <p className="text-sm text-roam-blue font-medium mt-1">
-                              {new Date(preSelectedDate).toLocaleDateString("en-US", {
-                                weekday: "long",
-                                month: "long",
-                                day: "numeric",
-                              })} at {preSelectedTime}
+                              {new Date(preSelectedDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  weekday: "long",
+                                  month: "long",
+                                  day: "numeric",
+                                },
+                              )}{" "}
+                              at {preSelectedTime}
                             </p>
                           )}
                         </div>
@@ -1470,7 +1505,9 @@ const ProviderBooking = () => {
                   <div className="flex items-center gap-3 mb-3">
                     <Avatar className="w-10 h-10">
                       <AvatarImage
-                        src={business.logo_url || business.image_url || undefined}
+                        src={
+                          business.logo_url || business.image_url || undefined
+                        }
                         alt={business.business_name}
                       />
                       <AvatarFallback>
@@ -1481,20 +1518,27 @@ const ProviderBooking = () => {
                       <p className="font-medium">{business.business_name}</p>
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 text-roam-warning fill-current" />
-                        <span className="text-sm text-gray-600">{business.average_rating || 0} ({business.total_reviews || 0} reviews)</span>
+                        <span className="text-sm text-gray-600">
+                          {business.average_rating || 0} (
+                          {business.total_reviews || 0} reviews)
+                        </span>
                       </div>
                     </div>
                   </div>
                   {preferredProvider && (
                     <div className="flex items-center gap-2 p-2 bg-green-50 rounded-md">
                       <Avatar className="w-6 h-6">
-                        <AvatarImage src={preferredProvider.image_url || undefined} />
+                        <AvatarImage
+                          src={preferredProvider.image_url || undefined}
+                        />
                         <AvatarFallback className="text-xs">
-                          {preferredProvider.first_name[0]}{preferredProvider.last_name[0]}
+                          {preferredProvider.first_name[0]}
+                          {preferredProvider.last_name[0]}
                         </AvatarFallback>
                       </Avatar>
                       <p className="text-sm text-green-800">
-                        Preferred: {preferredProvider.first_name} {preferredProvider.last_name}
+                        Preferred: {preferredProvider.first_name}{" "}
+                        {preferredProvider.last_name}
                       </p>
                     </div>
                   )}
@@ -1508,22 +1552,42 @@ const ProviderBooking = () => {
                   <div className="space-y-4">
                     {/* Service Details */}
                     <div className="space-y-3">
-                      <h4 className="font-medium text-gray-700 text-sm uppercase tracking-wide">Selected Services</h4>
-                      {selectedItems.filter(item => item.type === "service").map((service) => (
-                        <div key={service.id} className="flex justify-between items-center">
-                          <span className="text-gray-900">{service.name}</span>
-                          <span className="font-medium">${service.price.toFixed(2)}</span>
-                        </div>
-                      ))}
+                      <h4 className="font-medium text-gray-700 text-sm uppercase tracking-wide">
+                        Selected Services
+                      </h4>
+                      {selectedItems
+                        .filter((item) => item.type === "service")
+                        .map((service) => (
+                          <div
+                            key={service.id}
+                            className="flex justify-between items-center"
+                          >
+                            <span className="text-gray-900">
+                              {service.name}
+                            </span>
+                            <span className="font-medium">
+                              ${service.price.toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
 
                       {/* Add-ons */}
                       {selectedAddons.length > 0 && (
                         <div className="space-y-2 pt-2">
-                          <h5 className="font-medium text-gray-600 text-xs uppercase tracking-wide">Add-ons</h5>
+                          <h5 className="font-medium text-gray-600 text-xs uppercase tracking-wide">
+                            Add-ons
+                          </h5>
                           {selectedAddons.map((addon) => (
-                            <div key={addon.id} className="flex justify-between items-center text-sm">
-                              <span className="text-gray-600">{addon.name}</span>
-                              <span className="text-gray-600">+${addon.price.toFixed(2)}</span>
+                            <div
+                              key={addon.id}
+                              className="flex justify-between items-center text-sm"
+                            >
+                              <span className="text-gray-600">
+                                {addon.name}
+                              </span>
+                              <span className="text-gray-600">
+                                +${addon.price.toFixed(2)}
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -1536,36 +1600,48 @@ const ProviderBooking = () => {
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Subtotal</span>
-                        <span className="font-medium">${getSubtotal().toFixed(2)}</span>
+                        <span className="font-medium">
+                          ${getSubtotal().toFixed(2)}
+                        </span>
                       </div>
 
                       {/* Promo Code Discount */}
                       {promotionData && promoCode && (
                         <div className="flex justify-between items-center text-green-600">
                           <span className="text-sm">
-                            Discount ({promotionData.savings_type === "percentage"
+                            Discount (
+                            {promotionData.savings_type === "percentage"
                               ? `${promotionData.savings_amount}%`
-                              : `$${promotionData.savings_amount}`} off)
+                              : `$${promotionData.savings_amount}`}{" "}
+                            off)
                           </span>
-                          <span className="font-medium">-${getDiscountAmount().toFixed(2)}</span>
+                          <span className="font-medium">
+                            -${getDiscountAmount().toFixed(2)}
+                          </span>
                         </div>
                       )}
 
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Service Fee (15%)</span>
-                        <span className="font-medium">${(getSubtotal() * 0.15).toFixed(2)}</span>
+                        <span className="font-medium">
+                          ${(getSubtotal() * 0.15).toFixed(2)}
+                        </span>
                       </div>
 
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Platform Fees</span>
-                        <span className="font-medium">${getPlatformFees().toFixed(2)}</span>
+                        <span className="font-medium">
+                          ${getPlatformFees().toFixed(2)}
+                        </span>
                       </div>
                     </div>
 
                     <div className="border-t-2 border-gray-300 pt-3">
                       <div className="flex justify-between items-center text-xl font-bold">
                         <span>Total Amount</span>
-                        <span className="text-roam-blue">${getTotalAmount().toFixed(2)}</span>
+                        <span className="text-roam-blue">
+                          ${getTotalAmount().toFixed(2)}
+                        </span>
                       </div>
                     </div>
 
@@ -1662,14 +1738,17 @@ const ProviderBooking = () => {
                     <div className="flex items-start space-x-2">
                       <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
                       <div className="text-sm">
-                        <div className="font-medium text-gray-700 mb-1">Service Location</div>
+                        <div className="font-medium text-gray-700 mb-1">
+                          Service Location
+                        </div>
                         <div className="text-gray-600">
                           {location.address_line1 || location.street_address}
                           {location.address_line2 && (
                             <div>{location.address_line2}</div>
                           )}
                           <div>
-                            {location.city}, {location.state} {location.postal_code}
+                            {location.city}, {location.state}{" "}
+                            {location.postal_code}
                           </div>
                         </div>
                       </div>
@@ -1970,9 +2049,7 @@ const ProviderBooking = () => {
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold">
-                                {addon.name}
-                              </h3>
+                              <h3 className="font-semibold">{addon.name}</h3>
                               {addon.is_recommended && (
                                 <Badge className="bg-green-100 text-green-800 text-xs">
                                   Recommended
@@ -2030,9 +2107,7 @@ const ProviderBooking = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
-
-          </div>
+          <div className="space-y-6"></div>
         </div>
       </div>
 

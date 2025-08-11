@@ -441,7 +441,7 @@ export default function BusinessProfile() {
       // Create a modified service object with the selected delivery type
       const serviceWithDeliveryType = {
         ...pendingService,
-        delivery_type: deliveryType
+        delivery_type: deliveryType,
       };
 
       setSelectedService(serviceWithDeliveryType);
@@ -639,7 +639,9 @@ export default function BusinessProfile() {
                   })()}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Back to Business Selection</span>
+                  <span className="hidden sm:inline">
+                    Back to Business Selection
+                  </span>
                   <span className="sm:hidden">Back</span>
                 </Link>
               </Button>
@@ -736,16 +738,18 @@ export default function BusinessProfile() {
                     </div>
 
                     {/* Hide Book Now button when user is in booking flow */}
-                    {!searchParams.get("service") && !searchParams.get("date") && !searchParams.get("time") && (
-                      <Button
-                        size="lg"
-                        className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
-                        onClick={handleBookBusiness}
-                      >
-                        <Calendar className="w-5 h-5 mr-2" />
-                        Book Now
-                      </Button>
-                    )}
+                    {!searchParams.get("service") &&
+                      !searchParams.get("date") &&
+                      !searchParams.get("time") && (
+                        <Button
+                          size="lg"
+                          className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
+                          onClick={handleBookBusiness}
+                        >
+                          <Calendar className="w-5 h-5 mr-2" />
+                          Book Now
+                        </Button>
+                      )}
                   </div>
                 </div>
               </div>
@@ -760,10 +764,14 @@ export default function BusinessProfile() {
           {/* Desktop Tabs - Hidden on mobile */}
           <TabsList className="hidden sm:grid w-full grid-cols-5 gap-1 mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="services">Services ({services.length})</TabsTrigger>
+            <TabsTrigger value="services">
+              Services ({services.length})
+            </TabsTrigger>
             <TabsTrigger value="hours">Hours</TabsTrigger>
             <TabsTrigger value="team">Team ({providers.length})</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
+            <TabsTrigger value="reviews">
+              Reviews ({reviews.length})
+            </TabsTrigger>
           </TabsList>
 
           {/* Mobile Dropdown - Hidden on desktop */}
@@ -774,10 +782,14 @@ export default function BusinessProfile() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="overview">Overview</SelectItem>
-                <SelectItem value="services">Services ({services.length})</SelectItem>
+                <SelectItem value="services">
+                  Services ({services.length})
+                </SelectItem>
                 <SelectItem value="hours">Hours</SelectItem>
                 <SelectItem value="team">Team ({providers.length})</SelectItem>
-                <SelectItem value="reviews">Reviews ({reviews.length})</SelectItem>
+                <SelectItem value="reviews">
+                  Reviews ({reviews.length})
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -1004,7 +1016,9 @@ export default function BusinessProfile() {
                           className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
                         >
                           <Users className="w-4 h-4 mr-2" />
-                          <span className="hidden sm:inline">Choose Provider</span>
+                          <span className="hidden sm:inline">
+                            Choose Provider
+                          </span>
                           <span className="sm:hidden">Choose Provider</span>
                         </Button>
                         <Button
@@ -1132,19 +1146,23 @@ export default function BusinessProfile() {
                                 <Badge
                                   variant="outline"
                                   className={`text-xs ${
-                                    service.delivery_type === "customer_location"
+                                    service.delivery_type ===
+                                    "customer_location"
                                       ? "border-green-500 text-green-700 bg-green-50"
-                                      : service.delivery_type === "business_location"
+                                      : service.delivery_type ===
+                                          "business_location"
                                         ? "border-blue-500 text-blue-700 bg-blue-50"
                                         : "border-purple-500 text-purple-700 bg-purple-50"
                                   }`}
                                 >
-                                  {service.delivery_type === "customer_location" ? (
+                                  {service.delivery_type ===
+                                  "customer_location" ? (
                                     <>
                                       <Car className="w-3 h-3 mr-1" />
                                       Mobile
                                     </>
-                                  ) : service.delivery_type === "business_location" ? (
+                                  ) : service.delivery_type ===
+                                    "business_location" ? (
                                     <>
                                       <Building className="w-3 h-3 mr-1" />
                                       Business
@@ -1481,15 +1499,18 @@ export default function BusinessProfile() {
 
       {/* Provider Selection Modal */}
       {/* Delivery Type Selection Modal */}
-      <Dialog open={deliveryTypeModalOpen} onOpenChange={setDeliveryTypeModalOpen}>
+      <Dialog
+        open={deliveryTypeModalOpen}
+        onOpenChange={setDeliveryTypeModalOpen}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Choose Service Location</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-gray-600">
-              This service can be delivered at a business location or as a mobile service.
-              Please choose your preferred option:
+              This service can be delivered at a business location or as a
+              mobile service. Please choose your preferred option:
             </p>
 
             <div className="space-y-3">
@@ -1502,7 +1523,9 @@ export default function BusinessProfile() {
                   <Building className="w-5 h-5 text-blue-600" />
                   <div className="text-left">
                     <div className="font-medium">Business Location</div>
-                    <div className="text-sm text-gray-500">Service at the business location</div>
+                    <div className="text-sm text-gray-500">
+                      Service at the business location
+                    </div>
                   </div>
                 </div>
               </Button>
@@ -1516,7 +1539,9 @@ export default function BusinessProfile() {
                   <Car className="w-5 h-5 text-green-600" />
                   <div className="text-left">
                     <div className="font-medium">Mobile Service</div>
-                    <div className="text-sm text-gray-500">Service comes to your location</div>
+                    <div className="text-sm text-gray-500">
+                      Service comes to your location
+                    </div>
                   </div>
                 </div>
               </Button>
