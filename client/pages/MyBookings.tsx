@@ -110,7 +110,8 @@ export default function MyBookings() {
                 id,
                 first_name,
                 last_name,
-                location_id
+                location_id,
+                image_url
               ),
               business_profiles (
                 id,
@@ -145,7 +146,8 @@ export default function MyBookings() {
                 id,
                 first_name,
                 last_name,
-                location_id
+                location_id,
+                image_url
               ),
               business_profiles (
                 id,
