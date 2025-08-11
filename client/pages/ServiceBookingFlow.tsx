@@ -280,10 +280,37 @@ export default function ServiceBookingFlow() {
               />
             </div>
             {isCustomer && (
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-foreground/70">
-                  Welcome, {customer?.first_name}
-                </span>
+              <div className="flex items-center gap-2 sm:gap-4">
+                {/* Mobile: Show avatar only */}
+                <div className="sm:hidden">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage
+                      src={customer?.image_url}
+                      alt={customer?.first_name || 'User'}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-roam-blue text-white text-sm font-medium">
+                      {customer?.first_name?.[0]?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+
+                {/* Desktop: Show welcome text with small avatar */}
+                <div className="hidden sm:flex sm:items-center sm:gap-2">
+                  <Avatar className="w-6 h-6">
+                    <AvatarImage
+                      src={customer?.image_url}
+                      alt={customer?.first_name || 'User'}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-roam-blue text-white text-xs font-medium">
+                      {customer?.first_name?.[0]?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm text-foreground/70">
+                    Welcome, {customer?.first_name}
+                  </span>
+                </div>
               </div>
             )}
           </div>
