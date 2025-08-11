@@ -308,38 +308,62 @@ const ProviderBooking = () => {
         );
       }
 
-      // Fetch business addons filtered by selected service
-      let addonsQuery = supabase
-        .from("business_addons")
-        .select(
-          `
-          *,
-          addons:addon_id (
+      // Fetch service addons for the selected service using new schema
+      let addons = [];
+      let addonsError = null;
+
+      if (selectedServiceId) {
+        // Query service_addon_eligibility to get addons available for this service
+        const { data: eligibleAddons, error: eligibilityError } = await supabase
+          .from("service_addon_eligibility")
+          .select(
+            `
             id,
-            name,
-            description,
-            image_url,
-            service_addon_eligibility (
-              service_id,
-              is_recommended
+            service_id,
+            addon_id,
+            is_recommended,
+            service_addons:addon_id (
+              id,
+              name,
+              description,
+              image_url,
+              is_active
             )
+          `,
           )
-        `,
-        )
-        .eq("business_id", businessId)
-        .eq("is_available", true);
+          .eq("service_id", selectedServiceId);
 
-      const { data: allAddons, error: addonsError } = await addonsQuery;
+        if (eligibilityError) {
+          addonsError = eligibilityError;
+          console.error("Error fetching addon eligibility:", eligibilityError);
+        } else if (eligibleAddons) {
+          // Transform the data to match the expected format
+          addons = eligibleAddons
+            .filter(item => item.service_addons?.is_active)
+            .map(item => ({
+              id: item.service_addons.id,
+              name: item.service_addons.name,
+              description: item.service_addons.description,
+              image_url: item.service_addons.image_url,
+              is_recommended: item.is_recommended,
+              price: 0, // Default price - you may want to add pricing logic
+            }));
+        }
+      } else {
+        // If no service selected, get all active service addons
+        const { data: allServiceAddons, error: allAddonsError } = await supabase
+          .from("service_addons")
+          .select("*")
+          .eq("is_active", true);
 
-      let addons = allAddons || [];
-
-      // Filter by selected service if one is specified
-      if (selectedServiceId && allAddons) {
-        addons = allAddons.filter((addon) =>
-          (addon as any).addons?.service_addon_eligibility?.some(
-            (eligibility: any) => eligibility.service_id === selectedServiceId,
-          ),
-        );
+        if (allAddonsError) {
+          addonsError = allAddonsError;
+        } else {
+          addons = (allServiceAddons || []).map(addon => ({
+            ...addon,
+            price: 0, // Default price
+          }));
+        }
       }
 
       if (addonsError) {
