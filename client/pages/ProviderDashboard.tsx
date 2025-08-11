@@ -599,9 +599,9 @@ export default function ProviderDashboard() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
   const [activeBookingTab, setActiveBookingTab] = useState("present");
-  const [calendarViewType, setCalendarViewType] = useState<"week" | "month" | "hidden">(
-    "month",
-  );
+  const [calendarViewType, setCalendarViewType] = useState<
+    "week" | "month" | "hidden"
+  >("month");
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedLocationFilter, setSelectedLocationFilter] =
@@ -618,18 +618,30 @@ export default function ProviderDashboard() {
   // Helper function to get current tab display name
   const getCurrentTabName = () => {
     switch (activeTab) {
-      case "bookings": return "Bookings";
-      case "conversations": return "Messages";
-      case "services-addons": return "Services";
-      case "business": return "Business";
-      case "providers": return "Staff";
-      case "locations": return "Locations";
-      case "provider-services": return "Services";
-      case "profile": return "Profile";
-      case "analytics": return "Analytics";
-      case "financial": return "Financial";
-      case "subscription": return "Subscription";
-      default: return "Menu";
+      case "bookings":
+        return "Bookings";
+      case "conversations":
+        return "Messages";
+      case "services-addons":
+        return "Services";
+      case "business":
+        return "Business";
+      case "providers":
+        return "Staff";
+      case "locations":
+        return "Locations";
+      case "provider-services":
+        return "Services";
+      case "profile":
+        return "Profile";
+      case "analytics":
+        return "Analytics";
+      case "financial":
+        return "Financial";
+      case "subscription":
+        return "Subscription";
+      default:
+        return "Menu";
     }
   };
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
@@ -6513,16 +6525,21 @@ export default function ProviderDashboard() {
         const bookingRef = booking.booking_reference?.toLowerCase() || "";
 
         // Search in customer name (handle both customer_profiles and guest_name)
-        const customerName = booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
-          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
-          : (booking.guest_name || "").toLowerCase();
+        const customerName =
+          booking.customer_profiles?.first_name &&
+          booking.customer_profiles?.last_name
+            ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
+            : (booking.guest_name || "").toLowerCase();
 
         // Search in customer email
-        const customerEmail = booking.customer_profiles?.email?.toLowerCase() || "";
+        const customerEmail =
+          booking.customer_profiles?.email?.toLowerCase() || "";
 
-        return bookingRef.includes(query) ||
-               customerName.includes(query) ||
-               customerEmail.includes(query);
+        return (
+          bookingRef.includes(query) ||
+          customerName.includes(query) ||
+          customerEmail.includes(query)
+        );
       });
     }
 
@@ -6534,13 +6551,12 @@ export default function ProviderDashboard() {
     if (!selectedDate) return [];
 
     const selectedDateStr = selectedDate.toISOString().split("T")[0];
-    let filtered = bookings
-      .filter((booking) => {
-        const bookingDate = new Date(booking.booking_date)
-          .toISOString()
-          .split("T")[0];
-        return bookingDate === selectedDateStr;
-      });
+    let filtered = bookings.filter((booking) => {
+      const bookingDate = new Date(booking.booking_date)
+        .toISOString()
+        .split("T")[0];
+      return bookingDate === selectedDateStr;
+    });
 
     // Apply search filtering
     if (searchQuery.trim()) {
@@ -6550,16 +6566,21 @@ export default function ProviderDashboard() {
         const bookingRef = booking.booking_reference?.toLowerCase() || "";
 
         // Search in customer name (handle both customer_profiles and guest_name)
-        const customerName = booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
-          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
-          : (booking.guest_name || "").toLowerCase();
+        const customerName =
+          booking.customer_profiles?.first_name &&
+          booking.customer_profiles?.last_name
+            ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
+            : (booking.guest_name || "").toLowerCase();
 
         // Search in customer email
-        const customerEmail = booking.customer_profiles?.email?.toLowerCase() || "";
+        const customerEmail =
+          booking.customer_profiles?.email?.toLowerCase() || "";
 
-        return bookingRef.includes(query) ||
-               customerName.includes(query) ||
-               customerEmail.includes(query);
+        return (
+          bookingRef.includes(query) ||
+          customerName.includes(query) ||
+          customerEmail.includes(query)
+        );
       });
     }
 
@@ -7697,11 +7718,19 @@ export default function ProviderDashboard() {
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
                     <Avatar className="w-6 h-6">
                       <AvatarImage
                         src={provider?.image_url || undefined}
-                        alt={provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                        alt={
+                          provider
+                            ? `${provider.first_name} ${provider.last_name}`
+                            : "Provider"
+                        }
                       />
                       <AvatarFallback className="text-xs">
                         {provider?.first_name?.[0]?.toUpperCase() || "P"}
@@ -7709,7 +7738,9 @@ export default function ProviderDashboard() {
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm font-medium hidden sm:inline">
-                      {provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                      {provider
+                        ? `${provider.first_name} ${provider.last_name}`
+                        : "Provider"}
                     </span>
                     <ChevronDown className="w-4 h-4" />
                   </Button>
@@ -7719,7 +7750,11 @@ export default function ProviderDashboard() {
                     <Avatar className="w-8 h-8">
                       <AvatarImage
                         src={provider?.image_url || undefined}
-                        alt={provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                        alt={
+                          provider
+                            ? `${provider.first_name} ${provider.last_name}`
+                            : "Provider"
+                        }
                       />
                       <AvatarFallback>
                         {provider?.first_name?.[0]?.toUpperCase() || "P"}
@@ -7728,7 +7763,9 @@ export default function ProviderDashboard() {
                     </Avatar>
                     <div className="flex flex-col">
                       <span className="text-sm font-medium">
-                        {provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                        {provider
+                          ? `${provider.first_name} ${provider.last_name}`
+                          : "Provider"}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {provider?.email || "Provider Account"}
@@ -7745,7 +7782,10 @@ export default function ProviderDashboard() {
                     Share Booking Page
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="text-red-600"
+                  >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
@@ -7871,12 +7911,16 @@ export default function ProviderDashboard() {
                     <Calendar className="w-4 h-4 mr-2" />
                     Bookings
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setActiveTab("conversations")}>
+                  <DropdownMenuItem
+                    onClick={() => setActiveTab("conversations")}
+                  >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Messages
                   </DropdownMenuItem>
                   {(isOwner || isDispatcher) && (
-                    <DropdownMenuItem onClick={() => setActiveTab("services-addons")}>
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab("services-addons")}
+                    >
                       <Settings className="w-4 h-4 mr-2" />
                       Services
                     </DropdownMenuItem>
@@ -7900,7 +7944,9 @@ export default function ProviderDashboard() {
                     </DropdownMenuItem>
                   )}
                   {isProvider && !isOwner && !isDispatcher && (
-                    <DropdownMenuItem onClick={() => setActiveTab("provider-services")}>
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab("provider-services")}
+                    >
                       <Settings className="w-4 h-4 mr-2" />
                       Services
                     </DropdownMenuItem>
@@ -7922,7 +7968,9 @@ export default function ProviderDashboard() {
                     </DropdownMenuItem>
                   )}
                   {isOwner && (
-                    <DropdownMenuItem onClick={() => setActiveTab("subscription")}>
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab("subscription")}
+                    >
                       <Star className="w-4 h-4 mr-2" />
                       Subscription
                     </DropdownMenuItem>
@@ -8154,7 +8202,10 @@ export default function ProviderDashboard() {
 
               {/* Search Bar - Between Calendar and List */}
               <div className="flex items-center gap-2 mb-6">
-                <Label htmlFor="search-bookings" className="text-sm font-medium">
+                <Label
+                  htmlFor="search-bookings"
+                  className="text-sm font-medium"
+                >
                   Search:
                 </Label>
                 <div className="relative flex-1 max-w-md">
@@ -13105,8 +13156,6 @@ export default function ProviderDashboard() {
                 </div>
               </TabsContent>
             )}
-
-
           </Tabs>
         </div>
       </div>
@@ -15943,8 +15992,8 @@ export default function ProviderDashboard() {
                   Customer Booking URL
                 </CardTitle>
                 <p className="text-foreground/60">
-                  Share this link with customers so they can book your
-                  services directly
+                  Share this link with customers so they can book your services
+                  directly
                 </p>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -16100,8 +16149,8 @@ export default function ProviderDashboard() {
                       QR code on flyers, business cards, or signage
                     </p>
                     <p>
-                      4. <strong>Receive bookings</strong> - Customers fill
-                      out the booking form and you'll receive notifications
+                      4. <strong>Receive bookings</strong> - Customers fill out
+                      the booking form and you'll receive notifications
                     </p>
                   </div>
                 </div>
