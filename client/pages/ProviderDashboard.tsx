@@ -6336,6 +6336,78 @@ export default function ProviderDashboard() {
     return filtered;
   };
 
+  // Accept booking function
+  const acceptBooking = async (bookingId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({
+          booking_status: 'confirmed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', bookingId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings(prev => prev.map(booking =>
+        booking.id === bookingId
+          ? { ...booking, booking_status: 'confirmed', updated_at: new Date().toISOString() }
+          : booking
+      ));
+
+      toast({
+        title: "Booking Accepted",
+        description: "The booking has been confirmed successfully.",
+      });
+    } catch (error) {
+      console.error('Error accepting booking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to accept booking. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Decline booking function
+  const declineBooking = async (bookingId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({
+          booking_status: 'cancelled',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', bookingId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings(prev => prev.map(booking =>
+        booking.id === bookingId
+          ? { ...booking, booking_status: 'cancelled', updated_at: new Date().toISOString() }
+          : booking
+      ));
+
+      toast({
+        title: "Booking Declined",
+        description: "The booking has been cancelled.",
+      });
+    } catch (error) {
+      console.error('Error declining booking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to decline booking. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Load all providers for owners/dispatchers
   const loadAllProviders = async () => {
     if (!isOwner && !isDispatcher) {
