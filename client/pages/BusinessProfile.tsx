@@ -683,10 +683,10 @@ export default function BusinessProfile() {
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
-                      <h1 className="text-3xl font-bold text-foreground mb-2">
+                      <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
                         {business.business_name}
                       </h1>
-                      <p className="text-foreground/70 text-lg mb-3">
+                      <p className="text-foreground/70 text-base sm:text-lg mb-3">
                         {business.business_description}
                       </p>
                       <div className="flex flex-wrap items-center gap-3">
