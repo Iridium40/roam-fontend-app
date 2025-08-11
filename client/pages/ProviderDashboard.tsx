@@ -7916,7 +7916,7 @@ export default function ProviderDashboard() {
                                         size="sm"
                                         variant="outline"
                                         className="border-red-300 text-red-600 hover:bg-red-50"
-                                        onClick={() => declineBooking(booking.id)}
+                                        onClick={() => openDeclineModal(booking)}
                                       >
                                         Decline
                                       </Button>
