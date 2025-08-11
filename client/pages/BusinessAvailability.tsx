@@ -155,6 +155,7 @@ export default function BusinessAvailability() {
   const [service, setService] = useState<any>(null);
   const [availableBusinesses, setAvailableBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deliveryTypeFilter, setDeliveryTypeFilter] = useState<string>("all");
   const [selectedLocations, setSelectedLocations] = useState<{
     [businessId: string]: any;
   }>({});
