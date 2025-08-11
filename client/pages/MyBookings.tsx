@@ -1178,10 +1178,7 @@ function BookingCard({ booking }: { booking: any }) {
                   size="sm"
                   variant="outline"
                   className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
-                  onClick={() => {
-                    // TODO: Implement cancel booking functionality
-                    console.log("Cancel booking:", booking.id);
-                  }}
+                  onClick={() => openCancelModal(booking)}
                 >
                   <X className="w-4 h-4 mr-2" />
                   Cancel
