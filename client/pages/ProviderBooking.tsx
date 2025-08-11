@@ -1492,7 +1492,7 @@ const ProviderBooking = () => {
                   <Button
                     size="lg"
                     className="w-full bg-roam-blue hover:bg-roam-blue/90 text-white mt-6"
-                    onClick={handleBooking}
+                    onClick={submitBooking}
                     disabled={!isFormValid() || isBooking}
                   >
                     {isBooking ? (
