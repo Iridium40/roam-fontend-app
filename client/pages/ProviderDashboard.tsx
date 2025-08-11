@@ -7766,6 +7766,32 @@ export default function ProviderDashboard() {
                 </div>
               )}
 
+              {/* Calendar View */}
+              {showCalendarView && (
+                <div className="mb-6 p-4 border rounded-lg bg-card">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">
+                      Calendar View -{" "}
+                      {calendarViewType === "week" ? "Week" : "Month"}
+                    </h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowCalendarView(false)}
+                    >
+                      Close
+                    </Button>
+                  </div>
+
+                  <CalendarGrid
+                    bookings={bookings}
+                    viewType={calendarViewType}
+                    currentDate={calendarDate}
+                    onDateChange={setCalendarDate}
+                  />
+                </div>
+              )}
+
               {/* Only show sub-tabs for providers with provider role */}
               {provider?.provider_role === "provider" ? (
                 <Tabs
