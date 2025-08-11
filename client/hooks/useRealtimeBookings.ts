@@ -226,7 +226,43 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
         .limit(10);
 
       if (error) {
-        console.error("Error refreshing bookings:", error);
+        console.error("Error refreshing bookings - Full error object:", error);
+        console.error("Error type:", typeof error);
+        console.error("Error keys:", Object.keys(error || {}));
+
+        // Extract meaningful error message
+        let errorMessage = "Unknown error occurred";
+        if (error) {
+          if (typeof error === "string") {
+            errorMessage = error;
+          } else if (error.message) {
+            errorMessage = error.message;
+          } else if (error.error_description) {
+            errorMessage = error.error_description;
+          } else if (error.details) {
+            errorMessage = error.details;
+          } else if (error.hint) {
+            errorMessage = error.hint;
+          } else if (error.code) {
+            errorMessage = `Database error (${error.code})`;
+          } else {
+            try {
+              errorMessage = JSON.stringify(error);
+            } catch {
+              errorMessage = "Unable to parse error details";
+            }
+          }
+        }
+
+        console.error("Parsed error message:", errorMessage);
+
+        // Show error toast to user
+        toast({
+          title: "Error Refreshing Bookings",
+          description: `Failed to refresh bookings: ${errorMessage}`,
+          variant: "destructive",
+        });
+
         return;
       }
 
