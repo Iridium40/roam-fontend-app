@@ -15394,6 +15394,71 @@ export default function ProviderDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Decline Booking Modal */}
+      <Dialog open={showDeclineModal} onOpenChange={setShowDeclineModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <XCircle className="w-5 h-5" />
+              Decline Booking
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedBookingForDecline && (
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-sm">
+                  {selectedBookingForDecline.services?.name || "Service"}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Customer: {selectedBookingForDecline.customer_profiles?.first_name} {selectedBookingForDecline.customer_profiles?.last_name || selectedBookingForDecline.guest_name}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Date: {new Date(selectedBookingForDecline.booking_date).toLocaleDateString()} at {selectedBookingForDecline.start_time}
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="decline-reason" className="text-sm font-medium">
+                Decline Reason <span className="text-red-500">*</span>
+              </Label>
+              <Textarea
+                id="decline-reason"
+                placeholder="Please provide a reason for declining this booking. This message will be visible to the customer."
+                value={declineReason}
+                onChange={(e) => setDeclineReason(e.target.value)}
+                rows={3}
+                className="resize-none"
+              />
+              <p className="text-xs text-gray-500">
+                The customer will be able to see this reason in their booking details.
+              </p>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowDeclineModal(false);
+                  setSelectedBookingForDecline(null);
+                  setDeclineReason("");
+                }}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={declineBookingWithReason}
+                disabled={!declineReason.trim()}
+                className="flex-1 bg-red-600 hover:bg-red-700"
+              >
+                Decline Booking
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
