@@ -1065,18 +1065,18 @@ export default function BusinessAvailability() {
                   key={business.id}
                   className="hover:shadow-lg transition-shadow cursor-pointer"
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-6">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-start gap-3 sm:gap-6">
                       {/* Business Logo */}
-                      <Avatar className="h-16 w-16">
+                      <Avatar className="h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0">
                         <AvatarImage src={business.logo || undefined} />
-                        <AvatarFallback className="text-lg">
-                          <Building className="w-8 h-8" />
+                        <AvatarFallback className="text-sm sm:text-lg">
+                          <Building className="w-6 h-6 sm:w-8 sm:h-8" />
                         </AvatarFallback>
                       </Avatar>
 
                       {/* Business Information */}
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
