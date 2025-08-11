@@ -1452,10 +1452,7 @@ function BookingCard({ booking, onCancel, onReschedule }: { booking: any; onCanc
                   size="sm"
                   variant="outline"
                   className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                  onClick={() => {
-                    // TODO: Implement reschedule booking functionality
-                    console.log("Reschedule booking:", booking.id);
-                  }}
+                  onClick={() => onReschedule(booking)}
                 >
                   <Edit className="w-4 h-4 mr-2" />
                   Reschedule
