@@ -737,9 +737,17 @@ function BookingCard({ booking }: { booking: any }) {
             </div>
             <div>
               <h3 className="font-semibold text-lg mb-1">{booking.service}</h3>
-              <p className="text-foreground/60 mb-2">
-                with {booking.provider.name}
-              </p>
+              <div className="flex items-center gap-2 mb-2">
+                <p className="text-foreground/60">
+                  with {booking.provider.name}
+                </p>
+                {booking.status === "confirmed" && (
+                  <div className="flex items-center gap-1 text-xs text-roam-blue bg-roam-blue/10 px-2 py-1 rounded-full">
+                    <MessageCircle className="w-3 h-3" />
+                    <span>Messaging Available</span>
+                  </div>
+                )}
+              </div>
               <div className="flex items-center gap-4 text-sm text-foreground/60">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
