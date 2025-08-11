@@ -1052,6 +1052,7 @@ const ProviderBooking = () => {
         admin_notes: bookingForm.notes,
         total_amount: getTotalAmount(),
         service_fee: getTotalAmount() * 0.15, // Platform fee - 15% of total amount
+        remaining_balance: getTotalAmount(), // Initially, the full amount is the remaining balance
         booking_status: "pending",
         payment_status: "pending",
       };
