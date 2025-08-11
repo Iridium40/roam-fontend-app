@@ -641,6 +641,7 @@ export default function MyBookings() {
                   minute: "2-digit",
                 }),
                 status: "pending",
+                booking_status: "pending",
                 reschedule_reason:
                   rescheduleReason.trim() || "Rescheduled by customer",
                 rescheduled_at: new Date().toISOString(),
