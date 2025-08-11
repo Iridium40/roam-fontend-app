@@ -806,7 +806,7 @@ export default function MyBookings() {
                   <>
                     <div className="space-y-4">
                       {activeBookings.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} />
+                        <BookingCard key={booking.id} booking={booking} onCancel={openCancelModal} />
                       ))}
                     </div>
 
