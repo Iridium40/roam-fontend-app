@@ -735,11 +735,11 @@ export default function MyBookings() {
 
       // Show appropriate cancellation message based on refund amount
       const refundMessage =
-        refundAmount === totalAmount
+        refundAmount === 0
+          ? "Your booking has been cancelled successfully. No refund will be processed as per our cancellation policy."
+          : refundAmount === totalAmount
           ? "Your booking has been cancelled successfully. Full refund will be processed."
-          : cancellationFee > 0
-            ? `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`
-            : "Your booking has been cancelled successfully.";
+          : `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`;
 
       toast({
         title: "Booking Cancelled",
