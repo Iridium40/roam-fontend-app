@@ -37,6 +37,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import useRealtimeBookings from "@/hooks/useRealtimeBookings";
+import RealtimeBookingNotifications from "@/components/RealtimeBookingNotifications";
+import BookingStatusIndicator, { RealtimeStatusUpdate } from "@/components/BookingStatusIndicator";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
