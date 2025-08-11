@@ -401,6 +401,20 @@ export default function ProviderDashboard() {
     teamMembers: 0,
     servicesOffered: 0,
   });
+
+  // Real-time booking updates for providers
+  const { isConnected, refreshBookings } = useRealtimeBookings({
+    userId: user?.id,
+    userType: 'provider',
+    onStatusChange: (bookingUpdate) => {
+      // Update the specific booking in our local state
+      setBookings(prev => prev.map(booking =>
+        booking.id === bookingUpdate.id
+          ? { ...booking, status: bookingUpdate.status, updated_at: bookingUpdate.updated_at }
+          : booking
+      ));
+    },
+  });
   const [businessHours, setBusinessHours] = useState<any>(null);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
