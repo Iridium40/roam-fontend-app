@@ -6437,6 +6437,22 @@ export default function ProviderDashboard() {
     return filtered;
   };
 
+  // Get bookings for selected date
+  const getSelectedDateBookings = () => {
+    if (!selectedDate) return [];
+
+    const selectedDateStr = selectedDate.toISOString().split("T")[0];
+    return bookings.filter((booking) => {
+      const bookingDate = new Date(booking.booking_date)
+        .toISOString()
+        .split("T")[0];
+      return bookingDate === selectedDateStr;
+    }).sort((a, b) => {
+      // Sort by start time
+      return a.start_time.localeCompare(b.start_time);
+    });
+  };
+
   // Accept booking function
   const acceptBooking = async (bookingId: string) => {
     console.log('Accept booking called with ID:', bookingId);
