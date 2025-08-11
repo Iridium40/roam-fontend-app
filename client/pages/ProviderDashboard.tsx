@@ -6434,8 +6434,7 @@ export default function ProviderDashboard() {
         .from('bookings')
         .update({
           booking_status: 'declined',
-          decline_reason: declineReason.trim(),
-          updated_at: new Date().toISOString()
+          decline_reason: declineReason.trim()
         })
         .eq('id', selectedBookingForDecline.id);
 
