@@ -1224,6 +1224,7 @@ const ProviderBooking = () => {
         description: errorMessage,
         variant: "destructive",
       });
+      setIsBooking(false);
     }
   };
 
