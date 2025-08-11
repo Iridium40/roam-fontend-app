@@ -7710,6 +7710,10 @@ export default function ProviderDashboard() {
                     <User className="w-4 h-4 mr-2" />
                     Profile Settings
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowShareModal(true)}>
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share Booking Page
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
                     <LogOut className="w-4 h-4 mr-2" />
