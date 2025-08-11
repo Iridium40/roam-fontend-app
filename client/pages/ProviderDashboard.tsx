@@ -7922,12 +7922,6 @@ export default function ProviderDashboard() {
               >
                 Share
               </TabsTrigger>
-              <TabsTrigger
-                value="settings"
-                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-              >
-                Settings
-              </TabsTrigger>
             </TabsList>
 
             {/* Bookings Tab */}
