@@ -668,7 +668,7 @@ export default function BusinessProfile() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative -mt-32 mb-8">
-            <Card className="p-6 bg-background/95 backdrop-blur-sm border-border/50 relative">
+            <Card className="p-6 bg-background/70 backdrop-blur-sm border-border/30 relative">
               {/* Heart icon in top right corner */}
               <div className="absolute top-4 right-4 z-10">
                 <FavoriteButton
