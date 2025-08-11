@@ -661,6 +661,11 @@ export default function MyBookings() {
       setNewBookingTime("");
       setRescheduleReason("");
 
+      // Force refresh bookings to ensure we get the latest status from database
+      if (refreshBookings) {
+        refreshBookings();
+      }
+
       toast({
         title: "Reschedule Request Sent",
         description:
