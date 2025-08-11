@@ -1411,33 +1411,36 @@ export default function BusinessAvailability() {
                               </div>
                             )}
 
-                            <div className="flex items-center gap-4 text-sm text-foreground/60">
-                              {business.verification_status === "approved" && (
-                                <div className="flex items-center gap-1 text-green-600">
-                                  <Shield className="w-4 h-4" />
-                                  <span>Verified</span>
-                                </div>
-                              )}
-                              {business.years_in_business && (
-                                <span>
-                                  {business.years_in_business} years in business
-                                </span>
-                              )}
-                            </div>
-                          </div>
+                            {/* Mobile-responsive business info and rating section */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-foreground/60">
+                                {business.verification_status === "approved" && (
+                                  <div className="flex items-center gap-1 text-green-600">
+                                    <Shield className="w-4 h-4 flex-shrink-0" />
+                                    <span>Verified</span>
+                                  </div>
+                                )}
+                                {business.years_in_business && (
+                                  <span className="text-xs sm:text-sm">
+                                    {business.years_in_business} years in business
+                                  </span>
+                                )}
+                              </div>
 
-                          <div className="text-right">
-                            <div className="flex items-center gap-1 mb-2">
-                              <Star className="w-4 h-4 text-roam-warning fill-current" />
-                              <span className="font-semibold">
-                                {business.rating}
-                              </span>
-                              <span className="text-sm text-foreground/60">
-                                ({business.reviewCount})
-                              </span>
-                            </div>
-                            <div className="text-lg font-bold text-roam-blue">
-                              ${business.servicePrice}
+                              <div className="flex items-center justify-between sm:justify-end sm:text-right">
+                                <div className="flex items-center gap-1">
+                                  <Star className="w-4 h-4 text-roam-warning fill-current" />
+                                  <span className="font-semibold text-sm sm:text-base">
+                                    {business.rating}
+                                  </span>
+                                  <span className="text-xs sm:text-sm text-foreground/60">
+                                    ({business.reviewCount})
+                                  </span>
+                                </div>
+                                <div className="text-lg sm:text-xl font-bold text-roam-blue ml-4">
+                                  ${business.servicePrice}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
