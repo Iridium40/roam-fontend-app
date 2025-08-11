@@ -53,6 +53,56 @@ export default function BusinessAvailability() {
   const { toast } = useToast();
   const { customer, isCustomer } = useAuth();
 
+  // Service category icon mapping
+  const getServiceIcon = (serviceName: string, categoryId?: string) => {
+    const name = serviceName?.toLowerCase() || "";
+
+    // Health & Wellness
+    if (name.includes("weight loss") || name.includes("fitness") || name.includes("nutrition")) {
+      return <Dumbbell className="w-5 h-5 text-roam-blue" />;
+    }
+    if (name.includes("massage") || name.includes("spa") || name.includes("wellness")) {
+      return <Heart className="w-5 h-5 text-roam-blue" />;
+    }
+    if (name.includes("medical") || name.includes("health") || name.includes("therapy")) {
+      return <Stethoscope className="w-5 h-5 text-roam-blue" />;
+    }
+
+    // Beauty & Personal Care
+    if (name.includes("hair") || name.includes("salon") || name.includes("barber")) {
+      return <Scissors className="w-5 h-5 text-roam-blue" />;
+    }
+    if (name.includes("nail") || name.includes("beauty") || name.includes("makeup")) {
+      return <Brush className="w-5 h-5 text-roam-blue" />;
+    }
+
+    // Home & Professional Services
+    if (name.includes("cleaning") || name.includes("home") || name.includes("house")) {
+      return <Home className="w-5 h-5 text-roam-blue" />;
+    }
+    if (name.includes("repair") || name.includes("maintenance") || name.includes("handyman")) {
+      return <Wrench className="w-5 h-5 text-roam-blue" />;
+    }
+
+    // Education & Training
+    if (name.includes("tutoring") || name.includes("lesson") || name.includes("coaching")) {
+      return <GraduationCap className="w-5 h-5 text-roam-blue" />;
+    }
+
+    // Photography & Events
+    if (name.includes("photo") || name.includes("photography") || name.includes("video")) {
+      return <Camera className="w-5 h-5 text-roam-blue" />;
+    }
+
+    // Food & Catering
+    if (name.includes("catering") || name.includes("food") || name.includes("chef")) {
+      return <Utensils className="w-5 h-5 text-roam-blue" />;
+    }
+
+    // Default icon
+    return <Star className="w-5 h-5 text-roam-blue" />;
+  };
+
   const selectedDate = searchParams.get("date");
   const selectedTime = searchParams.get("time");
   const promotionId = searchParams.get("promotion");
