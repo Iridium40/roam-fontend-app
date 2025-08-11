@@ -68,6 +68,7 @@ const getDeliveryLabel = (type: string) => {
 
 export default function MyBookings() {
   const { user, customer, userType, loading: authLoading } = useAuth();
+  const { toast } = useToast();
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
