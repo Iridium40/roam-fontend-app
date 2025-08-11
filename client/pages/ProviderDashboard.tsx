@@ -8226,6 +8226,22 @@ export default function ProviderDashboard() {
                                             </span>
                                           )}
                                         </div>
+
+                                        {/* Booking Reference */}
+                                        {booking.booking_reference && (
+                                          <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-lg border-l-4 border-roam-blue">
+                                            <Hash className="w-4 h-4 text-roam-blue" />
+                                            <div>
+                                              <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                                Booking Reference
+                                              </span>
+                                              <p className="text-sm font-mono font-semibold text-gray-900">
+                                                {booking.booking_reference}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        )}
+
                                         <div className="flex items-center gap-4 text-sm text-foreground/60">
                                           <div className="flex items-center gap-1">
                                             <Calendar className="w-4 h-4" />
