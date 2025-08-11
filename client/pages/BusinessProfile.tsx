@@ -668,7 +668,18 @@ export default function BusinessProfile() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative -mt-32 mb-8">
-            <Card className="p-6 bg-background/95 backdrop-blur-sm border-border/50">
+            <Card className="p-6 bg-background/95 backdrop-blur-sm border-border/50 relative">
+              {/* Heart icon in top right corner */}
+              <div className="absolute top-4 right-4 z-10">
+                <FavoriteButton
+                  type="business"
+                  itemId={business.id}
+                  size="sm"
+                  variant="ghost"
+                  showText={false}
+                  className="hover:bg-background/80 p-2"
+                />
+              </div>
               <div className="flex flex-col md:flex-row items-start gap-6">
                 <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
                   <AvatarImage
