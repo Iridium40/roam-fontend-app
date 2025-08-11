@@ -6375,16 +6375,33 @@ export default function ProviderDashboard() {
     }
   };
 
-  // Decline booking function
-  const declineBooking = async (bookingId: string) => {
+  // Open decline modal function
+  const openDeclineModal = (booking: any) => {
+    setSelectedBookingForDecline(booking);
+    setDeclineReason("");
+    setShowDeclineModal(true);
+  };
+
+  // Decline booking function with reason
+  const declineBookingWithReason = async () => {
+    if (!selectedBookingForDecline || !declineReason.trim()) {
+      toast({
+        title: "Decline Reason Required",
+        description: "Please provide a reason for declining this booking.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('bookings')
         .update({
           booking_status: 'declined',
+          decline_reason: declineReason.trim(),
           updated_at: new Date().toISOString()
         })
-        .eq('id', bookingId);
+        .eq('id', selectedBookingForDecline.id);
 
       if (error) {
         throw error;
@@ -6392,14 +6409,24 @@ export default function ProviderDashboard() {
 
       // Update local state
       setBookings(prev => prev.map(booking =>
-        booking.id === bookingId
-          ? { ...booking, booking_status: 'declined', updated_at: new Date().toISOString() }
+        booking.id === selectedBookingForDecline.id
+          ? {
+              ...booking,
+              booking_status: 'declined',
+              decline_reason: declineReason.trim(),
+              updated_at: new Date().toISOString()
+            }
           : booking
       ));
 
+      // Close modal and reset state
+      setShowDeclineModal(false);
+      setSelectedBookingForDecline(null);
+      setDeclineReason("");
+
       toast({
         title: "Booking Declined",
-        description: "The booking has been declined.",
+        description: "The booking has been declined with reason provided to customer.",
       });
     } catch (error) {
       console.error('Error declining booking:', error);
