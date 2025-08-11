@@ -449,14 +449,38 @@ const CalendarGrid = ({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 text-sm text-foreground/60">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-roam-blue bg-roam-blue/10 border rounded"></div>
-          <span>Today</span>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-yellow-100 border border-yellow-300 rounded"></div>
+          <span>Pending</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-green-300 bg-green-50 border rounded"></div>
-          <span>Has Bookings</span>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-green-100 border border-green-300 rounded"></div>
+          <span>Confirmed</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
+          <span>In Progress</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-emerald-100 border border-emerald-300 rounded"></div>
+          <span>Completed</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-orange-100 border border-orange-300 rounded"></div>
+          <span>Declined</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-red-100 border border-red-300 rounded"></div>
+          <span>Cancelled</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-gray-100 border border-gray-300 rounded"></div>
+          <span>No Show</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 ring-2 ring-roam-blue ring-offset-1 bg-white rounded"></div>
+          <span>Today</span>
         </div>
       </div>
     </div>
