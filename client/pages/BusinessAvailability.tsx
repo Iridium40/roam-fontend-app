@@ -1077,20 +1077,20 @@ export default function BusinessAvailability() {
 
                       {/* Business Information */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-3">
+                        <div className="mb-3">
                           <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-xl font-semibold">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                              <h3 className="text-lg sm:text-xl font-semibold truncate">
                                 {business.name}
                               </h3>
                               {business.is_featured && (
-                                <Badge className="bg-roam-yellow text-gray-900 text-xs">
+                                <Badge className="bg-roam-yellow text-gray-900 text-xs self-start">
                                   <Star className="w-3 h-3 mr-1" />
                                   Featured
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-foreground/70 mb-2">
+                            <p className="text-sm sm:text-base text-foreground/70 mb-2 line-clamp-2">
                               {business.description}
                             </p>
                             {/* Delivery Type Selection for both_locations */}
