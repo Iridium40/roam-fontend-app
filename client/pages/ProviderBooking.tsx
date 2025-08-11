@@ -346,7 +346,7 @@ const ProviderBooking = () => {
               description: item.service_addons.description,
               image_url: item.service_addons.image_url,
               is_recommended: item.is_recommended,
-              price: 0, // Default price - you may want to add pricing logic
+              price: 25.00, // Default addon price - should be moved to business pricing table
             }));
         }
       } else {
