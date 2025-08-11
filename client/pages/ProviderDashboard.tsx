@@ -398,34 +398,48 @@ const CalendarGrid = ({
           const dayBookings = getBookingsForDate(date);
           const isCurrentDay = isToday(date);
           const isCurrentMonthDay = isCurrentMonth(date);
+          const isSelected = isSelectedDate(date);
+          const dayBgColor = getDayBackgroundColor(dayBookings);
 
           return (
             <div
               key={index}
+              onClick={() => onDateSelect(date)}
               className={`
-                min-h-24 p-2 border rounded-lg relative
-                ${isCurrentDay ? "bg-roam-blue/10 border-roam-blue" : "bg-background"}
+                min-h-24 p-2 border rounded-lg relative cursor-pointer transition-all hover:shadow-md
+                ${isCurrentDay ? "ring-2 ring-roam-blue ring-offset-1" : ""}
+                ${isSelected ? "bg-roam-blue/20 border-roam-blue shadow-md" : "bg-background"}
                 ${!isCurrentMonthDay && viewType === "month" ? "opacity-30" : ""}
-                ${dayBookings.length > 0 ? "border-green-300 bg-green-50" : ""}
+                ${dayBookings.length > 0 && !isSelected ? dayBgColor : ""}
               `}
             >
-              <div className="font-medium text-sm mb-1">{date.getDate()}</div>
+              <div className="font-medium text-sm mb-1 flex items-center justify-between">
+                <span>{date.getDate()}</span>
+                {dayBookings.length > 0 && (
+                  <span className="text-xs bg-roam-blue text-white rounded-full w-5 h-5 flex items-center justify-center">
+                    {dayBookings.length}
+                  </span>
+                )}
+              </div>
 
               {/* Booking indicators */}
               <div className="space-y-1">
-                {dayBookings.slice(0, 3).map((booking, bookingIndex) => (
+                {dayBookings.slice(0, 2).map((booking, bookingIndex) => (
                   <div
                     key={bookingIndex}
-                    className="text-xs p-1 rounded bg-roam-blue/20 text-roam-blue truncate"
-                    title={`${booking.services?.name || "Service"} - ${booking.start_time}`}
+                    className={`text-xs p-1 rounded truncate ${getBookingStatusColor(booking.booking_status)}`}
+                    title={`${booking.services?.name || "Service"} - ${booking.start_time} (${booking.booking_status})`}
                   >
-                    {booking.start_time} {booking.services?.name || "Service"}
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-current opacity-60"></div>
+                      <span>{booking.start_time}</span>
+                    </div>
                   </div>
                 ))}
 
-                {dayBookings.length > 3 && (
-                  <div className="text-xs text-foreground/60">
-                    +{dayBookings.length - 3} more
+                {dayBookings.length > 2 && (
+                  <div className="text-xs text-foreground/60 font-medium">
+                    +{dayBookings.length - 2} more
                   </div>
                 )}
               </div>
