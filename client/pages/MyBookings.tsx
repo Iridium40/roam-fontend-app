@@ -1224,26 +1224,25 @@ export default function MyBookings() {
                             ${cancellationDetails.totalAmount.toFixed(2)}
                           </span>
                         </div>
-                        {cancellationDetails.isWithin24Hours && (
+                        {(cancellationDetails.isWithin24Hours || cancellationDetails.isPastBooking) && (
                           <>
                             <div className="flex justify-between text-red-600">
                               <span>Cancellation Fee:</span>
                               <span className="font-medium">
-                                -$
-                                {cancellationDetails.cancellationFee.toFixed(2)}
+                                ${cancellationDetails.cancellationFee.toFixed(2)}
                               </span>
                             </div>
                             <div className="border-t pt-1 mt-1">
                               <div className="flex justify-between font-medium">
                                 <span>Refund Amount:</span>
-                                <span className="text-green-600">
+                                <span className="text-red-600">
                                   ${cancellationDetails.refundAmount.toFixed(2)}
                                 </span>
                               </div>
                             </div>
                           </>
                         )}
-                        {!cancellationDetails.isWithin24Hours && (
+                        {!cancellationDetails.isWithin24Hours && !cancellationDetails.isPastBooking && (
                           <div className="flex justify-between font-medium text-green-600">
                             <span>Refund Amount:</span>
                             <span>
