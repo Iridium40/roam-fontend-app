@@ -912,12 +912,12 @@ export default function BusinessProfile() {
             {selectedService && (
               <Card className="border-2 border-roam-blue bg-roam-blue/5 mb-8">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-xl text-roam-blue">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-lg sm:text-xl text-roam-blue">
                         Selected Service
                       </CardTitle>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1 break-words">
                         Ready to book •{" "}
                         {searchParams.get("date") &&
                           new Date(
