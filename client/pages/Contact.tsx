@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import ChatBot from "@/components/ChatBot";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -31,6 +32,7 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -308,13 +310,13 @@ export default function Contact() {
                 <p className="text-sm text-foreground/70 mb-4">
                   Get instant answers to common questions with our AI-powered chat assistant.
                 </p>
-                <Badge variant="secondary" className="mb-4">
-                  Coming Soon
+                <Badge variant="default" className="mb-4 bg-green-100 text-green-700">
+                  Available Now
                 </Badge>
                 <Button
                   variant="outline"
                   className="w-full"
-                  disabled
+                  onClick={() => setIsChatOpen(true)}
                 >
                   <Bot className="w-4 h-4 mr-2" />
                   Chat with AI Assistant
@@ -362,6 +364,9 @@ export default function Contact() {
           </Card>
         </div>
       </div>
+
+      {/* Chat Bot */}
+      <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 }
