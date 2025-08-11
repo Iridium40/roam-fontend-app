@@ -789,20 +789,20 @@ function BookingCard({ booking }: { booking: any }) {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-start gap-4">
-            <Avatar className="w-16 h-16">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+          <div className="flex items-start gap-4 min-w-0 flex-1">
+            <Avatar className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0">
               <AvatarImage
                 src={booking.provider.image}
                 alt={booking.provider.name}
                 className="object-cover"
               />
-              <AvatarFallback className="bg-gradient-to-br from-roam-blue to-roam-light-blue text-white text-lg font-semibold">
+              <AvatarFallback className="bg-gradient-to-br from-roam-blue to-roam-light-blue text-white text-sm sm:text-lg font-semibold">
                 {booking.provider.firstName?.[0]?.toUpperCase() || ''}
                 {booking.provider.lastName?.[0]?.toUpperCase() || ''}
               </AvatarFallback>
             </Avatar>
-            <div>
+            <div className="min-w-0 flex-1">
               <h3 className="font-semibold text-lg mb-1">{booking.service}</h3>
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-foreground/60">
