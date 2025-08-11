@@ -1678,7 +1678,7 @@ const ProviderBooking = () => {
                       ) : (
                         <>
                           <Calendar className="w-5 h-5 mr-2" />
-                          Confirm Booking & Checkout
+                          Confirm & Checkout
                         </>
                       )}
                     </Button>
