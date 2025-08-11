@@ -739,9 +739,17 @@ function BookingCard({ booking }: { booking: any }) {
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
-              <Calendar className="w-8 h-8 text-white" />
-            </div>
+            <Avatar className="w-16 h-16">
+              <AvatarImage
+                src={booking.provider.image}
+                alt={booking.provider.name}
+                className="object-cover"
+              />
+              <AvatarFallback className="bg-gradient-to-br from-roam-blue to-roam-light-blue text-white text-lg font-semibold">
+                {booking.provider.firstName?.[0]?.toUpperCase() || ''}
+                {booking.provider.lastName?.[0]?.toUpperCase() || ''}
+              </AvatarFallback>
+            </Avatar>
             <div>
               <h3 className="font-semibold text-lg mb-1">{booking.service}</h3>
               <div className="flex items-center gap-2 mb-2">
