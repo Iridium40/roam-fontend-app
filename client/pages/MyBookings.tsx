@@ -491,6 +491,85 @@ export default function MyBookings() {
     });
   };
 
+  // Open cancel modal
+  const openCancelModal = (booking: any) => {
+    setSelectedBookingForCancel(booking);
+    setCancellationReason("");
+    setShowCancelModal(true);
+  };
+
+  // Cancel booking function
+  const cancelBooking = async () => {
+    if (!selectedBookingForCancel || !currentUser) {
+      toast({
+        title: "Error",
+        description: "Unable to cancel booking. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({
+          booking_status: 'cancelled',
+          cancelled_at: new Date().toISOString(),
+          cancelled_by: currentUser.id,
+          cancellation_reason: cancellationReason.trim() || 'Cancelled by customer'
+        })
+        .eq('id', selectedBookingForCancel.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings(prev => prev.map(booking =>
+        booking.id === selectedBookingForCancel.id
+          ? {
+              ...booking,
+              status: 'cancelled',
+              cancelled_at: new Date().toISOString(),
+              cancelled_by: currentUser.id,
+              cancellation_reason: cancellationReason.trim() || 'Cancelled by customer'
+            }
+          : booking
+      ));
+
+      // Close modal and reset state
+      setShowCancelModal(false);
+      setSelectedBookingForCancel(null);
+      setCancellationReason("");
+
+      toast({
+        title: "Booking Cancelled",
+        description: "Your booking has been cancelled successfully.",
+      });
+    } catch (error: any) {
+      console.error('Error cancelling booking:', error);
+      let errorMessage = 'Unknown error occurred';
+
+      if (error) {
+        if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        }
+      }
+
+      toast({
+        title: "Error Cancelling Booking",
+        description: `Failed to cancel booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
