@@ -6430,11 +6430,12 @@ export default function ProviderDashboard() {
         title: "Booking Declined",
         description: "The booking has been declined with reason provided to customer.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error declining booking:', error);
+      const errorMessage = error?.message || error?.error_description || 'Unknown error occurred';
       toast({
-        title: "Error",
-        description: "Failed to decline booking. Please try again.",
+        title: "Error Declining Booking",
+        description: `Failed to decline booking: ${errorMessage}`,
         variant: "destructive",
       });
     }
