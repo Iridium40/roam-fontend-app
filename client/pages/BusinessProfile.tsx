@@ -757,9 +757,19 @@ export default function BusinessProfile() {
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="mb-6">
+          {/* Desktop Tabs - Hidden on mobile */}
+          <TabsList className="hidden sm:grid w-full grid-cols-5 gap-1 mb-6">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="services">Services ({services.length})</TabsTrigger>
+            <TabsTrigger value="hours">Hours</TabsTrigger>
+            <TabsTrigger value="team">Team ({providers.length})</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
+          </TabsList>
+
+          {/* Mobile Dropdown - Hidden on desktop */}
+          <div className="mb-6 sm:hidden">
             <Select value={activeTab} onValueChange={setActiveTab}>
-              <SelectTrigger className="w-full sm:w-64">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a section" />
               </SelectTrigger>
               <SelectContent>
