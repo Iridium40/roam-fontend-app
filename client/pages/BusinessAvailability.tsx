@@ -31,6 +31,16 @@ import {
   Users,
   Map,
   Car,
+  Heart,
+  Dumbbell,
+  Scissors,
+  Brush,
+  Stethoscope,
+  Home,
+  Wrench,
+  GraduationCap,
+  Camera,
+  Utensils,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -209,6 +219,7 @@ export default function BusinessAvailability() {
           id,
           name,
           description,
+          category_id,
           min_price,
           duration_minutes,
           image_url
