@@ -6378,7 +6378,7 @@ export default function ProviderDashboard() {
       const { error } = await supabase
         .from('bookings')
         .update({
-          booking_status: 'cancelled',
+          booking_status: 'declined',
           updated_at: new Date().toISOString()
         })
         .eq('id', bookingId);
@@ -6390,13 +6390,13 @@ export default function ProviderDashboard() {
       // Update local state
       setBookings(prev => prev.map(booking =>
         booking.id === bookingId
-          ? { ...booking, booking_status: 'cancelled', updated_at: new Date().toISOString() }
+          ? { ...booking, booking_status: 'declined', updated_at: new Date().toISOString() }
           : booking
       ));
 
       toast({
         title: "Booking Declined",
-        description: "The booking has been cancelled.",
+        description: "The booking has been declined.",
       });
     } catch (error) {
       console.error('Error declining booking:', error);
