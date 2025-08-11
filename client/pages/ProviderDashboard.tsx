@@ -6492,17 +6492,39 @@ export default function ProviderDashboard() {
     if (!selectedDate) return [];
 
     const selectedDateStr = selectedDate.toISOString().split("T")[0];
-    return bookings
+    let filtered = bookings
       .filter((booking) => {
         const bookingDate = new Date(booking.booking_date)
           .toISOString()
           .split("T")[0];
         return bookingDate === selectedDateStr;
-      })
-      .sort((a, b) => {
-        // Sort by start time
-        return a.start_time.localeCompare(b.start_time);
       });
+
+    // Apply search filtering
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((booking) => {
+        // Search in booking reference
+        const bookingRef = booking.booking_reference?.toLowerCase() || "";
+
+        // Search in customer name (handle both customer_profiles and guest_name)
+        const customerName = booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
+          : (booking.guest_name || "").toLowerCase();
+
+        // Search in customer email
+        const customerEmail = booking.customer_profiles?.email?.toLowerCase() || "";
+
+        return bookingRef.includes(query) ||
+               customerName.includes(query) ||
+               customerEmail.includes(query);
+      });
+    }
+
+    return filtered.sort((a, b) => {
+      // Sort by start time
+      return a.start_time.localeCompare(b.start_time);
+    });
   };
 
   // Accept booking function
