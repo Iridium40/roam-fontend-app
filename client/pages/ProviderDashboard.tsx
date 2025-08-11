@@ -6758,6 +6758,71 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Complete booking function
+  const completeBooking = async (bookingId: string) => {
+    console.log("Complete booking called with ID:", bookingId);
+
+    try {
+      console.log("Attempting to update booking status to completed...");
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_status: "completed",
+        })
+        .eq("id", bookingId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, booking_status: "completed" }
+            : booking,
+        ),
+      );
+
+      toast({
+        title: "Booking Completed",
+        description: "The booking has been marked as completed successfully.",
+      });
+    } catch (error: any) {
+      console.error("Error completing booking:", error);
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
+        }
+      }
+
+      toast({
+        title: "Error Completing Booking",
+        description: `Failed to complete booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  };
+
   // Load all providers for owners/dispatchers
   const loadAllProviders = async () => {
     if (!isOwner && !isDispatcher) {
