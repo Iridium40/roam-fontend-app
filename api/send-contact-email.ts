@@ -18,23 +18,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     console.log("Processing contact form submission...");
-    
+
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     const { to, from, subject, html } = body;
 
-    console.log("Form data received:", { to, from, subject: subject?.substring(0, 50) });
+    console.log("Form data received:", {
+      to,
+      from,
+      subject: subject?.substring(0, 50),
+    });
 
     // Validate required fields
     if (!to || !from || !subject || !html) {
-      console.log("Missing required fields:", { to: !!to, from: !!from, subject: !!subject, html: !!html });
-      return res.status(400).json({ 
+      console.log("Missing required fields:", {
+        to: !!to,
+        from: !!from,
+        subject: !!subject,
+        html: !!html,
+      });
+      return res.status(400).json({
         error: "Missing required fields",
         missing: {
           to: !to,
           from: !from,
           subject: !subject,
-          html: !html
-        }
+          html: !html,
+        },
       });
     }
 
@@ -58,27 +67,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Extract the actual message content from HTML
     const messageContent = html
-      .replace(/<h2>New Contact Form Submission<\/h2>/, '')
-      .replace(/<p><strong>Name:<\/strong>.*?<\/p>/, '')
-      .replace(/<p><strong>Email:<\/strong>.*?<\/p>/, '')
-      .replace(/<p><strong>Subject:<\/strong>.*?<\/p>/, '')
-      .replace(/<p><strong>Message:<\/strong><\/p>/, '')
-      .replace(/<p>|<\/p>/g, '')
-      .replace(/<br>/g, '\n')
+      .replace(/<h2>New Contact Form Submission<\/h2>/, "")
+      .replace(/<p><strong>Name:<\/strong>.*?<\/p>/, "")
+      .replace(/<p><strong>Email:<\/strong>.*?<\/p>/, "")
+      .replace(/<p><strong>Subject:<\/strong>.*?<\/p>/, "")
+      .replace(/<p><strong>Message:<\/strong><\/p>/, "")
+      .replace(/<p>|<\/p>/g, "")
+      .replace(/<br>/g, "\n")
       .trim();
 
     // Store contact submission in Supabase
     const contactSubmission = {
       from_email: from,
       to_email: to,
-      subject: subject.replace('Contact Form: ', ''),
+      subject: subject.replace("Contact Form: ", ""),
       message: messageContent,
-      status: 'received',
+      status: "received",
       created_at: new Date().toISOString(),
     };
 
     const { data, error: supabaseError } = await supabase
-      .from('contact_submissions')
+      .from("contact_submissions")
       .insert([contactSubmission])
       .select()
       .single();
@@ -102,19 +111,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       from,
       subject,
       timestamp: new Date().toISOString(),
-      submissionId: data?.id
+      submissionId: data?.id,
     });
 
-    return res.status(200).json({ 
-      success: true, 
+    return res.status(200).json({
+      success: true,
       message: "Contact form submitted successfully",
-      submissionId: data?.id
+      submissionId: data?.id,
     });
   } catch (error: any) {
     console.error("Error processing contact form:", error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 }

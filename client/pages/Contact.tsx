@@ -35,7 +35,7 @@ export default function Contact() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -76,9 +76,11 @@ export default function Contact() {
         console.error("Email send failed:", {
           status: response.status,
           statusText: response.statusText,
-          data: responseData
+          data: responseData,
         });
-        throw new Error(responseData.error || `Server error: ${response.status}`);
+        throw new Error(
+          responseData.error || `Server error: ${response.status}`,
+        );
       }
 
       setIsSubmitted(true);
@@ -98,7 +100,8 @@ export default function Contact() {
       console.error("Error sending email:", error);
       toast({
         title: "Error sending message",
-        description: "Please try again or contact us directly at contactus@roamyourbestlife.com",
+        description:
+          "Please try again or contact us directly at contactus@roamyourbestlife.com",
         variant: "destructive",
       });
     } finally {
@@ -124,8 +127,8 @@ export default function Contact() {
             Contact Us
           </h1>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            We're here to help! Reach out to us through any of the channels below
-            and our team will get back to you as soon as possible.
+            We're here to help! Reach out to us through any of the channels
+            below and our team will get back to you as soon as possible.
           </p>
         </div>
       </div>
@@ -152,7 +155,8 @@ export default function Contact() {
                       Message Sent Successfully!
                     </h3>
                     <p className="text-foreground/70 mb-6">
-                      Thank you for contacting us. We'll get back to you within 24 hours.
+                      Thank you for contacting us. We'll get back to you within
+                      24 hours.
                     </p>
                     <Button
                       onClick={() => setIsSubmitted(false)}
@@ -276,7 +280,8 @@ export default function Contact() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-foreground/70 mb-4">
-                  Connect with us on social media for updates, tips, and community discussions.
+                  Connect with us on social media for updates, tips, and
+                  community discussions.
                 </p>
                 <div className="flex gap-3">
                   <a
@@ -315,9 +320,13 @@ export default function Contact() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-foreground/70 mb-4">
-                  Get instant answers to common questions with our AI-powered chat assistant.
+                  Get instant answers to common questions with our AI-powered
+                  chat assistant.
                 </p>
-                <Badge variant="default" className="mb-4 bg-green-100 text-green-700">
+                <Badge
+                  variant="default"
+                  className="mb-4 bg-green-100 text-green-700"
+                >
                   Available Now
                 </Badge>
                 <Button
@@ -359,13 +368,12 @@ export default function Contact() {
         <div className="mt-12 text-center">
           <Card>
             <CardContent className="py-6">
-              <h3 className="text-xl font-semibold mb-4">
-                We're Here to Help
-              </h3>
+              <h3 className="text-xl font-semibold mb-4">We're Here to Help</h3>
               <p className="text-foreground/70 max-w-2xl mx-auto">
-                Whether you're a customer looking for services or a provider wanting to join our platform,
-                our team is dedicated to providing you with the best possible experience. Don't hesitate
-                to reach out with any questions, feedback, or suggestions.
+                Whether you're a customer looking for services or a provider
+                wanting to join our platform, our team is dedicated to providing
+                you with the best possible experience. Don't hesitate to reach
+                out with any questions, feedback, or suggestions.
               </p>
             </CardContent>
           </Card>

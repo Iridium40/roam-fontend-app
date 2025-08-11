@@ -39,7 +39,9 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import useRealtimeBookings from "@/hooks/useRealtimeBookings";
 import RealtimeBookingNotifications from "@/components/RealtimeBookingNotifications";
-import BookingStatusIndicator, { RealtimeStatusUpdate } from "@/components/BookingStatusIndicator";
+import BookingStatusIndicator, {
+  RealtimeStatusUpdate,
+} from "@/components/BookingStatusIndicator";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -71,14 +73,20 @@ export default function MyBookings() {
   // Real-time booking updates
   const { isConnected, refreshBookings } = useRealtimeBookings({
     userId: currentUser?.id,
-    userType: 'customer',
+    userType: "customer",
     onStatusChange: (bookingUpdate) => {
       // Update the specific booking in our local state
-      setBookings(prev => prev.map(booking =>
-        booking.id === bookingUpdate.id
-          ? { ...booking, status: bookingUpdate.status, updated_at: bookingUpdate.updated_at }
-          : booking
-      ));
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingUpdate.id
+            ? {
+                ...booking,
+                status: bookingUpdate.status,
+                updated_at: bookingUpdate.updated_at,
+              }
+            : booking,
+        ),
+      );
     },
   });
 
@@ -546,7 +554,10 @@ export default function MyBookings() {
                 maxNotifications={5}
               />
               {isConnected && (
-                <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-green-50 text-green-700"
+                >
                   Live Updates
                 </Badge>
               )}
@@ -928,7 +939,9 @@ function BookingCard({ booking }: { booking: any }) {
               currentStatus={booking.status}
               onStatusChange={(newStatus) => {
                 // This will also be handled by the real-time hook
-                console.log(`Booking ${booking.id} status changed to ${newStatus}`);
+                console.log(
+                  `Booking ${booking.id} status changed to ${newStatus}`,
+                );
               }}
             />
             {booking.status === "completed" &&

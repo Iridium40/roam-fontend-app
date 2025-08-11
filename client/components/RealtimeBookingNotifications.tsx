@@ -20,12 +20,14 @@ import {
   Maximize2,
   Minimize2,
 } from "lucide-react";
-import useRealtimeBookings, { BookingUpdate } from "@/hooks/useRealtimeBookings";
+import useRealtimeBookings, {
+  BookingUpdate,
+} from "@/hooks/useRealtimeBookings";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 interface RealtimeBookingNotificationsProps {
-  userType?: 'customer' | 'provider' | 'business';
+  userType?: "customer" | "provider" | "business";
   className?: string;
   showConnectionStatus?: boolean;
   maxNotifications?: number;
@@ -46,33 +48,32 @@ export default function RealtimeBookingNotifications({
   const [notifications, setNotifications] = useState<BookingUpdate[]>([]);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
 
-  const {
-    isConnected,
-    bookingUpdates,
-    lastUpdate,
-    refreshBookings,
-  } = useRealtimeBookings({
-    userId: user?.id,
-    userType,
-    enableNotifications: false, // We'll handle notifications in this component
-    onStatusChange: (booking) => {
-      // Add to notifications if not dismissed
-      if (!dismissedIds.has(booking.id)) {
-        setNotifications(prev => [booking, ...prev.slice(0, maxNotifications - 1)]);
-        
-        // Auto-hide notification after delay
-        if (autoHide) {
-          setTimeout(() => {
-            dismissNotification(booking.id);
-          }, autoHideDelay);
+  const { isConnected, bookingUpdates, lastUpdate, refreshBookings } =
+    useRealtimeBookings({
+      userId: user?.id,
+      userType,
+      enableNotifications: false, // We'll handle notifications in this component
+      onStatusChange: (booking) => {
+        // Add to notifications if not dismissed
+        if (!dismissedIds.has(booking.id)) {
+          setNotifications((prev) => [
+            booking,
+            ...prev.slice(0, maxNotifications - 1),
+          ]);
+
+          // Auto-hide notification after delay
+          if (autoHide) {
+            setTimeout(() => {
+              dismissNotification(booking.id);
+            }, autoHideDelay);
+          }
         }
-      }
-    },
-  });
+      },
+    });
 
   const dismissNotification = (bookingId: string) => {
-    setDismissedIds(prev => new Set([...prev, bookingId]));
-    setNotifications(prev => prev.filter(n => n.id !== bookingId));
+    setDismissedIds((prev) => new Set([...prev, bookingId]));
+    setNotifications((prev) => prev.filter((n) => n.id !== bookingId));
   };
 
   const clearAllNotifications = () => {
@@ -82,15 +83,15 @@ export default function RealtimeBookingNotifications({
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'confirmed':
+      case "confirmed":
         return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'completed':
+      case "completed":
         return <CheckCircle className="w-4 h-4 text-blue-500" />;
-      case 'cancelled':
+      case "cancelled":
         return <XCircle className="w-4 h-4 text-red-500" />;
-      case 'in_progress':
+      case "in_progress":
         return <Loader2 className="w-4 h-4 text-orange-500 animate-spin" />;
-      case 'rescheduled':
+      case "rescheduled":
         return <Clock className="w-4 h-4 text-yellow-500" />;
       default:
         return <AlertCircle className="w-4 h-4 text-gray-500" />;
@@ -99,29 +100,31 @@ export default function RealtimeBookingNotifications({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed':
-        return 'bg-green-100 text-green-700 border-green-200';
-      case 'completed':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-700 border-red-200';
-      case 'in_progress':
-        return 'bg-orange-100 text-orange-700 border-orange-200';
-      case 'rescheduled':
-        return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'pending':
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+      case "confirmed":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "completed":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "cancelled":
+        return "bg-red-100 text-red-700 border-red-200";
+      case "in_progress":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      case "rescheduled":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "pending":
+        return "bg-gray-100 text-gray-700 border-gray-200";
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();
     const updateTime = new Date(dateString);
-    const diffInMinutes = Math.floor((now.getTime() - updateTime.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'Just now';
+    const diffInMinutes = Math.floor(
+      (now.getTime() - updateTime.getTime()) / (1000 * 60),
+    );
+
+    if (diffInMinutes < 1) return "Just now";
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
     return `${Math.floor(diffInMinutes / 1440)}d ago`;
@@ -143,11 +146,11 @@ export default function RealtimeBookingNotifications({
         >
           <Bell className="w-4 h-4" />
           {unreadCount > 0 && (
-            <Badge 
-              variant="destructive" 
+            <Badge
+              variant="destructive"
               className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
             >
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {unreadCount > 99 ? "99+" : unreadCount}
             </Badge>
           )}
         </Button>
@@ -156,9 +159,15 @@ export default function RealtimeBookingNotifications({
         {showConnectionStatus && (
           <div className="absolute -bottom-1 -right-1">
             {isConnected ? (
-              <Wifi className="w-3 h-3 text-green-500" title="Connected to real-time updates" />
+              <Wifi
+                className="w-3 h-3 text-green-500"
+                title="Connected to real-time updates"
+              />
             ) : (
-              <WifiOff className="w-3 h-3 text-red-500" title="Disconnected from real-time updates" />
+              <WifiOff
+                className="w-3 h-3 text-red-500"
+                title="Disconnected from real-time updates"
+              />
             )}
           </div>
         )}
@@ -195,7 +204,7 @@ export default function RealtimeBookingNotifications({
                     )}
                   </div>
                 )}
-                
+
                 {/* Refresh Button */}
                 <Button
                   variant="ghost"
@@ -217,7 +226,7 @@ export default function RealtimeBookingNotifications({
                 </Button>
               </div>
             </div>
-            
+
             {/* Last Update Time */}
             {lastUpdate && (
               <p className="text-xs text-gray-500">
@@ -231,7 +240,9 @@ export default function RealtimeBookingNotifications({
               <div className="p-4 text-center text-gray-500">
                 <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
                 <p className="text-sm">No recent notifications</p>
-                <p className="text-xs">You'll see booking updates here in real-time</p>
+                <p className="text-xs">
+                  You'll see booking updates here in real-time
+                </p>
               </div>
             ) : (
               <ScrollArea className="h-64">
@@ -242,40 +253,46 @@ export default function RealtimeBookingNotifications({
                         <div className="flex-shrink-0 mt-1">
                           {getStatusIcon(notification.status)}
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <Badge 
-                              variant="outline" 
-                              className={cn("text-xs capitalize", getStatusColor(notification.status))}
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "text-xs capitalize",
+                                getStatusColor(notification.status),
+                              )}
                             >
-                              {notification.status.replace('_', ' ')}
+                              {notification.status.replace("_", " ")}
                             </Badge>
                             <span className="text-xs text-gray-500">
                               {formatTimeAgo(notification.updated_at)}
                             </span>
                           </div>
-                          
+
                           <p className="text-sm font-medium text-gray-900 truncate">
-                            {notification.service_name || 'Service'}
+                            {notification.service_name || "Service"}
                           </p>
-                          
+
                           {notification.business_name && (
                             <p className="text-xs text-gray-500 flex items-center gap-1">
                               <Building className="w-3 h-3" />
                               {notification.business_name}
                             </p>
                           )}
-                          
+
                           {notification.scheduled_date && (
                             <p className="text-xs text-gray-500 flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {new Date(notification.scheduled_date).toLocaleDateString()} 
-                              {notification.scheduled_time && ` at ${notification.scheduled_time}`}
+                              {new Date(
+                                notification.scheduled_date,
+                              ).toLocaleDateString()}
+                              {notification.scheduled_time &&
+                                ` at ${notification.scheduled_time}`}
                             </p>
                           )}
                         </div>
-                        
+
                         <Button
                           variant="ghost"
                           size="sm"
@@ -285,7 +302,7 @@ export default function RealtimeBookingNotifications({
                           <X className="w-3 h-3" />
                         </Button>
                       </div>
-                      
+
                       {index < notifications.length - 1 && (
                         <Separator className="my-1" />
                       )}
@@ -294,7 +311,7 @@ export default function RealtimeBookingNotifications({
                 </div>
               </ScrollArea>
             )}
-            
+
             {/* Clear All Button */}
             {notifications.length > 0 && (
               <div className="p-2 border-t">

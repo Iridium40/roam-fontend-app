@@ -19,7 +19,7 @@ export interface BookingUpdate {
 
 interface UseRealtimeBookingsOptions {
   userId?: string;
-  userType?: 'customer' | 'provider' | 'business';
+  userType?: "customer" | "provider" | "business";
   onStatusChange?: (booking: BookingUpdate) => void;
   enableNotifications?: boolean;
 }
@@ -39,30 +39,35 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
   } = options;
 
   // Status change notifications
-  const showStatusNotification = useCallback((booking: BookingUpdate) => {
-    if (!enableNotifications) return;
+  const showStatusNotification = useCallback(
+    (booking: BookingUpdate) => {
+      if (!enableNotifications) return;
 
-    const statusMessages = {
-      confirmed: "Your booking has been confirmed!",
-      in_progress: "Your service is now in progress",
-      completed: "Your booking has been completed",
-      cancelled: "Your booking has been cancelled",
-      rescheduled: "Your booking has been rescheduled",
-      pending_payment: "Payment is required for your booking",
-      paid: "Payment confirmed for your booking",
-    };
+      const statusMessages = {
+        confirmed: "Your booking has been confirmed!",
+        in_progress: "Your service is now in progress",
+        completed: "Your booking has been completed",
+        cancelled: "Your booking has been cancelled",
+        rescheduled: "Your booking has been rescheduled",
+        pending_payment: "Payment is required for your booking",
+        paid: "Payment confirmed for your booking",
+      };
 
-    const message = statusMessages[booking.status as keyof typeof statusMessages] || 
-                   `Booking status updated to ${booking.status}`;
+      const message =
+        statusMessages[booking.status as keyof typeof statusMessages] ||
+        `Booking status updated to ${booking.status}`;
 
-    const variant = booking.status === 'cancelled' ? 'destructive' : 'default';
+      const variant =
+        booking.status === "cancelled" ? "destructive" : "default";
 
-    toast({
-      title: "Booking Update",
-      description: `${message} - ${booking.service_name || 'Service'}`,
-      variant,
-    });
-  }, [enableNotifications, toast]);
+      toast({
+        title: "Booking Update",
+        description: `${message} - ${booking.service_name || "Service"}`,
+        variant,
+      });
+    },
+    [enableNotifications, toast],
+  );
 
   // Set up real-time subscription
   useEffect(() => {
@@ -72,27 +77,28 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
 
     // Create subscription for bookings table
     const subscription = supabase
-      .channel('booking_updates')
+      .channel("booking_updates")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'bookings',
-          filter: userType === 'customer' 
-            ? `customer_id=eq.${userId}`
-            : userType === 'provider'
-            ? `provider_id=eq.${userId}`
-            : userType === 'business'
-            ? `business_id=eq.${userId}`
-            : `or(customer_id.eq.${userId},provider_id.eq.${userId},business_id.eq.${userId})`
+          event: "UPDATE",
+          schema: "public",
+          table: "bookings",
+          filter:
+            userType === "customer"
+              ? `customer_id=eq.${userId}`
+              : userType === "provider"
+                ? `provider_id=eq.${userId}`
+                : userType === "business"
+                  ? `business_id=eq.${userId}`
+                  : `or(customer_id.eq.${userId},provider_id.eq.${userId},business_id.eq.${userId})`,
         },
         (payload) => {
           console.log("Booking update received:", payload);
-          
+
           const newBooking = payload.new as any;
           const oldBooking = payload.old as any;
-          
+
           const bookingUpdate: BookingUpdate = {
             id: newBooking.id,
             status: newBooking.status,
@@ -108,7 +114,7 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
           };
 
           // Update state
-          setBookingUpdates(prev => [bookingUpdate, ...prev.slice(0, 49)]); // Keep last 50 updates
+          setBookingUpdates((prev) => [bookingUpdate, ...prev.slice(0, 49)]); // Keep last 50 updates
           setLastUpdate(new Date());
 
           // Show notification if status actually changed
@@ -120,27 +126,28 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
           if (onStatusChange) {
             onStatusChange(bookingUpdate);
           }
-        }
+        },
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'bookings',
-          filter: userType === 'customer' 
-            ? `customer_id=eq.${userId}`
-            : userType === 'provider'
-            ? `provider_id=eq.${userId}`
-            : userType === 'business'
-            ? `business_id=eq.${userId}`
-            : `or(customer_id.eq.${userId},provider_id.eq.${userId},business_id.eq.${userId})`
+          event: "INSERT",
+          schema: "public",
+          table: "bookings",
+          filter:
+            userType === "customer"
+              ? `customer_id=eq.${userId}`
+              : userType === "provider"
+                ? `provider_id=eq.${userId}`
+                : userType === "business"
+                  ? `business_id=eq.${userId}`
+                  : `or(customer_id.eq.${userId},provider_id.eq.${userId},business_id.eq.${userId})`,
         },
         (payload) => {
           console.log("New booking received:", payload);
-          
+
           const newBooking = payload.new as any;
-          
+
           const bookingUpdate: BookingUpdate = {
             id: newBooking.id,
             status: newBooking.status,
@@ -155,14 +162,14 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
           };
 
           // Update state
-          setBookingUpdates(prev => [bookingUpdate, ...prev.slice(0, 49)]);
+          setBookingUpdates((prev) => [bookingUpdate, ...prev.slice(0, 49)]);
           setLastUpdate(new Date());
 
           // Show notification for new bookings
-          if (userType === 'provider' || userType === 'business') {
+          if (userType === "provider" || userType === "business") {
             toast({
               title: "New Booking",
-              description: `New booking received for ${bookingUpdate.service_name || 'service'}`,
+              description: `New booking received for ${bookingUpdate.service_name || "service"}`,
             });
           }
 
@@ -170,11 +177,11 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
           if (onStatusChange) {
             onStatusChange(bookingUpdate);
           }
-        }
+        },
       )
       .subscribe((status) => {
         console.log("Subscription status:", status);
-        setIsConnected(status === 'SUBSCRIBED');
+        setIsConnected(status === "SUBSCRIBED");
       });
 
     // Cleanup subscription
@@ -191,8 +198,9 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
 
     try {
       const { data, error } = await supabase
-        .from('bookings')
-        .select(`
+        .from("bookings")
+        .select(
+          `
           id,
           status,
           updated_at,
@@ -203,17 +211,18 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
           business_name,
           scheduled_date,
           scheduled_time
-        `)
-        .or(
-          userType === 'customer' 
-            ? `customer_id.eq.${userId}`
-            : userType === 'provider'
-            ? `provider_id.eq.${userId}`
-            : userType === 'business'
-            ? `business_id.eq.${userId}`
-            : `customer_id.eq.${userId},provider_id.eq.${userId},business_id.eq.${userId}`
+        `,
         )
-        .order('updated_at', { ascending: false })
+        .or(
+          userType === "customer"
+            ? `customer_id.eq.${userId}`
+            : userType === "provider"
+              ? `provider_id.eq.${userId}`
+              : userType === "business"
+                ? `business_id.eq.${userId}`
+                : `customer_id.eq.${userId},provider_id.eq.${userId},business_id.eq.${userId}`,
+        )
+        .order("updated_at", { ascending: false })
         .limit(10);
 
       if (error) {
@@ -221,7 +230,7 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
         return;
       }
 
-      const updates: BookingUpdate[] = data.map(booking => ({
+      const updates: BookingUpdate[] = data.map((booking) => ({
         id: booking.id,
         status: booking.status,
         updated_at: booking.updated_at,
@@ -242,15 +251,21 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
   }, [userId, userType]);
 
   // Get updates for a specific booking
-  const getBookingUpdates = useCallback((bookingId: string) => {
-    return bookingUpdates.filter(update => update.id === bookingId);
-  }, [bookingUpdates]);
+  const getBookingUpdates = useCallback(
+    (bookingId: string) => {
+      return bookingUpdates.filter((update) => update.id === bookingId);
+    },
+    [bookingUpdates],
+  );
 
   // Get latest status for a booking
-  const getLatestBookingStatus = useCallback((bookingId: string) => {
-    const updates = getBookingUpdates(bookingId);
-    return updates.length > 0 ? updates[0].status : null;
-  }, [getBookingUpdates]);
+  const getLatestBookingStatus = useCallback(
+    (bookingId: string) => {
+      const updates = getBookingUpdates(bookingId);
+      return updates.length > 0 ? updates[0].status : null;
+    },
+    [getBookingUpdates],
+  );
 
   return {
     isConnected,

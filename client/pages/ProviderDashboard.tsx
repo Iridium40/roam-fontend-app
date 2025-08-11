@@ -86,7 +86,9 @@ import ConversationChat from "@/components/ConversationChat";
 import ConversationsList from "@/components/ConversationsList";
 import useRealtimeBookings from "@/hooks/useRealtimeBookings";
 import RealtimeBookingNotifications from "@/components/RealtimeBookingNotifications";
-import BookingStatusIndicator, { RealtimeStatusUpdate } from "@/components/BookingStatusIndicator";
+import BookingStatusIndicator, {
+  RealtimeStatusUpdate,
+} from "@/components/BookingStatusIndicator";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
 // Plaid configuration
@@ -277,53 +279,61 @@ const CalendarGrid = ({
 
   const getBookingStatusColor = (status: string) => {
     switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'confirmed':
-        return 'bg-green-100 text-green-800 border-green-300';
-      case 'in_progress':
-        return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'completed':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-300';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-300';
-      case 'declined':
-        return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'no_show':
-        return 'bg-gray-100 text-gray-800 border-gray-300';
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "confirmed":
+        return "bg-green-100 text-green-800 border-green-300";
+      case "in_progress":
+        return "bg-blue-100 text-blue-800 border-blue-300";
+      case "completed":
+        return "bg-emerald-100 text-emerald-800 border-emerald-300";
+      case "cancelled":
+        return "bg-red-100 text-red-800 border-red-300";
+      case "declined":
+        return "bg-orange-100 text-orange-800 border-orange-300";
+      case "no_show":
+        return "bg-gray-100 text-gray-800 border-gray-300";
       default:
-        return 'bg-slate-100 text-slate-800 border-slate-300';
+        return "bg-slate-100 text-slate-800 border-slate-300";
     }
   };
 
   const getDayBackgroundColor = (dayBookings: any[]) => {
-    if (dayBookings.length === 0) return '';
+    if (dayBookings.length === 0) return "";
 
     // Priority order for determining day color
-    const statusPriority = ['pending', 'in_progress', 'confirmed', 'declined', 'cancelled', 'completed', 'no_show'];
+    const statusPriority = [
+      "pending",
+      "in_progress",
+      "confirmed",
+      "declined",
+      "cancelled",
+      "completed",
+      "no_show",
+    ];
 
     for (const status of statusPriority) {
-      if (dayBookings.some(booking => booking.booking_status === status)) {
+      if (dayBookings.some((booking) => booking.booking_status === status)) {
         switch (status) {
-          case 'pending':
-            return 'bg-yellow-50 border-yellow-200';
-          case 'in_progress':
-            return 'bg-blue-50 border-blue-200';
-          case 'confirmed':
-            return 'bg-green-50 border-green-200';
-          case 'declined':
-            return 'bg-orange-50 border-orange-200';
-          case 'cancelled':
-            return 'bg-red-50 border-red-200';
-          case 'completed':
-            return 'bg-emerald-50 border-emerald-200';
+          case "pending":
+            return "bg-yellow-50 border-yellow-200";
+          case "in_progress":
+            return "bg-blue-50 border-blue-200";
+          case "confirmed":
+            return "bg-green-50 border-green-200";
+          case "declined":
+            return "bg-orange-50 border-orange-200";
+          case "cancelled":
+            return "bg-red-50 border-red-200";
+          case "completed":
+            return "bg-emerald-50 border-emerald-200";
           default:
-            return 'bg-gray-50 border-gray-200';
+            return "bg-gray-50 border-gray-200";
         }
       }
     }
 
-    return 'bg-slate-50 border-slate-200';
+    return "bg-slate-50 border-slate-200";
   };
 
   const navigatePrevious = () => {
@@ -503,14 +513,20 @@ export default function ProviderDashboard() {
   // Real-time booking updates for providers
   const { isConnected, refreshBookings } = useRealtimeBookings({
     userId: user?.id,
-    userType: 'provider',
+    userType: "provider",
     onStatusChange: (bookingUpdate) => {
       // Update the specific booking in our local state
-      setBookings(prev => prev.map(booking =>
-        booking.id === bookingUpdate.id
-          ? { ...booking, status: bookingUpdate.status, updated_at: bookingUpdate.updated_at }
-          : booking
-      ));
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingUpdate.id
+            ? {
+                ...booking,
+                status: bookingUpdate.status,
+                updated_at: bookingUpdate.updated_at,
+              }
+            : booking,
+        ),
+      );
     },
   });
   const [businessHours, setBusinessHours] = useState<any>(null);
@@ -613,7 +629,8 @@ export default function ProviderDashboard() {
   const [selectedBookingForMessaging, setSelectedBookingForMessaging] =
     useState(null);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
-  const [selectedBookingForDecline, setSelectedBookingForDecline] = useState<any>(null);
+  const [selectedBookingForDecline, setSelectedBookingForDecline] =
+    useState<any>(null);
   const [declineReason, setDeclineReason] = useState("");
 
   // Subscription states
@@ -6442,57 +6459,61 @@ export default function ProviderDashboard() {
     if (!selectedDate) return [];
 
     const selectedDateStr = selectedDate.toISOString().split("T")[0];
-    return bookings.filter((booking) => {
-      const bookingDate = new Date(booking.booking_date)
-        .toISOString()
-        .split("T")[0];
-      return bookingDate === selectedDateStr;
-    }).sort((a, b) => {
-      // Sort by start time
-      return a.start_time.localeCompare(b.start_time);
-    });
+    return bookings
+      .filter((booking) => {
+        const bookingDate = new Date(booking.booking_date)
+          .toISOString()
+          .split("T")[0];
+        return bookingDate === selectedDateStr;
+      })
+      .sort((a, b) => {
+        // Sort by start time
+        return a.start_time.localeCompare(b.start_time);
+      });
   };
 
   // Accept booking function
   const acceptBooking = async (bookingId: string) => {
-    console.log('Accept booking called with ID:', bookingId);
-    console.log('Current user:', user);
-    console.log('User type:', { isOwner, isDispatcher, isProvider });
+    console.log("Accept booking called with ID:", bookingId);
+    console.log("Current user:", user);
+    console.log("User type:", { isOwner, isDispatcher, isProvider });
 
     try {
-      console.log('Attempting to update booking status to confirmed...');
+      console.log("Attempting to update booking status to confirmed...");
       const { error } = await supabase
-        .from('bookings')
+        .from("bookings")
         .update({
-          booking_status: 'confirmed'
+          booking_status: "confirmed",
         })
-        .eq('id', bookingId);
+        .eq("id", bookingId);
 
       if (error) {
         throw error;
       }
 
       // Update local state
-      setBookings(prev => prev.map(booking =>
-        booking.id === bookingId
-          ? { ...booking, booking_status: 'confirmed' }
-          : booking
-      ));
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, booking_status: "confirmed" }
+            : booking,
+        ),
+      );
 
       toast({
         title: "Booking Accepted",
         description: "The booking has been confirmed successfully.",
       });
     } catch (error: any) {
-      console.error('Error accepting booking - Full error object:', error);
-      console.error('Error type:', typeof error);
-      console.error('Error keys:', Object.keys(error || {}));
+      console.error("Error accepting booking - Full error object:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
 
-      let errorMessage = 'Unknown error occurred';
+      let errorMessage = "Unknown error occurred";
 
       if (error) {
         // Handle different error object structures
-        if (typeof error === 'string') {
+        if (typeof error === "string") {
           errorMessage = error;
         } else if (error.message) {
           errorMessage = error.message;
@@ -6509,12 +6530,12 @@ export default function ProviderDashboard() {
           try {
             errorMessage = JSON.stringify(error);
           } catch {
-            errorMessage = 'Unable to parse error details';
+            errorMessage = "Unable to parse error details";
           }
         }
       }
 
-      console.error('Parsed error message:', errorMessage);
+      console.error("Parsed error message:", errorMessage);
 
       toast({
         title: "Error Accepting Booking",
@@ -6544,27 +6565,29 @@ export default function ProviderDashboard() {
 
     try {
       const { error } = await supabase
-        .from('bookings')
+        .from("bookings")
         .update({
-          booking_status: 'declined',
-          decline_reason: declineReason.trim()
+          booking_status: "declined",
+          decline_reason: declineReason.trim(),
         })
-        .eq('id', selectedBookingForDecline.id);
+        .eq("id", selectedBookingForDecline.id);
 
       if (error) {
         throw error;
       }
 
       // Update local state
-      setBookings(prev => prev.map(booking =>
-        booking.id === selectedBookingForDecline.id
-          ? {
-              ...booking,
-              booking_status: 'declined',
-              decline_reason: declineReason.trim()
-            }
-          : booking
-      ));
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === selectedBookingForDecline.id
+            ? {
+                ...booking,
+                booking_status: "declined",
+                decline_reason: declineReason.trim(),
+              }
+            : booking,
+        ),
+      );
 
       // Close modal and reset state
       setShowDeclineModal(false);
@@ -6573,18 +6596,19 @@ export default function ProviderDashboard() {
 
       toast({
         title: "Booking Declined",
-        description: "The booking has been declined with reason provided to customer.",
+        description:
+          "The booking has been declined with reason provided to customer.",
       });
     } catch (error: any) {
-      console.error('Error declining booking - Full error object:', error);
-      console.error('Error type:', typeof error);
-      console.error('Error keys:', Object.keys(error || {}));
+      console.error("Error declining booking - Full error object:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
 
-      let errorMessage = 'Unknown error occurred';
+      let errorMessage = "Unknown error occurred";
 
       if (error) {
         // Handle different error object structures
-        if (typeof error === 'string') {
+        if (typeof error === "string") {
           errorMessage = error;
         } else if (error.message) {
           errorMessage = error.message;
@@ -6601,12 +6625,12 @@ export default function ProviderDashboard() {
           try {
             errorMessage = JSON.stringify(error);
           } catch {
-            errorMessage = 'Unable to parse error details';
+            errorMessage = "Unable to parse error details";
           }
         }
       }
 
-      console.error('Parsed error message:', errorMessage);
+      console.error("Parsed error message:", errorMessage);
 
       toast({
         title: "Error Declining Booking",
@@ -7567,7 +7591,10 @@ export default function ProviderDashboard() {
                 maxNotifications={10}
               />
               {isConnected && (
-                <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-green-50 text-green-700"
+                >
                   Live
                 </Badge>
               )}
@@ -7809,7 +7836,10 @@ export default function ProviderDashboard() {
                     </SelectContent>
                   </Select>
                   {selectedDate && (
-                    <Badge variant="outline" className="bg-roam-blue/10 text-roam-blue border-roam-blue">
+                    <Badge
+                      variant="outline"
+                      className="bg-roam-blue/10 text-roam-blue border-roam-blue"
+                    >
                       {selectedDate.toLocaleDateString()}
                     </Badge>
                   )}
@@ -7894,11 +7924,12 @@ export default function ProviderDashboard() {
                 <div className="mb-6 p-4 border rounded-lg bg-card">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">
-                      Bookings for {selectedDate.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                      Bookings for{" "}
+                      {selectedDate.toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       })}
                     </h3>
                     <Button
@@ -7913,7 +7944,9 @@ export default function ProviderDashboard() {
                   <div className="space-y-4">
                     {getSelectedDateBookings().length > 0 ? (
                       getSelectedDateBookings().map((booking) => {
-                        const statusConfig = getStatusBadge(booking.booking_status);
+                        const statusConfig = getStatusBadge(
+                          booking.booking_status,
+                        );
                         const DeliveryIcon = getDeliveryIcon(
                           booking.delivery_type || "business_location",
                         );
@@ -7942,21 +7975,26 @@ export default function ProviderDashboard() {
                                     <div className="flex items-center gap-2 mb-2">
                                       {booking.customer_profiles?.image_url ? (
                                         <img
-                                          src={booking.customer_profiles.image_url}
+                                          src={
+                                            booking.customer_profiles.image_url
+                                          }
                                           alt="Customer"
                                           className="w-6 h-6 rounded-full object-cover"
                                         />
                                       ) : (
                                         <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
                                           <span className="text-xs text-gray-600">
-                                            {booking.customer_profiles?.first_name?.charAt(0) ||
+                                            {booking.customer_profiles?.first_name?.charAt(
+                                              0,
+                                            ) ||
                                               booking.guest_name?.charAt(0) ||
                                               "?"}
                                           </span>
                                         </div>
                                       )}
                                       <p className="text-sm font-medium">
-                                        {booking.customer_profiles?.first_name &&
+                                        {booking.customer_profiles
+                                          ?.first_name &&
                                         booking.customer_profiles?.last_name
                                           ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
                                           : booking.guest_name || "Customer"}
@@ -7966,7 +8004,8 @@ export default function ProviderDashboard() {
                                       <DeliveryIcon className="w-4 h-4 mt-0.5" />
                                       <div className="flex flex-col">
                                         {(() => {
-                                          const location = formatBookingLocation(booking);
+                                          const location =
+                                            formatBookingLocation(booking);
                                           if (typeof location === "string") {
                                             return (
                                               <span className="text-sm text-gray-600">
@@ -7997,7 +8036,9 @@ export default function ProviderDashboard() {
                                     bookingId={booking.id}
                                     currentStatus={booking.booking_status}
                                     onStatusChange={(newStatus) => {
-                                      console.log(`Selected date booking ${booking.id} status changed to ${newStatus}`);
+                                      console.log(
+                                        `Selected date booking ${booking.id} status changed to ${newStatus}`,
+                                      );
                                     }}
                                   />
                                   <p className="text-lg font-semibold text-roam-blue mt-2">
@@ -8228,7 +8269,9 @@ export default function ProviderDashboard() {
                                         bookingId={booking.id}
                                         currentStatus={booking.booking_status}
                                         onStatusChange={(newStatus) => {
-                                          console.log(`Provider booking ${booking.id} status changed to ${newStatus}`);
+                                          console.log(
+                                            `Provider booking ${booking.id} status changed to ${newStatus}`,
+                                          );
                                         }}
                                       />
                                       <p className="text-lg font-semibold text-roam-blue mt-2">
@@ -8255,7 +8298,9 @@ export default function ProviderDashboard() {
                                       <Button
                                         size="sm"
                                         className="bg-roam-blue hover:bg-roam-blue/90"
-                                        onClick={() => acceptBooking(booking.id)}
+                                        onClick={() =>
+                                          acceptBooking(booking.id)
+                                        }
                                       >
                                         <CheckCircle className="w-4 h-4 mr-2" />
                                         Accept
@@ -8264,7 +8309,9 @@ export default function ProviderDashboard() {
                                         size="sm"
                                         variant="outline"
                                         className="border-red-300 text-red-600 hover:bg-red-50"
-                                        onClick={() => openDeclineModal(booking)}
+                                        onClick={() =>
+                                          openDeclineModal(booking)
+                                        }
                                       >
                                         Decline
                                       </Button>
@@ -8430,7 +8477,9 @@ export default function ProviderDashboard() {
                                   bookingId={booking.id}
                                   currentStatus={booking.booking_status}
                                   onStatusChange={(newStatus) => {
-                                    console.log(`Today's booking ${booking.id} status changed to ${newStatus}`);
+                                    console.log(
+                                      `Today's booking ${booking.id} status changed to ${newStatus}`,
+                                    );
                                   }}
                                 />
                                 <p className="text-lg font-semibold text-roam-blue mt-2">
@@ -8471,7 +8520,6 @@ export default function ProviderDashboard() {
                   )}
                 </div>
               )}
-
             </TabsContent>
 
             {/* Conversations Tab */}
@@ -15734,10 +15782,17 @@ export default function ProviderDashboard() {
                   {selectedBookingForDecline.services?.name || "Service"}
                 </h4>
                 <p className="text-sm text-gray-600">
-                  Customer: {selectedBookingForDecline.customer_profiles?.first_name} {selectedBookingForDecline.customer_profiles?.last_name || selectedBookingForDecline.guest_name}
+                  Customer:{" "}
+                  {selectedBookingForDecline.customer_profiles?.first_name}{" "}
+                  {selectedBookingForDecline.customer_profiles?.last_name ||
+                    selectedBookingForDecline.guest_name}
                 </p>
                 <p className="text-sm text-gray-600">
-                  Date: {new Date(selectedBookingForDecline.booking_date).toLocaleDateString()} at {selectedBookingForDecline.start_time}
+                  Date:{" "}
+                  {new Date(
+                    selectedBookingForDecline.booking_date,
+                  ).toLocaleDateString()}{" "}
+                  at {selectedBookingForDecline.start_time}
                 </p>
               </div>
             )}
@@ -15755,7 +15810,8 @@ export default function ProviderDashboard() {
                 className="resize-none"
               />
               <p className="text-xs text-gray-500">
-                The customer will be able to see this reason in their booking details.
+                The customer will be able to see this reason in their booking
+                details.
               </p>
             </div>
 
