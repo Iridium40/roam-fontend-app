@@ -7854,8 +7854,86 @@ export default function ProviderDashboard() {
             onValueChange={handleTabChange}
             className="space-y-6"
           >
+            {/* Mobile/Tablet Dropdown Menu */}
+            <div className="lg:hidden mb-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <div className="flex items-center gap-2">
+                      <Menu className="w-4 h-4" />
+                      {getCurrentTabName()}
+                    </div>
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuItem onClick={() => setActiveTab("bookings")}>
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Bookings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setActiveTab("conversations")}>
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Messages
+                  </DropdownMenuItem>
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem onClick={() => setActiveTab("services-addons")}>
+                      <Settings className="w-4 h-4 mr-2" />
+                      Services
+                    </DropdownMenuItem>
+                  )}
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem onClick={() => setActiveTab("business")}>
+                      <Building className="w-4 h-4 mr-2" />
+                      Business
+                    </DropdownMenuItem>
+                  )}
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem onClick={() => setActiveTab("providers")}>
+                      <Users className="w-4 h-4 mr-2" />
+                      Staff
+                    </DropdownMenuItem>
+                  )}
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem onClick={() => setActiveTab("locations")}>
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Locations
+                    </DropdownMenuItem>
+                  )}
+                  {isProvider && !isOwner && !isDispatcher && (
+                    <DropdownMenuItem onClick={() => setActiveTab("provider-services")}>
+                      <Settings className="w-4 h-4 mr-2" />
+                      Services
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => setActiveTab("profile")}>
+                    <User className="w-4 h-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  {isOwner && (
+                    <DropdownMenuItem onClick={() => setActiveTab("analytics")}>
+                      <TrendingUp className="w-4 h-4 mr-2" />
+                      Analytics
+                    </DropdownMenuItem>
+                  )}
+                  {isOwner && (
+                    <DropdownMenuItem onClick={() => setActiveTab("financial")}>
+                      <DollarSign className="w-4 h-4 mr-2" />
+                      Financial
+                    </DropdownMenuItem>
+                  )}
+                  {isOwner && (
+                    <DropdownMenuItem onClick={() => setActiveTab("subscription")}>
+                      <Star className="w-4 h-4 mr-2" />
+                      Subscription
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Desktop Tabs */}
             <TabsList
-              className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-6" : isOwner ? "grid-cols-11" : "grid-cols-10"} lg:w-auto lg:inline-grid`}
+              className={`hidden lg:grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-6" : isOwner ? "grid-cols-11" : "grid-cols-10"} lg:w-auto lg:inline-grid`}
             >
               <TabsTrigger
                 value="bookings"
