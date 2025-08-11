@@ -585,6 +585,8 @@ export default function ProviderDashboard() {
     useState<string>("all");
   const [selectedProviderFilter, setSelectedProviderFilter] =
     useState<string>("all");
+  const [selectedStatusFilter, setSelectedStatusFilter] =
+    useState<string>("all");
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
     useState<string>("all");
   const [
@@ -13569,7 +13571,7 @@ export default function ProviderDashboard() {
                     ?.service_categories?.description ||
                     editingService.services?.service_subcategories
                       ?.service_categories?.service_category_type}{" "}
-                  ���{" "}
+                  ����{" "}
                   {editingService.services?.service_subcategories
                     ?.description ||
                     editingService.services?.service_subcategories
