@@ -248,6 +248,13 @@ export default function CustomerSettings() {
                             SMS
                           </div>
                         </SelectItem>
+                        <SelectItem value="both">
+                          <div className="flex items-center gap-2">
+                            <Mail className="w-4 h-4" />
+                            <Smartphone className="w-4 h-4" />
+                            Both Email & SMS
+                          </div>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
