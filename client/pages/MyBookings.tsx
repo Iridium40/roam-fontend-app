@@ -1012,6 +1012,114 @@ export default function MyBookings() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Reschedule Modal */}
+      <Dialog open={showRescheduleModal} onOpenChange={setShowRescheduleModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-roam-blue">
+              <Edit className="w-5 h-5" />
+              Reschedule Booking
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedBookingForReschedule && (
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-sm">
+                  {selectedBookingForReschedule.service || "Service"}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Current Date: {formatDate(selectedBookingForReschedule.date)} at {selectedBookingForReschedule.time}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Provider: {selectedBookingForReschedule.provider?.name || "Provider"}
+                </p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="new-booking-date" className="text-sm font-medium">
+                  New Date <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="new-booking-date"
+                  type="date"
+                  value={newBookingDate}
+                  onChange={(e) => setNewBookingDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="new-booking-time" className="text-sm font-medium">
+                  New Time <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="new-booking-time"
+                  type="time"
+                  value={newBookingTime}
+                  onChange={(e) => setNewBookingTime(e.target.value)}
+                  className="w-full"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="reschedule-reason" className="text-sm font-medium">
+                Reason for Rescheduling <span className="text-gray-500">(Optional)</span>
+              </Label>
+              <Textarea
+                id="reschedule-reason"
+                placeholder="Please let us know why you need to reschedule..."
+                value={rescheduleReason}
+                onChange={(e) => setRescheduleReason(e.target.value)}
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-blue-800">
+                  <p className="font-medium">Reschedule Policy</p>
+                  <p>Your booking will be set to pending status and the provider will need to confirm the new date and time.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowRescheduleModal(false);
+                  setSelectedBookingForReschedule(null);
+                  setNewBookingDate("");
+                  setNewBookingTime("");
+                  setRescheduleReason("");
+                }}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  // Will implement reschedule function next
+                  console.log("Reschedule booking");
+                }}
+                className="flex-1 bg-roam-blue hover:bg-roam-blue/90 text-white"
+                disabled={!newBookingDate || !newBookingTime}
+              >
+                Request Reschedule
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
