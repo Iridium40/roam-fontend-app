@@ -765,7 +765,7 @@ export default function MyBookings() {
 
       // Force refresh bookings to ensure we get the latest status from database
       if (refreshBookings) {
-        refreshBookings();
+        setTimeout(() => refreshBookings(), 100);
       }
 
       // Show appropriate cancellation message based on refund amount
