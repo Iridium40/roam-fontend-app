@@ -117,6 +117,18 @@ export default function MyBookings() {
               business_profiles (
                 id,
                 business_name
+              ),
+              business_locations (
+                id,
+                location_name,
+                address_line1,
+                address_line2,
+                city,
+                state,
+                postal_code,
+                country,
+                latitude,
+                longitude
               )
             `,
             )
@@ -153,6 +165,18 @@ export default function MyBookings() {
               business_profiles (
                 id,
                 business_name
+              ),
+              business_locations (
+                id,
+                location_name,
+                address_line1,
+                address_line2,
+                city,
+                state,
+                postal_code,
+                country,
+                latitude,
+                longitude
               )
             `,
             )
