@@ -1041,18 +1041,56 @@ export default function BusinessAvailability() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-4">Available Businesses</h1>
-            <div className="flex items-center gap-6 text-sm text-foreground/70">
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="w-4 h-4" />
-                <span>{selectedDate ? formatDate(selectedDate) : ""}</span>
+            <h1 className="text-3xl font-bold mb-6">Available Businesses</h1>
+
+            {/* Modern Booking Info Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              {/* Date Card */}
+              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/50 dark:to-indigo-900/50 p-4 border border-blue-200/50 dark:border-blue-800/50 hover:shadow-lg transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-500/20 dark:bg-blue-400/20 flex items-center justify-center">
+                    <CalendarIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-blue-600/80 dark:text-blue-400/80 uppercase tracking-wide">Date</p>
+                    <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 truncate">
+                      {selectedDate ? formatDate(selectedDate) : ""}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span>{selectedTime}</span>
+
+              {/* Time Card */}
+              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-950/50 dark:to-teal-900/50 p-4 border border-emerald-200/50 dark:border-emerald-800/50 hover:shadow-lg transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-500/20 dark:bg-emerald-400/20 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-emerald-600/80 dark:text-emerald-400/80 uppercase tracking-wide">Time</p>
+                    <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-100 truncate">
+                      {selectedTime}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{service?.name}</span>
+
+              {/* Service Card */}
+              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-950/50 dark:to-pink-900/50 p-4 border border-purple-200/50 dark:border-purple-800/50 hover:shadow-lg transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-purple-500/20 dark:bg-purple-400/20 flex items-center justify-center">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400"></div>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-purple-600/80 dark:text-purple-400/80 uppercase tracking-wide">Service</p>
+                    <p className="text-sm font-semibold text-purple-900 dark:text-purple-100 truncate">
+                      {service?.name}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
