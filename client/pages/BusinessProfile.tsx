@@ -632,7 +632,8 @@ export default function BusinessProfile() {
                   })()}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Business Selection
+                  <span className="hidden sm:inline">Back to Business Selection</span>
+                  <span className="sm:hidden">Back</span>
                 </Link>
               </Button>
               <img
@@ -739,15 +740,20 @@ export default function BusinessProfile() {
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="services">
-              Services ({services.length})
+            <TabsTrigger value="services" className="text-xs sm:text-sm">
+              <span className="hidden sm:inline">Services ({services.length})</span>
+              <span className="sm:hidden">Services</span>
             </TabsTrigger>
             <TabsTrigger value="hours">Hours</TabsTrigger>
-            <TabsTrigger value="team">Team ({providers.length})</TabsTrigger>
-            <TabsTrigger value="reviews">
-              Reviews ({reviews.length})
+            <TabsTrigger value="team" className="text-xs sm:text-sm">
+              <span className="hidden sm:inline">Team ({providers.length})</span>
+              <span className="sm:hidden">Team</span>
+            </TabsTrigger>
+            <TabsTrigger value="reviews" className="text-xs sm:text-sm">
+              <span className="hidden sm:inline">Reviews ({reviews.length})</span>
+              <span className="sm:hidden">Reviews</span>
             </TabsTrigger>
           </TabsList>
 
@@ -931,22 +937,22 @@ export default function BusinessProfile() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-start gap-6">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                     {selectedService.services?.image_url && (
                       <img
                         src={selectedService.services.image_url}
                         alt={selectedService.services?.name}
-                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                        className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded-lg flex-shrink-0"
                       />
                     )}
-                    <div className="flex-1">
+                    <div className="flex-1 w-full">
                       <h3 className="text-lg font-semibold mb-2">
                         {selectedService.services?.name}
                       </h3>
                       <p className="text-gray-600 text-sm mb-3">
                         {selectedService.services?.description}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600 mb-4">
                         <div className="flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           {selectedService.services?.duration_minutes} minutes
@@ -967,16 +973,18 @@ export default function BusinessProfile() {
                           </Badge>
                         )}
                       </div>
-                      <div className="flex gap-3">
+                      <div className="flex flex-col sm:flex-row gap-3 w-full">
                         <Button
                           onClick={() => setProviderSelectorOpen(true)}
-                          className="bg-roam-blue hover:bg-roam-blue/90"
+                          className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
                         >
                           <Users className="w-4 h-4 mr-2" />
-                          Choose Provider
+                          <span className="hidden sm:inline">Choose Provider</span>
+                          <span className="sm:hidden">Choose Provider</span>
                         </Button>
                         <Button
                           variant="outline"
+                          className="w-full sm:w-auto"
                           onClick={() => {
                             setSelectedService(null);
                             // Remove service from URL
