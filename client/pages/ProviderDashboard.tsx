@@ -8053,6 +8053,34 @@ export default function ProviderDashboard() {
                 />
               </div>
 
+              {/* Search Bar - Between Calendar and List */}
+              <div className="flex items-center gap-2 mb-6">
+                <Label htmlFor="search-bookings" className="text-sm font-medium">
+                  Search:
+                </Label>
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    id="search-bookings"
+                    type="text"
+                    placeholder="Search by booking reference, customer name, or email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 w-full"
+                  />
+                </div>
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearchQuery("")}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+
               {/* Selected Date Bookings */}
               {selectedDate && (
                 <div className="mb-6 p-4 border rounded-lg bg-card">
