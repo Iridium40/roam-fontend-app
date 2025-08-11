@@ -513,6 +513,36 @@ export default function MyBookings() {
     setShowRescheduleModal(true);
   };
 
+  // Calculate cancellation fee and refund amount
+  const calculateCancellationDetails = (booking: any) => {
+    const bookingDateTime = new Date(`${booking.date} ${booking.time}`);
+    const now = new Date();
+    const hoursUntilBooking = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+    // Extract total amount for calculations (remove $ and convert to number)
+    const totalAmount = parseFloat(booking.price?.replace('$', '') || '0');
+
+    // Apply cancellation policy
+    let cancellationFee = 0;
+    let refundAmount = totalAmount;
+    let isWithin24Hours = false;
+
+    if (hoursUntilBooking <= 24 && hoursUntilBooking > 0) {
+      // Within 24 hours - apply cancellation fee (e.g., 50% of booking)
+      isWithin24Hours = true;
+      cancellationFee = totalAmount * 0.5;
+      refundAmount = totalAmount - cancellationFee;
+    }
+
+    return {
+      totalAmount,
+      cancellationFee,
+      refundAmount,
+      isWithin24Hours,
+      hoursUntilBooking
+    };
+  };
+
   // Reschedule booking function
   const rescheduleBooking = async () => {
     if (!selectedBookingForReschedule || !currentUser || !newBookingDate || !newBookingTime) {
