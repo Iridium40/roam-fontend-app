@@ -1185,24 +1185,26 @@ export default function BusinessAvailability() {
                                           )
                                         }
                                       >
-                                        <div className="flex items-start justify-between">
-                                          <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                              <MapPin className="w-4 h-4 text-roam-blue" />
-                                              <span className="font-medium">
-                                                {location.location_name ||
-                                                  "Main Location"}
-                                              </span>
+                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                                          <div className="flex-1 min-w-0">
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                                              <div className="flex items-center gap-2">
+                                                <MapPin className="w-4 h-4 text-roam-blue flex-shrink-0" />
+                                                <span className="font-medium text-sm sm:text-base">
+                                                  {location.location_name ||
+                                                    "Main Location"}
+                                                </span>
+                                              </div>
                                               {location.is_primary && (
                                                 <Badge
                                                   variant="secondary"
-                                                  className="text-xs"
+                                                  className="text-xs self-start"
                                                 >
                                                   Primary
                                                 </Badge>
                                               )}
                                             </div>
-                                            <p className="text-sm text-foreground/60">
+                                            <p className="text-xs sm:text-sm text-foreground/60 break-words">
                                               {[
                                                 location.address_line1,
                                                 location.city,
