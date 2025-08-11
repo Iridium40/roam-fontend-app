@@ -443,6 +443,18 @@ export default function MyBookings() {
         icon: XCircle,
         description: "Booking was cancelled",
       },
+      declined: {
+        label: "Declined",
+        color: "bg-red-100 text-red-800",
+        icon: XCircle,
+        description: "Booking was declined by provider",
+      },
+      no_show: {
+        label: "No Show",
+        color: "bg-gray-100 text-gray-800",
+        icon: XCircle,
+        description: "Customer did not show up",
+      },
     };
     return configs[status as keyof typeof configs] || configs.pending;
   };
