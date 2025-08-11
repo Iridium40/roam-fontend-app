@@ -6366,11 +6366,12 @@ export default function ProviderDashboard() {
         title: "Booking Accepted",
         description: "The booking has been confirmed successfully.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error accepting booking:', error);
+      const errorMessage = error?.message || error?.error_description || 'Unknown error occurred';
       toast({
-        title: "Error",
-        description: "Failed to accept booking. Please try again.",
+        title: "Error Accepting Booking",
+        description: `Failed to accept booking: ${errorMessage}`,
         variant: "destructive",
       });
     }
