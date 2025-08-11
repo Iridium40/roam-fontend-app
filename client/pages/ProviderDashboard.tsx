@@ -7974,9 +7974,13 @@ export default function ProviderDashboard() {
                                 </div>
                               </div>
                               <div className="text-right">
-                                <Badge className={statusConfig.color}>
-                                  {statusConfig.label}
-                                </Badge>
+                                <RealtimeStatusUpdate
+                                  bookingId={booking.id}
+                                  currentStatus={booking.booking_status}
+                                  onStatusChange={(newStatus) => {
+                                    console.log(`Today's booking ${booking.id} status changed to ${newStatus}`);
+                                  }}
+                                />
                                 <p className="text-lg font-semibold text-roam-blue mt-2">
                                   ${booking.total_amount || "0"}
                                 </p>
