@@ -7910,6 +7910,33 @@ export default function ProviderDashboard() {
                     </Select>
                   </div>
 
+                  <div className="flex items-center gap-2">
+                    <Label
+                      htmlFor="status-filter"
+                      className="text-sm font-medium"
+                    >
+                      Status:
+                    </Label>
+                    <Select
+                      value={selectedStatusFilter}
+                      onValueChange={setSelectedStatusFilter}
+                    >
+                      <SelectTrigger className="w-48" id="status-filter">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="confirmed">Confirmed</SelectItem>
+                        <SelectItem value="in_progress">In Progress</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                        <SelectItem value="no_show">No Show</SelectItem>
+                        <SelectItem value="declined">Declined</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="text-sm text-foreground/60">
                     Showing {getFilteredBookings().length} bookings
                   </div>
@@ -14067,7 +14094,7 @@ export default function ProviderDashboard() {
                                         )}
                                         {booking.customer_profiles?.phone && (
                                           <span>
-                                            �������{" "}
+                                            ���������{" "}
                                             {booking.customer_profiles.phone}
                                           </span>
                                         )}
