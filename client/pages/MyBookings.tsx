@@ -1037,6 +1037,17 @@ function BookingCard({ booking, onCancel }: { booking: any; onCancel: (booking: 
   const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
   const deliveryLabel = getDeliveryLabel(booking.deliveryType);
 
+  // Check if booking is within 24 hours and cannot be cancelled
+  const isWithin24Hours = () => {
+    const now = new Date();
+    const bookingDateTime = new Date(`${booking.date} ${booking.time}`);
+    const timeDifferenceMs = bookingDateTime.getTime() - now.getTime();
+    const hoursUntilBooking = timeDifferenceMs / (1000 * 60 * 60);
+    return hoursUntilBooking <= 24 && hoursUntilBooking > 0;
+  };
+
+  const canCancelBooking = (booking.status === "pending" || booking.status === "confirmed") && !isWithin24Hours();
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-6">
