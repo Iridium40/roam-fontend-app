@@ -7889,6 +7889,166 @@ export default function ProviderDashboard() {
                 />
               </div>
 
+              {/* Selected Date Bookings */}
+              {selectedDate && (
+                <div className="mb-6 p-4 border rounded-lg bg-card">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">
+                      Bookings for {selectedDate.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedDate(null)}
+                    >
+                      Clear Selection
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {getSelectedDateBookings().length > 0 ? (
+                      getSelectedDateBookings().map((booking) => {
+                        const statusConfig = getStatusBadge(booking.booking_status);
+                        const DeliveryIcon = getDeliveryIcon(
+                          booking.delivery_type || "business_location",
+                        );
+
+                        return (
+                          <Card
+                            key={booking.id}
+                            className="hover:shadow-md transition-shadow"
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-start gap-4">
+                                  <div className="w-10 h-10 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                    <Clock className="w-5 h-5 text-white" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-lg">
+                                      {booking.services?.name || "Service"}
+                                    </h4>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Clock className="w-4 h-4 text-roam-blue" />
+                                      <span className="font-medium text-roam-blue">
+                                        {booking.start_time}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      {booking.customer_profiles?.image_url ? (
+                                        <img
+                                          src={booking.customer_profiles.image_url}
+                                          alt="Customer"
+                                          className="w-6 h-6 rounded-full object-cover"
+                                        />
+                                      ) : (
+                                        <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                          <span className="text-xs text-gray-600">
+                                            {booking.customer_profiles?.first_name?.charAt(0) ||
+                                              booking.guest_name?.charAt(0) ||
+                                              "?"}
+                                          </span>
+                                        </div>
+                                      )}
+                                      <p className="text-sm font-medium">
+                                        {booking.customer_profiles?.first_name &&
+                                        booking.customer_profiles?.last_name
+                                          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                          : booking.guest_name || "Customer"}
+                                      </p>
+                                    </div>
+                                    <div className="flex items-start gap-1">
+                                      <DeliveryIcon className="w-4 h-4 mt-0.5" />
+                                      <div className="flex flex-col">
+                                        {(() => {
+                                          const location = formatBookingLocation(booking);
+                                          if (typeof location === "string") {
+                                            return (
+                                              <span className="text-sm text-gray-600">
+                                                {location}
+                                              </span>
+                                            );
+                                          } else {
+                                            return (
+                                              <div>
+                                                <span className="text-sm font-medium">
+                                                  {location.name}
+                                                </span>
+                                                {location.address && (
+                                                  <span className="text-xs text-gray-500 block">
+                                                    {location.address}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            );
+                                          }
+                                        })()}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <RealtimeStatusUpdate
+                                    bookingId={booking.id}
+                                    currentStatus={booking.booking_status}
+                                    onStatusChange={(newStatus) => {
+                                      console.log(`Selected date booking ${booking.id} status changed to ${newStatus}`);
+                                    }}
+                                  />
+                                  <p className="text-lg font-semibold text-roam-blue mt-2">
+                                    ${booking.total_amount || "0"}
+                                  </p>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="mt-2 w-full border-blue-200 text-blue-600 hover:bg-blue-50"
+                                    onClick={() => handleOpenMessaging(booking)}
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-2" />
+                                    Message
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {booking.booking_status === "pending" && (
+                                <div className="mt-4 flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    className="bg-roam-blue hover:bg-roam-blue/90"
+                                    onClick={() => acceptBooking(booking.id)}
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    Accept
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="border-red-300 text-red-600 hover:bg-red-50"
+                                    onClick={() => openDeclineModal(booking)}
+                                  >
+                                    Decline
+                                  </Button>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-8 text-foreground/60">
+                        <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">No bookings for this date</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Only show sub-tabs for providers with provider role */}
               {provider?.provider_role === "provider" ? (
                 <Tabs
