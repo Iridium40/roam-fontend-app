@@ -75,6 +75,11 @@ export default function MyBookings() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedBookingForCancel, setSelectedBookingForCancel] = useState<any>(null);
   const [cancellationReason, setCancellationReason] = useState("");
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [selectedBookingForReschedule, setSelectedBookingForReschedule] = useState<any>(null);
+  const [newBookingDate, setNewBookingDate] = useState("");
+  const [newBookingTime, setNewBookingTime] = useState("");
+  const [rescheduleReason, setRescheduleReason] = useState("");
 
   const currentUser = user || customer;
 
