@@ -1187,10 +1187,7 @@ export default function MyBookings() {
                 Cancel
               </Button>
               <Button
-                onClick={() => {
-                  // Will implement reschedule function next
-                  console.log("Reschedule booking");
-                }}
+                onClick={rescheduleBooking}
                 className="flex-1 bg-roam-blue hover:bg-roam-blue/90 text-white"
                 disabled={!newBookingDate || !newBookingTime}
               >
