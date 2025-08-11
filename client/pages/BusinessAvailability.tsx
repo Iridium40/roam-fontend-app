@@ -1446,44 +1446,45 @@ export default function BusinessAvailability() {
                         </div>
 
                         {/* Service Details */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            {business.deliveryType === "both_locations" ? (
-                              <>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                            <div className="flex items-center gap-2">
+                              {business.deliveryType === "both_locations" ? (
+                                <>
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-blue-100 text-blue-800 text-xs"
+                                  >
+                                    Business
+                                  </Badge>
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-green-100 text-green-800 text-xs"
+                                  >
+                                    Mobile
+                                  </Badge>
+                                </>
+                              ) : (
                                 <Badge
                                   variant="secondary"
-                                  className="bg-blue-100 text-blue-800"
+                                  className={`text-xs ${getDeliveryBadge(business.deliveryType).color}`}
                                 >
-                                  Business
+                                  {getDeliveryBadge(business.deliveryType).label}
                                 </Badge>
-                                <Badge
-                                  variant="secondary"
-                                  className="bg-green-100 text-green-800"
-                                >
-                                  Mobile
-                                </Badge>
-                              </>
-                            ) : (
-                              <Badge
-                                variant="secondary"
-                                className={
-                                  getDeliveryBadge(business.deliveryType).color
-                                }
-                              >
-                                {getDeliveryBadge(business.deliveryType).label}
-                              </Badge>
-                            )}
-                            <span className="text-sm text-foreground/60">
+                              )}
+                            </div>
+                            <span className="text-xs sm:text-sm text-foreground/60">
                               Open: {business.openTime} - {business.closeTime}
                             </span>
                           </div>
 
                           <Button
                             onClick={() => handleSelectBusiness(business)}
-                            className="bg-roam-blue hover:bg-roam-blue/90"
+                            className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
+                            size="sm"
                           >
-                            Select This Business
-                            <ChevronRight className="w-4 h-4 ml-2" />
+                            <span className="text-sm">Select This Business</span>
+                            <ChevronRight className="w-4 h-4 ml-2 flex-shrink-0" />
                           </Button>
                         </div>
                       </div>
