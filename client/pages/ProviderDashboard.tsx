@@ -8238,7 +8238,9 @@ export default function ProviderDashboard() {
                           <SelectItem value="all">All Statuses</SelectItem>
                           <SelectItem value="pending">Pending</SelectItem>
                           <SelectItem value="confirmed">Confirmed</SelectItem>
-                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="in_progress">
+                            In Progress
+                          </SelectItem>
                           <SelectItem value="completed">Completed</SelectItem>
                           <SelectItem value="cancelled">Cancelled</SelectItem>
                           <SelectItem value="no_show">No Show</SelectItem>
@@ -8716,20 +8718,21 @@ export default function ProviderDashboard() {
                                   )}
 
                                   {booking.booking_status === "confirmed" &&
-                                    new Date(booking.booking_date) <= new Date(new Date().toDateString()) && (
-                                    <div className="mt-4">
-                                      <Button
-                                        size="sm"
-                                        className="bg-green-600 hover:bg-green-700 w-full"
-                                        onClick={() =>
-                                          completeBooking(booking.id)
-                                        }
-                                      >
-                                        <CheckCircle className="w-4 h-4 mr-2" />
-                                        Complete Booking
-                                      </Button>
-                                    </div>
-                                  )}
+                                    new Date(booking.booking_date) <=
+                                      new Date(new Date().toDateString()) && (
+                                      <div className="mt-4">
+                                        <Button
+                                          size="sm"
+                                          className="bg-green-600 hover:bg-green-700 w-full"
+                                          onClick={() =>
+                                            completeBooking(booking.id)
+                                          }
+                                        >
+                                          <CheckCircle className="w-4 h-4 mr-2" />
+                                          Complete Booking
+                                        </Button>
+                                      </div>
+                                    )}
                                 </CardContent>
                               </Card>
                             );
@@ -8792,14 +8795,18 @@ export default function ProviderDashboard() {
                                   <div className="flex items-center gap-2 mb-3">
                                     {booking.customer_profiles?.image_url ? (
                                       <img
-                                        src={booking.customer_profiles.image_url}
+                                        src={
+                                          booking.customer_profiles.image_url
+                                        }
                                         alt="Customer"
                                         className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                                       />
                                     ) : (
                                       <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span className="text-xs text-gray-600">
-                                          {booking.customer_profiles?.first_name?.charAt(0) ||
+                                          {booking.customer_profiles?.first_name?.charAt(
+                                            0,
+                                          ) ||
                                             booking.guest_name?.charAt(0) ||
                                             "C"}
                                         </span>
@@ -8807,7 +8814,8 @@ export default function ProviderDashboard() {
                                     )}
                                     <div className="flex-1 min-w-0">
                                       <p className="text-sm text-foreground/60 truncate">
-                                        {booking.customer_profiles?.first_name &&
+                                        {booking.customer_profiles
+                                          ?.first_name &&
                                         booking.customer_profiles?.last_name
                                           ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
                                           : booking.guest_name || "Customer"}
@@ -8840,18 +8848,23 @@ export default function ProviderDashboard() {
                                     <div className="flex items-center gap-2">
                                       <Calendar className="w-4 h-4 flex-shrink-0" />
                                       <span className="truncate">
-                                        {new Date(booking.booking_date).toLocaleDateString()}
+                                        {new Date(
+                                          booking.booking_date,
+                                        ).toLocaleDateString()}
                                       </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <Clock className="w-4 h-4 flex-shrink-0" />
-                                      <span className="truncate">{booking.start_time}</span>
+                                      <span className="truncate">
+                                        {booking.start_time}
+                                      </span>
                                     </div>
                                     <div className="flex items-start gap-2 sm:col-span-2 lg:col-span-1">
                                       <DeliveryIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                       <div className="flex-1 min-w-0">
                                         {(() => {
-                                          const location = formatBookingLocation(booking);
+                                          const location =
+                                            formatBookingLocation(booking);
                                           if (typeof location === "string") {
                                             return (
                                               <div className="flex items-center gap-2">
@@ -8859,7 +8872,9 @@ export default function ProviderDashboard() {
                                                   {location}
                                                 </span>
                                                 <button
-                                                  onClick={() => openGoogleMaps(location)}
+                                                  onClick={() =>
+                                                    openGoogleMaps(location)
+                                                  }
                                                   className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                                                   title="Open in Google Maps for directions"
                                                 >
@@ -8882,7 +8897,11 @@ export default function ProviderDashboard() {
                                                 </div>
                                                 {location.address && (
                                                   <button
-                                                    onClick={() => openGoogleMaps(location.address)}
+                                                    onClick={() =>
+                                                      openGoogleMaps(
+                                                        location.address,
+                                                      )
+                                                    }
                                                     className="flex-shrink-0 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                                                     title="Open in Google Maps for directions"
                                                   >
@@ -8938,18 +8957,19 @@ export default function ProviderDashboard() {
                             )}
 
                             {booking.booking_status === "confirmed" &&
-                              new Date(booking.booking_date) <= new Date(new Date().toDateString()) && (
-                              <div className="mt-4">
-                                <Button
-                                  size="sm"
-                                  className="bg-green-600 hover:bg-green-700 w-full"
-                                  onClick={() => completeBooking(booking.id)}
-                                >
-                                  <CheckCircle className="w-4 h-4 mr-2" />
-                                  Complete Booking
-                                </Button>
-                              </div>
-                            )}
+                              new Date(booking.booking_date) <=
+                                new Date(new Date().toDateString()) && (
+                                <div className="mt-4">
+                                  <Button
+                                    size="sm"
+                                    className="bg-green-600 hover:bg-green-700 w-full"
+                                    onClick={() => completeBooking(booking.id)}
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    Complete Booking
+                                  </Button>
+                                </div>
+                              )}
                           </CardContent>
                         </Card>
                       );
