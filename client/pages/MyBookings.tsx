@@ -534,12 +534,18 @@ export default function MyBookings() {
     let cancellationFee = 0;
     let refundAmount = totalAmount;
     let isWithin24Hours = false;
+    let isPastBooking = false;
 
-    if (hoursUntilBooking <= 24 && hoursUntilBooking > 0) {
-      // Within 24 hours - apply cancellation fee (e.g., 50% of booking)
+    if (hoursUntilBooking <= 0) {
+      // Booking is in the past - no refund allowed
+      isPastBooking = true;
+      cancellationFee = totalAmount;
+      refundAmount = 0;
+    } else if (hoursUntilBooking <= 24) {
+      // Within 24 hours - no refund allowed
       isWithin24Hours = true;
-      cancellationFee = totalAmount * 0.5;
-      refundAmount = totalAmount - cancellationFee;
+      cancellationFee = totalAmount;
+      refundAmount = 0;
     }
 
     return {
@@ -547,6 +553,7 @@ export default function MyBookings() {
       cancellationFee,
       refundAmount,
       isWithin24Hours,
+      isPastBooking,
       hoursUntilBooking,
     };
   };
