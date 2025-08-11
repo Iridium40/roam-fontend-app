@@ -48,6 +48,7 @@ import {
   Bell,
   ChevronRight,
   CheckCircle,
+  XCircle,
   AlertCircle,
   BarChart3,
   MessageCircle,
