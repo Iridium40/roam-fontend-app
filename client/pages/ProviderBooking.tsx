@@ -1265,15 +1265,6 @@ const ProviderBooking = () => {
                     {business.business_description}
                   </p>
                   <div className="flex items-center space-x-4 mt-2">
-                    {business.verification_status === "approved" && (
-                      <Badge
-                        variant="default"
-                        className="bg-green-100 text-green-800"
-                      >
-                        <Check className="h-3 w-3 mr-1" />
-                        Verified
-                      </Badge>
-                    )}
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
