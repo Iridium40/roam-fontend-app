@@ -1000,7 +1000,7 @@ export default function MyBookings() {
   );
 }
 
-function BookingCard({ booking }: { booking: any }) {
+function BookingCard({ booking, onCancel }: { booking: any; onCancel: (booking: any) => void }) {
   const statusConfig = {
     confirmed: {
       label: "Confirmed",
