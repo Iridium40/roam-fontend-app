@@ -6453,6 +6453,13 @@ export default function ProviderDashboard() {
       );
     }
 
+    // Filter by booking status
+    if (selectedStatusFilter !== "all") {
+      filtered = filtered.filter(
+        (booking) => booking.booking_status === selectedStatusFilter,
+      );
+    }
+
     return filtered;
   };
 
@@ -13571,7 +13578,7 @@ export default function ProviderDashboard() {
                     ?.service_categories?.description ||
                     editingService.services?.service_subcategories
                       ?.service_categories?.service_category_type}{" "}
-                  ����{" "}
+                  ���{" "}
                   {editingService.services?.service_subcategories
                     ?.description ||
                     editingService.services?.service_subcategories
