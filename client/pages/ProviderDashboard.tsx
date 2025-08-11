@@ -7815,7 +7815,7 @@ export default function ProviderDashboard() {
 
           {/* Stats Cards */}
           <div
-            className={`grid grid-cols-1 md:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? "lg:grid-cols-3" : isDispatcher ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6 max-lg:flex max-sm:hidden`}
+            className={`grid grid-cols-1 sm:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? "lg:grid-cols-3" : isDispatcher ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-4"} gap-4 md:gap-6`}
           >
             {isOwner && (
               <Card>
