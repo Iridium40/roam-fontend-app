@@ -689,28 +689,9 @@ export default function MyBookings() {
     }
 
     try {
-      // Calculate cancellation fee and refund amount based on 24-hour policy
-      const bookingDateTime = new Date(
-        `${selectedBookingForCancel.date} ${selectedBookingForCancel.time}`,
-      );
-      const now = new Date();
-      const hoursUntilBooking =
-        (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-      // Extract total amount for calculations (remove $ and convert to number)
-      const totalAmount = parseFloat(
-        selectedBookingForCancel.price?.replace("$", "") || "0",
-      );
-
-      // Apply cancellation policy
-      let cancellationFee = 0;
-      let refundAmount = totalAmount;
-
-      if (hoursUntilBooking <= 24 && hoursUntilBooking > 0) {
-        // Within 24 hours - apply cancellation fee (e.g., 50% of booking)
-        cancellationFee = totalAmount * 0.5;
-        refundAmount = totalAmount - cancellationFee;
-      }
+      // Calculate cancellation fee and refund amount using the same logic as the modal
+      const cancellationDetails = calculateCancellationDetails(selectedBookingForCancel);
+      const { totalAmount, cancellationFee, refundAmount } = cancellationDetails;
 
       const { error } = await supabase
         .from("bookings")
