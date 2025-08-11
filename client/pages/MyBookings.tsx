@@ -680,10 +680,20 @@ export default function MyBookings() {
           errorMessage = error;
         } else if (error.message) {
           errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
         } else if (error.details) {
           errorMessage = error.details;
         } else if (error.hint) {
           errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
         }
       }
 
