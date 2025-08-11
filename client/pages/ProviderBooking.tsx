@@ -1068,6 +1068,30 @@ const ProviderBooking = () => {
         throw bookingError;
       }
 
+      console.log("Booking created successfully:", booking);
+
+      // Create booking_addons records for selected add-ons
+      if (selectedAddons.length > 0 && booking.id) {
+        console.log("Creating booking addons:", selectedAddons);
+
+        const addonRecords = selectedAddons.map(addon => ({
+          booking_id: booking.id,
+          addon_id: addon.id,
+        }));
+
+        const { data: bookingAddons, error: addonsError } = await supabase
+          .from("booking_addons")
+          .insert(addonRecords)
+          .select();
+
+        if (addonsError) {
+          console.error("Error creating booking addons:", addonsError);
+          // Don't throw error here - booking was successful, addons are secondary
+        } else {
+          console.log("Booking addons created successfully:", bookingAddons);
+        }
+      }
+
       // Create promotion usage record if promotion was applied
       if (promotionId && promotionData && booking.id) {
         const originalAmount = getSubtotal();
