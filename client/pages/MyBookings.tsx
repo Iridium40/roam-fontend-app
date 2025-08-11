@@ -89,8 +89,6 @@ export default function MyBookings() {
     past: 1,
   });
   const ITEMS_PER_PAGE = 10;
-
-  const currentUser = user || customer;
   // Fetch bookings data on component mount
   useEffect(() => {
     const fetchBookings = async (retryCount = 0) => {
