@@ -8052,17 +8052,19 @@ export default function ProviderDashboard() {
                 </div>
               )}
 
-              {/* Calendar View - Always Visible */}
-              <div className="mb-6 p-4 border rounded-lg bg-card">
-                <CalendarGrid
-                  bookings={bookings}
-                  viewType={calendarViewType}
-                  currentDate={calendarDate}
-                  onDateChange={setCalendarDate}
-                  selectedDate={selectedDate}
-                  onDateSelect={setSelectedDate}
-                />
-              </div>
+              {/* Calendar View - Conditionally Visible */}
+              {calendarViewType !== "hidden" && (
+                <div className="mb-6 p-4 border rounded-lg bg-card">
+                  <CalendarGrid
+                    bookings={bookings}
+                    viewType={calendarViewType as "week" | "month"}
+                    currentDate={calendarDate}
+                    onDateChange={setCalendarDate}
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                  />
+                </div>
+              )}
 
               {/* Search Bar - Between Calendar and List */}
               <div className="flex items-center gap-2 mb-6">
