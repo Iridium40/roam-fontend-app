@@ -24,6 +24,7 @@ import {
   X,
   Edit,
   Hash,
+  Map,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
