@@ -839,7 +839,7 @@ function BookingCard({ booking }: { booking: any }) {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
             <Badge className={statusConfig.color}>
               <statusConfig.icon className="w-3 h-3 mr-1" />
               {statusConfig.label}
