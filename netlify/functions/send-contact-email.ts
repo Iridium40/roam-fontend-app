@@ -1,11 +1,14 @@
 import { Handler } from "@netlify/functions";
 
-const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event, context) => {
+  console.log("Contact form function called with method:", event.httpMethod);
+
   // Enable CORS
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Content-Type": "application/json",
   };
 
   // Handle preflight request
@@ -18,6 +21,7 @@ const handler: Handler = async (event, context) => {
   }
 
   if (event.httpMethod !== "POST") {
+    console.log("Invalid method:", event.httpMethod);
     return {
       statusCode: 405,
       headers,
@@ -26,7 +30,10 @@ const handler: Handler = async (event, context) => {
   }
 
   try {
+    console.log("Processing contact form submission...");
+
     if (!event.body) {
+      console.log("No request body provided");
       return {
         statusCode: 400,
         headers,
@@ -34,61 +41,74 @@ const handler: Handler = async (event, context) => {
       };
     }
 
-    const { to, from, subject, html } = JSON.parse(event.body);
-
-    // Validate required fields
-    if (!to || !from || !subject || !html) {
+    let requestData;
+    try {
+      requestData = JSON.parse(event.body);
+    } catch (parseError) {
+      console.error("JSON parse error:", parseError);
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: "Missing required fields" }),
+        body: JSON.stringify({ error: "Invalid JSON in request body" }),
       };
     }
 
-    // Here you would typically use a service like SendGrid, Resend, or similar
-    // For now, we'll use a simple email service or store in database for follow-up
+    const { to, from, subject, html } = requestData;
+    console.log("Form data received:", { to, from, subject: subject?.substring(0, 50) });
 
-    // Example with SendGrid (you'll need to install @sendgrid/mail and set API key)
-    // const sgMail = require('@sendgrid/mail');
-    // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    // Validate required fields
+    if (!to || !from || !subject || !html) {
+      console.log("Missing required fields:", { to: !!to, from: !!from, subject: !!subject, html: !!html });
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          error: "Missing required fields",
+          missing: {
+            to: !to,
+            from: !from,
+            subject: !subject,
+            html: !html
+          }
+        }),
+      };
+    }
 
-    // const msg = {
-    //   to,
-    //   from: 'noreply@roamyourbestlife.com', // Must be verified sender
-    //   subject,
-    //   html,
-    //   replyTo: from,
-    // };
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(from)) {
+      console.log("Invalid email format:", from);
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: "Invalid email format" }),
+      };
+    }
 
-    // await sgMail.send(msg);
-
-    // For now, we'll simulate success and log the contact form submission
+    // Log the contact form submission for now
     console.log("Contact form submission:", {
       to,
       from,
       subject,
       timestamp: new Date().toISOString(),
+      bodyLength: html.length
     });
 
-    // You could also store this in your Supabase database for tracking
-    // const supabaseAdmin = createClient(
-    //   process.env.SUPABASE_URL!,
-    //   process.env.SUPABASE_SERVICE_ROLE_KEY!
-    // );
+    // For production, you would implement actual email sending here
+    // Examples:
+    // - SendGrid: await sgMail.send(msg)
+    // - Resend: await resend.emails.send(msg)
+    // - AWS SES: await ses.sendEmail(params).promise()
 
-    // await supabaseAdmin.from('contact_submissions').insert({
-    //   from_email: from,
-    //   subject,
-    //   message: html,
-    //   created_at: new Date().toISOString(),
-    // });
+    // Store in database for manual follow-up (optional)
+    // This could be added later to track contact submissions
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        message: "Contact form submitted successfully",
+        message: "Contact form submitted successfully"
       }),
     };
   } catch (error) {
@@ -98,11 +118,8 @@ const handler: Handler = async (event, context) => {
       headers,
       body: JSON.stringify({
         error: "Internal server error",
-        details:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        details: error instanceof Error ? error.message : "Unknown error"
       }),
     };
   }
 };
-
-export { handler };
