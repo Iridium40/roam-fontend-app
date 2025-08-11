@@ -195,11 +195,15 @@ const CalendarGrid = ({
   viewType,
   currentDate,
   onDateChange,
+  selectedDate,
+  onDateSelect,
 }: {
   bookings: any[];
   viewType: "week" | "month";
   currentDate: Date;
   onDateChange: (date: Date) => void;
+  selectedDate: Date | null;
+  onDateSelect: (date: Date) => void;
 }) => {
   const today = new Date();
 
