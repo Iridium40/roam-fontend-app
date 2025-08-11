@@ -308,71 +308,21 @@ const ProviderBooking = () => {
         );
       }
 
-      // Fetch business addons with proper three-tier structure
+      // Fetch addons using the exact two-step filtering process
       let addons = [];
       let addonsError = null;
 
       if (selectedServiceId) {
-        // Query business addons that are eligible for the selected service
-        const { data: businessAddons, error: businessAddonsError } = await supabase
-          .from("business_addons")
-          .select(
-            `
-            id,
-            business_id,
-            addon_id,
-            business_price,
-            is_available,
-            service_addons:addon_id (
-              id,
-              name,
-              description,
-              image_url,
-              is_active,
-              service_addon_eligibility!inner (
-                service_id,
-                is_recommended
-              )
-            )
-          `,
-          )
-          .eq("business_id", businessId)
-          .eq("is_available", true)
-          .eq("service_addons.service_addon_eligibility.service_id", selectedServiceId);
+        console.log("Fetching addons for service:", selectedServiceId, "and business:", businessId);
 
-        if (businessAddonsError) {
-          addonsError = businessAddonsError;
-          console.error("Error fetching business addons:", businessAddonsError);
-        } else if (businessAddons) {
-          // Transform the data to match the expected format
-          addons = businessAddons
-            .filter(item => item.service_addons?.is_active)
-            .map(item => {
-              const eligibility = item.service_addons.service_addon_eligibility.find(
-                (e: any) => e.service_id === selectedServiceId
-              );
-              return {
-                id: item.addon_id,
-                name: item.service_addons.name,
-                description: item.service_addons.description,
-                image_url: item.service_addons.image_url,
-                is_recommended: eligibility?.is_recommended || false,
-                price: item.business_price,
-                business_addon_id: item.id, // Keep reference to business addon record
-              };
-            });
-        }
-      } else {
-        // If no service selected, get all business addons
-        const { data: allBusinessAddons, error: allBusinessAddonsError } = await supabase
-          .from("business_addons")
+        // Step 1: Get eligible addons for the selected service
+        const { data: eligibleAddons, error: eligibilityError } = await supabase
+          .from("service_addon_eligibility")
           .select(
             `
-            id,
-            business_id,
+            service_id,
             addon_id,
-            business_price,
-            is_available,
+            is_recommended,
             service_addons:addon_id (
               id,
               name,
@@ -382,24 +332,51 @@ const ProviderBooking = () => {
             )
           `,
           )
-          .eq("business_id", businessId)
-          .eq("is_available", true);
+          .eq("service_id", selectedServiceId);
 
-        if (allBusinessAddonsError) {
-          addonsError = allBusinessAddonsError;
+        if (eligibilityError) {
+          console.error("Error fetching service addon eligibility:", eligibilityError);
+          addonsError = eligibilityError;
+        } else if (eligibleAddons && eligibleAddons.length > 0) {
+          console.log("Found eligible addons:", eligibleAddons);
+
+          // Step 2: Filter by business offerings and get custom pricing
+          const eligibleAddonIds = eligibleAddons.map(item => item.addon_id);
+
+          const { data: businessAddons, error: businessAddonsError } = await supabase
+            .from("business_addons")
+            .select("*")
+            .eq("business_id", businessId)
+            .eq("is_available", true)
+            .in("addon_id", eligibleAddonIds);
+
+          if (businessAddonsError) {
+            console.error("Error fetching business addons:", businessAddonsError);
+            addonsError = businessAddonsError;
+          } else {
+            console.log("Found business addons:", businessAddons);
+
+            // Combine the data
+            addons = (businessAddons || []).map(businessAddon => {
+              const eligibilityInfo = eligibleAddons.find(e => e.addon_id === businessAddon.addon_id);
+              const serviceAddon = eligibilityInfo?.service_addons;
+
+              return {
+                id: businessAddon.addon_id,
+                name: serviceAddon?.name || "Unknown Addon",
+                description: serviceAddon?.description || "",
+                image_url: serviceAddon?.image_url || null,
+                is_recommended: eligibilityInfo?.is_recommended || false,
+                price: businessAddon.custom_price || 0,
+                business_addon_id: businessAddon.id,
+              };
+            }).filter(addon => addon.name !== "Unknown Addon"); // Filter out invalid addons
+          }
         } else {
-          addons = (allBusinessAddons || [])
-            .filter(item => item.service_addons?.is_active)
-            .map(item => ({
-              id: item.addon_id,
-              name: item.service_addons.name,
-              description: item.service_addons.description,
-              image_url: item.service_addons.image_url,
-              is_recommended: false,
-              price: item.business_price,
-              business_addon_id: item.id,
-            }));
+          console.log("No eligible addons found for this service");
         }
+      } else {
+        console.log("No service selected, skipping addon fetch");
       }
 
       if (addonsError) {
