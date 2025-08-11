@@ -525,6 +525,22 @@ export default function MyBookings() {
     }
 
     try {
+      // First, get the current booking data to store original values
+      const { data: currentBooking, error: fetchError } = await supabase
+        .from('bookings')
+        .select('booking_date, start_time, original_booking_date, original_start_time, reschedule_count')
+        .eq('id', selectedBookingForReschedule.id)
+        .single();
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      // Set original date/time if this is the first reschedule
+      const originalDate = currentBooking.original_booking_date || currentBooking.booking_date;
+      const originalTime = currentBooking.original_start_time || currentBooking.start_time;
+      const newRescheduleCount = (currentBooking.reschedule_count || 0) + 1;
+
       const { error } = await supabase
         .from('bookings')
         .update({
@@ -533,7 +549,10 @@ export default function MyBookings() {
           booking_status: 'pending',
           reschedule_reason: rescheduleReason.trim() || 'Rescheduled by customer',
           rescheduled_at: new Date().toISOString(),
-          rescheduled_by: currentUser.id
+          rescheduled_by: currentUser.id,
+          original_booking_date: originalDate,
+          original_start_time: originalTime,
+          reschedule_count: newRescheduleCount
         })
         .eq('id', selectedBookingForReschedule.id);
 
