@@ -701,14 +701,20 @@ export default function BusinessProfile() {
                         {business.business_description}
                       </p>
                       <div className="flex flex-wrap items-center gap-3">
-                        <Badge variant="secondary" className="text-sm">
-                          {business.business_type}
-                        </Badge>
-                        {business.verification_status === "approved" && (
-                          <Badge className="bg-green-100 text-green-800 border-green-200">
-                            <Shield className="w-3 h-3 mr-1" />
-                            Verified Business
-                          </Badge>
+                        {/* Business Location Address */}
+                        {businessData?.location && (
+                          <div className="flex items-center gap-1 text-sm text-foreground/70">
+                            <MapPin className="w-4 h-4" />
+                            <span>
+                              {[
+                                businessData.location.address_line1,
+                                businessData.location.city,
+                                businessData.location.state,
+                              ]
+                                .filter(Boolean)
+                                .join(", ")}
+                            </span>
+                          </div>
                         )}
                         <div className="flex items-center gap-1">
                           <Star className="w-4 h-4 text-roam-warning fill-current" />
