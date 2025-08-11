@@ -865,9 +865,41 @@ function BookingCard({ booking }: { booking: any }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="flex items-start gap-2">
             <DeliveryIcon className="w-4 h-4 text-roam-blue mt-0.5" />
-            <div>
+            <div className="flex-1">
               <p className="text-sm font-medium">{deliveryLabel}</p>
-              <p className="text-sm text-foreground/60">{booking.location}</p>
+              <div className="flex items-start gap-2">
+                <p className="text-sm text-foreground/60 flex-1">{booking.location}</p>
+                {booking.locationDetails && booking.locationDetails.coordinates.latitude && (
+                  <button
+                    onClick={() => {
+                      const { latitude, longitude } = booking.locationDetails.coordinates;
+                      const address = booking.location;
+
+                      // Detect platform and open appropriate maps app
+                      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                      let mapsUrl;
+                      if (isIOS) {
+                        // iOS - prefer Apple Maps
+                        mapsUrl = `maps://maps.google.com/maps?daddr=${latitude},${longitude}&amp;ll=`;
+                      } else if (isMobile) {
+                        // Android - use Google Maps app
+                        mapsUrl = `geo:${latitude},${longitude}?q=${encodeURIComponent(address)}`;
+                      } else {
+                        // Desktop - use Google Maps web
+                        mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+                      }
+
+                      window.open(mapsUrl, '_blank');
+                    }}
+                    className="text-roam-blue hover:text-roam-blue/80 transition-colors"
+                    title="Get directions"
+                  >
+                    <Map className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
