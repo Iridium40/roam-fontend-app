@@ -951,6 +951,39 @@ const ProviderBooking = () => {
     setIsBookingModalOpen(true);
   };
 
+  const isFormValid = () => {
+    // Base required fields
+    const baseRequiredFields = [
+      !bookingForm.customerName,
+      !bookingForm.customerEmail,
+      !bookingForm.preferredDate,
+    ];
+
+    // Address fields only required for customer_location delivery type
+    const addressRequiredFields =
+      deliveryType === "customer_location"
+        ? [
+            !bookingForm.customerAddress,
+            !bookingForm.customerCity,
+            !bookingForm.customerState,
+            !bookingForm.customerZip,
+          ]
+        : [];
+
+    const allRequiredFields = [
+      ...baseRequiredFields,
+      ...addressRequiredFields,
+    ];
+
+    // Check if any required field is missing (true means field is empty)
+    const hasEmptyRequiredFields = allRequiredFields.some(isEmpty => isEmpty);
+
+    // Must have at least one service selected
+    const hasSelectedItems = selectedItems.length > 0;
+
+    return !hasEmptyRequiredFields && hasSelectedItems;
+  };
+
   const submitBooking = async () => {
     setIsBooking(true);
     try {
