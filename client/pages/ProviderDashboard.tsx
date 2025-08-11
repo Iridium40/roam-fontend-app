@@ -7776,8 +7776,8 @@ export default function ProviderDashboard() {
             {/* Bookings Tab */}
             <TabsContent value="bookings" className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Bookings</h2>
-                <div className="flex gap-2">
+                <h2 className="text-2xl font-bold">Calendar & Bookings</h2>
+                <div className="flex gap-2 items-center">
                   <Select
                     value={calendarViewType}
                     onValueChange={(value: "week" | "month") =>
@@ -7788,17 +7788,15 @@ export default function ProviderDashboard() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="week">Week View</SelectItem>
                       <SelectItem value="month">Month View</SelectItem>
+                      <SelectItem value="week">Week View</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button
-                    className="bg-roam-blue hover:bg-roam-blue/90"
-                    onClick={() => setShowCalendarView(!showCalendarView)}
-                  >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Calendar View
-                  </Button>
+                  {selectedDate && (
+                    <Badge variant="outline" className="bg-roam-blue/10 text-roam-blue border-roam-blue">
+                      {selectedDate.toLocaleDateString()}
+                    </Badge>
+                  )}
                 </div>
               </div>
 
@@ -12684,7 +12682,7 @@ export default function ProviderDashboard() {
                       <li>• Your business information and description</li>
                       <li>• All available services with pricing</li>
                       <li>• Available add-ons and extras</li>
-                      <li>• Easy booking form to request appointments</li>
+                      <li>�� Easy booking form to request appointments</li>
                       <li>• Your contact information and location</li>
                     </ul>
                   </div>
