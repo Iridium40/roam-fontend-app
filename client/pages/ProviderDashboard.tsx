@@ -514,6 +514,9 @@ export default function ProviderDashboard() {
   const [conversationsListModal, setConversationsListModal] = useState(false);
   const [selectedBookingForMessaging, setSelectedBookingForMessaging] =
     useState(null);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [selectedBookingForDecline, setSelectedBookingForDecline] = useState<any>(null);
+  const [declineReason, setDeclineReason] = useState("");
 
   // Subscription states
   const [currentSubscription, setCurrentSubscription] = useState(null);
