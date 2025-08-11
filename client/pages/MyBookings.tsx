@@ -672,10 +672,14 @@ export default function MyBookings() {
           "Your reschedule request has been sent to the provider for approval.",
       });
     } catch (error: any) {
-      console.error("Error rescheduling booking:", JSON.stringify(error, null, 2));
+      console.error("Error rescheduling booking - Full error object:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
+
       let errorMessage = "Unknown error occurred";
 
       if (error) {
+        // Handle different error object structures
         if (typeof error === "string") {
           errorMessage = error;
         } else if (error.message) {
@@ -689,6 +693,7 @@ export default function MyBookings() {
         } else if (error.code) {
           errorMessage = `Database error (${error.code})`;
         } else {
+          // Try to stringify the error object
           try {
             errorMessage = JSON.stringify(error);
           } catch {
@@ -696,6 +701,8 @@ export default function MyBookings() {
           }
         }
       }
+
+      console.error("Parsed error message:", errorMessage);
 
       toast({
         title: "Error Rescheduling Booking",
