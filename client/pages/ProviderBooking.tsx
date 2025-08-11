@@ -1431,7 +1431,7 @@ const ProviderBooking = () => {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span>Service Price</span>
-                      <span className="font-medium">${servicePricing.basePrice}</span>
+                      <span className="font-medium">${getSubtotal().toFixed(2)}</span>
                     </div>
                     {selectedAddons.length > 0 && (
                       <div className="border-t pt-3 space-y-2">
@@ -1446,7 +1446,7 @@ const ProviderBooking = () => {
                     )}
                     <div className="border-t pt-3 flex justify-between items-center text-lg font-bold">
                       <span>Total</span>
-                      <span className="text-roam-blue">${servicePricing.totalPrice}</span>
+                      <span className="text-roam-blue">${getTotalAmount().toFixed(2)}</span>
                     </div>
                   </div>
                   <Button
