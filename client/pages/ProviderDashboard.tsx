@@ -7940,16 +7940,17 @@ export default function ProviderDashboard() {
                 <div className="flex gap-2 items-center">
                   <Select
                     value={calendarViewType}
-                    onValueChange={(value: "week" | "month") =>
+                    onValueChange={(value: "week" | "month" | "hidden") =>
                       setCalendarViewType(value)
                     }
                   >
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-36">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="month">Month View</SelectItem>
                       <SelectItem value="week">Week View</SelectItem>
+                      <SelectItem value="hidden">Hide Calendar</SelectItem>
                     </SelectContent>
                   </Select>
                   {selectedDate && (
@@ -15913,7 +15914,7 @@ export default function ProviderDashboard() {
                   <ul className="text-sm text-blue-800 space-y-1">
                     <li>• Your business information and description</li>
                     <li>• All available services with pricing</li>
-                    <li>�� Available add-ons and extras</li>
+                    <li>• Available add-ons and extras</li>
                     <li>• Easy booking form to request appointments</li>
                     <li>• Your contact information and location</li>
                   </ul>
