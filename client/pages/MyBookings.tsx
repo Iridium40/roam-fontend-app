@@ -729,6 +729,7 @@ export default function MyBookings() {
             ? {
                 ...booking,
                 status: "cancelled",
+                booking_status: "cancelled",
                 cancelled_at: new Date().toISOString(),
                 cancelled_by: currentUser.id,
                 cancellation_reason:
