@@ -1463,7 +1463,7 @@ const ProviderBooking = () => {
                     ) : (
                       <>
                         <Calendar className="w-4 h-4 mr-2" />
-                        Book Now - ${servicePricing.totalPrice}
+                        Book Now - ${getTotalAmount().toFixed(2)}
                       </>
                     )}
                   </Button>
