@@ -1198,6 +1198,7 @@ const ProviderBooking = () => {
       navigate(`/payment?${paymentParams.toString()}`);
 
       setIsBookingModalOpen(false);
+      setIsBooking(false);
     } catch (error: any) {
       console.error("Error submitting booking:", error);
 
