@@ -8066,6 +8066,7 @@ export default function ProviderDashboard() {
                                 <Button
                                   size="sm"
                                   className="bg-roam-blue hover:bg-roam-blue/90"
+                                  onClick={() => acceptBooking(booking.id)}
                                 >
                                   <CheckCircle className="w-4 h-4 mr-2" />
                                   Accept
@@ -8074,6 +8075,7 @@ export default function ProviderDashboard() {
                                   size="sm"
                                   variant="outline"
                                   className="border-red-300 text-red-600 hover:bg-red-50"
+                                  onClick={() => declineBooking(booking.id)}
                                 >
                                   Decline
                                 </Button>
