@@ -105,6 +105,7 @@ const ProviderBooking = () => {
   const [loading, setLoading] = useState(true);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
+  const [selectedAddons, setSelectedAddons] = useState<any[]>([]);
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
   const [promotionData, setPromotionData] = useState<any>(null);
   const [customerProfile, setCustomerProfile] = useState<any>(null);
