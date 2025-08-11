@@ -503,6 +503,15 @@ export default function MyBookings() {
     setShowCancelModal(true);
   };
 
+  // Open reschedule modal
+  const openRescheduleModal = (booking: any) => {
+    setSelectedBookingForReschedule(booking);
+    setNewBookingDate("");
+    setNewBookingTime("");
+    setRescheduleReason("");
+    setShowRescheduleModal(true);
+  };
+
   // Cancel booking function
   const cancelBooking = async () => {
     if (!selectedBookingForCancel || !currentUser) {
