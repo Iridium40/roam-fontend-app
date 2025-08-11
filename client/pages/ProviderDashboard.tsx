@@ -76,6 +76,7 @@ import {
   Briefcase,
   Palette,
   Wrench,
+  Hash,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
