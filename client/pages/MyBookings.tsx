@@ -572,7 +572,10 @@ export default function MyBookings() {
               status: 'pending',
               reschedule_reason: rescheduleReason.trim() || 'Rescheduled by customer',
               rescheduled_at: new Date().toISOString(),
-              rescheduled_by: currentUser.id
+              rescheduled_by: currentUser.id,
+              original_booking_date: originalDate,
+              original_start_time: originalTime,
+              reschedule_count: newRescheduleCount
             }
           : booking
       ));
