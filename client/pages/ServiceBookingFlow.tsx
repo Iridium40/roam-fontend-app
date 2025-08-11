@@ -298,11 +298,11 @@ export default function ServiceBookingFlow() {
                 <div className="w-8 h-8 bg-roam-blue text-white rounded-full flex items-center justify-center text-sm font-medium">
                   1
                 </div>
-                <span className="ml-2 text-xs sm:text-sm font-medium text-roam-blue hidden xs:inline">
+                <span className="ml-2 text-xs sm:text-sm font-medium text-roam-blue hidden sm:inline">
                   Select Date & Time
                 </span>
                 {/* Mobile-only compact label */}
-                <span className="ml-1 text-xs font-medium text-roam-blue xs:hidden">
+                <span className="ml-1 text-xs font-medium text-roam-blue sm:hidden">
                   Date
                 </span>
               </div>
@@ -311,11 +311,11 @@ export default function ServiceBookingFlow() {
                 <div className="w-8 h-8 bg-foreground/20 text-foreground/60 rounded-full flex items-center justify-center text-sm">
                   2
                 </div>
-                <span className="ml-2 text-xs sm:text-sm text-foreground/60 hidden xs:inline">
+                <span className="ml-2 text-xs sm:text-sm text-foreground/60 hidden sm:inline">
                   Choose Business
                 </span>
                 {/* Mobile-only compact label */}
-                <span className="ml-1 text-xs text-foreground/60 xs:hidden">
+                <span className="ml-1 text-xs text-foreground/60 sm:hidden">
                   Business
                 </span>
               </div>
@@ -324,11 +324,11 @@ export default function ServiceBookingFlow() {
                 <div className="w-8 h-8 bg-foreground/20 text-foreground/60 rounded-full flex items-center justify-center text-sm">
                   3
                 </div>
-                <span className="ml-2 text-xs sm:text-sm text-foreground/60 hidden xs:inline">
+                <span className="ml-2 text-xs sm:text-sm text-foreground/60 hidden sm:inline">
                   Book Service
                 </span>
                 {/* Mobile-only compact label */}
-                <span className="ml-1 text-xs text-foreground/60 xs:hidden">
+                <span className="ml-1 text-xs text-foreground/60 sm:hidden">
                   Book
                 </span>
               </div>
