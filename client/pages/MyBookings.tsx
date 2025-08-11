@@ -969,7 +969,8 @@ export default function MyBookings() {
                 <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-yellow-800">
                   <p className="font-medium">Cancellation Policy</p>
-                  <p>Please check the cancellation policy for this service. Some bookings may have cancellation fees.</p>
+                  <p className="mb-2">Bookings cannot be cancelled within 24 hours of the scheduled appointment time.</p>
+                  <p>Please check the cancellation policy for this service. Some bookings may have cancellation fees or restrictions.</p>
                 </div>
               </div>
             </div>
