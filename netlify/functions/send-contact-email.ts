@@ -47,11 +47,11 @@ const handler: Handler = async (event, context) => {
 
     // Here you would typically use a service like SendGrid, Resend, or similar
     // For now, we'll use a simple email service or store in database for follow-up
-    
+
     // Example with SendGrid (you'll need to install @sendgrid/mail and set API key)
     // const sgMail = require('@sendgrid/mail');
     // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    
+
     // const msg = {
     //   to,
     //   from: 'noreply@roamyourbestlife.com', // Must be verified sender
@@ -59,7 +59,7 @@ const handler: Handler = async (event, context) => {
     //   html,
     //   replyTo: from,
     // };
-    
+
     // await sgMail.send(msg);
 
     // For now, we'll simulate success and log the contact form submission
@@ -75,7 +75,7 @@ const handler: Handler = async (event, context) => {
     //   process.env.SUPABASE_URL!,
     //   process.env.SUPABASE_SERVICE_ROLE_KEY!
     // );
-    
+
     // await supabaseAdmin.from('contact_submissions').insert({
     //   from_email: from,
     //   subject,
@@ -86,9 +86,9 @@ const handler: Handler = async (event, context) => {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ 
-        success: true, 
-        message: "Contact form submitted successfully" 
+      body: JSON.stringify({
+        success: true,
+        message: "Contact form submitted successfully",
       }),
     };
   } catch (error) {
@@ -96,9 +96,10 @@ const handler: Handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: "Internal server error",
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
       }),
     };
   }
