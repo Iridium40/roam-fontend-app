@@ -672,7 +672,7 @@ export default function MyBookings() {
           "Your reschedule request has been sent to the provider for approval.",
       });
     } catch (error: any) {
-      console.error("Error rescheduling booking:", error);
+      console.error("Error rescheduling booking:", JSON.stringify(error, null, 2));
       let errorMessage = "Unknown error occurred";
 
       if (error) {
