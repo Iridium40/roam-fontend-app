@@ -464,7 +464,13 @@ export default function MyBookings() {
     (b) => b.status === "confirmed" || b.status === "pending",
   );
   const allPastBookings = bookings
-    .filter((b) => b.status === "completed" || b.status === "cancelled" || b.status === "declined" || b.status === "no_show")
+    .filter(
+      (b) =>
+        b.status === "completed" ||
+        b.status === "cancelled" ||
+        b.status === "declined" ||
+        b.status === "no_show",
+    )
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const allActiveBookings = bookings.filter((b) => b.status === "in_progress");
 
@@ -691,8 +697,11 @@ export default function MyBookings() {
 
     try {
       // Calculate cancellation fee and refund amount using the same logic as the modal
-      const cancellationDetails = calculateCancellationDetails(selectedBookingForCancel);
-      const { totalAmount, cancellationFee, refundAmount } = cancellationDetails;
+      const cancellationDetails = calculateCancellationDetails(
+        selectedBookingForCancel,
+      );
+      const { totalAmount, cancellationFee, refundAmount } =
+        cancellationDetails;
 
       const { error } = await supabase
         .from("bookings")
@@ -745,8 +754,8 @@ export default function MyBookings() {
         refundAmount === 0
           ? "Your booking has been cancelled successfully. No refund will be processed as per our cancellation policy."
           : refundAmount === totalAmount
-          ? "Your booking has been cancelled successfully. Full refund will be processed."
-          : `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`;
+            ? "Your booking has been cancelled successfully. Full refund will be processed."
+            : `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`;
 
       toast({
         title: "Booking Cancelled",
@@ -1212,12 +1221,14 @@ export default function MyBookings() {
                             ${cancellationDetails.totalAmount.toFixed(2)}
                           </span>
                         </div>
-                        {(cancellationDetails.isWithin24Hours || cancellationDetails.isPastBooking) && (
+                        {(cancellationDetails.isWithin24Hours ||
+                          cancellationDetails.isPastBooking) && (
                           <>
                             <div className="flex justify-between text-red-600">
                               <span>Cancellation Fee:</span>
                               <span className="font-medium">
-                                ${cancellationDetails.cancellationFee.toFixed(2)}
+                                $
+                                {cancellationDetails.cancellationFee.toFixed(2)}
                               </span>
                             </div>
                             <div className="border-t pt-1 mt-1">
@@ -1230,14 +1241,15 @@ export default function MyBookings() {
                             </div>
                           </>
                         )}
-                        {!cancellationDetails.isWithin24Hours && !cancellationDetails.isPastBooking && (
-                          <div className="flex justify-between font-medium text-green-600">
-                            <span>Refund Amount:</span>
-                            <span>
-                              ${cancellationDetails.refundAmount.toFixed(2)}
-                            </span>
-                          </div>
-                        )}
+                        {!cancellationDetails.isWithin24Hours &&
+                          !cancellationDetails.isPastBooking && (
+                            <div className="flex justify-between font-medium text-green-600">
+                              <span>Refund Amount:</span>
+                              <span>
+                                ${cancellationDetails.refundAmount.toFixed(2)}
+                              </span>
+                            </div>
+                          )}
                       </div>
                     </div>
 
@@ -1254,11 +1266,14 @@ export default function MyBookings() {
                           <p className="font-medium">Cancellation Policy</p>
                           {cancellationDetails.isPastBooking ? (
                             <p>
-                              This booking is in the past. You may cancel it but no refund will be provided as per our policy.
+                              This booking is in the past. You may cancel it but
+                              no refund will be provided as per our policy.
                             </p>
                           ) : cancellationDetails.isWithin24Hours ? (
                             <p>
-                              This booking is within 24 hours of the appointment time. You may cancel it but no refund will be provided as per our policy.
+                              This booking is within 24 hours of the appointment
+                              time. You may cancel it but no refund will be
+                              provided as per our policy.
                             </p>
                           ) : (
                             <p>
@@ -1686,50 +1701,49 @@ function BookingCard({
 
           {/* Secondary actions - Cancel and Reschedule (less common) */}
           <div className="flex gap-2">
-            {(booking.status === "pending" ||
-              booking.status === "confirmed") &&
+            {(booking.status === "pending" || booking.status === "confirmed") &&
               booking.status !== "cancelled" &&
               booking.status !== "declined" &&
               booking.status !== "completed" &&
               booking.status !== "no_show" && (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                  onClick={() => onReschedule(booking)}
-                >
-                  <Edit className="w-4 h-4 mr-2" />
-                  Reschedule
-                </Button>
-                {canCancelBooking ? (
+                <>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
-                    onClick={() => onCancel(booking)}
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                    onClick={() => onReschedule(booking)}
                   >
-                    <X className="w-4 h-4 mr-2" />
-                    Cancel
+                    <Edit className="w-4 h-4 mr-2" />
+                    Reschedule
                   </Button>
-                ) : isWithin24Hours() ? (
-                  <div className="flex flex-col items-end">
+                  {canCancelBooking ? (
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-gray-300 text-gray-400 cursor-not-allowed"
-                      disabled
+                      className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
+                      onClick={() => onCancel(booking)}
                     >
                       <X className="w-4 h-4 mr-2" />
                       Cancel
                     </Button>
-                    <p className="text-xs text-red-600 mt-1 max-w-[120px] text-right">
-                      Cannot cancel within 24 hours
-                    </p>
-                  </div>
-                ) : null}
-              </>
-            )}
+                  ) : isWithin24Hours() ? (
+                    <div className="flex flex-col items-end">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-gray-300 text-gray-400 cursor-not-allowed"
+                        disabled
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        Cancel
+                      </Button>
+                      <p className="text-xs text-red-600 mt-1 max-w-[120px] text-right">
+                        Cannot cancel within 24 hours
+                      </p>
+                    </div>
+                  ) : null}
+                </>
+              )}
           </div>
           {booking.status === "completed" &&
             new Date(booking.date) >= new Date() && (
