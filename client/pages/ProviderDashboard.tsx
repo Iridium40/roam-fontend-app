@@ -8936,6 +8936,20 @@ export default function ProviderDashboard() {
                                 </Button>
                               </div>
                             )}
+
+                            {booking.booking_status === "confirmed" &&
+                              new Date(booking.booking_date) <= new Date(new Date().toDateString()) && (
+                              <div className="mt-4">
+                                <Button
+                                  size="sm"
+                                  className="bg-green-600 hover:bg-green-700 w-full"
+                                  onClick={() => completeBooking(booking.id)}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-2" />
+                                  Complete Booking
+                                </Button>
+                              </div>
+                            )}
                           </CardContent>
                         </Card>
                       );
