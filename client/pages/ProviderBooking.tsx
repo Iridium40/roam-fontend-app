@@ -1291,14 +1291,6 @@ const ProviderBooking = () => {
                       <span className="sm:hidden">View Profile</span>
                     </Link>
                   </Button>
-                  <FavoriteButton
-                    type="business"
-                    itemId={business.id}
-                    size="lg"
-                    variant="outline"
-                    showText={true}
-                    className="border-gray-300 hover:border-red-300 w-full sm:w-auto"
-                  />
                 </div>
               </div>
             </div>
