@@ -58,44 +58,84 @@ export default function BusinessAvailability() {
     const name = serviceName?.toLowerCase() || "";
 
     // Health & Wellness
-    if (name.includes("weight loss") || name.includes("fitness") || name.includes("nutrition")) {
+    if (
+      name.includes("weight loss") ||
+      name.includes("fitness") ||
+      name.includes("nutrition")
+    ) {
       return <Dumbbell className="w-5 h-5 text-roam-blue" />;
     }
-    if (name.includes("massage") || name.includes("spa") || name.includes("wellness")) {
+    if (
+      name.includes("massage") ||
+      name.includes("spa") ||
+      name.includes("wellness")
+    ) {
       return <Heart className="w-5 h-5 text-roam-blue" />;
     }
-    if (name.includes("medical") || name.includes("health") || name.includes("therapy")) {
+    if (
+      name.includes("medical") ||
+      name.includes("health") ||
+      name.includes("therapy")
+    ) {
       return <Stethoscope className="w-5 h-5 text-roam-blue" />;
     }
 
     // Beauty & Personal Care
-    if (name.includes("hair") || name.includes("salon") || name.includes("barber")) {
+    if (
+      name.includes("hair") ||
+      name.includes("salon") ||
+      name.includes("barber")
+    ) {
       return <Scissors className="w-5 h-5 text-roam-blue" />;
     }
-    if (name.includes("nail") || name.includes("beauty") || name.includes("makeup")) {
+    if (
+      name.includes("nail") ||
+      name.includes("beauty") ||
+      name.includes("makeup")
+    ) {
       return <Brush className="w-5 h-5 text-roam-blue" />;
     }
 
     // Home & Professional Services
-    if (name.includes("cleaning") || name.includes("home") || name.includes("house")) {
+    if (
+      name.includes("cleaning") ||
+      name.includes("home") ||
+      name.includes("house")
+    ) {
       return <Home className="w-5 h-5 text-roam-blue" />;
     }
-    if (name.includes("repair") || name.includes("maintenance") || name.includes("handyman")) {
+    if (
+      name.includes("repair") ||
+      name.includes("maintenance") ||
+      name.includes("handyman")
+    ) {
       return <Wrench className="w-5 h-5 text-roam-blue" />;
     }
 
     // Education & Training
-    if (name.includes("tutoring") || name.includes("lesson") || name.includes("coaching")) {
+    if (
+      name.includes("tutoring") ||
+      name.includes("lesson") ||
+      name.includes("coaching")
+    ) {
       return <GraduationCap className="w-5 h-5 text-roam-blue" />;
     }
 
     // Photography & Events
-    if (name.includes("photo") || name.includes("photography") || name.includes("video")) {
+    if (
+      name.includes("photo") ||
+      name.includes("photography") ||
+      name.includes("video")
+    ) {
       return <Camera className="w-5 h-5 text-roam-blue" />;
     }
 
     // Food & Catering
-    if (name.includes("catering") || name.includes("food") || name.includes("chef")) {
+    if (
+      name.includes("catering") ||
+      name.includes("food") ||
+      name.includes("chef")
+    ) {
       return <Utensils className="w-5 h-5 text-roam-blue" />;
     }
 
@@ -1114,7 +1154,9 @@ export default function BusinessAvailability() {
                     <CalendarIcon className="w-5 h-5 text-roam-blue" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Date</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Date
+                    </p>
                     <p className="text-sm font-semibold text-foreground truncate">
                       {selectedDate ? formatDate(selectedDate) : ""}
                     </p>
@@ -1130,7 +1172,9 @@ export default function BusinessAvailability() {
                     <Clock className="w-5 h-5 text-roam-blue" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Time</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Time
+                    </p>
                     <p className="text-sm font-semibold text-foreground truncate">
                       {selectedTime}
                     </p>
@@ -1146,7 +1190,9 @@ export default function BusinessAvailability() {
                     {getServiceIcon(service?.name || "")}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Service</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Service
+                    </p>
                     <p className="text-sm font-semibold text-foreground truncate">
                       {service?.name}
                     </p>
@@ -1509,7 +1555,8 @@ export default function BusinessAvailability() {
                               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-foreground/60">
                                 {business.years_in_business && (
                                   <span className="text-xs sm:text-sm">
-                                    {business.years_in_business} years in business
+                                    {business.years_in_business} years in
+                                    business
                                   </span>
                                 )}
                               </div>
@@ -1556,7 +1603,10 @@ export default function BusinessAvailability() {
                                   variant="secondary"
                                   className={`text-xs ${getDeliveryBadge(business.deliveryType).color}`}
                                 >
-                                  {getDeliveryBadge(business.deliveryType).label}
+                                  {
+                                    getDeliveryBadge(business.deliveryType)
+                                      .label
+                                  }
                                 </Badge>
                               )}
                             </div>
@@ -1570,7 +1620,9 @@ export default function BusinessAvailability() {
                             className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
                             size="sm"
                           >
-                            <span className="text-sm">Select This Business</span>
+                            <span className="text-sm">
+                              Select This Business
+                            </span>
                             <ChevronRight className="w-4 h-4 ml-2 flex-shrink-0" />
                           </Button>
                         </div>

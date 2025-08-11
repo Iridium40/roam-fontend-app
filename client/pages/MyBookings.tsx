@@ -89,7 +89,10 @@ export default function MyBookings() {
 
         // For authenticated users, query by customer_id, not guest_email
         if (customer && customer.id) {
-          console.log("Authenticated user - querying by customer_id:", customer.id);
+          console.log(
+            "Authenticated user - querying by customer_id:",
+            customer.id,
+          );
 
           bookingsResponse = await supabase
             .from("bookings")
@@ -137,7 +140,10 @@ export default function MyBookings() {
             .order("booking_date", { ascending: true })
             .limit(50);
         } else {
-          console.log("No customer profile found - querying by guest_email:", currentUser.email);
+          console.log(
+            "No customer profile found - querying by guest_email:",
+            currentUser.email,
+          );
 
           bookingsResponse = await supabase
             .from("bookings")
@@ -229,16 +235,22 @@ export default function MyBookings() {
           let location = "Location TBD";
           let locationDetails = null;
 
-          if (booking.delivery_type === "business_location" && businessLocation) {
+          if (
+            booking.delivery_type === "business_location" &&
+            businessLocation
+          ) {
             // Format business address
             const addressParts = [
               businessLocation.address_line1,
               businessLocation.city,
               businessLocation.state,
-              businessLocation.postal_code
+              businessLocation.postal_code,
             ].filter(Boolean);
 
-            location = addressParts.length > 0 ? addressParts.join(", ") : "Business Location";
+            location =
+              addressParts.length > 0
+                ? addressParts.join(", ")
+                : "Business Location";
             locationDetails = {
               name: businessLocation.location_name || "Business Location",
               address: {
@@ -252,7 +264,7 @@ export default function MyBookings() {
               coordinates: {
                 latitude: businessLocation.latitude,
                 longitude: businessLocation.longitude,
-              }
+              },
             };
           } else if (
             booking.delivery_type === "customer_location" ||
@@ -410,23 +422,35 @@ export default function MyBookings() {
   };
 
   // Paginated booking arrays
-  const upcomingBookings = getPaginatedBookings(allUpcomingBookings, currentPage.upcoming);
+  const upcomingBookings = getPaginatedBookings(
+    allUpcomingBookings,
+    currentPage.upcoming,
+  );
   const pastBookings = getPaginatedBookings(allPastBookings, currentPage.past);
-  const activeBookings = getPaginatedBookings(allActiveBookings, currentPage.active);
+  const activeBookings = getPaginatedBookings(
+    allActiveBookings,
+    currentPage.active,
+  );
 
   // Page navigation functions
-  const handlePageChange = (category: 'upcoming' | 'active' | 'past', direction: 'next' | 'prev') => {
-    setCurrentPage(prev => {
-      const totalItems = category === 'upcoming' ? allUpcomingBookings.length :
-                        category === 'active' ? allActiveBookings.length :
-                        allPastBookings.length;
+  const handlePageChange = (
+    category: "upcoming" | "active" | "past",
+    direction: "next" | "prev",
+  ) => {
+    setCurrentPage((prev) => {
+      const totalItems =
+        category === "upcoming"
+          ? allUpcomingBookings.length
+          : category === "active"
+            ? allActiveBookings.length
+            : allPastBookings.length;
       const totalPages = getTotalPages(totalItems);
       const currentPageNum = prev[category];
 
       let newPage = currentPageNum;
-      if (direction === 'next' && currentPageNum < totalPages) {
+      if (direction === "next" && currentPageNum < totalPages) {
         newPage = currentPageNum + 1;
-      } else if (direction === 'prev' && currentPageNum > 1) {
+      } else if (direction === "prev" && currentPageNum > 1) {
         newPage = currentPageNum - 1;
       }
 
@@ -603,26 +627,36 @@ export default function MyBookings() {
                     {getTotalPages(allUpcomingBookings.length) > 1 && (
                       <div className="flex items-center justify-between pt-4">
                         <div className="text-sm text-foreground/60">
-                          Showing {((currentPage.upcoming - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPage.upcoming * ITEMS_PER_PAGE, allUpcomingBookings.length)} of {allUpcomingBookings.length} bookings
+                          Showing{" "}
+                          {(currentPage.upcoming - 1) * ITEMS_PER_PAGE + 1} to{" "}
+                          {Math.min(
+                            currentPage.upcoming * ITEMS_PER_PAGE,
+                            allUpcomingBookings.length,
+                          )}{" "}
+                          of {allUpcomingBookings.length} bookings
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handlePageChange('upcoming', 'prev')}
+                            onClick={() => handlePageChange("upcoming", "prev")}
                             disabled={currentPage.upcoming === 1}
                           >
                             <ChevronLeft className="w-4 h-4" />
                             Previous
                           </Button>
                           <span className="text-sm font-medium">
-                            Page {currentPage.upcoming} of {getTotalPages(allUpcomingBookings.length)}
+                            Page {currentPage.upcoming} of{" "}
+                            {getTotalPages(allUpcomingBookings.length)}
                           </span>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handlePageChange('upcoming', 'next')}
-                            disabled={currentPage.upcoming === getTotalPages(allUpcomingBookings.length)}
+                            onClick={() => handlePageChange("upcoming", "next")}
+                            disabled={
+                              currentPage.upcoming ===
+                              getTotalPages(allUpcomingBookings.length)
+                            }
                           >
                             Next
                             <ChevronRight className="w-4 h-4" />
@@ -657,26 +691,36 @@ export default function MyBookings() {
                     {getTotalPages(allActiveBookings.length) > 1 && (
                       <div className="flex items-center justify-between pt-4">
                         <div className="text-sm text-foreground/60">
-                          Showing {((currentPage.active - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPage.active * ITEMS_PER_PAGE, allActiveBookings.length)} of {allActiveBookings.length} bookings
+                          Showing{" "}
+                          {(currentPage.active - 1) * ITEMS_PER_PAGE + 1} to{" "}
+                          {Math.min(
+                            currentPage.active * ITEMS_PER_PAGE,
+                            allActiveBookings.length,
+                          )}{" "}
+                          of {allActiveBookings.length} bookings
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handlePageChange('active', 'prev')}
+                            onClick={() => handlePageChange("active", "prev")}
                             disabled={currentPage.active === 1}
                           >
                             <ChevronLeft className="w-4 h-4" />
                             Previous
                           </Button>
                           <span className="text-sm font-medium">
-                            Page {currentPage.active} of {getTotalPages(allActiveBookings.length)}
+                            Page {currentPage.active} of{" "}
+                            {getTotalPages(allActiveBookings.length)}
                           </span>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handlePageChange('active', 'next')}
-                            disabled={currentPage.active === getTotalPages(allActiveBookings.length)}
+                            onClick={() => handlePageChange("active", "next")}
+                            disabled={
+                              currentPage.active ===
+                              getTotalPages(allActiveBookings.length)
+                            }
                           >
                             Next
                             <ChevronRight className="w-4 h-4" />
@@ -711,26 +755,36 @@ export default function MyBookings() {
                     {getTotalPages(allPastBookings.length) > 1 && (
                       <div className="flex items-center justify-between pt-4">
                         <div className="text-sm text-foreground/60">
-                          Showing {((currentPage.past - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPage.past * ITEMS_PER_PAGE, allPastBookings.length)} of {allPastBookings.length} bookings
+                          Showing {(currentPage.past - 1) * ITEMS_PER_PAGE + 1}{" "}
+                          to{" "}
+                          {Math.min(
+                            currentPage.past * ITEMS_PER_PAGE,
+                            allPastBookings.length,
+                          )}{" "}
+                          of {allPastBookings.length} bookings
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handlePageChange('past', 'prev')}
+                            onClick={() => handlePageChange("past", "prev")}
                             disabled={currentPage.past === 1}
                           >
                             <ChevronLeft className="w-4 h-4" />
                             Previous
                           </Button>
                           <span className="text-sm font-medium">
-                            Page {currentPage.past} of {getTotalPages(allPastBookings.length)}
+                            Page {currentPage.past} of{" "}
+                            {getTotalPages(allPastBookings.length)}
                           </span>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handlePageChange('past', 'next')}
-                            disabled={currentPage.past === getTotalPages(allPastBookings.length)}
+                            onClick={() => handlePageChange("past", "next")}
+                            disabled={
+                              currentPage.past ===
+                              getTotalPages(allPastBookings.length)
+                            }
                           >
                             Next
                             <ChevronRight className="w-4 h-4" />
@@ -798,8 +852,8 @@ function BookingCard({ booking }: { booking: any }) {
                 className="object-cover"
               />
               <AvatarFallback className="bg-gradient-to-br from-roam-blue to-roam-light-blue text-white text-sm sm:text-lg font-semibold">
-                {booking.provider.firstName?.[0]?.toUpperCase() || ''}
-                {booking.provider.lastName?.[0]?.toUpperCase() || ''}
+                {booking.provider.firstName?.[0]?.toUpperCase() || ""}
+                {booking.provider.lastName?.[0]?.toUpperCase() || ""}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
@@ -821,8 +875,12 @@ function BookingCard({ booking }: { booking: any }) {
                 <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-lg border-l-4 border-roam-blue">
                   <Hash className="w-4 h-4 text-roam-blue" />
                   <div>
-                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Booking Reference</span>
-                    <p className="text-sm font-mono font-semibold text-gray-900">{booking.bookingReference}</p>
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                      Booking Reference
+                    </span>
+                    <p className="text-sm font-mono font-semibold text-gray-900">
+                      {booking.bookingReference}
+                    </p>
                   </div>
                 </div>
               )}
@@ -868,48 +926,60 @@ function BookingCard({ booking }: { booking: any }) {
             <div className="flex-1">
               <p className="text-sm font-medium">{deliveryLabel}</p>
               <div className="flex items-start gap-2">
-                <p className="text-sm text-foreground/60 flex-1">{booking.location}</p>
-                {booking.deliveryType === "business_location" && booking.location !== "Location TBD" && (
-                  <button
-                    onClick={() => {
-                      const address = booking.location;
+                <p className="text-sm text-foreground/60 flex-1">
+                  {booking.location}
+                </p>
+                {booking.deliveryType === "business_location" &&
+                  booking.location !== "Location TBD" && (
+                    <button
+                      onClick={() => {
+                        const address = booking.location;
 
-                      // Detect platform and open appropriate maps app
-                      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                        // Detect platform and open appropriate maps app
+                        const isIOS = /iPad|iPhone|iPod/.test(
+                          navigator.userAgent,
+                        );
+                        const isMobile =
+                          /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                            navigator.userAgent,
+                          );
 
-                      let mapsUrl;
+                        let mapsUrl;
 
-                      // Use GPS coordinates if available, otherwise use address
-                      if (booking.locationDetails && booking.locationDetails.coordinates.latitude) {
-                        const { latitude, longitude } = booking.locationDetails.coordinates;
-                        if (isIOS) {
-                          mapsUrl = `maps://maps.google.com/maps?daddr=${latitude},${longitude}&amp;ll=`;
-                        } else if (isMobile) {
-                          mapsUrl = `geo:${latitude},${longitude}?q=${encodeURIComponent(address)}`;
+                        // Use GPS coordinates if available, otherwise use address
+                        if (
+                          booking.locationDetails &&
+                          booking.locationDetails.coordinates.latitude
+                        ) {
+                          const { latitude, longitude } =
+                            booking.locationDetails.coordinates;
+                          if (isIOS) {
+                            mapsUrl = `maps://maps.google.com/maps?daddr=${latitude},${longitude}&amp;ll=`;
+                          } else if (isMobile) {
+                            mapsUrl = `geo:${latitude},${longitude}?q=${encodeURIComponent(address)}`;
+                          } else {
+                            mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+                          }
                         } else {
-                          mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+                          // Fallback to address-based navigation when no coordinates
+                          const encodedAddress = encodeURIComponent(address);
+                          if (isIOS) {
+                            mapsUrl = `maps://maps.google.com/maps?daddr=${encodedAddress}`;
+                          } else if (isMobile) {
+                            mapsUrl = `geo:0,0?q=${encodedAddress}`;
+                          } else {
+                            mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+                          }
                         }
-                      } else {
-                        // Fallback to address-based navigation when no coordinates
-                        const encodedAddress = encodeURIComponent(address);
-                        if (isIOS) {
-                          mapsUrl = `maps://maps.google.com/maps?daddr=${encodedAddress}`;
-                        } else if (isMobile) {
-                          mapsUrl = `geo:0,0?q=${encodedAddress}`;
-                        } else {
-                          mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
-                        }
-                      }
 
-                      window.open(mapsUrl, '_blank');
-                    }}
-                    className="text-roam-blue hover:text-roam-blue/80 transition-colors"
-                    title="Get directions"
-                  >
-                    <Map className="w-4 h-4" />
-                  </button>
-                )}
+                        window.open(mapsUrl, "_blank");
+                      }}
+                      className="text-roam-blue hover:text-roam-blue/80 transition-colors"
+                      title="Get directions"
+                    >
+                      <Map className="w-4 h-4" />
+                    </button>
+                  )}
               </div>
             </div>
           </div>
@@ -942,7 +1012,10 @@ function BookingCard({ booking }: { booking: any }) {
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
                 onClick={() => {
                   // TODO: Implement messaging functionality with provider
-                  console.log("Open messaging with provider for booking:", booking.id);
+                  console.log(
+                    "Open messaging with provider for booking:",
+                    booking.id,
+                  );
                   console.log("Provider:", booking.provider.name);
                   // Could navigate to a chat interface or open a modal
                   // navigate(`/bookings/${booking.id}/messages`);
@@ -957,7 +1030,8 @@ function BookingCard({ booking }: { booking: any }) {
 
           {/* Secondary actions - Cancel and Reschedule (less common) */}
           <div className="flex gap-2">
-            {(booking.status === "pending" || booking.status === "confirmed") && (
+            {(booking.status === "pending" ||
+              booking.status === "confirmed") && (
               <>
                 <Button
                   size="sm"

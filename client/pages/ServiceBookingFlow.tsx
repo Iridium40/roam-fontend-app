@@ -286,11 +286,11 @@ export default function ServiceBookingFlow() {
                   <Avatar className="w-8 h-8">
                     <AvatarImage
                       src={customer?.image_url}
-                      alt={customer?.first_name || 'User'}
+                      alt={customer?.first_name || "User"}
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-roam-blue text-white text-sm font-medium">
-                      {customer?.first_name?.[0]?.toUpperCase() || 'U'}
+                      {customer?.first_name?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </div>
@@ -300,11 +300,11 @@ export default function ServiceBookingFlow() {
                   <Avatar className="w-6 h-6">
                     <AvatarImage
                       src={customer?.image_url}
-                      alt={customer?.first_name || 'User'}
+                      alt={customer?.first_name || "User"}
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-roam-blue text-white text-xs font-medium">
-                      {customer?.first_name?.[0]?.toUpperCase() || 'U'}
+                      {customer?.first_name?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-sm text-foreground/70">
