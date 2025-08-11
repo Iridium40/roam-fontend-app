@@ -15943,6 +15943,124 @@ export default function ProviderDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Profile Settings Modal */}
+      <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="w-5 h-5 text-roam-blue" />
+              Profile Settings
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold">Notification Preferences</h3>
+
+            <Card>
+              <CardContent className="space-y-6 pt-6">
+                {/* Notification Contact Details */}
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-medium mb-2">
+                      Notification Contact Details
+                    </h4>
+                    <p className="text-sm text-foreground/60 mb-4">
+                      Specify dedicated contact details for receiving
+                      notifications and alerts
+                    </p>
+                  </div>
+
+                  {notificationSettingsError && (
+                    <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                      {notificationSettingsError}
+                    </div>
+                  )}
+
+                  {notificationSettingsSuccess && (
+                    <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                      {notificationSettingsSuccess}
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="notification_email">
+                        Notification Email
+                      </Label>
+                      <Input
+                        id="notification_email"
+                        type="email"
+                        value={notificationSettings.notification_email}
+                        onChange={(e) =>
+                          handleNotificationSettingsChange(
+                            "notification_email",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="Enter email for notifications (optional)"
+                        disabled={notificationSettingsSaving}
+                      />
+                      <p className="text-xs text-foreground/60">
+                        If provided, notifications will be sent to this email
+                        instead of your main account email
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="notification_phone">
+                        Notification Phone
+                      </Label>
+                      <Input
+                        id="notification_phone"
+                        type="tel"
+                        value={notificationSettings.notification_phone}
+                        onChange={(e) =>
+                          handleNotificationSettingsChange(
+                            "notification_phone",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="Enter phone for SMS notifications (optional)"
+                        disabled={notificationSettingsSaving}
+                      />
+                      <p className="text-xs text-foreground/60">
+                        If provided, SMS notifications will be sent to this
+                        number instead of your main phone number
+                      </p>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSaveNotificationSettings}
+                        disabled={notificationSettingsSaving}
+                        className="bg-roam-blue hover:bg-roam-blue/90"
+                        size="sm"
+                      >
+                        {notificationSettingsSaving ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            Saving...
+                          </>
+                        ) : (
+                          "Save Notification Settings"
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowSettingsModal(false)}
+                        size="sm"
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
