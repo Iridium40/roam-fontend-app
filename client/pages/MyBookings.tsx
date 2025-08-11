@@ -659,9 +659,16 @@ export default function MyBookings() {
       setSelectedBookingForCancel(null);
       setCancellationReason("");
 
+      // Show appropriate cancellation message based on refund amount
+      const refundMessage = refundAmount === totalAmount
+        ? "Your booking has been cancelled successfully. Full refund will be processed."
+        : cancellationFee > 0
+        ? `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`
+        : "Your booking has been cancelled successfully.";
+
       toast({
         title: "Booking Cancelled",
-        description: "Your booking has been cancelled successfully.",
+        description: refundMessage,
       });
     } catch (error: any) {
       console.error('Error cancelling booking:', error);
