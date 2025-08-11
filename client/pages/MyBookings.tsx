@@ -1496,11 +1496,6 @@ function BookingCard({
   const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
   const deliveryLabel = getDeliveryLabel(booking.deliveryType);
 
-  // Debug logging
-  if (booking.status === "cancelled") {
-    console.log("Rendering cancelled booking card:", booking);
-  }
-
   // Check if booking is within 24 hours and cannot be cancelled
   const isWithin24Hours = () => {
     const now = new Date();
