@@ -1704,7 +1704,11 @@ function BookingCard({
           {/* Secondary actions - Cancel and Reschedule (less common) */}
           <div className="flex gap-2">
             {(booking.status === "pending" ||
-              booking.status === "confirmed") && (
+              booking.status === "confirmed") &&
+              booking.status !== "cancelled" &&
+              booking.status !== "declined" &&
+              booking.status !== "completed" &&
+              booking.status !== "no_show" && (
               <>
                 <Button
                   size="sm"
