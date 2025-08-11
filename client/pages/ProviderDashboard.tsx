@@ -7751,18 +7751,6 @@ export default function ProviderDashboard() {
                 Here's what's happening with your business today.
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-foreground/60">Status</div>
-              <Badge
-                className={
-                  isAvailable
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }
-              >
-                {isAvailable ? "Available for Bookings" : "Unavailable"}
-              </Badge>
-            </div>
           </div>
 
           {/* Stats Cards */}
