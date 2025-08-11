@@ -6342,7 +6342,12 @@ export default function ProviderDashboard() {
 
   // Accept booking function
   const acceptBooking = async (bookingId: string) => {
+    console.log('Accept booking called with ID:', bookingId);
+    console.log('Current user:', user);
+    console.log('User type:', { isOwner, isDispatcher, isProvider });
+
     try {
+      console.log('Attempting to update booking status to confirmed...');
       const { error } = await supabase
         .from('bookings')
         .update({
