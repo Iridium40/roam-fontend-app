@@ -286,6 +286,7 @@ export default function MyBookings() {
             duration: "60 minutes", // Default duration
             deliveryType: booking.delivery_type || "business_location",
             location: location,
+            locationDetails: locationDetails,
             price: `$${booking.total_amount || 0}`,
             notes: booking.admin_notes || "",
             bookingDate: booking.created_at,
