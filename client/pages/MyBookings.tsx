@@ -236,6 +236,7 @@ export default function MyBookings() {
             guestName: booking.guest_name,
             guestEmail: booking.guest_email,
             paymentStatus: booking.payment_status,
+            bookingReference: booking.booking_reference || "",
           };
         });
 
