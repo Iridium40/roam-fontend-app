@@ -922,56 +922,59 @@ function BookingCard({ booking }: { booking: any }) {
           </div>
         )}
 
-        <div className="flex flex-wrap gap-2">
-          {/* Cancel and Reschedule actions for pending or confirmed bookings */}
-          {(booking.status === "pending" || booking.status === "confirmed") && (
-            <>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          {/* Primary action - Message Provider (most common) */}
+          <div className="flex gap-2">
+            {booking.status === "confirmed" && (
               <Button
                 size="sm"
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
+                className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
                 onClick={() => {
-                  // TODO: Implement cancel booking functionality
-                  console.log("Cancel booking:", booking.id);
+                  // TODO: Implement messaging functionality with provider
+                  console.log("Open messaging with provider for booking:", booking.id);
+                  console.log("Provider:", booking.provider.name);
+                  // Could navigate to a chat interface or open a modal
+                  // navigate(`/bookings/${booking.id}/messages`);
                 }}
+                title={`Message ${booking.provider.name} about this booking`}
               >
-                <X className="w-4 h-4 mr-2" />
-                Cancel
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Message Provider
               </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                onClick={() => {
-                  // TODO: Implement reschedule booking functionality
-                  console.log("Reschedule booking:", booking.id);
-                }}
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Reschedule
-              </Button>
-            </>
-          )}
+            )}
+          </div>
 
-          {/* Message button for confirmed bookings only */}
-          {booking.status === "confirmed" && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-              onClick={() => {
-                // TODO: Implement messaging functionality with provider
-                console.log("Open messaging with provider for booking:", booking.id);
-                console.log("Provider:", booking.provider.name);
-                // Could navigate to a chat interface or open a modal
-                // navigate(`/bookings/${booking.id}/messages`);
-              }}
-              title={`Message ${booking.provider.name} about this booking`}
-            >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Message Provider
-            </Button>
-          )}
+          {/* Secondary actions - Cancel and Reschedule (less common) */}
+          <div className="flex gap-2">
+            {(booking.status === "pending" || booking.status === "confirmed") && (
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                  onClick={() => {
+                    // TODO: Implement reschedule booking functionality
+                    console.log("Reschedule booking:", booking.id);
+                  }}
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Reschedule
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
+                  onClick={() => {
+                    // TODO: Implement cancel booking functionality
+                    console.log("Cancel booking:", booking.id);
+                  }}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </Button>
+              </>
+            )}
+          </div>
           {booking.status === "completed" &&
             new Date(booking.date) >= new Date() && (
               <Button size="sm" className="bg-roam-blue hover:bg-roam-blue/90">
