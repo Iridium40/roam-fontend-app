@@ -361,7 +361,7 @@ const ProviderBooking = () => {
         } else {
           addons = (allServiceAddons || []).map(addon => ({
             ...addon,
-            price: 0, // Default price
+            price: 25.00, // Default addon price
           }));
         }
       }
