@@ -66,6 +66,22 @@ export default function MyBookings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const currentUser = user || customer;
+
+  // Real-time booking updates
+  const { isConnected, refreshBookings } = useRealtimeBookings({
+    userId: currentUser?.id,
+    userType: 'customer',
+    onStatusChange: (bookingUpdate) => {
+      // Update the specific booking in our local state
+      setBookings(prev => prev.map(booking =>
+        booking.id === bookingUpdate.id
+          ? { ...booking, status: bookingUpdate.status, updated_at: bookingUpdate.updated_at }
+          : booking
+      ));
+    },
+  });
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState({
     upcoming: 1,
