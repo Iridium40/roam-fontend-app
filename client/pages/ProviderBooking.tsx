@@ -828,8 +828,8 @@ const ProviderBooking = () => {
       name:
         type === "service"
           ? (item as any).services.name
-          : (item as any).addons.name,
-      price: (item as any).custom_price || (item as any).business_price || 0,
+          : (item as any).name,
+      price: (item as any).custom_price || (item as any).business_price || (item as any).price || 0,
       duration:
         type === "service"
           ? (item as any).services.duration_minutes
