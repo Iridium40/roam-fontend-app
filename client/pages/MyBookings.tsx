@@ -67,6 +67,9 @@ export default function MyBookings() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedBookingForCancel, setSelectedBookingForCancel] = useState<any>(null);
+  const [cancellationReason, setCancellationReason] = useState("");
 
   const currentUser = user || customer;
 
