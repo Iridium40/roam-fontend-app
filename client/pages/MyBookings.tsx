@@ -461,19 +461,10 @@ export default function MyBookings() {
 
   // Filter bookings by status
   const allUpcomingBookings = bookings.filter(
-    (b) => {
-      const isUpcoming = b.status === "confirmed" || b.status === "pending";
-      if (b.status === "cancelled") {
-        console.log("Found cancelled booking in filter - should be in past:", b);
-      }
-      return isUpcoming;
-    }
+    (b) => b.status === "confirmed" || b.status === "pending",
   );
   const allPastBookings = bookings
-    .filter((b) => {
-      const isPast = b.status === "completed" || b.status === "cancelled" || b.status === "declined" || b.status === "no_show";
-      return isPast;
-    })
+    .filter((b) => b.status === "completed" || b.status === "cancelled" || b.status === "declined" || b.status === "no_show")
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const allActiveBookings = bookings.filter((b) => b.status === "in_progress");
 
