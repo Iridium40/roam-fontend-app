@@ -1503,47 +1503,114 @@ const ProviderBooking = () => {
 
               {/* Right: Pricing & Book Button */}
               <div className="space-y-4">
-                <h3 className="font-semibold">Total Cost</h3>
-                <div className="p-6 border rounded-lg bg-background">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span>Service Price</span>
-                      <span className="font-medium">${getSubtotal().toFixed(2)}</span>
+                <h3 className="font-semibold text-lg">Booking Summary</h3>
+                <div className="p-6 border-2 border-roam-blue/20 rounded-xl bg-background">
+                  <div className="space-y-4">
+                    {/* Service Details */}
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-gray-700 text-sm uppercase tracking-wide">Selected Services</h4>
+                      {selectedItems.filter(item => item.type === "service").map((service) => (
+                        <div key={service.id} className="flex justify-between items-center">
+                          <span className="text-gray-900">{service.name}</span>
+                          <span className="font-medium">${service.price.toFixed(2)}</span>
+                        </div>
+                      ))}
+
+                      {/* Add-ons */}
+                      {selectedAddons.length > 0 && (
+                        <div className="space-y-2 pt-2">
+                          <h5 className="font-medium text-gray-600 text-xs uppercase tracking-wide">Add-ons</h5>
+                          {selectedAddons.map((addon) => (
+                            <div key={addon.id} className="flex justify-between items-center text-sm">
+                              <span className="text-gray-600">{addon.name}</span>
+                              <span className="text-gray-600">+${addon.price.toFixed(2)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    {selectedAddons.length > 0 && (
-                      <div className="border-t pt-3 space-y-2">
-                        <span className="text-sm font-medium text-gray-700">Add-ons:</span>
-                        {selectedAddons.map((addon) => (
-                          <div key={addon.id} className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">{addon.name}</span>
-                            <span>${addon.price}</span>
+
+                    <div className="border-t border-gray-200"></div>
+
+                    {/* Pricing Breakdown */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium">${getSubtotal().toFixed(2)}</span>
+                      </div>
+
+                      {/* Promo Code Discount */}
+                      {promotionData && promoCode && (
+                        <div className="flex justify-between items-center text-green-600">
+                          <span className="text-sm">
+                            Discount ({promotionData.savings_type === "percentage"
+                              ? `${promotionData.savings_amount}%`
+                              : `$${promotionData.savings_amount}`} off)
+                          </span>
+                          <span className="font-medium">-${getDiscountAmount().toFixed(2)}</span>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Service Fee (15%)</span>
+                        <span className="font-medium">${(getSubtotal() * 0.15).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Platform Fees</span>
+                        <span className="font-medium">${getPlatformFees().toFixed(2)}</span>
+                      </div>
+                    </div>
+
+                    <div className="border-t-2 border-gray-300 pt-3">
+                      <div className="flex justify-between items-center text-xl font-bold">
+                        <span>Total Amount</span>
+                        <span className="text-roam-blue">${getTotalAmount().toFixed(2)}</span>
+                      </div>
+                    </div>
+
+                    {/* Promo Code Input (if no promo applied) */}
+                    {!promotionData && (
+                      <div className="pt-2">
+                        <details className="group">
+                          <summary className="cursor-pointer text-sm text-roam-blue hover:text-roam-blue/80 font-medium">
+                            Have a promo code?
+                          </summary>
+                          <div className="mt-2 p-3 bg-gray-50 rounded-md">
+                            <p className="text-xs text-gray-600 mb-2">
+                              Promo codes can be applied during checkout
+                            </p>
                           </div>
-                        ))}
+                        </details>
                       </div>
                     )}
-                    <div className="border-t pt-3 flex justify-between items-center text-lg font-bold">
-                      <span>Total</span>
-                      <span className="text-roam-blue">${getTotalAmount().toFixed(2)}</span>
-                    </div>
                   </div>
-                  <Button
-                    size="lg"
-                    className="w-full bg-roam-blue hover:bg-roam-blue/90 text-white mt-6"
-                    onClick={submitBooking}
-                    disabled={!isFormValid() || isBooking}
-                  >
-                    {isBooking ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Booking...
-                      </>
-                    ) : (
-                      <>
-                        <Calendar className="w-4 h-4 mr-2" />
-                        Book Now - ${getTotalAmount().toFixed(2)}
-                      </>
-                    )}
-                  </Button>
+
+                  {/* Checkout Buttons */}
+                  <div className="mt-6 space-y-3">
+                    <Button
+                      size="lg"
+                      className="w-full bg-roam-blue hover:bg-roam-blue/90 text-white font-semibold py-3"
+                      onClick={submitBooking}
+                      disabled={!isFormValid() || isBooking}
+                    >
+                      {isBooking ? (
+                        <>
+                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          Processing Booking...
+                        </>
+                      ) : (
+                        <>
+                          <Calendar className="w-5 h-5 mr-2" />
+                          Confirm Booking & Checkout
+                        </>
+                      )}
+                    </Button>
+
+                    <p className="text-xs text-center text-gray-500">
+                      You'll be redirected to secure payment after confirmation
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
