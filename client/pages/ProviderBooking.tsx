@@ -952,6 +952,7 @@ const ProviderBooking = () => {
   };
 
   const submitBooking = async () => {
+    setIsBooking(true);
     try {
       // Base required fields
       const baseRequiredFields = [
