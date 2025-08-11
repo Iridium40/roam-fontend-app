@@ -513,6 +513,86 @@ export default function MyBookings() {
     setShowRescheduleModal(true);
   };
 
+  // Reschedule booking function
+  const rescheduleBooking = async () => {
+    if (!selectedBookingForReschedule || !currentUser || !newBookingDate || !newBookingTime) {
+      toast({
+        title: "Error",
+        description: "Please select both a new date and time.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({
+          booking_date: newBookingDate,
+          start_time: newBookingTime,
+          booking_status: 'pending',
+          reschedule_reason: rescheduleReason.trim() || 'Rescheduled by customer',
+          rescheduled_at: new Date().toISOString(),
+          rescheduled_by: currentUser.id
+        })
+        .eq('id', selectedBookingForReschedule.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings(prev => prev.map(booking =>
+        booking.id === selectedBookingForReschedule.id
+          ? {
+              ...booking,
+              date: newBookingDate,
+              time: new Date(`1970-01-01T${newBookingTime}`).toLocaleTimeString(
+                [], { hour: "numeric", minute: "2-digit" }
+              ),
+              status: 'pending',
+              reschedule_reason: rescheduleReason.trim() || 'Rescheduled by customer',
+              rescheduled_at: new Date().toISOString(),
+              rescheduled_by: currentUser.id
+            }
+          : booking
+      ));
+
+      // Close modal and reset state
+      setShowRescheduleModal(false);
+      setSelectedBookingForReschedule(null);
+      setNewBookingDate("");
+      setNewBookingTime("");
+      setRescheduleReason("");
+
+      toast({
+        title: "Reschedule Request Sent",
+        description: "Your reschedule request has been sent to the provider for approval.",
+      });
+    } catch (error: any) {
+      console.error('Error rescheduling booking:', error);
+      let errorMessage = 'Unknown error occurred';
+
+      if (error) {
+        if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        }
+      }
+
+      toast({
+        title: "Error Rescheduling Booking",
+        description: `Failed to reschedule booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  };
+
   // Cancel booking function
   const cancelBooking = async () => {
     if (!selectedBookingForCancel || !currentUser) {
