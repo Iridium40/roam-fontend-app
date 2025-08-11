@@ -1529,7 +1529,9 @@ const ProviderBooking = () => {
                     <div className="p-4 bg-green-50 border-green-200 border rounded-lg">
                       <div className="flex items-center gap-2 mb-3">
                         <UserCheck className="w-4 h-4 text-green-700" />
-                        <h4 className="font-semibold text-green-700">Preferred Provider Selected</h4>
+                        <h4 className="font-semibold text-green-700">
+                          Preferred Provider Selected
+                        </h4>
                       </div>
                       <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">
@@ -1563,7 +1565,8 @@ const ProviderBooking = () => {
                                 <Star className="w-3 h-3 text-green-600 fill-current" />
                                 <span className="text-xs text-green-600">
                                   {preferredProvider.average_rating} (
-                                  {preferredProvider.total_reviews || 0} reviews)
+                                  {preferredProvider.total_reviews || 0}{" "}
+                                  reviews)
                                 </span>
                               </div>
                             )}
@@ -1572,10 +1575,10 @@ const ProviderBooking = () => {
                       </div>
                       <div className="mt-3 p-3 bg-green-100 rounded-md">
                         <p className="text-sm text-green-700">
-                          <strong>Note:</strong> This is your preferred provider for
-                          this booking. The business will try to assign this
-                          provider, but final assignment depends on availability and
-                          business approval.
+                          <strong>Note:</strong> This is your preferred provider
+                          for this booking. The business will try to assign this
+                          provider, but final assignment depends on availability
+                          and business approval.
                         </p>
                       </div>
                     </div>
@@ -1803,8 +1806,6 @@ const ProviderBooking = () => {
                 )}
               </CardContent>
             </Card>
-
-
 
             {/* Add-ons */}
             {addons.length > 0 && (
