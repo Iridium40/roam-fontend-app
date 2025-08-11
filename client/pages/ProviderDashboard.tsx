@@ -6367,8 +6367,38 @@ export default function ProviderDashboard() {
         description: "The booking has been confirmed successfully.",
       });
     } catch (error: any) {
-      console.error('Error accepting booking:', error);
-      const errorMessage = error?.message || error?.error_description || 'Unknown error occurred';
+      console.error('Error accepting booking - Full error object:', error);
+      console.error('Error type:', typeof error);
+      console.error('Error keys:', Object.keys(error || {}));
+
+      let errorMessage = 'Unknown error occurred';
+
+      if (error) {
+        // Handle different error object structures
+        if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          // Try to stringify the error object
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = 'Unable to parse error details';
+          }
+        }
+      }
+
+      console.error('Parsed error message:', errorMessage);
+
       toast({
         title: "Error Accepting Booking",
         description: `Failed to accept booking: ${errorMessage}`,
