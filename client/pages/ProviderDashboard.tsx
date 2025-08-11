@@ -598,7 +598,7 @@ export default function ProviderDashboard() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
   const [activeBookingTab, setActiveBookingTab] = useState("present");
-  const [calendarViewType, setCalendarViewType] = useState<"week" | "month">(
+  const [calendarViewType, setCalendarViewType] = useState<"week" | "month" | "hidden">(
     "month",
   );
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -15913,7 +15913,7 @@ export default function ProviderDashboard() {
                   <ul className="text-sm text-blue-800 space-y-1">
                     <li>• Your business information and description</li>
                     <li>• All available services with pricing</li>
-                    <li>• Available add-ons and extras</li>
+                    <li>�� Available add-ons and extras</li>
                     <li>• Easy booking form to request appointments</li>
                     <li>• Your contact information and location</li>
                   </ul>
