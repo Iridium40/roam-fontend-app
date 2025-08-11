@@ -747,6 +747,11 @@ export default function MyBookings() {
       setSelectedBookingForCancel(null);
       setCancellationReason("");
 
+      // Force refresh bookings to ensure we get the latest status from database
+      if (refreshBookings) {
+        refreshBookings();
+      }
+
       // Show appropriate cancellation message based on refund amount
       const refundMessage =
         refundAmount === 0
