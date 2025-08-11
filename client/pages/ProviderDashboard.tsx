@@ -6463,6 +6463,27 @@ export default function ProviderDashboard() {
       );
     }
 
+    // Filter by search query (booking reference and customer name)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((booking) => {
+        // Search in booking reference
+        const bookingRef = booking.booking_reference?.toLowerCase() || "";
+
+        // Search in customer name (handle both customer_profiles and guest_name)
+        const customerName = booking.customer_profiles?.first_name && booking.customer_profiles?.last_name
+          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
+          : (booking.guest_name || "").toLowerCase();
+
+        // Search in customer email
+        const customerEmail = booking.customer_profiles?.email?.toLowerCase() || "";
+
+        return bookingRef.includes(query) ||
+               customerName.includes(query) ||
+               customerEmail.includes(query);
+      });
+    }
+
     return filtered;
   };
 
