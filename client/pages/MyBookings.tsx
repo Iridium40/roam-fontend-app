@@ -222,11 +222,37 @@ export default function MyBookings() {
           const provider = booking.providers;
           const service = booking.services;
           const customer = booking.customer_profiles;
+          const businessLocation = booking.business_locations;
 
           // Determine location string based on delivery type
           let location = "Location TBD";
-          if (booking.delivery_type === "business_location") {
-            location = "Provider Location";
+          let locationDetails = null;
+
+          if (booking.delivery_type === "business_location" && businessLocation) {
+            // Format business address
+            const addressParts = [
+              businessLocation.address_line1,
+              businessLocation.city,
+              businessLocation.state,
+              businessLocation.postal_code
+            ].filter(Boolean);
+
+            location = addressParts.length > 0 ? addressParts.join(", ") : "Business Location";
+            locationDetails = {
+              name: businessLocation.location_name || "Business Location",
+              address: {
+                line1: businessLocation.address_line1,
+                line2: businessLocation.address_line2,
+                city: businessLocation.city,
+                state: businessLocation.state,
+                postalCode: businessLocation.postal_code,
+                country: businessLocation.country,
+              },
+              coordinates: {
+                latitude: businessLocation.latitude,
+                longitude: businessLocation.longitude,
+              }
+            };
           } else if (
             booking.delivery_type === "customer_location" ||
             booking.delivery_type === "mobile"
