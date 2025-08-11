@@ -6351,8 +6351,7 @@ export default function ProviderDashboard() {
       const { error } = await supabase
         .from('bookings')
         .update({
-          booking_status: 'confirmed',
-          updated_at: new Date().toISOString()
+          booking_status: 'confirmed'
         })
         .eq('id', bookingId);
 
