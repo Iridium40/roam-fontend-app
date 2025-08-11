@@ -292,32 +292,44 @@ export default function ServiceBookingFlow() {
       {/* Progress Indicator */}
       <div className="bg-background/50 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-roam-blue text-white rounded-full flex items-center justify-center text-sm font-medium">
                   1
                 </div>
-                <span className="ml-2 text-sm font-medium text-roam-blue">
+                <span className="ml-2 text-xs sm:text-sm font-medium text-roam-blue hidden xs:inline">
                   Select Date & Time
                 </span>
+                {/* Mobile-only compact label */}
+                <span className="ml-1 text-xs font-medium text-roam-blue xs:hidden">
+                  Date
+                </span>
               </div>
-              <ChevronRight className="w-4 h-4 text-foreground/40" />
+              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-foreground/20 text-foreground/60 rounded-full flex items-center justify-center text-sm">
                   2
                 </div>
-                <span className="ml-2 text-sm text-foreground/60">
+                <span className="ml-2 text-xs sm:text-sm text-foreground/60 hidden xs:inline">
                   Choose Business
                 </span>
+                {/* Mobile-only compact label */}
+                <span className="ml-1 text-xs text-foreground/60 xs:hidden">
+                  Business
+                </span>
               </div>
-              <ChevronRight className="w-4 h-4 text-foreground/40" />
+              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-foreground/40" />
               <div className="flex items-center">
                 <div className="w-8 h-8 bg-foreground/20 text-foreground/60 rounded-full flex items-center justify-center text-sm">
                   3
                 </div>
-                <span className="ml-2 text-sm text-foreground/60">
+                <span className="ml-2 text-xs sm:text-sm text-foreground/60 hidden xs:inline">
                   Book Service
+                </span>
+                {/* Mobile-only compact label */}
+                <span className="ml-1 text-xs text-foreground/60 xs:hidden">
+                  Book
                 </span>
               </div>
             </div>
