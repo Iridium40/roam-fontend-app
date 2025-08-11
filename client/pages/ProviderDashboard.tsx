@@ -7663,10 +7663,58 @@ export default function ProviderDashboard() {
                   Live
                 </Badge>
               )}
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage
+                        src={provider?.image_url || undefined}
+                        alt={provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                      />
+                      <AvatarFallback className="text-xs">
+                        {provider?.first_name?.[0]?.toUpperCase() || "P"}
+                        {provider?.last_name?.[0]?.toUpperCase() || ""}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium hidden sm:inline">
+                      {provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                    </span>
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center gap-2 p-2">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage
+                        src={provider?.image_url || undefined}
+                        alt={provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                      />
+                      <AvatarFallback>
+                        {provider?.first_name?.[0]?.toUpperCase() || "P"}
+                        {provider?.last_name?.[0]?.toUpperCase() || ""}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">
+                        {provider ? `${provider.first_name} ${provider.last_name}` : "Provider"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {provider?.email || "Provider Account"}
+                      </span>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="w-4 h-4 mr-2" />
+                    Profile Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
