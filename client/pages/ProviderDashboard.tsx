@@ -83,6 +83,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import ConversationChat from "@/components/ConversationChat";
 import ConversationsList from "@/components/ConversationsList";
+import useRealtimeBookings from "@/hooks/useRealtimeBookings";
+import RealtimeBookingNotifications from "@/components/RealtimeBookingNotifications";
+import BookingStatusIndicator, { RealtimeStatusUpdate } from "@/components/BookingStatusIndicator";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
 // Plaid configuration
