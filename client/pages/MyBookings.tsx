@@ -738,8 +738,8 @@ export default function MyBookings() {
       }
 
       // Update local state
-      setBookings((prev) =>
-        prev.map((booking) =>
+      setBookings((prev) => {
+        const updated = prev.map((booking) =>
           booking.id === selectedBookingForCancel.id
             ? {
                 ...booking,
@@ -753,8 +753,10 @@ export default function MyBookings() {
                 refund_amount: refundAmount,
               }
             : booking,
-        ),
-      );
+        );
+        console.log("Updated bookings after cancellation:", updated.find(b => b.id === selectedBookingForCancel.id));
+        return updated;
+      });
 
       // Close modal and reset state
       setShowCancelModal(false);
