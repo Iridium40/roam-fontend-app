@@ -922,6 +922,80 @@ export default function MyBookings() {
           </div>
         </div>
       </section>
+
+      {/* Cancellation Modal */}
+      <Dialog open={showCancelModal} onOpenChange={setShowCancelModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <XCircle className="w-5 h-5" />
+              Cancel Booking
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedBookingForCancel && (
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-sm">
+                  {selectedBookingForCancel.serviceName || selectedBookingForCancel.service || "Service"}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Date: {formatDate(selectedBookingForCancel.date)} at {selectedBookingForCancel.time}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Provider: {selectedBookingForCancel.provider?.name || "Provider"}
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="cancellation-reason" className="text-sm font-medium">
+                Reason for Cancellation <span className="text-gray-500">(Optional)</span>
+              </Label>
+              <Textarea
+                id="cancellation-reason"
+                placeholder="Please let us know why you're cancelling this booking..."
+                value={cancellationReason}
+                onChange={(e) => setCancellationReason(e.target.value)}
+                rows={3}
+                className="resize-none"
+              />
+              <p className="text-xs text-gray-500">
+                This information helps us improve our service.
+              </p>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-yellow-800">
+                  <p className="font-medium">Cancellation Policy</p>
+                  <p>Please check the cancellation policy for this service. Some bookings may have cancellation fees.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setSelectedBookingForCancel(null);
+                  setCancellationReason("");
+                }}
+                className="flex-1"
+              >
+                Keep Booking
+              </Button>
+              <Button
+                onClick={cancelBooking}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+              >
+                Cancel Booking
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
