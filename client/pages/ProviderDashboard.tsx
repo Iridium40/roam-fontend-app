@@ -7481,8 +7481,9 @@ export default function ProviderDashboard() {
           setServicesError("No business ID found for this provider");
         }
 
-        // Fetch business metrics using correct business_id from provider
-        const [locationsResult, teamResult, servicesResult] = await Promise.all(
+        // Fetch business metrics using correct business_id from provider (only if business_id exists)
+        if (providerData.business_id) {
+          const [locationsResult, teamResult, servicesResult] = await Promise.all(
           [
             // Count active business locations
             supabase
@@ -7516,11 +7517,19 @@ export default function ProviderDashboard() {
           ],
         );
 
-        setBusinessMetrics({
-          activeLocations: locationsResult.count || 0,
-          teamMembers: teamResult.count || 0,
-          servicesOffered: servicesResult.count || 0,
-        });
+          setBusinessMetrics({
+            activeLocations: locationsResult.count || 0,
+            teamMembers: teamResult.count || 0,
+            servicesOffered: servicesResult.count || 0,
+          });
+        } else {
+          // Set default metrics for providers without business_id
+          setBusinessMetrics({
+            activeLocations: 0,
+            teamMembers: 1, // At least the current provider
+            servicesOffered: 0,
+          });
+        }
       }
 
       // Fetch bookings based on role
