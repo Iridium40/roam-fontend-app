@@ -1856,13 +1856,14 @@ function BookingCard({
             <div className="text-xs text-gray-500 mb-1">
               Debug: Status = {booking.status}, 
               Provider ID = {booking.provider_id || 'none'}, 
+              Provider Field = {booking.provider ? JSON.stringify(booking.provider) : 'none'},
               All Fields = {Object.keys(booking).join(', ')},
               Provider Object = {booking.providers ? 'exists' : 'none'}, 
               Provider User ID (from object) = {booking.providers?.user_id || 'none'},
-              Button Should Show = {(booking.status === "confirmed" && booking.providers) ? 'yes' : 'no'}
+              Button Should Show = {(booking.status === "confirmed" && (booking.providers || booking.provider)) ? 'yes' : 'no'}
             </div>
             
-            {booking.status === "confirmed" && booking.providers && (
+            {booking.status === "confirmed" && (booking.providers || booking.provider) && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
