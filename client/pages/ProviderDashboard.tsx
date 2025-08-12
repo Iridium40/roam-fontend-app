@@ -6824,6 +6824,81 @@ export default function ProviderDashboard() {
     }
   };
 
+  // Assign provider to booking function
+  const assignProvider = async (bookingId: string, providerId: string) => {
+    console.log("Assign provider called with booking ID:", bookingId, "provider ID:", providerId);
+
+    try {
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          provider_id: providerId,
+        })
+        .eq("id", bookingId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) => {
+          if (booking.id === bookingId) {
+            // Find the provider data from allProviders
+            const assignedProvider = allProviders.find(p => p.id === providerId);
+            return {
+              ...booking,
+              provider_id: providerId,
+              providers: assignedProvider ? {
+                first_name: assignedProvider.first_name,
+                last_name: assignedProvider.last_name,
+                id: assignedProvider.id
+              } : null
+            };
+          }
+          return booking;
+        }),
+      );
+
+      toast({
+        title: "Provider Assigned",
+        description: "The provider has been assigned to this booking successfully.",
+      });
+    } catch (error: any) {
+      console.error("Error assigning provider:", error);
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
+        }
+      }
+
+      toast({
+        title: "Error Assigning Provider",
+        description: `Failed to assign provider: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  };
+
   // Load all providers for owners/dispatchers
   const loadAllProviders = async () => {
     if (!isOwner && !isDispatcher) {
