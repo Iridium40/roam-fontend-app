@@ -1583,7 +1583,7 @@ export default function Index() {
             </p>
           </div>
 
-          {promotionalDeals.length > 0 ? (
+          {specialPromotions.length > 0 ? (
             <div className="relative">
               {/* Navigation Arrows */}
               {promotionPages.length > 1 && (
