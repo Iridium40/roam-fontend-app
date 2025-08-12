@@ -8759,7 +8759,9 @@ export default function ProviderDashboard() {
                                       size="sm"
                                       variant="outline"
                                       className="mt-2 w-full border-blue-200 text-blue-600 hover:bg-blue-50"
-                                      onClick={() => handleOpenMessaging(booking)}
+                                      onClick={() =>
+                                        handleOpenMessaging(booking)
+                                      }
                                     >
                                       <MessageCircle className="w-4 h-4 mr-2" />
                                       Message
@@ -9065,7 +9067,8 @@ export default function ProviderDashboard() {
                                       </p>
 
                                       {/* Messaging Button - Only show for confirmed bookings */}
-                                      {booking.booking_status === "confirmed" && (
+                                      {booking.booking_status ===
+                                        "confirmed" && (
                                         <Button
                                           size="sm"
                                           variant="outline"
