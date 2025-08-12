@@ -786,6 +786,42 @@ export type Database = {
           created_at?: string;
         };
       };
+      // Announcements for customers, providers, and businesses
+      announcements: {
+        Row: {
+          id: string;
+          title: string;
+          content: string;
+          is_active: boolean;
+          created_at: string;
+          start_date: string | null;
+          end_date: string | null;
+          announcement_audience: Database["public"]["Enums"]["announcement_audience"] | null;
+          announcement_type: Database["public"]["Enums"]["announcement_type"] | null;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          content: string;
+          is_active?: boolean;
+          created_at?: string;
+          start_date?: string | null;
+          end_date?: string | null;
+          announcement_audience?: Database["public"]["Enums"]["announcement_audience"] | null;
+          announcement_type?: Database["public"]["Enums"]["announcement_type"] | null;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          content?: string;
+          is_active?: boolean;
+          created_at?: string;
+          start_date?: string | null;
+          end_date?: string | null;
+          announcement_audience?: Database["public"]["Enums"]["announcement_audience"] | null;
+          announcement_type?: Database["public"]["Enums"]["announcement_type"] | null;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
