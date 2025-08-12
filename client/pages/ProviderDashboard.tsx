@@ -6550,8 +6550,10 @@ export default function ProviderDashboard() {
           customerEmail.includes(query)
         );
       });
+      console.log("DEBUG - After search filter:", filtered.length, "bookings found");
     }
 
+    console.log("DEBUG - Final filtered bookings:", filtered.length);
     return filtered;
   };
 
@@ -14671,7 +14673,7 @@ export default function ProviderDashboard() {
                                                 </div>
                                                 {location.instructions && (
                                                   <span className="text-xs text-blue-600 block truncate">
-                                                    �� {location.instructions}
+                                                    📝 {location.instructions}
                                                   </span>
                                                 )}
                                               </div>
