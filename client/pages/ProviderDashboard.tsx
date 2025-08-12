@@ -2917,7 +2917,7 @@ export default function ProviderDashboard() {
               )
             `,
             )
-            .in("provider_id", providerIds)
+            .or(`provider_id.in.(${providerIds.join(",")}),provider_id.is.null`)
             .order("booking_date", { ascending: true });
 
           bookingsData = result.data;
@@ -6998,7 +6998,7 @@ export default function ProviderDashboard() {
           )
         `,
         )
-        .in("provider_id", providerIds)
+        .or(`provider_id.in.(${providerIds.join(",")}),provider_id.is.null`)
         .order("booking_date", { ascending: false })
         .limit(50);
 
@@ -7608,7 +7608,7 @@ export default function ProviderDashboard() {
             )
           `,
             )
-            .in("provider_id", providerIds)
+            .or(`provider_id.in.(${providerIds.join(",")}),provider_id.is.null`)
             .order("created_at", { ascending: false })
             .limit(10);
 
