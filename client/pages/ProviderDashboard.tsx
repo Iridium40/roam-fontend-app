@@ -7141,7 +7141,7 @@ export default function ProviderDashboard() {
     console.log("Loading bookings for business_id:", provider.business_id);
 
     try {
-      // First get all provider IDs for this business
+      // Simple approach: just get bookings assigned to providers from this business
       const { data: businessProviders, error: providersError } = await supabase
         .from("providers")
         .select("id")
@@ -7149,6 +7149,7 @@ export default function ProviderDashboard() {
 
       if (providersError) {
         console.error("Error loading business providers:", providersError);
+        setBookings([]);
         return;
       }
 
@@ -7160,8 +7161,8 @@ export default function ProviderDashboard() {
 
       const providerIds = businessProviders.map((p) => p.id);
 
-      // Get bookings assigned to business providers
-      const { data: assignedBookings, error: assignedError } = await supabase
+      // Get all bookings for this business (assigned and unassigned)
+      const { data: allBookings, error } = await supabase
         .from("bookings")
         .select(
           `
@@ -7205,90 +7206,9 @@ export default function ProviderDashboard() {
           )
         `,
         )
-        .in("provider_id", providerIds)
+        .or(`provider_id.in.(${providerIds.join(",")}),provider_id.is.null`)
         .order("booking_date", { ascending: false })
-        .limit(25);
-
-      // Get unassigned bookings for business services
-      const { data: businessServices, error: businessServicesError } =
-        await supabase
-          .from("business_services")
-          .select("service_id")
-          .eq("business_id", provider.business_id);
-
-      let unassignedBookings = [];
-      if (!businessServicesError && businessServices && businessServices.length > 0) {
-        const businessServiceIds = businessServices.map((bs) => bs.service_id);
-
-        const { data: unassignedData, error: unassignedError } = await supabase
-          .from("bookings")
-          .select(
-            `
-            *,
-            services (
-              id,
-              name,
-              min_price
-            ),
-            customer_profiles (
-              id,
-              first_name,
-              last_name,
-              email,
-              image_url
-            ),
-            providers (
-              id,
-              first_name,
-              last_name,
-              location_id
-            ),
-            customer_locations (
-              id,
-              location_name,
-              street_address,
-              unit_number,
-              city,
-              state,
-              zip_code,
-              access_instructions
-            ),
-            business_locations (
-              id,
-              location_name,
-              address_line1,
-              address_line2,
-              city,
-              state,
-              postal_code
-            )
-          `,
-          )
-          .is("provider_id", null)
-          .in("service_id", businessServiceIds)
-          .order("booking_date", { ascending: false })
-          .limit(25);
-
-        if (!unassignedError && unassignedData) {
-          unassignedBookings = unassignedData;
-        }
-      }
-
-      // Combine and deduplicate bookings
-      const allBookingsArray = [...(assignedBookings || []), ...unassignedBookings];
-      const bookingIds = new Set();
-      const allBookings = allBookingsArray.filter((booking) => {
-        if (bookingIds.has(booking.id)) {
-          return false;
-        }
-        bookingIds.add(booking.id);
-        return true;
-      });
-
-      // Sort combined results
-      allBookings.sort((a, b) => new Date(b.booking_date).getTime() - new Date(a.booking_date).getTime());
-
-      const error = assignedError;
+        .limit(50);
 
       if (error) {
         console.error(
@@ -7299,6 +7219,7 @@ export default function ProviderDashboard() {
           "Booking error details:",
           error.message || error.details || error,
         );
+        setBookings([]);
       } else {
         console.log("Loaded all bookings:", allBookings?.length || 0);
         setBookings(allBookings || []);
