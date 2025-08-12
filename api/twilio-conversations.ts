@@ -374,7 +374,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               role: participant.user_type,
               name: userDetails ? `${userDetails.first_name} ${userDetails.last_name}` : 'Unknown',
               imageUrl: userDetails?.image_url,
-              email: participant.auth_users?.email || 'Unknown'
+              email: participant.auth_users?.[0]?.email || 'Unknown'
             }
           };
         });
@@ -398,15 +398,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           // Note: message_notifications table might not exist yet, so we'll skip this for now
           // TODO: Create message_notifications table or implement alternative notification system
           console.log('Skipping mark-as-read operation - message_notifications table not implemented yet');
-        } catch (error) {
-          console.error('Error in mark-as-read operation:', error);
-          // Don't fail the request, just return success
-          return res.status(200).json({
-            success: true,
-            message: 'Operation completed (some errors may have occurred)'
-          });
-        }
-
+          
           return res.status(200).json({
             success: true,
             message: 'Messages marked as read successfully'
@@ -470,8 +462,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             conversation_id: conversationSid,
             user_id: userId,
             user_type: userType,
-            participant_sid: participant.sid,
-            created_at: new Date().toISOString()
+            twilio_participant_sid: participant.sid,
+            joined_at: new Date().toISOString()
           });
 
         if (dbError) {
