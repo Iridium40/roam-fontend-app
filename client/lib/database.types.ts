@@ -823,6 +823,8 @@ export type Database = {
       calendar_type: "google" | "outlook" | "apple";
       customer_communication_preference: "email" | "sms" | "push" | "all";
       customer_address_type: "home" | "work" | "other";
+      announcement_audience: "customer" | "provider" | "business" | "all";
+      announcement_type: "info" | "promotion" | "maintenance" | "warning" | "update";
     };
     CompositeTypes: {
       [_ in never]: never;
