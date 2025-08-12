@@ -758,8 +758,8 @@ export default function Index() {
   ], []);
 
   const nextPromotionSlide = () => {
-    const maxPage = Math.max(0, promotionPages.length - 1);
-    setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxPage));
+    const maxSlide = Math.max(0, specialPromotions.length - 1);
+    setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxSlide));
   };
 
   const prevPromotionSlide = () => {
