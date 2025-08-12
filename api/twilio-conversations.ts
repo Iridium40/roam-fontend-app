@@ -343,8 +343,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Process participants with user details from join
         const formattedParticipants = await Promise.all(participants.map(async (participant) => {
-          let userDetails = null;
-          const userEmail = participant.user?.email || 'Unknown';
+          let userDetails: any = null;
+          const userEmail = participant.user?.[0]?.email || 'Unknown';
 
           try {
             // Get user details based on type
