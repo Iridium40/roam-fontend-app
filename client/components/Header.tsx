@@ -2,9 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { EdgeNotificationCenter } from "@/components/EdgeNotificationCenter";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, customer } = useAuth();
+  const isAuthenticated = user || customer;
 
   return (
     <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
@@ -40,6 +44,7 @@ export function Header() {
             >
               Become a Provider
             </Link>
+            {isAuthenticated && <EdgeNotificationCenter />}
             <Button
               asChild
               variant="outline"

@@ -598,7 +598,7 @@ export default function ProviderDashboard() {
   >([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
-  const [activeBookingTab, setActiveBookingTab] = useState("present");
+  const [activeBookingTab, setActiveBookingTab] = useState("all");
   const [calendarViewType, setCalendarViewType] = useState<
     "week" | "month" | "hidden"
   >("month");
@@ -6453,7 +6453,7 @@ export default function ProviderDashboard() {
   // Helper functions to filter bookings by date and status
   const filterBookingsByDate = (
     bookings: any[],
-    filterType: "present" | "future" | "past",
+    filterType: "all" | "present" | "future" | "past",
   ) => {
     const today = new Date();
     const startOfToday = new Date(
@@ -6475,6 +6475,9 @@ export default function ProviderDashboard() {
       const status = booking.booking_status?.toLowerCase();
 
       switch (filterType) {
+        case "all":
+          // All = show all bookings regardless of date or status
+          return true;
         case "present":
           // Present = all bookings with date of today OR in the past with status NOT cancelled or completed
           if (bookingDate >= startOfToday && bookingDate <= endOfToday) {
@@ -6500,11 +6503,16 @@ export default function ProviderDashboard() {
     });
   };
 
-  const getFilteredBookings = () => {
-    let filtered = filterBookingsByDate(
-      bookings,
-      activeBookingTab as "present" | "future" | "past",
-    );
+  const getFilteredBookings = (applyDateFilter = true) => {
+    let filtered = bookings;
+
+    // Apply date filtering only if requested (for tab view, we'll apply it separately)
+    if (applyDateFilter) {
+      filtered = filterBookingsByDate(
+        bookings,
+        activeBookingTab as "all" | "present" | "future" | "past",
+      );
+    }
 
     // For owners/dispatchers, filter by location and provider
     if ((isOwner || isDispatcher) && selectedProviderFilter !== "all") {
@@ -8754,7 +8762,8 @@ export default function ProviderDashboard() {
                                   <p className="text-lg font-semibold text-roam-blue mt-2">
                                     ${booking.total_amount || "0"}
                                   </p>
-                                  {booking.booking_status === "confirmed" && (
+                                                                        {(booking.booking_status === "confirmed" ||
+                                        booking.booking_status === "in_progress") && (
                                     <Button
                                       size="sm"
                                       variant="outline"
@@ -8811,13 +8820,14 @@ export default function ProviderDashboard() {
                   onValueChange={setActiveBookingTab}
                   className="space-y-4"
                 >
-                  <TabsList className="grid grid-cols-3 w-full max-w-md">
+                  <TabsList className="grid grid-cols-4 w-full max-w-md">
+                    <TabsTrigger value="all">All</TabsTrigger>
                     <TabsTrigger value="present">Present</TabsTrigger>
                     <TabsTrigger value="future">Future</TabsTrigger>
                     <TabsTrigger value="past">Past</TabsTrigger>
                   </TabsList>
 
-                  {["present", "future", "past"].map((tabValue) => (
+                  {["all", "present", "future", "past"].map((tabValue) => (
                     <TabsContent
                       key={tabValue}
                       value={tabValue}
@@ -8825,12 +8835,12 @@ export default function ProviderDashboard() {
                     >
                       <div className="space-y-4">
                         {filterBookingsByDate(
-                          getFilteredBookings(),
-                          tabValue as "present" | "future" | "past",
+                          getFilteredBookings(false),
+                          tabValue as "all" | "present" | "future" | "past",
                         ).length > 0 ? (
                           filterBookingsByDate(
-                            getFilteredBookings(),
-                            tabValue as "present" | "future" | "past",
+                            getFilteredBookings(false),
+                            tabValue as "all" | "present" | "future" | "past",
                           ).map((booking) => {
                             const statusConfig = getStatusBadge(
                               booking.booking_status,
@@ -9066,9 +9076,9 @@ export default function ProviderDashboard() {
                                         ${booking.total_amount || "0"}
                                       </p>
 
-                                      {/* Messaging Button - Only show for confirmed bookings */}
-                                      {booking.booking_status ===
-                                        "confirmed" && (
+                                      {/* Messaging Button - Show for confirmed and in-progress bookings */}
+                                      {(booking.booking_status === "confirmed" ||
+                                        booking.booking_status === "in_progress") && (
                                         <Button
                                           size="sm"
                                           variant="outline"

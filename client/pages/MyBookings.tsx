@@ -52,6 +52,7 @@ import RealtimeBookingNotifications from "@/components/RealtimeBookingNotificati
 import BookingStatusIndicator, {
   RealtimeStatusUpdate,
 } from "@/components/BookingStatusIndicator";
+import ConversationChat from "@/components/ConversationChat";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -88,6 +89,10 @@ export default function MyBookings() {
   const [newBookingDate, setNewBookingDate] = useState("");
   const [newBookingTime, setNewBookingTime] = useState("");
   const [rescheduleReason, setRescheduleReason] = useState("");
+  
+  // Messaging state
+  const [messagingModal, setMessagingModal] = useState(false);
+  const [selectedBookingForMessaging, setSelectedBookingForMessaging] = useState<any>(null);
 
   const currentUser = user || customer;
 
@@ -783,6 +788,17 @@ export default function MyBookings() {
         variant: "destructive",
       });
     }
+  };
+
+  // Messaging handlers
+  const handleOpenMessaging = async (booking: any) => {
+    setSelectedBookingForMessaging(booking);
+    setMessagingModal(true);
+  };
+
+  const handleCloseMessaging = () => {
+    setMessagingModal(false);
+    setSelectedBookingForMessaging(null);
   };
 
   const formatDate = (dateString: string) => {
@@ -1677,20 +1693,11 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {booking.status === "confirmed" && (
+            {(booking.status === "confirmed" || booking.status === "in_progress") && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
-                onClick={() => {
-                  // TODO: Implement messaging functionality with provider
-                  console.log(
-                    "Open messaging with provider for booking:",
-                    booking.id,
-                  );
-                  console.log("Provider:", booking.provider.name);
-                  // Could navigate to a chat interface or open a modal
-                  // navigate(`/bookings/${booking.id}/messages`);
-                }}
+                onClick={() => handleOpenMessaging(booking)}
                 title={`Message ${booking.provider.name} about this booking`}
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
@@ -1761,5 +1768,27 @@ function BookingCard({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+      {/* Messaging Modal */}
+      <ConversationChat
+        isOpen={messagingModal}
+        onClose={handleCloseMessaging}
+        booking={
+          selectedBookingForMessaging
+            ? {
+                id: selectedBookingForMessaging.id,
+                customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
+                customer_email: currentUser?.email || "",
+                customer_phone: currentUser?.phone || "",
+                service_name: selectedBookingForMessaging.service || "Service",
+                provider_name: selectedBookingForMessaging.provider?.name || "Provider",
+                business_id: selectedBookingForMessaging.business_id || "",
+              }
+            : undefined
+        }
+      />
+    </div>
   );
 }
