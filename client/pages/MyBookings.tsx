@@ -1735,12 +1735,12 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {/* Debug: Show booking status */}
+            {/* Debug: Show booking status and provider_id */}
             <div className="text-xs text-gray-500 mb-1">
-              Debug: Status = {booking.status}
+              Debug: Status = {booking.status}, Provider ID = {booking.provider_id || 'none'}
             </div>
             
-            {(booking.status === "confirmed" || booking.status === "in_progress" || booking.status === "pending") && (
+            {booking.status === "confirmed" && booking.provider_id && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
@@ -1749,7 +1749,7 @@ function BookingCard({
                   console.log('Current user:', currentUser);
                   handleOpenMessaging(booking);
                 }}
-                title={`Message ${booking.provider.name} about this booking`}
+                title={`Message ${booking.provider?.name || 'Provider'} about this booking`}
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Message Provider
