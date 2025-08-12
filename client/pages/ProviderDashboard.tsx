@@ -6550,7 +6550,11 @@ export default function ProviderDashboard() {
           customerEmail.includes(query)
         );
       });
-      console.log("DEBUG - After search filter:", filtered.length, "bookings found");
+      console.log(
+        "DEBUG - After search filter:",
+        filtered.length,
+        "bookings found",
+      );
     }
 
     console.log("DEBUG - Final filtered bookings:", filtered.length);
@@ -7855,8 +7859,14 @@ export default function ProviderDashboard() {
               .eq("business_id", providerData.business_id);
 
           let unassignedBookingsData = [];
-          if (!businessServicesError && businessServices && businessServices.length > 0) {
-            const businessServiceIds = businessServices.map((bs) => bs.service_id);
+          if (
+            !businessServicesError &&
+            businessServices &&
+            businessServices.length > 0
+          ) {
+            const businessServiceIds = businessServices.map(
+              (bs) => bs.service_id,
+            );
 
             const unassignedResult = await supabase
               .from("bookings")
@@ -7905,7 +7915,10 @@ export default function ProviderDashboard() {
           }
 
           // Combine and deduplicate bookings
-          const combinedBookings = [...(assignedResult.data || []), ...unassignedBookingsData];
+          const combinedBookings = [
+            ...(assignedResult.data || []),
+            ...unassignedBookingsData,
+          ];
           const bookingIds = new Set();
           const dedupedBookings = combinedBookings.filter((booking) => {
             if (bookingIds.has(booking.id)) {
@@ -7916,7 +7929,11 @@ export default function ProviderDashboard() {
           });
 
           // Sort combined results
-          dedupedBookings.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          dedupedBookings.sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime(),
+          );
 
           bookingsData = dedupedBookings;
           bookingsError = assignedResult.error;
