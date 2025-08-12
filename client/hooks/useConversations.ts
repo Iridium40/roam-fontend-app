@@ -46,8 +46,11 @@ export interface Conversation {
 }
 
 export const useConversations = () => {
-  const { user } = useAuth();
+  const { user, customer, userType } = useAuth();
   const { toast } = useToast();
+  
+  // Get the current user data (either provider or customer)
+  const currentUser = user || customer;
   
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<string | null>(null);
@@ -59,16 +62,16 @@ export const useConversations = () => {
 
   // Generate unique identity for current user
   const getUserIdentity = useCallback(() => {
-    if (!user) return null;
-    const userType = user.provider_role ? 'provider' : 'customer';
-    return `${userType}-${user.id}`;
-  }, [user]);
+    if (!currentUser) return null;
+    const userType = userType || (currentUser.provider_role ? 'provider' : 'customer');
+    return `${userType}-${currentUser.id}`;
+  }, [currentUser, userType]);
 
   // Get user type for API calls
   const getUserType = useCallback(() => {
-    if (!user) return null;
-    return user.provider_role ? 'provider' : 'customer';
-  }, [user]);
+    if (!currentUser) return null;
+    return userType || (currentUser.provider_role ? 'provider' : 'customer');
+  }, [currentUser, userType]);
 
   // Create a new conversation for a booking
   const createConversation = useCallback(async (bookingId: string, participants: Array<{
@@ -128,9 +131,9 @@ export const useConversations = () => {
 
   // Load conversations for the current user
   const loadConversations = useCallback(async () => {
-    if (!user) return;
+    if (!currentUser) return;
     
-    console.log('loadConversations called for user:', user.id);
+    console.log('loadConversations called for user:', currentUser.id);
     
     try {
       setLoading(true);
@@ -138,7 +141,7 @@ export const useConversations = () => {
       
       const requestBody = {
         action: 'get-conversations',
-        userId: user.id
+        userId: currentUser.id
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
       
@@ -170,7 +173,7 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, toast]);
+  }, [currentUser, toast]);
 
   // Load messages for a specific conversation
   const loadMessages = useCallback(async (conversationSid: string) => {
@@ -239,8 +242,8 @@ export const useConversations = () => {
         message,
         participantIdentity: userIdentity,
         userRole: userType,
-        userName: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
-        userId: user.id
+        userName: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+        userId: currentUser.id
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
       
@@ -268,8 +271,8 @@ export const useConversations = () => {
         dateCreated: result.dateCreated,
         attributes: {
           userRole: userType,
-          userName: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
-          userId: user.id,
+          userName: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+          userId: currentUser.id,
           timestamp: new Date().toISOString()
         }
       };
@@ -292,7 +295,7 @@ export const useConversations = () => {
     } finally {
       setSending(false);
     }
-  }, [user, getUserType, getUserIdentity, toast]);
+  }, [currentUser, getUserType, getUserIdentity, toast]);
 
   // Load participants for a conversation
   const loadParticipants = useCallback(async (conversationSid: string) => {
@@ -390,7 +393,7 @@ export const useConversations = () => {
 
   // Mark messages as read
   const markAsRead = useCallback(async (conversationSid: string) => {
-    if (!user) return;
+    if (!currentUser) return;
     
     console.log('markAsRead called for conversation:', conversationSid);
     
@@ -401,7 +404,7 @@ export const useConversations = () => {
       const requestBody = {
         action: 'mark-as-read',
         conversationSid,
-        userId: user.id
+        userId: currentUser.id
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
       
@@ -434,7 +437,7 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, loadConversations, toast]);
+  }, [currentUser, loadConversations, toast]);
 
   // Set current conversation
   const setActiveConversation = useCallback((conversationSid: string | null) => {
@@ -451,10 +454,10 @@ export const useConversations = () => {
 
   // Load conversations when user changes
   useEffect(() => {
-    if (user) {
+    if (currentUser) {
       loadConversations();
     }
-  }, [user, loadConversations]);
+  }, [currentUser, loadConversations]);
 
   return {
     conversations,

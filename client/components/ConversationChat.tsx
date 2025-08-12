@@ -41,7 +41,10 @@ interface ConversationChatProps {
 }
 
 const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: ConversationChatProps) => {
-  const { user } = useAuth();
+  const { user, customer, userType } = useAuth();
+  
+  // Get the current user data (either provider or customer)
+  const currentUser = user || customer;
   const {
     conversations,
     currentConversation,
@@ -74,8 +77,8 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       booking: booking?.id,
       conversationSid,
       activeConversationSid,
-      user: user?.id,
-      userType: user?.provider_role ? 'provider' : 'customer'
+      user: currentUser?.id,
+      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer')
     });
 
     if (isOpen && booking && !activeConversationSid) {
@@ -104,16 +107,16 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
   const initializeBookingConversation = async () => {
     console.log('initializeBookingConversation called with:', {
       booking: booking?.id,
-      user: user?.id,
-      userType: user?.provider_role ? 'provider' : 'customer'
+      user: currentUser?.id,
+      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer')
     });
 
-    if (!booking || !user) {
+    if (!booking || !currentUser) {
       console.log('Missing required data:', { 
         booking: !!booking, 
-        user: !!user,
+        user: !!currentUser,
         bookingId: booking?.id,
-        userId: user?.id
+        userId: currentUser?.id
       });
       return;
     }
@@ -133,8 +136,8 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       {
         identity: userIdentity,
         role: userType,
-        name: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
-        userId: user.id,
+        name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+        userId: currentUser.id,
         userType: userType
       }
     ];
@@ -239,9 +242,9 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       {booking && (
         <div>
           Booking ID: {booking.id}, 
-          User: {user?.id || 'No user ID'}, 
-          User Type: {user?.provider_role ? 'provider' : 'customer'},
-          User Data: {user ? JSON.stringify({id: user.id, first_name: user.first_name, last_name: user.last_name, provider_role: user.provider_role}) : 'No user data'},
+          User: {currentUser?.id || 'No user ID'}, 
+          User Type: {userType || (currentUser?.provider_role ? 'provider' : 'customer')},
+          User Data: {currentUser ? JSON.stringify({id: currentUser.id, first_name: currentUser.first_name, last_name: currentUser.last_name, provider_role: currentUser.provider_role}) : 'No user data'},
           Booking Data: {booking ? JSON.stringify({id: booking.id, customer_id: booking.customer_id, customer_name: booking.customer_name}) : 'No booking data'}
         </div>
       )}
