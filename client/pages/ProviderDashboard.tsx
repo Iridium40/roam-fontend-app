@@ -8644,9 +8644,9 @@ export default function ProviderDashboard() {
                                             <Users className="w-4 h-4 flex-shrink-0" />
                                             <div className="flex-1">
                                               <Select
-                                                value={booking.provider_id || ""}
+                                                value={booking.provider_id || "unassigned"}
                                                 onValueChange={(providerId) => {
-                                                  if (providerId === "") {
+                                                  if (providerId === "unassigned") {
                                                     // Unassign provider (set to null)
                                                     assignProvider(booking.id, null);
                                                   } else {
@@ -8658,7 +8658,7 @@ export default function ProviderDashboard() {
                                                   <SelectValue placeholder="Assign Provider..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                  <SelectItem value="">Unassigned</SelectItem>
+                                                  <SelectItem value="unassigned">Unassigned</SelectItem>
                                                   {allProviders.filter(p => p.is_active).map((provider) => (
                                                     <SelectItem key={provider.id} value={provider.id}>
                                                       {provider.first_name} {provider.last_name}
@@ -8938,9 +8938,9 @@ export default function ProviderDashboard() {
                                       <Users className="w-4 h-4 flex-shrink-0" />
                                       <div className="flex-1">
                                         <Select
-                                          value={booking.provider_id || ""}
+                                          value={booking.provider_id || "unassigned"}
                                           onValueChange={(providerId) => {
-                                            if (providerId === "") {
+                                            if (providerId === "unassigned") {
                                               // Unassign provider (set to null)
                                               assignProvider(booking.id, null);
                                             } else {
@@ -8952,7 +8952,7 @@ export default function ProviderDashboard() {
                                             <SelectValue placeholder="Assign Provider..." />
                                           </SelectTrigger>
                                           <SelectContent>
-                                            <SelectItem value="">Unassigned</SelectItem>
+                                            <SelectItem value="unassigned">Unassigned</SelectItem>
                                             {allProviders.filter(p => p.is_active).map((provider) => (
                                               <SelectItem key={provider.id} value={provider.id}>
                                                 {provider.first_name} {provider.last_name}
