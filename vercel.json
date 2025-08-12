@@ -7,7 +7,6 @@
       "runtime": "edge"
     }
   },
-
   "headers": [
     {
       "source": "/api/notifications/edge",
@@ -40,7 +39,5 @@
       "source": "/api/bookings/status-update",
       "destination": "/api/bookings/status-update.ts"
     }
-  ],
-
-
+  ]
 }
