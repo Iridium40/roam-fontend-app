@@ -123,7 +123,34 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           .eq("user_id", customer.user_id);
 
         if (error) {
-          console.error("Error updating Stripe customer profile:", error);
+          console.error("Error updating Stripe customer profile - Full error object:", error);
+          console.error("Error type:", typeof error);
+          console.error("Error keys:", Object.keys(error || {}));
+
+          let errorMessage = "Unknown error occurred";
+          if (error) {
+            if (typeof error === "string") {
+              errorMessage = error;
+            } else if (error.message) {
+              errorMessage = error.message;
+            } else if (error.error_description) {
+              errorMessage = error.error_description;
+            } else if (error.details) {
+              errorMessage = error.details;
+            } else if (error.hint) {
+              errorMessage = error.hint;
+            } else if (error.code) {
+              errorMessage = `Database error (${error.code})`;
+            } else {
+              try {
+                errorMessage = JSON.stringify(error);
+              } catch {
+                errorMessage = "Unable to parse error details";
+              }
+            }
+          }
+
+          console.error("Parsed error message:", errorMessage);
         } else {
           console.log("Stripe customer profile updated successfully");
         }
@@ -138,7 +165,34 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           });
 
         if (error) {
-          console.error("Error creating Stripe customer profile:", error);
+          console.error("Error creating Stripe customer profile - Full error object:", error);
+          console.error("Error type:", typeof error);
+          console.error("Error keys:", Object.keys(error || {}));
+
+          let errorMessage = "Unknown error occurred";
+          if (error) {
+            if (typeof error === "string") {
+              errorMessage = error;
+            } else if (error.message) {
+              errorMessage = error.message;
+            } else if (error.error_description) {
+              errorMessage = error.error_description;
+            } else if (error.details) {
+              errorMessage = error.details;
+            } else if (error.hint) {
+              errorMessage = error.hint;
+            } else if (error.code) {
+              errorMessage = `Database error (${error.code})`;
+            } else {
+              try {
+                errorMessage = JSON.stringify(error);
+              } catch {
+                errorMessage = "Unable to parse error details";
+              }
+            }
+          }
+
+          console.error("Parsed error message:", errorMessage);
         } else {
           console.log(
             "Successfully created Stripe customer profile:",
@@ -146,8 +200,35 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           );
         }
       }
-    } catch (error) {
-      console.error("Error syncing Stripe customer ID:", error);
+    } catch (error: any) {
+      console.error("Error syncing Stripe customer ID - Full error object:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
+
+      let errorMessage = "Unknown error occurred";
+      if (error) {
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
+        }
+      }
+
+      console.error("Parsed error message:", errorMessage);
     }
   };
 
