@@ -95,6 +95,11 @@ export default function MyBookings() {
   const [selectedBookingForMessaging, setSelectedBookingForMessaging] = useState<any>(null);
 
   const currentUser = user || customer;
+  
+  // Debug current user data
+  console.log('MyBookings - currentUser:', currentUser);
+  console.log('MyBookings - user:', user);
+  console.log('MyBookings - customer:', customer);
 
   // Real-time booking updates
   const { isConnected, refreshBookings } = useRealtimeBookings({
@@ -794,8 +799,10 @@ export default function MyBookings() {
   const handleOpenMessaging = async (booking: any) => {
     console.log('handleOpenMessaging called with booking:', booking);
     console.log('Current user:', currentUser);
+    console.log('Setting messaging modal to true');
     setSelectedBookingForMessaging(booking);
     setMessagingModal(true);
+    console.log('Modal state should now be true');
   };
 
   const handleCloseMessaging = () => {
@@ -1450,6 +1457,12 @@ export default function MyBookings() {
         </DialogContent>
       </Dialog>
 
+      {/* Debug: Modal state */}
+      <div className="text-xs text-gray-500 mb-2">
+        Debug: messagingModal={messagingModal ? 'true' : 'false'}, 
+        selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'}
+      </div>
+
       {/* Messaging Modal */}
       <ConversationChat
         isOpen={messagingModal}
@@ -1724,7 +1737,11 @@ function BookingCard({
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
-                onClick={() => handleOpenMessaging(booking)}
+                onClick={() => {
+                  console.log('Button clicked! Booking:', booking);
+                  console.log('Current user:', currentUser);
+                  handleOpenMessaging(booking);
+                }}
                 title={`Message ${booking.provider.name} about this booking`}
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
