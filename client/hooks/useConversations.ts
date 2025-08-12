@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
@@ -7,7 +7,7 @@ export interface ConversationMessage {
   author: string;
   body: string;
   dateCreated: string;
-  attributes: {
+  attributes?: {
     userRole?: string;
     userName?: string;
     timestamp?: string;
@@ -17,14 +17,11 @@ export interface ConversationMessage {
 export interface ConversationParticipant {
   sid: string;
   identity: string;
-  attributes: {
+  attributes?: {
     role?: string;
     name?: string;
     userId?: string;
-    addedAt?: string;
   };
-  dateCreated: string;
-  dateUpdated: string;
 }
 
 export interface Conversation {
@@ -35,11 +32,11 @@ export interface Conversation {
     createdAt?: string;
     type?: string;
   };
-  lastMessage: {
+  lastMessage?: {
     body: string;
     author: string;
     dateCreated: string;
-  } | null;
+  };
   unreadMessagesCount: number;
   lastReadMessageIndex: number;
 }
@@ -54,6 +51,7 @@ export const useConversations = () => {
   const [participants, setParticipants] = useState<ConversationParticipant[]>([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Generate unique identity for current user
   const getUserIdentity = useCallback(() => {
@@ -72,6 +70,7 @@ export const useConversations = () => {
     
     try {
       setLoading(true);
+      setError(null);
       
       const requestBody = {
         action: 'create-conversation',
@@ -102,6 +101,7 @@ export const useConversations = () => {
       return result.conversationSid;
     } catch (error: any) {
       console.error('Error creating conversation:', error);
+      setError(error.message || 'Failed to create conversation');
       toast({
         title: "Error",
         description: error.message || "Failed to create conversation",
@@ -120,6 +120,7 @@ export const useConversations = () => {
 
     try {
       setLoading(true);
+      setError(null);
       
       const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
@@ -141,6 +142,7 @@ export const useConversations = () => {
       setConversations(result.conversations);
     } catch (error: any) {
       console.error('Error loading conversations:', error);
+      setError(error.message || 'Failed to load conversations');
       toast({
         title: "Error",
         description: error.message || "Failed to load conversations",
@@ -155,6 +157,7 @@ export const useConversations = () => {
   const loadMessages = useCallback(async (conversationSid: string) => {
     try {
       setLoading(true);
+      setError(null);
       
       const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
@@ -180,6 +183,7 @@ export const useConversations = () => {
       await markAsRead(conversationSid);
     } catch (error: any) {
       console.error('Error loading messages:', error);
+      setError(error.message || 'Failed to load messages');
       toast({
         title: "Error",
         description: error.message || "Failed to load messages",
@@ -197,6 +201,7 @@ export const useConversations = () => {
 
     try {
       setSending(true);
+      setError(null);
       
       const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
@@ -242,6 +247,7 @@ export const useConversations = () => {
       return true;
     } catch (error: any) {
       console.error('Error sending message:', error);
+      setError(error.message || 'Failed to send message');
       toast({
         title: "Error",
         description: error.message || "Failed to send message",
@@ -256,7 +262,9 @@ export const useConversations = () => {
   // Add participant to conversation
   const addParticipant = useCallback(async (conversationSid: string, participantIdentity: string, role: string, name: string) => {
     try {
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      setError(null);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -265,8 +273,8 @@ export const useConversations = () => {
           action: 'add-participant',
           conversationSid,
           participantIdentity,
-          userRole: role,
-          userName: name
+          role,
+          name
         }),
       });
 
@@ -276,26 +284,19 @@ export const useConversations = () => {
         throw new Error(result.error || 'Failed to add participant');
       }
 
-      // Refresh participants if we're viewing this conversation
-      if (currentConversation === conversationSid) {
-        await loadParticipants(conversationSid);
-      }
-      
       return true;
     } catch (error: any) {
       console.error('Error adding participant:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to add participant",
-        variant: "destructive",
-      });
+      setError(error.message || 'Failed to add participant');
       return false;
     }
-  }, [currentConversation, toast]);
+  }, []);
 
   // Load participants for a conversation
   const loadParticipants = useCallback(async (conversationSid: string) => {
     try {
+      setError(null);
+      
       const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
@@ -316,6 +317,7 @@ export const useConversations = () => {
       setParticipants(result.participants);
     } catch (error: any) {
       console.error('Error loading participants:', error);
+      setError(error.message || 'Failed to load participants');
       toast({
         title: "Error",
         description: error.message || "Failed to load participants",
@@ -379,7 +381,12 @@ export const useConversations = () => {
   // Load conversations when user is available
   useEffect(() => {
     if (user && provider) {
-      loadConversations();
+      // Delay loading conversations to prevent blocking initial render
+      const timer = setTimeout(() => {
+        loadConversations();
+      }, 1000);
+      
+      return () => clearTimeout(timer);
     }
   }, [user, provider, loadConversations]);
 
@@ -390,6 +397,7 @@ export const useConversations = () => {
     participants,
     loading,
     sending,
+    error,
     createConversation,
     loadConversations,
     loadMessages,
