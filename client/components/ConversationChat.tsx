@@ -84,7 +84,12 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
   }, [activeConversationSid]);
 
   const initializeBookingConversation = async () => {
-    if (!booking || !user || !provider) return;
+    if (!booking || !user || !provider) {
+      console.log('Missing required data:', { booking, user, provider });
+      return;
+    }
+
+    console.log('Initializing booking conversation for:', booking.id);
 
     const bookingParticipants = [
       {
@@ -105,9 +110,18 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       });
     }
 
-    const convSid = await findOrCreateBookingConversation(booking.id, bookingParticipants);
-    if (convSid) {
-      setActiveConversationSid(convSid);
+    console.log('Booking participants:', bookingParticipants);
+
+    try {
+      const convSid = await findOrCreateBookingConversation(booking.id, bookingParticipants);
+      console.log('Conversation SID:', convSid);
+      if (convSid) {
+        setActiveConversationSid(convSid);
+      } else {
+        console.error('Failed to get conversation SID');
+      }
+    } catch (error) {
+      console.error('Error initializing conversation:', error);
     }
   };
 
@@ -272,12 +286,18 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
             {/* Message Input */}
             <div className="border-t p-4">
+              {/* Debug info */}
+              <div className="text-xs text-gray-500 mb-2">
+                Debug: activeConversationSid={activeConversationSid ? 'Set' : 'Not set'}, 
+                sending={sending ? 'Yes' : 'No'}, 
+                loading={loading ? 'Yes' : 'No'}
+              </div>
               <div className="flex gap-2">
                 <Input
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Type your message..."
+                  placeholder={!activeConversationSid ? "Initializing conversation..." : "Type your message..."}
                   disabled={sending || !activeConversationSid}
                   className="flex-1"
                 />
