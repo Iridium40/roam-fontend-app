@@ -35,7 +35,7 @@ const BookingSuccess: React.FC = () => {
   };
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate('/home');
   };
 
   if (!bookingId) {
