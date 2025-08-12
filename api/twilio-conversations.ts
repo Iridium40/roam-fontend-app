@@ -100,19 +100,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         // Store conversation in Supabase
+        let conversationMetadataId: string | null = null;
         try {
-          const { error: dbError } = await supabase
+          const { data: conversationData, error: dbError } = await supabase
             .from('conversation_metadata')
             .insert({
-              id: conversation.sid,
+              twilio_conversation_sid: conversation.sid,
               booking_id: bookingId,
-              status: 'active',
-              created_at: new Date().toISOString()
-            });
+              conversation_type: 'booking_chat',
+              is_active: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .select('id')
+            .single();
 
           if (dbError) {
             console.error('Error storing conversation in database:', dbError);
             // Don't fail the request, but log the error
+          } else {
+            conversationMetadataId = conversationData?.id;
+            console.log('Stored conversation with metadata ID:', conversationMetadataId);
           }
         } catch (dbError) {
           console.error('Error storing conversation in database:', dbError);
@@ -144,7 +152,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               const { error: participantDbError } = await supabase
                 .from('conversation_participants')
                 .insert({
-                  conversation_id: conversation.sid,
+                  conversation_id: conversationMetadataId || conversation.sid, // Use metadata ID if available, fallback to Twilio SID
                   user_id: participant.userId, // auth.users.id
                   user_type: participant.userType, // 'provider' or 'customer'
                   twilio_participant_sid: twilioParticipant.sid,
