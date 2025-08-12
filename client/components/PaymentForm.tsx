@@ -100,7 +100,7 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
     }
 
     try {
-      // Check if stripe profile already exists
+      // Check if stripe profile already exists for this user
       const { data: existingProfile, error: fetchError } = await supabase
         .from("customer_stripe_profiles")
         .select("id")
@@ -109,6 +109,24 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
 
       if (fetchError && fetchError.code !== "PGRST116") {
         console.error("Error checking existing Stripe profile:", fetchError);
+        return;
+      }
+
+      // Also check if this stripe_customer_id is already used by another user
+      const { data: existingStripeId, error: stripeIdError } = await supabase
+        .from("customer_stripe_profiles")
+        .select("user_id")
+        .eq("stripe_customer_id", stripeCustomerId)
+        .single();
+
+      if (stripeIdError && stripeIdError.code !== "PGRST116") {
+        console.error("Error checking existing Stripe customer ID:", stripeIdError);
+        return;
+      }
+
+      // If the stripe_customer_id exists for a different user, log and return
+      if (existingStripeId && existingStripeId.user_id !== customer.user_id) {
+        console.warn(`Stripe customer ID ${stripeCustomerId} is already associated with a different user`);
         return;
       }
 
