@@ -1,12 +1,4 @@
 {
-  "functions": {
-    "api/notifications/edge.ts": {
-      "runtime": "edge"
-    },
-    "api/bookings/status-update.ts": {
-      "runtime": "edge"
-    }
-  },
   "headers": [
     {
       "source": "/api/notifications/edge",
