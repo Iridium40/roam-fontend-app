@@ -803,6 +803,11 @@ export default function MyBookings() {
     setSelectedBookingForMessaging(booking);
     setMessagingModal(true);
     console.log('Modal state should now be true');
+    
+    // Add a small delay to check if the modal state actually changes
+    setTimeout(() => {
+      console.log('Modal state after timeout:', messagingModal);
+    }, 100);
   };
 
   const handleCloseMessaging = () => {
@@ -1460,7 +1465,9 @@ export default function MyBookings() {
       {/* Debug: Modal state */}
       <div className="text-xs text-gray-500 mb-2">
         Debug: messagingModal={messagingModal ? 'true' : 'false'}, 
-        selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'}
+        selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'},
+        bookingId={selectedBookingForMessaging?.id || 'none'},
+        currentUserId={currentUser?.id || 'none'}
       </div>
 
       {/* Messaging Modal */}
