@@ -1615,7 +1615,7 @@ export default function Index() {
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPromotionSlide * 100}%)`,
-                    width: `${Math.max(1, promotionPages.length) * 100}%`,
+                    width: `${specialPromotions.length * 100}%`,
                   }}
                 >
                   {promotionPages.map((page, pageIndex) => (
