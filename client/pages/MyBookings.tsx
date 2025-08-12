@@ -792,6 +792,8 @@ export default function MyBookings() {
 
   // Messaging handlers
   const handleOpenMessaging = async (booking: any) => {
+    console.log('handleOpenMessaging called with booking:', booking);
+    console.log('Current user:', currentUser);
     setSelectedBookingForMessaging(booking);
     setMessagingModal(true);
   };
@@ -1459,6 +1461,7 @@ export default function MyBookings() {
                 customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
                 customer_email: currentUser?.email || "",
                 customer_phone: currentUser?.phone || "",
+                customer_id: currentUser?.id || "", // Add customer_id for auth.users.id
                 service_name: selectedBookingForMessaging.service || "Service",
                 provider_name: selectedBookingForMessaging.provider?.name || "Provider",
                 business_id: selectedBookingForMessaging.business_id || "",
@@ -1712,7 +1715,12 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {(booking.status === "confirmed" || booking.status === "in_progress") && (
+            {/* Debug: Show booking status */}
+            <div className="text-xs text-gray-500 mb-1">
+              Debug: Status = {booking.status}
+            </div>
+            
+            {(booking.status === "confirmed" || booking.status === "in_progress" || booking.status === "pending") && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
