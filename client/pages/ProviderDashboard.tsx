@@ -7160,32 +7160,8 @@ export default function ProviderDashboard() {
 
       const providerIds = businessProviders.map((p) => p.id);
 
-      // First, get all business services to identify which services belong to this business
-      const { data: businessServices, error: businessServicesError } =
-        await supabase
-          .from("business_services")
-          .select("service_id")
-          .eq("business_id", provider.business_id);
-
-      if (businessServicesError) {
-        console.error(
-          "Error loading business services:",
-          businessServicesError,
-        );
-        return;
-      }
-
-      const businessServiceIds =
-        businessServices?.map((bs) => bs.service_id) || [];
-
-      if (businessServiceIds.length === 0) {
-        console.log("No services found for business");
-        setBookings([]);
-        return;
-      }
-
-      // Get bookings for this business - either assigned to business providers OR unassigned but for business services
-      const { data: allBookings, error } = await supabase
+      // Get bookings assigned to business providers
+      const { data: assignedBookings, error: assignedError } = await supabase
         .from("bookings")
         .select(
           `
@@ -7210,11 +7186,71 @@ export default function ProviderDashboard() {
           )
         `,
         )
-        .or(
-          `provider_id.in.(${providerIds.join(",")}),and(provider_id.is.null,service_id.in.(${businessServiceIds.join(",")}))`,
-        )
+        .in("provider_id", providerIds)
         .order("booking_date", { ascending: false })
-        .limit(50);
+        .limit(25);
+
+      // Get unassigned bookings for business services
+      const { data: businessServices, error: businessServicesError } =
+        await supabase
+          .from("business_services")
+          .select("service_id")
+          .eq("business_id", provider.business_id);
+
+      let unassignedBookings = [];
+      if (!businessServicesError && businessServices && businessServices.length > 0) {
+        const businessServiceIds = businessServices.map((bs) => bs.service_id);
+
+        const { data: unassignedData, error: unassignedError } = await supabase
+          .from("bookings")
+          .select(
+            `
+            *,
+            services (
+              id,
+              name,
+              min_price
+            ),
+            customer_profiles (
+              id,
+              first_name,
+              last_name,
+              email,
+              image_url
+            ),
+            providers (
+              id,
+              first_name,
+              last_name,
+              location_id
+            )
+          `,
+          )
+          .is("provider_id", null)
+          .in("service_id", businessServiceIds)
+          .order("booking_date", { ascending: false })
+          .limit(25);
+
+        if (!unassignedError && unassignedData) {
+          unassignedBookings = unassignedData;
+        }
+      }
+
+      // Combine and deduplicate bookings
+      const allBookingsArray = [...(assignedBookings || []), ...unassignedBookings];
+      const bookingIds = new Set();
+      const allBookings = allBookingsArray.filter((booking) => {
+        if (bookingIds.has(booking.id)) {
+          return false;
+        }
+        bookingIds.add(booking.id);
+        return true;
+      });
+
+      // Sort combined results
+      allBookings.sort((a, b) => new Date(b.booking_date).getTime() - new Date(a.booking_date).getTime());
+
+      const error = assignedError;
 
       if (error) {
         console.error(
@@ -7803,35 +7839,11 @@ export default function ProviderDashboard() {
         if (businessProviders && businessProviders.length > 0) {
           const providerIds = businessProviders.map((p) => p.id);
 
-          // First, get all business services to identify which services belong to this business
-          const { data: businessServices, error: businessServicesError } =
-            await supabase
-              .from("business_services")
-              .select("service_id")
-              .eq("business_id", providerData.business_id);
-
-          if (businessServicesError) {
-            console.error(
-              "Error loading business services:",
-              businessServicesError,
-            );
-            setError("Failed to fetch business services.");
-            return;
-          }
-
-          const businessServiceIds =
-            businessServices?.map((bs) => bs.service_id) || [];
-
-          if (businessServiceIds.length === 0) {
-            console.log("No services found for business");
-            bookingsData = [];
-            bookingsError = null;
-          } else {
-            // Get bookings for this business - either assigned to business providers OR unassigned but for business services
-            const result = await supabase
-              .from("bookings")
-              .select(
-                `
+          // Get bookings assigned to business providers
+          const assignedResult = await supabase
+            .from("bookings")
+            .select(
+              `
               *,
               providers(first_name, last_name),
               services(name, description),
@@ -7863,16 +7875,84 @@ export default function ProviderDashboard() {
                 postal_code
               )
             `,
-              )
-              .or(
-                `provider_id.in.(${providerIds.join(",")}),and(provider_id.is.null,service_id.in.(${businessServiceIds.join(",")}))`,
-              )
-              .order("created_at", { ascending: false })
-              .limit(10);
+            )
+            .in("provider_id", providerIds)
+            .order("created_at", { ascending: false })
+            .limit(5);
 
-            bookingsData = result.data;
-            bookingsError = result.error;
+          // Get unassigned bookings for business services
+          const { data: businessServices, error: businessServicesError } =
+            await supabase
+              .from("business_services")
+              .select("service_id")
+              .eq("business_id", providerData.business_id);
+
+          let unassignedBookingsData = [];
+          if (!businessServicesError && businessServices && businessServices.length > 0) {
+            const businessServiceIds = businessServices.map((bs) => bs.service_id);
+
+            const unassignedResult = await supabase
+              .from("bookings")
+              .select(
+                `
+                *,
+                providers(first_name, last_name),
+                services(name, description),
+                customer_profiles!inner(
+                  id,
+                  first_name,
+                  last_name,
+                  phone,
+                  email,
+                  image_url
+                ),
+                customer_locations(
+                  id,
+                  location_name,
+                  street_address,
+                  unit_number,
+                  city,
+                  state,
+                  zip_code,
+                  access_instructions
+                ),
+                business_locations(
+                  id,
+                  location_name,
+                  address_line1,
+                  address_line2,
+                  city,
+                  state,
+                  postal_code
+                )
+              `,
+              )
+              .is("provider_id", null)
+              .in("service_id", businessServiceIds)
+              .order("created_at", { ascending: false })
+              .limit(5);
+
+            if (!unassignedResult.error && unassignedResult.data) {
+              unassignedBookingsData = unassignedResult.data;
+            }
           }
+
+          // Combine and deduplicate bookings
+          const combinedBookings = [...(assignedResult.data || []), ...unassignedBookingsData];
+          const bookingIds = new Set();
+          const dedupedBookings = combinedBookings.filter((booking) => {
+            if (bookingIds.has(booking.id)) {
+              return false;
+            }
+            bookingIds.add(booking.id);
+            return true;
+          });
+
+          // Sort combined results
+          dedupedBookings.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+          bookingsData = dedupedBookings;
+          bookingsError = assignedResult.error;
         }
       } else {
         // Provider has no business_id - show empty bookings
