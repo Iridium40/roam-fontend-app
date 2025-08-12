@@ -32,6 +32,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
   LogOut,
   Calendar,
   DollarSign,
@@ -48,6 +56,7 @@ import {
   Bell,
   ChevronRight,
   CheckCircle,
+  XCircle,
   AlertCircle,
   BarChart3,
   MessageCircle,
@@ -75,6 +84,11 @@ import {
   Briefcase,
   Palette,
   Wrench,
+  Hash,
+  Search,
+  ChevronDown,
+  User,
+  Menu,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -83,6 +97,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import ConversationChat from "@/components/ConversationChat";
 import ConversationsList from "@/components/ConversationsList";
+import useRealtimeBookings from "@/hooks/useRealtimeBookings";
+import RealtimeBookingNotifications from "@/components/RealtimeBookingNotifications";
+import BookingStatusIndicator, {
+  RealtimeStatusUpdate,
+} from "@/components/BookingStatusIndicator";
 import type { Provider, Booking, BusinessProfile } from "@/lib/database.types";
 
 // Plaid configuration
@@ -191,11 +210,15 @@ const CalendarGrid = ({
   viewType,
   currentDate,
   onDateChange,
+  selectedDate,
+  onDateSelect,
 }: {
   bookings: any[];
   viewType: "week" | "month";
   currentDate: Date;
   onDateChange: (date: Date) => void;
+  selectedDate: Date | null;
+  onDateSelect: (date: Date) => void;
 }) => {
   const today = new Date();
 
@@ -263,6 +286,69 @@ const CalendarGrid = ({
     return date.getMonth() === currentDate.getMonth();
   };
 
+  const isSelectedDate = (date: Date) => {
+    return selectedDate && date.toDateString() === selectedDate.toDateString();
+  };
+
+  const getBookingStatusColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "confirmed":
+        return "bg-green-100 text-green-800 border-green-300";
+      case "in_progress":
+        return "bg-blue-100 text-blue-800 border-blue-300";
+      case "completed":
+        return "bg-emerald-100 text-emerald-800 border-emerald-300";
+      case "cancelled":
+        return "bg-red-100 text-red-800 border-red-300";
+      case "declined":
+        return "bg-orange-100 text-orange-800 border-orange-300";
+      case "no_show":
+        return "bg-gray-100 text-gray-800 border-gray-300";
+      default:
+        return "bg-slate-100 text-slate-800 border-slate-300";
+    }
+  };
+
+  const getDayBackgroundColor = (dayBookings: any[]) => {
+    if (dayBookings.length === 0) return "";
+
+    // Priority order for determining day color
+    const statusPriority = [
+      "pending",
+      "in_progress",
+      "confirmed",
+      "declined",
+      "cancelled",
+      "completed",
+      "no_show",
+    ];
+
+    for (const status of statusPriority) {
+      if (dayBookings.some((booking) => booking.booking_status === status)) {
+        switch (status) {
+          case "pending":
+            return "bg-yellow-50 border-yellow-200";
+          case "in_progress":
+            return "bg-blue-50 border-blue-200";
+          case "confirmed":
+            return "bg-green-50 border-green-200";
+          case "declined":
+            return "bg-orange-50 border-orange-200";
+          case "cancelled":
+            return "bg-red-50 border-red-200";
+          case "completed":
+            return "bg-emerald-50 border-emerald-200";
+          default:
+            return "bg-gray-50 border-gray-200";
+        }
+      }
+    }
+
+    return "bg-slate-50 border-slate-200";
+  };
+
   const navigatePrevious = () => {
     const newDate = new Date(currentDate);
     if (viewType === "week") {
@@ -290,13 +376,18 @@ const CalendarGrid = ({
   return (
     <div className="space-y-4">
       {/* Calendar Header with Navigation */}
-      <div className="flex items-center justify-between">
-        <Button variant="outline" size="sm" onClick={navigatePrevious}>
+      <div className="flex items-center justify-between py-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={navigatePrevious}
+          className="px-4 py-2 min-w-[100px]"
+        >
           ← Previous
         </Button>
 
-        <div className="text-center">
-          <h4 className="text-xl font-semibold">
+        <div className="text-center flex-1 mx-6">
+          <h4 className="text-xl font-semibold mb-2">
             {viewType === "week"
               ? `Week of ${calendarDays[0].toLocaleDateString()} - ${calendarDays[6].toLocaleDateString()}`
               : `${currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}`}
@@ -305,13 +396,18 @@ const CalendarGrid = ({
             variant="ghost"
             size="sm"
             onClick={goToToday}
-            className="mt-1"
+            className="px-4 py-1 text-roam-blue hover:bg-roam-blue/10"
           >
             Today
           </Button>
         </div>
 
-        <Button variant="outline" size="sm" onClick={navigateNext}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={navigateNext}
+          className="px-4 py-2 min-w-[100px]"
+        >
           Next →
         </Button>
       </div>
@@ -335,34 +431,48 @@ const CalendarGrid = ({
           const dayBookings = getBookingsForDate(date);
           const isCurrentDay = isToday(date);
           const isCurrentMonthDay = isCurrentMonth(date);
+          const isSelected = isSelectedDate(date);
+          const dayBgColor = getDayBackgroundColor(dayBookings);
 
           return (
             <div
               key={index}
+              onClick={() => onDateSelect(date)}
               className={`
-                min-h-24 p-2 border rounded-lg relative
-                ${isCurrentDay ? "bg-roam-blue/10 border-roam-blue" : "bg-background"}
+                min-h-24 p-2 border rounded-lg relative cursor-pointer transition-all hover:shadow-md
+                ${isCurrentDay ? "ring-2 ring-roam-blue ring-offset-1" : ""}
+                ${isSelected ? "bg-roam-blue/20 border-roam-blue shadow-md" : "bg-background"}
                 ${!isCurrentMonthDay && viewType === "month" ? "opacity-30" : ""}
-                ${dayBookings.length > 0 ? "border-green-300 bg-green-50" : ""}
+                ${dayBookings.length > 0 && !isSelected ? dayBgColor : ""}
               `}
             >
-              <div className="font-medium text-sm mb-1">{date.getDate()}</div>
+              <div className="font-medium text-sm mb-1 flex items-center justify-between">
+                <span>{date.getDate()}</span>
+                {dayBookings.length > 0 && (
+                  <span className="text-xs bg-roam-blue text-white rounded-full w-5 h-5 flex items-center justify-center">
+                    {dayBookings.length}
+                  </span>
+                )}
+              </div>
 
               {/* Booking indicators */}
               <div className="space-y-1">
-                {dayBookings.slice(0, 3).map((booking, bookingIndex) => (
+                {dayBookings.slice(0, 2).map((booking, bookingIndex) => (
                   <div
                     key={bookingIndex}
-                    className="text-xs p-1 rounded bg-roam-blue/20 text-roam-blue truncate"
-                    title={`${booking.services?.name || "Service"} - ${booking.start_time}`}
+                    className={`text-xs p-1 rounded truncate ${getBookingStatusColor(booking.booking_status)}`}
+                    title={`${booking.services?.name || "Service"} - ${booking.start_time} (${booking.booking_status})`}
                   >
-                    {booking.start_time} {booking.services?.name || "Service"}
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-current opacity-60"></div>
+                      <span>{booking.start_time}</span>
+                    </div>
                   </div>
                 ))}
 
-                {dayBookings.length > 3 && (
-                  <div className="text-xs text-foreground/60">
-                    +{dayBookings.length - 3} more
+                {dayBookings.length > 2 && (
+                  <div className="text-xs text-foreground/60 font-medium">
+                    +{dayBookings.length - 2} more
                   </div>
                 )}
               </div>
@@ -372,14 +482,38 @@ const CalendarGrid = ({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 text-sm text-foreground/60">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-roam-blue bg-roam-blue/10 border rounded"></div>
-          <span>Today</span>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-yellow-100 border border-yellow-300 rounded"></div>
+          <span>Pending</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-green-300 bg-green-50 border rounded"></div>
-          <span>Has Bookings</span>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-green-100 border border-green-300 rounded"></div>
+          <span>Confirmed</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
+          <span>In Progress</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-emerald-100 border border-emerald-300 rounded"></div>
+          <span>Completed</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-orange-100 border border-orange-300 rounded"></div>
+          <span>Declined</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-red-100 border border-red-300 rounded"></div>
+          <span>Cancelled</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 bg-gray-100 border border-gray-300 rounded"></div>
+          <span>No Show</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 ring-2 ring-roam-blue ring-offset-1 bg-white rounded"></div>
+          <span>Today</span>
         </div>
       </div>
     </div>
@@ -397,6 +531,26 @@ export default function ProviderDashboard() {
     activeLocations: 0,
     teamMembers: 0,
     servicesOffered: 0,
+  });
+
+  // Real-time booking updates for providers
+  const { isConnected, refreshBookings } = useRealtimeBookings({
+    userId: user?.id,
+    userType: "provider",
+    onStatusChange: (bookingUpdate) => {
+      // Update the specific booking in our local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingUpdate.id
+            ? {
+                ...booking,
+                status: bookingUpdate.status,
+                updated_at: bookingUpdate.updated_at,
+              }
+            : booking,
+        ),
+      );
+    },
   });
   const [businessHours, setBusinessHours] = useState<any>(null);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
@@ -445,15 +599,51 @@ export default function ProviderDashboard() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
   const [activeBookingTab, setActiveBookingTab] = useState("present");
-  const [showCalendarView, setShowCalendarView] = useState(false);
-  const [calendarViewType, setCalendarViewType] = useState<"week" | "month">(
-    "month",
-  );
+  const [calendarViewType, setCalendarViewType] = useState<
+    "week" | "month" | "hidden"
+  >("month");
   const [calendarDate, setCalendarDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedLocationFilter, setSelectedLocationFilter] =
     useState<string>("all");
   const [selectedProviderFilter, setSelectedProviderFilter] =
     useState<string>("all");
+  const [selectedStatusFilter, setSelectedStatusFilter] =
+    useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Helper function to get current tab display name
+  const getCurrentTabName = () => {
+    switch (activeTab) {
+      case "bookings":
+        return "Bookings";
+      case "conversations":
+        return "Messages";
+      case "services-addons":
+        return "Services";
+      case "business":
+        return "Business";
+      case "providers":
+        return "Staff";
+      case "locations":
+        return "Locations";
+      case "provider-services":
+        return "Services";
+      case "profile":
+        return "Profile";
+      case "analytics":
+        return "Analytics";
+      case "financial":
+        return "Financial";
+      case "subscription":
+        return "Subscription";
+      default:
+        return "Menu";
+    }
+  };
   const [selectedProviderRoleFilter, setSelectedProviderRoleFilter] =
     useState<string>("all");
   const [
@@ -497,6 +687,10 @@ export default function ProviderDashboard() {
   const [conversationsListModal, setConversationsListModal] = useState(false);
   const [selectedBookingForMessaging, setSelectedBookingForMessaging] =
     useState(null);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [selectedBookingForDecline, setSelectedBookingForDecline] =
+    useState<any>(null);
+  const [declineReason, setDeclineReason] = useState("");
 
   // Subscription states
   const [currentSubscription, setCurrentSubscription] = useState(null);
@@ -6316,7 +6510,317 @@ export default function ProviderDashboard() {
       );
     }
 
+    // Filter by booking status
+    if (selectedStatusFilter !== "all") {
+      filtered = filtered.filter(
+        (booking) => booking.booking_status === selectedStatusFilter,
+      );
+    }
+
+    // Filter by search query (booking reference and customer name)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((booking) => {
+        // Search in booking reference
+        const bookingRef = booking.booking_reference?.toLowerCase() || "";
+
+        // Search in customer name (handle both customer_profiles and guest_name)
+        const customerName =
+          booking.customer_profiles?.first_name &&
+          booking.customer_profiles?.last_name
+            ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
+            : (booking.guest_name || "").toLowerCase();
+
+        // Search in customer email
+        const customerEmail =
+          booking.customer_profiles?.email?.toLowerCase() || "";
+
+        return (
+          bookingRef.includes(query) ||
+          customerName.includes(query) ||
+          customerEmail.includes(query)
+        );
+      });
+    }
+
     return filtered;
+  };
+
+  // Get bookings for selected date
+  const getSelectedDateBookings = () => {
+    if (!selectedDate) return [];
+
+    const selectedDateStr = selectedDate.toISOString().split("T")[0];
+    let filtered = bookings.filter((booking) => {
+      const bookingDate = new Date(booking.booking_date)
+        .toISOString()
+        .split("T")[0];
+      return bookingDate === selectedDateStr;
+    });
+
+    // Apply search filtering
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((booking) => {
+        // Search in booking reference
+        const bookingRef = booking.booking_reference?.toLowerCase() || "";
+
+        // Search in customer name (handle both customer_profiles and guest_name)
+        const customerName =
+          booking.customer_profiles?.first_name &&
+          booking.customer_profiles?.last_name
+            ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.toLowerCase()
+            : (booking.guest_name || "").toLowerCase();
+
+        // Search in customer email
+        const customerEmail =
+          booking.customer_profiles?.email?.toLowerCase() || "";
+
+        return (
+          bookingRef.includes(query) ||
+          customerName.includes(query) ||
+          customerEmail.includes(query)
+        );
+      });
+    }
+
+    return filtered.sort((a, b) => {
+      // Sort by start time
+      return a.start_time.localeCompare(b.start_time);
+    });
+  };
+
+  // Accept booking function
+  const acceptBooking = async (bookingId: string) => {
+    console.log("Accept booking called with ID:", bookingId);
+    console.log("Current user:", user);
+    console.log("User type:", { isOwner, isDispatcher, isProvider });
+
+    try {
+      console.log("Attempting to update booking status to confirmed...");
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_status: "confirmed",
+        })
+        .eq("id", bookingId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, booking_status: "confirmed" }
+            : booking,
+        ),
+      );
+
+      toast({
+        title: "Booking Accepted",
+        description: "The booking has been confirmed successfully.",
+      });
+    } catch (error: any) {
+      console.error("Error accepting booking - Full error object:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        // Handle different error object structures
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          // Try to stringify the error object
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
+        }
+      }
+
+      console.error("Parsed error message:", errorMessage);
+
+      toast({
+        title: "Error Accepting Booking",
+        description: `Failed to accept booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Open decline modal function
+  const openDeclineModal = (booking: any) => {
+    setSelectedBookingForDecline(booking);
+    setDeclineReason("");
+    setShowDeclineModal(true);
+  };
+
+  // Decline booking function with reason
+  const declineBookingWithReason = async () => {
+    if (!selectedBookingForDecline || !declineReason.trim()) {
+      toast({
+        title: "Decline Reason Required",
+        description: "Please provide a reason for declining this booking.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_status: "declined",
+          decline_reason: declineReason.trim(),
+        })
+        .eq("id", selectedBookingForDecline.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === selectedBookingForDecline.id
+            ? {
+                ...booking,
+                booking_status: "declined",
+                decline_reason: declineReason.trim(),
+              }
+            : booking,
+        ),
+      );
+
+      // Close modal and reset state
+      setShowDeclineModal(false);
+      setSelectedBookingForDecline(null);
+      setDeclineReason("");
+
+      toast({
+        title: "Booking Declined",
+        description:
+          "The booking has been declined with reason provided to customer.",
+      });
+    } catch (error: any) {
+      console.error("Error declining booking - Full error object:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        // Handle different error object structures
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          // Try to stringify the error object
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
+        }
+      }
+
+      console.error("Parsed error message:", errorMessage);
+
+      toast({
+        title: "Error Declining Booking",
+        description: `Failed to decline booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Complete booking function
+  const completeBooking = async (bookingId: string) => {
+    console.log("Complete booking called with ID:", bookingId);
+
+    try {
+      console.log("Attempting to update booking status to completed...");
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_status: "completed",
+        })
+        .eq("id", bookingId);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, booking_status: "completed" }
+            : booking,
+        ),
+      );
+
+      toast({
+        title: "Booking Completed",
+        description: "The booking has been marked as completed successfully.",
+      });
+    } catch (error: any) {
+      console.error("Error completing booking:", error);
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
+        }
+      }
+
+      toast({
+        title: "Error Completing Booking",
+        description: `Failed to complete booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
   };
 
   // Load all providers for owners/dispatchers
@@ -7264,13 +7768,94 @@ export default function ProviderDashboard() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm">
-                <Bell className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </Button>
+              <RealtimeBookingNotifications
+                userType="provider"
+                showConnectionStatus={true}
+                maxNotifications={10}
+              />
+              {isConnected && (
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-green-50 text-green-700"
+                >
+                  Live
+                </Badge>
+              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage
+                        src={provider?.image_url || undefined}
+                        alt={
+                          provider
+                            ? `${provider.first_name} ${provider.last_name}`
+                            : "Provider"
+                        }
+                      />
+                      <AvatarFallback className="text-xs">
+                        {provider?.first_name?.[0]?.toUpperCase() || "P"}
+                        {provider?.last_name?.[0]?.toUpperCase() || ""}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium hidden sm:inline">
+                      {provider
+                        ? `${provider.first_name} ${provider.last_name}`
+                        : "Provider"}
+                    </span>
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center gap-2 p-2">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage
+                        src={provider?.image_url || undefined}
+                        alt={
+                          provider
+                            ? `${provider.first_name} ${provider.last_name}`
+                            : "Provider"
+                        }
+                      />
+                      <AvatarFallback>
+                        {provider?.first_name?.[0]?.toUpperCase() || "P"}
+                        {provider?.last_name?.[0]?.toUpperCase() || ""}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">
+                        {provider
+                          ? `${provider.first_name} ${provider.last_name}`
+                          : "Provider"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {provider?.email || "Provider Account"}
+                      </span>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setShowSettingsModal(true)}>
+                    <User className="w-4 h-4 mr-2" />
+                    Profile Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowShareModal(true)}>
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share Booking Page
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="text-red-600"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -7291,23 +7876,11 @@ export default function ProviderDashboard() {
                 Here's what's happening with your business today.
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-foreground/60">Status</div>
-              <Badge
-                className={
-                  isAvailable
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }
-              >
-                {isAvailable ? "Available for Bookings" : "Unavailable"}
-              </Badge>
-            </div>
           </div>
 
           {/* Stats Cards */}
           <div
-            className={`grid grid-cols-1 md:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? "lg:grid-cols-3" : isDispatcher ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6 max-lg:flex max-sm:hidden`}
+            className={`grid grid-cols-1 sm:grid-cols-2 ${isProvider && !isOwner && !isDispatcher ? "lg:grid-cols-3" : isDispatcher ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-4"} gap-4 md:gap-6`}
           >
             {isOwner && (
               <Card>
@@ -7386,8 +7959,94 @@ export default function ProviderDashboard() {
             onValueChange={handleTabChange}
             className="space-y-6"
           >
+            {/* Mobile/Tablet Dropdown Menu */}
+            <div className="lg:hidden mb-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <div className="flex items-center gap-2">
+                      <Menu className="w-4 h-4" />
+                      {getCurrentTabName()}
+                    </div>
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuItem onClick={() => setActiveTab("bookings")}>
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Bookings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setActiveTab("conversations")}
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Messages
+                  </DropdownMenuItem>
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab("services-addons")}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Services
+                    </DropdownMenuItem>
+                  )}
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem onClick={() => setActiveTab("business")}>
+                      <Building className="w-4 h-4 mr-2" />
+                      Business
+                    </DropdownMenuItem>
+                  )}
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem onClick={() => setActiveTab("providers")}>
+                      <Users className="w-4 h-4 mr-2" />
+                      Staff
+                    </DropdownMenuItem>
+                  )}
+                  {(isOwner || isDispatcher) && (
+                    <DropdownMenuItem onClick={() => setActiveTab("locations")}>
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Locations
+                    </DropdownMenuItem>
+                  )}
+                  {isProvider && !isOwner && !isDispatcher && (
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab("provider-services")}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Services
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => setActiveTab("profile")}>
+                    <User className="w-4 h-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  {isOwner && (
+                    <DropdownMenuItem onClick={() => setActiveTab("analytics")}>
+                      <TrendingUp className="w-4 h-4 mr-2" />
+                      Analytics
+                    </DropdownMenuItem>
+                  )}
+                  {isOwner && (
+                    <DropdownMenuItem onClick={() => setActiveTab("financial")}>
+                      <DollarSign className="w-4 h-4 mr-2" />
+                      Financial
+                    </DropdownMenuItem>
+                  )}
+                  {isOwner && (
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab("subscription")}
+                    >
+                      <Star className="w-4 h-4 mr-2" />
+                      Subscription
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Desktop Tabs */}
             <TabsList
-              className={`grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-6" : isOwner ? "grid-cols-11" : "grid-cols-10"} lg:w-auto lg:inline-grid`}
+              className={`hidden lg:grid w-full ${isProvider && !isOwner && !isDispatcher ? "grid-cols-6" : isOwner ? "grid-cols-11" : "grid-cols-10"} lg:w-auto lg:inline-grid`}
             >
               <TabsTrigger
                 value="bookings"
@@ -7471,106 +8130,345 @@ export default function ProviderDashboard() {
                   Subscription
                 </TabsTrigger>
               )}
-              <TabsTrigger
-                value="share"
-                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-              >
-                Share
-              </TabsTrigger>
-              <TabsTrigger
-                value="settings"
-                className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-              >
-                Settings
-              </TabsTrigger>
             </TabsList>
 
             {/* Bookings Tab */}
             <TabsContent value="bookings" className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Bookings</h2>
-                <div className="flex gap-2">
+                <h2 className="text-2xl font-bold">Calendar & Bookings</h2>
+                <div className="flex gap-2 items-center">
                   <Select
                     value={calendarViewType}
-                    onValueChange={(value: "week" | "month") =>
+                    onValueChange={(value: "week" | "month" | "hidden") =>
                       setCalendarViewType(value)
                     }
                   >
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-36">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="week">Week View</SelectItem>
                       <SelectItem value="month">Month View</SelectItem>
+                      <SelectItem value="week">Week View</SelectItem>
+                      <SelectItem value="hidden">Hide Calendar</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button
-                    className="bg-roam-blue hover:bg-roam-blue/90"
-                    onClick={() => setShowCalendarView(!showCalendarView)}
-                  >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Calendar View
-                  </Button>
+                  {selectedDate && (
+                    <Badge
+                      variant="outline"
+                      className="bg-roam-blue/10 text-roam-blue border-roam-blue"
+                    >
+                      {selectedDate.toLocaleDateString()}
+                    </Badge>
+                  )}
                 </div>
               </div>
 
               {/* Location and Provider Filters for Owners/Dispatchers */}
               {(isOwner || isDispatcher) && (
-                <div className="flex gap-4 items-center">
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="location-filter"
-                      className="text-sm font-medium"
-                    >
-                      Location:
-                    </Label>
-                    <Select
-                      value={selectedLocationFilter}
-                      onValueChange={handleLocationFilterChange}
-                    >
-                      <SelectTrigger className="w-48" id="location-filter">
-                        <SelectValue placeholder="Select location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Locations</SelectItem>
-                        {locations.map((location) => (
-                          <SelectItem key={location.id} value={location.id}>
-                            {location.location_name}
+                <div className="space-y-4 md:space-y-0">
+                  {/* Filters Grid - Responsive */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="location-filter"
+                        className="text-sm font-medium"
+                      >
+                        Location:
+                      </Label>
+                      <Select
+                        value={selectedLocationFilter}
+                        onValueChange={handleLocationFilterChange}
+                      >
+                        <SelectTrigger className="w-full" id="location-filter">
+                          <SelectValue placeholder="Select location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Locations</SelectItem>
+                          {locations.map((location) => (
+                            <SelectItem key={location.id} value={location.id}>
+                              {location.location_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="provider-filter"
+                        className="text-sm font-medium"
+                      >
+                        Provider:
+                      </Label>
+                      <Select
+                        value={selectedProviderFilter}
+                        onValueChange={setSelectedProviderFilter}
+                      >
+                        <SelectTrigger className="w-full" id="provider-filter">
+                          <SelectValue placeholder="Select provider" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Providers</SelectItem>
+                          {filteredProviders.map((provider) => (
+                            <SelectItem key={provider.id} value={provider.id}>
+                              {provider.first_name} {provider.last_name}
+                              {provider.business_locations?.name &&
+                                ` (${provider.business_locations.name})`}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="status-filter"
+                        className="text-sm font-medium"
+                      >
+                        Status:
+                      </Label>
+                      <Select
+                        value={selectedStatusFilter}
+                        onValueChange={setSelectedStatusFilter}
+                      >
+                        <SelectTrigger className="w-full" id="status-filter">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="confirmed">Confirmed</SelectItem>
+                          <SelectItem value="in_progress">
+                            In Progress
                           </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                          <SelectItem value="no_show">No Show</SelectItem>
+                          <SelectItem value="declined">Declined</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="provider-filter"
-                      className="text-sm font-medium"
-                    >
-                      Provider:
-                    </Label>
-                    <Select
-                      value={selectedProviderFilter}
-                      onValueChange={setSelectedProviderFilter}
-                    >
-                      <SelectTrigger className="w-48" id="provider-filter">
-                        <SelectValue placeholder="Select provider" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Providers</SelectItem>
-                        {filteredProviders.map((provider) => (
-                          <SelectItem key={provider.id} value={provider.id}>
-                            {provider.first_name} {provider.last_name}
-                            {provider.business_locations?.name &&
-                              ` (${provider.business_locations.name})`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="text-sm text-foreground/60">
+                  {/* Results Count */}
+                  <div className="text-sm text-foreground/60 text-center md:text-left mt-4">
                     Showing {getFilteredBookings().length} bookings
+                  </div>
+                </div>
+              )}
+
+              {/* Calendar View - Conditionally Visible */}
+              {calendarViewType !== "hidden" && (
+                <div className="mb-6 p-4 border rounded-lg bg-card">
+                  <CalendarGrid
+                    bookings={bookings}
+                    viewType={calendarViewType as "week" | "month"}
+                    currentDate={calendarDate}
+                    onDateChange={setCalendarDate}
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                  />
+                </div>
+              )}
+
+              {/* Search Bar - Between Calendar and List */}
+              <div className="flex items-center gap-2 mb-6">
+                <Label
+                  htmlFor="search-bookings"
+                  className="text-sm font-medium"
+                >
+                  Search:
+                </Label>
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    id="search-bookings"
+                    type="text"
+                    placeholder="Search by booking reference, customer name, or email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 w-full"
+                  />
+                </div>
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearchQuery("")}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+
+              {/* Selected Date Bookings */}
+              {selectedDate && (
+                <div className="mb-6 p-4 border rounded-lg bg-card">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">
+                      Bookings for{" "}
+                      {selectedDate.toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedDate(null)}
+                    >
+                      Clear Selection
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {getSelectedDateBookings().length > 0 ? (
+                      getSelectedDateBookings().map((booking) => {
+                        const statusConfig = getStatusBadge(
+                          booking.booking_status,
+                        );
+                        const DeliveryIcon = getDeliveryIcon(
+                          booking.delivery_type || "business_location",
+                        );
+
+                        return (
+                          <Card
+                            key={booking.id}
+                            className="hover:shadow-md transition-shadow"
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-start gap-4">
+                                  <div className="w-10 h-10 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
+                                    <Clock className="w-5 h-5 text-white" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-lg">
+                                      {booking.services?.name || "Service"}
+                                    </h4>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Clock className="w-4 h-4 text-roam-blue" />
+                                      <span className="font-medium text-roam-blue">
+                                        {booking.start_time}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                      {booking.customer_profiles?.image_url ? (
+                                        <img
+                                          src={
+                                            booking.customer_profiles.image_url
+                                          }
+                                          alt="Customer"
+                                          className="w-6 h-6 rounded-full object-cover"
+                                        />
+                                      ) : (
+                                        <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                          <span className="text-xs text-gray-600">
+                                            {booking.customer_profiles?.first_name?.charAt(
+                                              0,
+                                            ) ||
+                                              booking.guest_name?.charAt(0) ||
+                                              "?"}
+                                          </span>
+                                        </div>
+                                      )}
+                                      <p className="text-sm font-medium">
+                                        {booking.customer_profiles
+                                          ?.first_name &&
+                                        booking.customer_profiles?.last_name
+                                          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                          : booking.guest_name || "Customer"}
+                                      </p>
+                                    </div>
+                                    <div className="flex items-start gap-1">
+                                      <DeliveryIcon className="w-4 h-4 mt-0.5" />
+                                      <div className="flex flex-col">
+                                        {(() => {
+                                          const location =
+                                            formatBookingLocation(booking);
+                                          if (typeof location === "string") {
+                                            return (
+                                              <span className="text-sm text-gray-600">
+                                                {location}
+                                              </span>
+                                            );
+                                          } else {
+                                            return (
+                                              <div>
+                                                <span className="text-sm font-medium">
+                                                  {location.name}
+                                                </span>
+                                                {location.address && (
+                                                  <span className="text-xs text-gray-500 block">
+                                                    {location.address}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            );
+                                          }
+                                        })()}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <RealtimeStatusUpdate
+                                    bookingId={booking.id}
+                                    currentStatus={booking.booking_status}
+                                    onStatusChange={(newStatus) => {
+                                      console.log(
+                                        `Selected date booking ${booking.id} status changed to ${newStatus}`,
+                                      );
+                                    }}
+                                  />
+                                  <p className="text-lg font-semibold text-roam-blue mt-2">
+                                    ${booking.total_amount || "0"}
+                                  </p>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="mt-2 w-full border-blue-200 text-blue-600 hover:bg-blue-50"
+                                    onClick={() => handleOpenMessaging(booking)}
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-2" />
+                                    Message
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {booking.booking_status === "pending" && (
+                                <div className="mt-4 flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    className="bg-roam-blue hover:bg-roam-blue/90"
+                                    onClick={() => acceptBooking(booking.id)}
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    Accept
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="border-red-300 text-red-600 hover:bg-red-50"
+                                    onClick={() => openDeclineModal(booking)}
+                                  >
+                                    Decline
+                                  </Button>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-8 text-foreground/60">
+                        <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">No bookings for this date</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -7674,6 +8572,22 @@ export default function ProviderDashboard() {
                                             </span>
                                           )}
                                         </div>
+
+                                        {/* Booking Reference */}
+                                        {booking.booking_reference && (
+                                          <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-lg border-l-4 border-roam-blue">
+                                            <Hash className="w-4 h-4 text-roam-blue" />
+                                            <div>
+                                              <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                                Booking Reference
+                                              </span>
+                                              <p className="text-sm font-mono font-semibold text-gray-900">
+                                                {booking.booking_reference}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        )}
+
                                         <div className="flex items-center gap-4 text-sm text-foreground/60">
                                           <div className="flex items-center gap-1">
                                             <Calendar className="w-4 h-4" />
@@ -7750,9 +8664,15 @@ export default function ProviderDashboard() {
                                       </div>
                                     </div>
                                     <div className="text-right">
-                                      <Badge className={statusConfig.color}>
-                                        {statusConfig.label}
-                                      </Badge>
+                                      <RealtimeStatusUpdate
+                                        bookingId={booking.id}
+                                        currentStatus={booking.booking_status}
+                                        onStatusChange={(newStatus) => {
+                                          console.log(
+                                            `Provider booking ${booking.id} status changed to ${newStatus}`,
+                                          );
+                                        }}
+                                      />
                                       <p className="text-lg font-semibold text-roam-blue mt-2">
                                         ${booking.total_amount || "0"}
                                       </p>
@@ -7777,6 +8697,9 @@ export default function ProviderDashboard() {
                                       <Button
                                         size="sm"
                                         className="bg-roam-blue hover:bg-roam-blue/90"
+                                        onClick={() =>
+                                          acceptBooking(booking.id)
+                                        }
                                       >
                                         <CheckCircle className="w-4 h-4 mr-2" />
                                         Accept
@@ -7785,11 +8708,31 @@ export default function ProviderDashboard() {
                                         size="sm"
                                         variant="outline"
                                         className="border-red-300 text-red-600 hover:bg-red-50"
+                                        onClick={() =>
+                                          openDeclineModal(booking)
+                                        }
                                       >
                                         Decline
                                       </Button>
                                     </div>
                                   )}
+
+                                  {booking.booking_status === "confirmed" &&
+                                    new Date(booking.booking_date) <=
+                                      new Date(new Date().toDateString()) && (
+                                      <div className="mt-4">
+                                        <Button
+                                          size="sm"
+                                          className="bg-green-600 hover:bg-green-700 w-full"
+                                          onClick={() =>
+                                            completeBooking(booking.id)
+                                          }
+                                        >
+                                          <CheckCircle className="w-4 h-4 mr-2" />
+                                          Complete Booking
+                                        </Button>
+                                      </div>
+                                    )}
                                 </CardContent>
                               </Card>
                             );
@@ -7825,36 +8768,41 @@ export default function ProviderDashboard() {
                           key={booking.id}
                           className="hover:shadow-md transition-shadow"
                         >
-                          <CardContent className="p-6">
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center">
-                                  <Calendar className="w-6 h-6 text-white" />
+                          <CardContent className="p-4 md:p-6">
+                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                              {/* Main Content */}
+                              <div className="flex items-start gap-3 md:gap-4 flex-1">
+                                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center flex-shrink-0">
+                                  <Calendar className="w-5 h-5 md:w-6 md:h-6 text-white" />
                                 </div>
-                                <div>
-                                  <h3 className="font-semibold">
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-semibold text-base md:text-lg mb-2">
                                     {booking.services?.name || "Service"}
                                   </h3>
+
+                                  {/* Provider Info */}
                                   {booking.providers && (
                                     <div className="flex items-center gap-2 mb-2">
-                                      <Users className="w-4 h-4" />
-                                      <span className="text-sm text-foreground/60">
+                                      <Users className="w-4 h-4 flex-shrink-0" />
+                                      <span className="text-sm text-foreground/60 truncate">
                                         Provider: {booking.providers.first_name}{" "}
                                         {booking.providers.last_name}
                                       </span>
                                     </div>
                                   )}
-                                  <div className="flex items-center gap-2 mb-2">
+
+                                  {/* Customer Info */}
+                                  <div className="flex items-center gap-2 mb-3">
                                     {booking.customer_profiles?.image_url ? (
                                       <img
                                         src={
                                           booking.customer_profiles.image_url
                                         }
                                         alt="Customer"
-                                        className="w-6 h-6 rounded-full object-cover"
+                                        className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                                       />
                                     ) : (
-                                      <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                      <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span className="text-xs text-gray-600">
                                           {booking.customer_profiles?.first_name?.charAt(
                                             0,
@@ -7864,39 +8812,63 @@ export default function ProviderDashboard() {
                                         </span>
                                       </div>
                                     )}
-                                    <p className="text-sm text-foreground/60">
-                                      {booking.customer_profiles?.first_name &&
-                                      booking.customer_profiles?.last_name
-                                        ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
-                                        : booking.guest_name || "Customer"}
-                                    </p>
-                                    {booking.customer_profiles?.email && (
-                                      <span className="text-xs text-foreground/40">
-                                        ��� {booking.customer_profiles.email}
-                                      </span>
-                                    )}
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm text-foreground/60 truncate">
+                                        {booking.customer_profiles
+                                          ?.first_name &&
+                                        booking.customer_profiles?.last_name
+                                          ? `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`
+                                          : booking.guest_name || "Customer"}
+                                      </p>
+                                      {booking.customer_profiles?.email && (
+                                        <span className="text-xs text-foreground/40 block truncate">
+                                          {booking.customer_profiles.email}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
-                                  <div className="flex items-center gap-4 text-sm text-foreground/60">
-                                    <div className="flex items-center gap-1">
-                                      <Calendar className="w-4 h-4" />
-                                      {new Date(
-                                        booking.booking_date,
-                                      ).toLocaleDateString()}
+
+                                  {/* Booking Reference */}
+                                  {booking.booking_reference && (
+                                    <div className="flex items-start gap-2 mb-3 p-2 bg-gray-50 rounded-lg border-l-4 border-roam-blue">
+                                      <Hash className="w-4 h-4 text-roam-blue flex-shrink-0 mt-0.5" />
+                                      <div className="flex-1 min-w-0">
+                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide block">
+                                          Booking Reference
+                                        </span>
+                                        <p className="text-sm font-mono font-semibold text-gray-900 truncate">
+                                          {booking.booking_reference}
+                                        </p>
+                                      </div>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                      <Clock className="w-4 h-4" />
-                                      {booking.start_time}
+                                  )}
+
+                                  {/* Booking Details - Responsive */}
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-foreground/60">
+                                    <div className="flex items-center gap-2">
+                                      <Calendar className="w-4 h-4 flex-shrink-0" />
+                                      <span className="truncate">
+                                        {new Date(
+                                          booking.booking_date,
+                                        ).toLocaleDateString()}
+                                      </span>
                                     </div>
-                                    <div className="flex items-start gap-1">
-                                      <DeliveryIcon className="w-4 h-4 mt-0.5" />
-                                      <div className="flex flex-col">
+                                    <div className="flex items-center gap-2">
+                                      <Clock className="w-4 h-4 flex-shrink-0" />
+                                      <span className="truncate">
+                                        {booking.start_time}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-start gap-2 sm:col-span-2 lg:col-span-1">
+                                      <DeliveryIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                      <div className="flex-1 min-w-0">
                                         {(() => {
                                           const location =
                                             formatBookingLocation(booking);
                                           if (typeof location === "string") {
                                             return (
                                               <div className="flex items-center gap-2">
-                                                <span className="text-sm">
+                                                <span className="text-sm truncate flex-1">
                                                   {location}
                                                 </span>
                                                 <button
@@ -7914,11 +8886,11 @@ export default function ProviderDashboard() {
                                             return (
                                               <div className="flex items-start gap-2">
                                                 <div className="flex-1 min-w-0">
-                                                  <span className="text-sm font-medium">
+                                                  <span className="text-sm font-medium block truncate">
                                                     {location.name}
                                                   </span>
                                                   {location.address && (
-                                                    <span className="text-xs text-foreground/50 block max-w-44 truncate">
+                                                    <span className="text-xs text-foreground/50 block truncate">
                                                       {location.address}
                                                     </span>
                                                   )}
@@ -7945,11 +8917,19 @@ export default function ProviderDashboard() {
                                   </div>
                                 </div>
                               </div>
-                              <div className="text-right">
-                                <Badge className={statusConfig.color}>
-                                  {statusConfig.label}
-                                </Badge>
-                                <p className="text-lg font-semibold text-roam-blue mt-2">
+
+                              {/* Status and Price - Responsive */}
+                              <div className="flex items-center justify-between md:flex-col md:items-end md:text-right gap-4 md:gap-2 pt-3 md:pt-0 border-t md:border-t-0 md:min-w-0">
+                                <RealtimeStatusUpdate
+                                  bookingId={booking.id}
+                                  currentStatus={booking.booking_status}
+                                  onStatusChange={(newStatus) => {
+                                    console.log(
+                                      `Today's booking ${booking.id} status changed to ${newStatus}`,
+                                    );
+                                  }}
+                                />
+                                <p className="text-lg md:text-xl font-semibold text-roam-blue">
                                   ${booking.total_amount || "0"}
                                 </p>
                               </div>
@@ -7960,6 +8940,7 @@ export default function ProviderDashboard() {
                                 <Button
                                   size="sm"
                                   className="bg-roam-blue hover:bg-roam-blue/90"
+                                  onClick={() => acceptBooking(booking.id)}
                                 >
                                   <CheckCircle className="w-4 h-4 mr-2" />
                                   Accept
@@ -7968,11 +8949,27 @@ export default function ProviderDashboard() {
                                   size="sm"
                                   variant="outline"
                                   className="border-red-300 text-red-600 hover:bg-red-50"
+                                  onClick={() => openDeclineModal(booking)}
                                 >
                                   Decline
                                 </Button>
                               </div>
                             )}
+
+                            {booking.booking_status === "confirmed" &&
+                              new Date(booking.booking_date) <=
+                                new Date(new Date().toDateString()) && (
+                                <div className="mt-4">
+                                  <Button
+                                    size="sm"
+                                    className="bg-green-600 hover:bg-green-700 w-full"
+                                    onClick={() => completeBooking(booking.id)}
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    Complete Booking
+                                  </Button>
+                                </div>
+                              )}
                           </CardContent>
                         </Card>
                       );
@@ -7983,32 +8980,6 @@ export default function ProviderDashboard() {
                       <p className="text-sm">No bookings to display</p>
                     </div>
                   )}
-                </div>
-              )}
-
-              {/* Calendar View */}
-              {showCalendarView && (
-                <div className="mt-6 p-4 border rounded-lg bg-card">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">
-                      Calendar View -{" "}
-                      {calendarViewType === "week" ? "Week" : "Month"}
-                    </h3>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowCalendarView(false)}
-                    >
-                      Close
-                    </Button>
-                  </div>
-
-                  <CalendarGrid
-                    bookings={bookings}
-                    viewType={calendarViewType}
-                    currentDate={calendarDate}
-                    onDateChange={setCalendarDate}
-                  />
                 </div>
               )}
             </TabsContent>
@@ -12303,357 +13274,6 @@ export default function ProviderDashboard() {
                 </div>
               </TabsContent>
             )}
-
-            {/* Share Tab */}
-            <TabsContent value="share" className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Share Your Booking Page</h2>
-                <Badge
-                  variant="outline"
-                  className="text-green-600 border-green-200"
-                >
-                  Public Booking Page
-                </Badge>
-              </div>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Share2 className="w-5 h-5 text-roam-blue" />
-                    Customer Booking URL
-                  </CardTitle>
-                  <p className="text-foreground/60">
-                    Share this link with customers so they can book your
-                    services directly
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Your Public Booking Page</Label>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={`${window.location.origin}/book/${provider?.business_id}`}
-                        readOnly
-                        className="font-mono text-sm"
-                      />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={async () => {
-                          try {
-                            await navigator.clipboard.writeText(
-                              `${window.location.origin}/book/${provider?.business_id}`,
-                            );
-                            toast({
-                              title: "Link copied!",
-                              description:
-                                "Booking page URL has been copied to your clipboard",
-                            });
-                          } catch (err) {
-                            toast({
-                              title: "Copy failed",
-                              description: "Please manually copy the URL",
-                              variant: "destructive",
-                            });
-                          }
-                        }}
-                      >
-                        <Copy className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          window.open(
-                            `${window.location.origin}/book/${provider?.business_id}`,
-                            "_blank",
-                          );
-                        }}
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">
-                      What customers will see:
-                    </h4>
-                    <ul className="text-sm text-blue-800 space-y-1">
-                      <li>• Your business information and description</li>
-                      <li>• All available services with pricing</li>
-                      <li>• Available add-ons and extras</li>
-                      <li>• Easy booking form to request appointments</li>
-                      <li>• Your contact information and location</li>
-                    </ul>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card>
-                      <CardContent className="p-4">
-                        <h4 className="font-medium mb-2">
-                          Share via Social Media
-                        </h4>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const url = `${window.location.origin}/book/${provider?.business_id}`;
-                              const text = `Book services with ${business?.business_name}!`;
-                              window.open(
-                                `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
-                                "_blank",
-                              );
-                            }}
-                          >
-                            Twitter
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const url = `${window.location.origin}/book/${provider?.business_id}`;
-                              window.open(
-                                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-                                "_blank",
-                              );
-                            }}
-                          >
-                            Facebook
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const url = `${window.location.origin}/book/${provider?.business_id}`;
-                              const text = `Book services with ${business?.business_name}! ${url}`;
-                              window.open(
-                                `https://wa.me/?text=${encodeURIComponent(text)}`,
-                                "_blank",
-                              );
-                            }}
-                          >
-                            WhatsApp
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4">
-                        <h4 className="font-medium mb-2">QR Code</h4>
-                        <div className="text-center space-y-2">
-                          <div className="w-32 h-32 mx-auto bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                            <div className="text-center">
-                              <div className="text-xs text-gray-500 mb-1">
-                                QR Code
-                              </div>
-                              <div className="text-xs text-gray-400">
-                                Coming Soon
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-xs text-foreground/60">
-                            QR code for easy mobile sharing
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  <div className="border-t pt-4">
-                    <h4 className="font-medium mb-2">
-                      How to use your booking page:
-                    </h4>
-                    <div className="space-y-2 text-sm text-foreground/70">
-                      <p>
-                        1. <strong>Share the link</strong> - Send the URL to
-                        customers via email, text, or social media
-                      </p>
-                      <p>
-                        2. <strong>Add to your website</strong> - Link to this
-                        page from your website or business cards
-                      </p>
-                      <p>
-                        3. <strong>Print materials</strong> - Include the URL or
-                        QR code on flyers, business cards, or signage
-                      </p>
-                      <p>
-                        4. <strong>Receive bookings</strong> - Customers fill
-                        out the booking form and you'll receive notifications
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {business && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Preview Your Business Information</CardTitle>
-                    <p className="text-foreground/60">
-                      This is what customers will see on your booking page
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="border rounded-lg p-4 bg-gray-50">
-                      <div className="flex items-start space-x-4">
-                        <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                          {business.logo_url || business.image_url ? (
-                            <img
-                              src={business.logo_url || business.image_url}
-                              alt={business.business_name}
-                              className="w-16 h-16 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <div className="text-2xl font-bold text-gray-500">
-                              {business.business_name
-                                .substring(0, 2)
-                                .toUpperCase()}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold">
-                            {business.business_name}
-                          </h3>
-                          <Badge variant="secondary" className="mb-2">
-                            {business.business_type}
-                          </Badge>
-                          {business.business_description && (
-                            <p className="text-foreground/70">
-                              {business.business_description}
-                            </p>
-                          )}
-                          <div className="mt-2 space-y-1 text-sm text-foreground/60">
-                            {business.contact_email && (
-                              <div className="flex items-center gap-2">
-                                <Mail className="w-4 h-4" />
-                                <span>{business.contact_email}</span>
-                              </div>
-                            )}
-                            {business.phone && (
-                              <div className="flex items-center gap-2">
-                                <Phone className="w-4 h-4" />
-                                <span>{business.phone}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-
-            {/* Settings Tab */}
-            <TabsContent value="settings" className="space-y-6">
-              <h2 className="text-2xl font-bold">
-                <span
-                  style={{
-                    letterSpacing: "-0.6px",
-                    backgroundColor: "rgb(255, 255, 255)",
-                  }}
-                >
-                  Notification Preferences
-                </span>
-              </h2>
-
-              <Card className="max-w-6xl">
-                <CardContent className="space-y-6">
-                  {/* Notification Contact Details */}
-                  <div className="space-y-4 pb-4 border-b">
-                    <div>
-                      <h4 className="font-medium mb-2">
-                        Notification Contact Details
-                      </h4>
-                      <p className="text-sm text-foreground/60 mb-4">
-                        Specify dedicated contact details for receiving
-                        notifications and alerts
-                      </p>
-                    </div>
-
-                    {notificationSettingsError && (
-                      <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                        {notificationSettingsError}
-                      </div>
-                    )}
-
-                    {notificationSettingsSuccess && (
-                      <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
-                        {notificationSettingsSuccess}
-                      </div>
-                    )}
-
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="notification_email">
-                          Notification Email
-                        </Label>
-                        <Input
-                          id="notification_email"
-                          type="email"
-                          value={notificationSettings.notification_email}
-                          onChange={(e) =>
-                            handleNotificationSettingsChange(
-                              "notification_email",
-                              e.target.value,
-                            )
-                          }
-                          placeholder="Enter email for notifications (optional)"
-                          disabled={notificationSettingsSaving}
-                        />
-                        <p className="text-xs text-foreground/60">
-                          If provided, notifications will be sent to this email
-                          instead of your main account email
-                        </p>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="notification_phone">
-                          Notification Phone
-                        </Label>
-                        <Input
-                          id="notification_phone"
-                          type="tel"
-                          value={notificationSettings.notification_phone}
-                          onChange={(e) =>
-                            handleNotificationSettingsChange(
-                              "notification_phone",
-                              e.target.value,
-                            )
-                          }
-                          placeholder="Enter phone for SMS notifications (optional)"
-                          disabled={notificationSettingsSaving}
-                        />
-                        <p className="text-xs text-foreground/60">
-                          If provided, SMS notifications will be sent to this
-                          number instead of your main phone number
-                        </p>
-                      </div>
-
-                      <Button
-                        onClick={handleSaveNotificationSettings}
-                        disabled={notificationSettingsSaving}
-                        className="bg-roam-blue hover:bg-roam-blue/90"
-                        size="sm"
-                      >
-                        {notificationSettingsSaving ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                            Saving...
-                          </>
-                        ) : (
-                          "Save Notification Settings"
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
           </Tabs>
         </div>
       </div>
@@ -13549,13 +14169,29 @@ export default function ProviderDashboard() {
                                         )}
                                         {booking.customer_profiles?.phone && (
                                           <span>
-                                            �������{" "}
+                                            ���������{" "}
                                             {booking.customer_profiles.phone}
                                           </span>
                                         )}
                                       </div>
                                     </div>
                                   </div>
+
+                                  {/* Booking Reference */}
+                                  {booking.booking_reference && (
+                                    <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-lg border-l-4 border-roam-blue">
+                                      <Hash className="w-4 h-4 text-roam-blue" />
+                                      <div>
+                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                          Booking Reference
+                                        </span>
+                                        <p className="text-sm font-mono font-semibold text-gray-900">
+                                          {booking.booking_reference}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  )}
+
                                   <div className="flex items-center gap-4 text-sm text-foreground/60">
                                     <div className="flex items-center gap-1">
                                       <Calendar className="w-4 h-4" />
@@ -15253,6 +15889,460 @@ export default function ProviderDashboard() {
                 Cancel
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Decline Booking Modal */}
+      <Dialog open={showDeclineModal} onOpenChange={setShowDeclineModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <XCircle className="w-5 h-5" />
+              Decline Booking
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedBookingForDecline && (
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-sm">
+                  {selectedBookingForDecline.services?.name || "Service"}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Customer:{" "}
+                  {selectedBookingForDecline.customer_profiles?.first_name}{" "}
+                  {selectedBookingForDecline.customer_profiles?.last_name ||
+                    selectedBookingForDecline.guest_name}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Date:{" "}
+                  {new Date(
+                    selectedBookingForDecline.booking_date,
+                  ).toLocaleDateString()}{" "}
+                  at {selectedBookingForDecline.start_time}
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="decline-reason" className="text-sm font-medium">
+                Decline Reason <span className="text-red-500">*</span>
+              </Label>
+              <Textarea
+                id="decline-reason"
+                placeholder="Please provide a reason for declining this booking. This message will be visible to the customer."
+                value={declineReason}
+                onChange={(e) => setDeclineReason(e.target.value)}
+                rows={3}
+                className="resize-none"
+              />
+              <p className="text-xs text-gray-500">
+                The customer will be able to see this reason in their booking
+                details.
+              </p>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowDeclineModal(false);
+                  setSelectedBookingForDecline(null);
+                  setDeclineReason("");
+                }}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={declineBookingWithReason}
+                disabled={!declineReason.trim()}
+                className="flex-1 bg-red-600 hover:bg-red-700"
+              >
+                Decline Booking
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Profile Settings Modal */}
+      <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="w-5 h-5 text-roam-blue" />
+              Profile Settings
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold">Notification Preferences</h3>
+
+            <Card>
+              <CardContent className="space-y-6 pt-6">
+                {/* Notification Contact Details */}
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-medium mb-2">
+                      Notification Contact Details
+                    </h4>
+                    <p className="text-sm text-foreground/60 mb-4">
+                      Specify dedicated contact details for receiving
+                      notifications and alerts
+                    </p>
+                  </div>
+
+                  {notificationSettingsError && (
+                    <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                      {notificationSettingsError}
+                    </div>
+                  )}
+
+                  {notificationSettingsSuccess && (
+                    <div className="text-sm text-green-600 bg-green-50 p-3 rounded">
+                      {notificationSettingsSuccess}
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="notification_email">
+                        Notification Email
+                      </Label>
+                      <Input
+                        id="notification_email"
+                        type="email"
+                        value={notificationSettings.notification_email}
+                        onChange={(e) =>
+                          handleNotificationSettingsChange(
+                            "notification_email",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="Enter email for notifications (optional)"
+                        disabled={notificationSettingsSaving}
+                      />
+                      <p className="text-xs text-foreground/60">
+                        If provided, notifications will be sent to this email
+                        instead of your main account email
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="notification_phone">
+                        Notification Phone
+                      </Label>
+                      <Input
+                        id="notification_phone"
+                        type="tel"
+                        value={notificationSettings.notification_phone}
+                        onChange={(e) =>
+                          handleNotificationSettingsChange(
+                            "notification_phone",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="Enter phone for SMS notifications (optional)"
+                        disabled={notificationSettingsSaving}
+                      />
+                      <p className="text-xs text-foreground/60">
+                        If provided, SMS notifications will be sent to this
+                        number instead of your main phone number
+                      </p>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSaveNotificationSettings}
+                        disabled={notificationSettingsSaving}
+                        className="bg-roam-blue hover:bg-roam-blue/90"
+                        size="sm"
+                      >
+                        {notificationSettingsSaving ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            Saving...
+                          </>
+                        ) : (
+                          "Save Notification Settings"
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowSettingsModal(false)}
+                        size="sm"
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Share Booking Page Modal */}
+      <Dialog open={showShareModal} onOpenChange={setShowShareModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2">
+                <Share2 className="w-5 h-5 text-roam-blue" />
+                Share Your Booking Page
+              </DialogTitle>
+              <Badge
+                variant="outline"
+                className="text-green-600 border-green-200"
+              >
+                Public Booking Page
+              </Badge>
+            </div>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Share2 className="w-5 h-5 text-roam-blue" />
+                  Customer Booking URL
+                </CardTitle>
+                <p className="text-foreground/60">
+                  Share this link with customers so they can book your services
+                  directly
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Your Public Booking Page</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={`${window.location.origin}/book/${provider?.business_id}`}
+                      readOnly
+                      className="font-mono text-sm"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(
+                            `${window.location.origin}/book/${provider?.business_id}`,
+                          );
+                          toast({
+                            title: "Link copied!",
+                            description:
+                              "Booking page URL has been copied to your clipboard",
+                          });
+                        } catch (err) {
+                          toast({
+                            title: "Copy failed",
+                            description: "Please manually copy the URL",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        window.open(
+                          `${window.location.origin}/book/${provider?.business_id}`,
+                          "_blank",
+                        );
+                      }}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-blue-900 mb-2">
+                    What customers will see:
+                  </h4>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Your business information and description</li>
+                    <li>• All available services with pricing</li>
+                    <li>• Available add-ons and extras</li>
+                    <li>• Easy booking form to request appointments</li>
+                    <li>• Your contact information and location</li>
+                  </ul>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <h4 className="font-medium mb-2">
+                        Share via Social Media
+                      </h4>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const url = `${window.location.origin}/book/${provider?.business_id}`;
+                            const text = `Book services with ${business?.business_name}!`;
+                            window.open(
+                              `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+                              "_blank",
+                            );
+                          }}
+                        >
+                          Twitter
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const url = `${window.location.origin}/book/${provider?.business_id}`;
+                            window.open(
+                              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+                              "_blank",
+                            );
+                          }}
+                        >
+                          Facebook
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const url = `${window.location.origin}/book/${provider?.business_id}`;
+                            const text = `Book services with ${business?.business_name}! ${url}`;
+                            window.open(
+                              `https://wa.me/?text=${encodeURIComponent(text)}`,
+                              "_blank",
+                            );
+                          }}
+                        >
+                          WhatsApp
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <h4 className="font-medium mb-2">QR Code</h4>
+                      <div className="text-center space-y-2">
+                        <div className="w-32 h-32 mx-auto bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="text-xs text-gray-500 mb-1">
+                              QR Code
+                            </div>
+                            <div className="text-xs text-gray-400">
+                              Coming Soon
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-xs text-foreground/60">
+                          QR code for easy mobile sharing
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="border-t pt-4">
+                  <h4 className="font-medium mb-2">
+                    How to use your booking page:
+                  </h4>
+                  <div className="space-y-2 text-sm text-foreground/70">
+                    <p>
+                      1. <strong>Share the link</strong> - Send the URL to
+                      customers via email, text, or social media
+                    </p>
+                    <p>
+                      2. <strong>Add to your website</strong> - Link to this
+                      page from your website or business cards
+                    </p>
+                    <p>
+                      3. <strong>Print materials</strong> - Include the URL or
+                      QR code on flyers, business cards, or signage
+                    </p>
+                    <p>
+                      4. <strong>Receive bookings</strong> - Customers fill out
+                      the booking form and you'll receive notifications
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowShareModal(false)}
+                    size="sm"
+                  >
+                    Close
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {business && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Preview Your Business Information</CardTitle>
+                  <p className="text-foreground/60">
+                    This is what customers will see on your booking page
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="border rounded-lg p-4 bg-gray-50">
+                    <div className="flex items-start space-x-4">
+                      <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                        {business.logo_url || business.image_url ? (
+                          <img
+                            src={business.logo_url || business.image_url}
+                            alt={business.business_name}
+                            className="w-16 h-16 object-cover rounded-lg"
+                          />
+                        ) : (
+                          <div className="text-2xl font-bold text-gray-500">
+                            {business.business_name
+                              .substring(0, 2)
+                              .toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold">
+                          {business.business_name}
+                        </h3>
+                        <Badge variant="secondary" className="mb-2">
+                          {business.business_type}
+                        </Badge>
+                        {business.business_description && (
+                          <p className="text-foreground/70">
+                            {business.business_description}
+                          </p>
+                        )}
+                        <div className="mt-2 space-y-1 text-sm text-foreground/60">
+                          {business.contact_email && (
+                            <div className="flex items-center gap-2">
+                              <Mail className="w-4 h-4" />
+                              <span>{business.contact_email}</span>
+                            </div>
+                          )}
+                          {business.phone && (
+                            <div className="flex items-center gap-2">
+                              <Phone className="w-4 h-4" />
+                              <span>{business.phone}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </DialogContent>
       </Dialog>

@@ -34,9 +34,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import useRealtimeBookings from "@/hooks/useRealtimeBookings";
+import RealtimeBookingNotifications from "@/components/RealtimeBookingNotifications";
+import BookingStatusIndicator, {
+  RealtimeStatusUpdate,
+} from "@/components/BookingStatusIndicator";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -59,9 +74,42 @@ const getDeliveryLabel = (type: string) => {
 
 export default function MyBookings() {
   const { user, customer, userType, loading: authLoading } = useAuth();
+  const { toast } = useToast();
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedBookingForCancel, setSelectedBookingForCancel] =
+    useState<any>(null);
+  const [cancellationReason, setCancellationReason] = useState("");
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [selectedBookingForReschedule, setSelectedBookingForReschedule] =
+    useState<any>(null);
+  const [newBookingDate, setNewBookingDate] = useState("");
+  const [newBookingTime, setNewBookingTime] = useState("");
+  const [rescheduleReason, setRescheduleReason] = useState("");
+
+  const currentUser = user || customer;
+
+  // Real-time booking updates
+  const { isConnected, refreshBookings } = useRealtimeBookings({
+    userId: currentUser?.id,
+    userType: "customer",
+    onStatusChange: (bookingUpdate) => {
+      // Update the specific booking in our local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingUpdate.id
+            ? {
+                ...booking,
+                status: bookingUpdate.status,
+                updated_at: bookingUpdate.updated_at,
+              }
+            : booking,
+        ),
+      );
+    },
+  });
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState({
@@ -70,8 +118,6 @@ export default function MyBookings() {
     past: 1,
   });
   const ITEMS_PER_PAGE = 10;
-
-  const currentUser = user || customer;
   // Fetch bookings data on component mount
   useEffect(() => {
     const fetchBookings = async (retryCount = 0) => {
@@ -397,6 +443,18 @@ export default function MyBookings() {
         icon: XCircle,
         description: "Booking was cancelled",
       },
+      declined: {
+        label: "Declined",
+        color: "bg-red-100 text-red-800",
+        icon: XCircle,
+        description: "Booking was declined by provider",
+      },
+      no_show: {
+        label: "No Show",
+        color: "bg-gray-100 text-gray-800",
+        icon: XCircle,
+        description: "Customer did not show up",
+      },
     };
     return configs[status as keyof typeof configs] || configs.pending;
   };
@@ -406,7 +464,13 @@ export default function MyBookings() {
     (b) => b.status === "confirmed" || b.status === "pending",
   );
   const allPastBookings = bookings
-    .filter((b) => b.status === "completed" || b.status === "cancelled")
+    .filter(
+      (b) =>
+        b.status === "completed" ||
+        b.status === "cancelled" ||
+        b.status === "declined" ||
+        b.status === "no_show",
+    )
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const allActiveBookings = bookings.filter((b) => b.status === "in_progress");
 
@@ -456,6 +520,269 @@ export default function MyBookings() {
 
       return { ...prev, [category]: newPage };
     });
+  };
+
+  // Open cancel modal
+  const openCancelModal = (booking: any) => {
+    setSelectedBookingForCancel(booking);
+    setCancellationReason("");
+    setShowCancelModal(true);
+  };
+
+  // Open reschedule modal
+  const openRescheduleModal = (booking: any) => {
+    setSelectedBookingForReschedule(booking);
+    setNewBookingDate("");
+    setNewBookingTime("");
+    setRescheduleReason("");
+    setShowRescheduleModal(true);
+  };
+
+  // Calculate cancellation fee and refund amount
+  const calculateCancellationDetails = (booking: any) => {
+    const bookingDateTime = new Date(`${booking.date} ${booking.time}`);
+    const now = new Date();
+    const hoursUntilBooking =
+      (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+    // Extract total amount for calculations (remove $ and convert to number)
+    const totalAmount = parseFloat(booking.price?.replace("$", "") || "0");
+
+    // Apply cancellation policy
+    let cancellationFee = 0;
+    let refundAmount = totalAmount;
+    let isWithin24Hours = false;
+    let isPastBooking = false;
+
+    if (hoursUntilBooking <= 0) {
+      // Booking is in the past - no refund allowed
+      isPastBooking = true;
+      cancellationFee = totalAmount;
+      refundAmount = 0;
+    } else if (hoursUntilBooking <= 24) {
+      // Within 24 hours - no refund allowed
+      isWithin24Hours = true;
+      cancellationFee = totalAmount;
+      refundAmount = 0;
+    }
+
+    return {
+      totalAmount,
+      cancellationFee,
+      refundAmount,
+      isWithin24Hours,
+      isPastBooking,
+      hoursUntilBooking,
+    };
+  };
+
+  // Reschedule booking function
+  const rescheduleBooking = async () => {
+    if (
+      !selectedBookingForReschedule ||
+      !currentUser ||
+      !newBookingDate ||
+      !newBookingTime
+    ) {
+      toast({
+        title: "Error",
+        description: "Please select both a new date and time.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_date: newBookingDate,
+          start_time: newBookingTime,
+          booking_status: "pending",
+        })
+        .eq("id", selectedBookingForReschedule.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === selectedBookingForReschedule.id
+            ? {
+                ...booking,
+                date: newBookingDate,
+                time: new Date(
+                  `1970-01-01T${newBookingTime}`,
+                ).toLocaleTimeString([], {
+                  hour: "numeric",
+                  minute: "2-digit",
+                }),
+                status: "pending",
+                booking_status: "pending",
+              }
+            : booking,
+        ),
+      );
+
+      // Close modal and reset state
+      setShowRescheduleModal(false);
+      setSelectedBookingForReschedule(null);
+      setNewBookingDate("");
+      setNewBookingTime("");
+      setRescheduleReason("");
+
+      // Force refresh bookings to ensure we get the latest status from database
+      if (refreshBookings) {
+        refreshBookings();
+      }
+
+      toast({
+        title: "Reschedule Request Sent",
+        description:
+          "Your reschedule request has been sent to the provider for approval.",
+      });
+    } catch (error: any) {
+      console.error("Error rescheduling booking - Full error object:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        // Handle different error object structures
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.error_description) {
+          errorMessage = error.error_description;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        } else if (error.code) {
+          errorMessage = `Database error (${error.code})`;
+        } else {
+          // Try to stringify the error object
+          try {
+            errorMessage = JSON.stringify(error);
+          } catch {
+            errorMessage = "Unable to parse error details";
+          }
+        }
+      }
+
+      console.error("Parsed error message:", errorMessage);
+
+      toast({
+        title: "Error Rescheduling Booking",
+        description: `Failed to reschedule booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Cancel booking function
+  const cancelBooking = async () => {
+    if (!selectedBookingForCancel || !currentUser) {
+      toast({
+        title: "Error",
+        description: "Unable to cancel booking. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Calculate cancellation fee and refund amount using the same logic as the modal
+      const cancellationDetails = calculateCancellationDetails(
+        selectedBookingForCancel,
+      );
+      const { totalAmount, cancellationFee, refundAmount } =
+        cancellationDetails;
+
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_status: "cancelled",
+          cancelled_at: new Date().toISOString(),
+          cancelled_by: currentUser.id,
+          cancellation_reason:
+            cancellationReason.trim() || "Cancelled by customer",
+          cancellation_fee: cancellationFee,
+          refund_amount: refundAmount,
+        })
+        .eq("id", selectedBookingForCancel.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === selectedBookingForCancel.id
+            ? {
+                ...booking,
+                status: "cancelled",
+                booking_status: "cancelled",
+                cancelled_at: new Date().toISOString(),
+                cancelled_by: currentUser.id,
+                cancellation_reason:
+                  cancellationReason.trim() || "Cancelled by customer",
+                cancellation_fee: cancellationFee,
+                refund_amount: refundAmount,
+              }
+            : booking,
+        ),
+      );
+
+      // Close modal and reset state
+      setShowCancelModal(false);
+      setSelectedBookingForCancel(null);
+      setCancellationReason("");
+
+      // Force refresh bookings to ensure we get the latest status from database
+      if (refreshBookings) {
+        setTimeout(() => refreshBookings(), 100);
+      }
+
+      // Show appropriate cancellation message based on refund amount
+      const refundMessage =
+        refundAmount === 0
+          ? "Your booking has been cancelled successfully. No refund will be processed as per our cancellation policy."
+          : refundAmount === totalAmount
+            ? "Your booking has been cancelled successfully. Full refund will be processed."
+            : `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`;
+
+      toast({
+        title: "Booking Cancelled",
+        description: refundMessage,
+      });
+    } catch (error: any) {
+      console.error("Error cancelling booking:", error);
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        }
+      }
+
+      toast({
+        title: "Error Cancelling Booking",
+        description: `Failed to cancel booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -520,12 +847,23 @@ export default function MyBookings() {
                 />
               </div>
             </div>
-            <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-              <Link to="/home">
-                <Calendar className="w-4 h-4 mr-2" />
-                Book New Service
-              </Link>
-            </Button>
+
+            {/* Real-time Notifications */}
+            <div className="flex items-center space-x-2">
+              <RealtimeBookingNotifications
+                userType="customer"
+                showConnectionStatus={true}
+                maxNotifications={5}
+              />
+              {isConnected && (
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-green-50 text-green-700"
+                >
+                  Live Updates
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -619,7 +957,12 @@ export default function MyBookings() {
                   <>
                     <div className="space-y-4">
                       {upcomingBookings.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} />
+                        <BookingCard
+                          key={booking.id}
+                          booking={booking}
+                          onCancel={openCancelModal}
+                          onReschedule={openRescheduleModal}
+                        />
                       ))}
                     </div>
 
@@ -683,7 +1026,12 @@ export default function MyBookings() {
                   <>
                     <div className="space-y-4">
                       {activeBookings.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} />
+                        <BookingCard
+                          key={booking.id}
+                          booking={booking}
+                          onCancel={openCancelModal}
+                          onReschedule={openRescheduleModal}
+                        />
                       ))}
                     </div>
 
@@ -747,7 +1095,12 @@ export default function MyBookings() {
                   <>
                     <div className="space-y-4">
                       {pastBookings.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} />
+                        <BookingCard
+                          key={booking.id}
+                          booking={booking}
+                          onCancel={openCancelModal}
+                          onReschedule={openRescheduleModal}
+                        />
                       ))}
                     </div>
 
@@ -799,11 +1152,298 @@ export default function MyBookings() {
           </div>
         </div>
       </section>
+
+      {/* Cancellation Modal */}
+      <Dialog open={showCancelModal} onOpenChange={setShowCancelModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <XCircle className="w-5 h-5" />
+              Cancel Booking
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedBookingForCancel && (
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-sm">
+                  {selectedBookingForCancel.serviceName ||
+                    selectedBookingForCancel.service ||
+                    "Service"}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Date: {formatDate(selectedBookingForCancel.date)} at{" "}
+                  {selectedBookingForCancel.time}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Provider:{" "}
+                  {selectedBookingForCancel.provider?.name || "Provider"}
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="cancellation-reason"
+                className="text-sm font-medium"
+              >
+                Reason for Cancellation{" "}
+                <span className="text-gray-500">(Optional)</span>
+              </Label>
+              <Textarea
+                id="cancellation-reason"
+                placeholder="Please let us know why you're cancelling this booking..."
+                value={cancellationReason}
+                onChange={(e) => setCancellationReason(e.target.value)}
+                rows={3}
+                className="resize-none"
+              />
+              <p className="text-xs text-gray-500">
+                This information helps us improve our service.
+              </p>
+            </div>
+
+            {selectedBookingForCancel &&
+              (() => {
+                const cancellationDetails = calculateCancellationDetails(
+                  selectedBookingForCancel,
+                );
+                return (
+                  <>
+                    {/* Cancellation Fee Breakdown */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                      <h4 className="font-medium text-sm mb-2">
+                        Cancellation Details
+                      </h4>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span>Booking Total:</span>
+                          <span className="font-medium">
+                            ${cancellationDetails.totalAmount.toFixed(2)}
+                          </span>
+                        </div>
+                        {(cancellationDetails.isWithin24Hours ||
+                          cancellationDetails.isPastBooking) && (
+                          <>
+                            <div className="flex justify-between text-red-600">
+                              <span>Cancellation Fee:</span>
+                              <span className="font-medium">
+                                $
+                                {cancellationDetails.cancellationFee.toFixed(2)}
+                              </span>
+                            </div>
+                            <div className="border-t pt-1 mt-1">
+                              <div className="flex justify-between font-medium">
+                                <span>Refund Amount:</span>
+                                <span className="text-red-600">
+                                  ${cancellationDetails.refundAmount.toFixed(2)}
+                                </span>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        {!cancellationDetails.isWithin24Hours &&
+                          !cancellationDetails.isPastBooking && (
+                            <div className="flex justify-between font-medium text-green-600">
+                              <span>Refund Amount:</span>
+                              <span>
+                                ${cancellationDetails.refundAmount.toFixed(2)}
+                              </span>
+                            </div>
+                          )}
+                      </div>
+                    </div>
+
+                    <div
+                      className={`border rounded-lg p-3 ${cancellationDetails.isPastBooking || cancellationDetails.isWithin24Hours ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200"}`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <AlertCircle
+                          className={`w-4 h-4 mt-0.5 flex-shrink-0 ${cancellationDetails.isPastBooking || cancellationDetails.isWithin24Hours ? "text-red-600" : "text-yellow-600"}`}
+                        />
+                        <div
+                          className={`text-sm ${cancellationDetails.isPastBooking || cancellationDetails.isWithin24Hours ? "text-red-800" : "text-yellow-800"}`}
+                        >
+                          <p className="font-medium">Cancellation Policy</p>
+                          {cancellationDetails.isPastBooking ? (
+                            <p>
+                              This booking is in the past. You may cancel it but
+                              no refund will be provided as per our policy.
+                            </p>
+                          ) : cancellationDetails.isWithin24Hours ? (
+                            <p>
+                              This booking is within 24 hours of the appointment
+                              time. You may cancel it but no refund will be
+                              provided as per our policy.
+                            </p>
+                          ) : (
+                            <p>
+                              This booking can be cancelled with a full refund
+                              as it's more than 24 hours away from the
+                              appointment time.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setSelectedBookingForCancel(null);
+                  setCancellationReason("");
+                }}
+                className="flex-1"
+              >
+                Keep Booking
+              </Button>
+              <Button
+                onClick={cancelBooking}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+              >
+                Cancel Booking
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reschedule Modal */}
+      <Dialog open={showRescheduleModal} onOpenChange={setShowRescheduleModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-roam-blue">
+              <Edit className="w-5 h-5" />
+              Reschedule Booking
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {selectedBookingForReschedule && (
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-sm">
+                  {selectedBookingForReschedule.service || "Service"}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Current Date: {formatDate(selectedBookingForReschedule.date)}{" "}
+                  at {selectedBookingForReschedule.time}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Provider:{" "}
+                  {selectedBookingForReschedule.provider?.name || "Provider"}
+                </p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="new-booking-date"
+                  className="text-sm font-medium"
+                >
+                  New Date <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="new-booking-date"
+                  type="date"
+                  value={newBookingDate}
+                  onChange={(e) => setNewBookingDate(e.target.value)}
+                  min={new Date().toISOString().split("T")[0]}
+                  className="w-full"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="new-booking-time"
+                  className="text-sm font-medium"
+                >
+                  New Time <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="new-booking-time"
+                  type="time"
+                  value={newBookingTime}
+                  onChange={(e) => setNewBookingTime(e.target.value)}
+                  className="w-full"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="reschedule-reason"
+                className="text-sm font-medium"
+              >
+                Reason for Rescheduling{" "}
+                <span className="text-gray-500">(Optional)</span>
+              </Label>
+              <Textarea
+                id="reschedule-reason"
+                placeholder="Please let us know why you need to reschedule..."
+                value={rescheduleReason}
+                onChange={(e) => setRescheduleReason(e.target.value)}
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-blue-800">
+                  <p className="font-medium">Reschedule Policy</p>
+                  <p>
+                    Your booking will be set to pending status and the provider
+                    will need to confirm the new date and time.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowRescheduleModal(false);
+                  setSelectedBookingForReschedule(null);
+                  setNewBookingDate("");
+                  setNewBookingTime("");
+                  setRescheduleReason("");
+                }}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={rescheduleBooking}
+                className="flex-1 bg-roam-blue hover:bg-roam-blue/90 text-white"
+                disabled={!newBookingDate || !newBookingTime}
+              >
+                Request Reschedule
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-function BookingCard({ booking }: { booking: any }) {
+function BookingCard({
+  booking,
+  onCancel,
+  onReschedule,
+}: {
+  booking: any;
+  onCancel: (booking: any) => void;
+  onReschedule: (booking: any) => void;
+}) {
   const statusConfig = {
     confirmed: {
       label: "Confirmed",
@@ -835,10 +1475,35 @@ function BookingCard({ booking }: { booking: any }) {
       icon: XCircle,
       description: "Booking was cancelled",
     },
+    declined: {
+      label: "Declined",
+      color: "bg-red-100 text-red-800",
+      icon: XCircle,
+      description: "Booking was declined by provider",
+    },
+    no_show: {
+      label: "No Show",
+      color: "bg-gray-100 text-gray-800",
+      icon: XCircle,
+      description: "Customer did not show up",
+    },
   }[booking.status];
 
   const DeliveryIcon = getDeliveryIcon(booking.deliveryType);
   const deliveryLabel = getDeliveryLabel(booking.deliveryType);
+
+  // Check if booking is within 24 hours and cannot be cancelled
+  const isWithin24Hours = () => {
+    const now = new Date();
+    const bookingDateTime = new Date(`${booking.date} ${booking.time}`);
+    const timeDifferenceMs = bookingDateTime.getTime() - now.getTime();
+    const hoursUntilBooking = timeDifferenceMs / (1000 * 60 * 60);
+    return hoursUntilBooking <= 24 && hoursUntilBooking > 0;
+  };
+
+  const canCancelBooking =
+    (booking.status === "pending" || booking.status === "confirmed") &&
+    !isWithin24Hours();
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -898,10 +1563,16 @@ function BookingCard({ booking }: { booking: any }) {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
-            <Badge className={statusConfig.color}>
-              <statusConfig.icon className="w-3 h-3 mr-1" />
-              {statusConfig.label}
-            </Badge>
+            <RealtimeStatusUpdate
+              bookingId={booking.id}
+              currentStatus={booking.status}
+              onStatusChange={(newStatus) => {
+                // This will also be handled by the real-time hook
+                console.log(
+                  `Booking ${booking.id} status changed to ${newStatus}`,
+                );
+              }}
+            />
             {booking.status === "completed" &&
             new Date(booking.date) < new Date() ? (
               <Button
@@ -1030,35 +1701,49 @@ function BookingCard({ booking }: { booking: any }) {
 
           {/* Secondary actions - Cancel and Reschedule (less common) */}
           <div className="flex gap-2">
-            {(booking.status === "pending" ||
-              booking.status === "confirmed") && (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                  onClick={() => {
-                    // TODO: Implement reschedule booking functionality
-                    console.log("Reschedule booking:", booking.id);
-                  }}
-                >
-                  <Edit className="w-4 h-4 mr-2" />
-                  Reschedule
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
-                  onClick={() => {
-                    // TODO: Implement cancel booking functionality
-                    console.log("Cancel booking:", booking.id);
-                  }}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Cancel
-                </Button>
-              </>
-            )}
+            {(booking.status === "pending" || booking.status === "confirmed") &&
+              booking.status !== "cancelled" &&
+              booking.status !== "declined" &&
+              booking.status !== "completed" &&
+              booking.status !== "no_show" && (
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                    onClick={() => onReschedule(booking)}
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Reschedule
+                  </Button>
+                  {canCancelBooking ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-red-500 text-red-600 hover:bg-red-500 hover:text-white"
+                      onClick={() => onCancel(booking)}
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Cancel
+                    </Button>
+                  ) : isWithin24Hours() ? (
+                    <div className="flex flex-col items-end">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-gray-300 text-gray-400 cursor-not-allowed"
+                        disabled
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        Cancel
+                      </Button>
+                      <p className="text-xs text-red-600 mt-1 max-w-[120px] text-right">
+                        Cannot cancel within 24 hours
+                      </p>
+                    </div>
+                  ) : null}
+                </>
+              )}
           </div>
           {booking.status === "completed" &&
             new Date(booking.date) >= new Date() && (

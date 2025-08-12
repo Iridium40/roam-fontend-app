@@ -12,6 +12,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -434,7 +441,7 @@ export default function BusinessProfile() {
       // Create a modified service object with the selected delivery type
       const serviceWithDeliveryType = {
         ...pendingService,
-        delivery_type: deliveryType
+        delivery_type: deliveryType,
       };
 
       setSelectedService(serviceWithDeliveryType);
@@ -632,7 +639,10 @@ export default function BusinessProfile() {
                   })()}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Business Selection
+                  <span className="hidden sm:inline">
+                    Back to Business Selection
+                  </span>
+                  <span className="sm:hidden">Back</span>
                 </Link>
               </Button>
               <img
@@ -667,7 +677,18 @@ export default function BusinessProfile() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative -mt-32 mb-8">
-            <Card className="p-6 bg-background/95 backdrop-blur-sm border-border/50">
+            <Card className="p-6 bg-background/70 backdrop-blur-sm border-border/30 relative">
+              {/* Heart icon in top right corner */}
+              <div className="absolute top-4 right-4 z-10">
+                <FavoriteButton
+                  type="business"
+                  itemId={business.id}
+                  size="sm"
+                  variant="ghost"
+                  showText={false}
+                  className="hover:bg-background/80 p-2"
+                />
+              </div>
               <div className="flex flex-col md:flex-row items-start gap-6">
                 <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
                   <AvatarImage
@@ -682,21 +703,27 @@ export default function BusinessProfile() {
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
-                      <h1 className="text-3xl font-bold text-foreground mb-2">
+                      <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
                         {business.business_name}
                       </h1>
-                      <p className="text-foreground/70 text-lg mb-3">
+                      <p className="text-foreground/70 text-base sm:text-lg mb-3">
                         {business.business_description}
                       </p>
                       <div className="flex flex-wrap items-center gap-3">
-                        <Badge variant="secondary" className="text-sm">
-                          {business.business_type}
-                        </Badge>
-                        {business.verification_status === "approved" && (
-                          <Badge className="bg-green-100 text-green-800 border-green-200">
-                            <Shield className="w-3 h-3 mr-1" />
-                            Verified Business
-                          </Badge>
+                        {/* Business Location Address */}
+                        {businessData?.location && (
+                          <div className="flex items-center gap-1 text-sm text-foreground/70">
+                            <MapPin className="w-4 h-4" />
+                            <span>
+                              {[
+                                businessData.location.address_line1,
+                                businessData.location.city,
+                                businessData.location.state,
+                              ]
+                                .filter(Boolean)
+                                .join(", ")}
+                            </span>
+                          </div>
                         )}
                         <div className="flex items-center gap-1">
                           <Star className="w-4 h-4 text-roam-warning fill-current" />
@@ -710,24 +737,19 @@ export default function BusinessProfile() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <FavoriteButton
-                        type="business"
-                        itemId={business.id}
-                        size="lg"
-                        variant="outline"
-                        showText={true}
-                        className="border-gray-300 hover:border-red-300"
-                      />
-                      <Button
-                        size="lg"
-                        className="bg-roam-blue hover:bg-roam-blue/90"
-                        onClick={handleBookBusiness}
-                      >
-                        <Calendar className="w-5 h-5 mr-2" />
-                        Book Now
-                      </Button>
-                    </div>
+                    {/* Hide Book Now button when user is in booking flow */}
+                    {!searchParams.get("service") &&
+                      !searchParams.get("date") &&
+                      !searchParams.get("time") && (
+                        <Button
+                          size="lg"
+                          className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
+                          onClick={handleBookBusiness}
+                        >
+                          <Calendar className="w-5 h-5 mr-2" />
+                          Book Now
+                        </Button>
+                      )}
                   </div>
                 </div>
               </div>
@@ -739,7 +761,8 @@ export default function BusinessProfile() {
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          {/* Desktop Tabs - Hidden on mobile */}
+          <TabsList className="hidden sm:grid w-full grid-cols-5 gap-1 mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="services">
               Services ({services.length})
@@ -750,6 +773,26 @@ export default function BusinessProfile() {
               Reviews ({reviews.length})
             </TabsTrigger>
           </TabsList>
+
+          {/* Mobile Dropdown - Hidden on desktop */}
+          <div className="mb-6 sm:hidden">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a section" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="overview">Overview</SelectItem>
+                <SelectItem value="services">
+                  Services ({services.length})
+                </SelectItem>
+                <SelectItem value="hours">Hours</SelectItem>
+                <SelectItem value="team">Team ({providers.length})</SelectItem>
+                <SelectItem value="reviews">
+                  Reviews ({reviews.length})
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
@@ -906,12 +949,12 @@ export default function BusinessProfile() {
             {selectedService && (
               <Card className="border-2 border-roam-blue bg-roam-blue/5 mb-8">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-xl text-roam-blue">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-lg sm:text-xl text-roam-blue">
                         Selected Service
                       </CardTitle>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1 break-words">
                         Ready to book •{" "}
                         {searchParams.get("date") &&
                           new Date(
@@ -931,22 +974,22 @@ export default function BusinessProfile() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-start gap-6">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                     {selectedService.services?.image_url && (
                       <img
                         src={selectedService.services.image_url}
                         alt={selectedService.services?.name}
-                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                        className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded-lg flex-shrink-0"
                       />
                     )}
-                    <div className="flex-1">
+                    <div className="flex-1 w-full">
                       <h3 className="text-lg font-semibold mb-2">
                         {selectedService.services?.name}
                       </h3>
                       <p className="text-gray-600 text-sm mb-3">
                         {selectedService.services?.description}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600 mb-4">
                         <div className="flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           {selectedService.services?.duration_minutes} minutes
@@ -967,16 +1010,20 @@ export default function BusinessProfile() {
                           </Badge>
                         )}
                       </div>
-                      <div className="flex gap-3">
+                      <div className="flex flex-col sm:flex-row gap-3 w-full">
                         <Button
                           onClick={() => setProviderSelectorOpen(true)}
-                          className="bg-roam-blue hover:bg-roam-blue/90"
+                          className="bg-roam-blue hover:bg-roam-blue/90 w-full sm:w-auto"
                         >
                           <Users className="w-4 h-4 mr-2" />
-                          Choose Provider
+                          <span className="hidden sm:inline">
+                            Choose Provider
+                          </span>
+                          <span className="sm:hidden">Choose Provider</span>
                         </Button>
                         <Button
                           variant="outline"
+                          className="w-full sm:w-auto"
                           onClick={() => {
                             setSelectedService(null);
                             // Remove service from URL
@@ -1099,19 +1146,23 @@ export default function BusinessProfile() {
                                 <Badge
                                   variant="outline"
                                   className={`text-xs ${
-                                    service.delivery_type === "customer_location"
+                                    service.delivery_type ===
+                                    "customer_location"
                                       ? "border-green-500 text-green-700 bg-green-50"
-                                      : service.delivery_type === "business_location"
+                                      : service.delivery_type ===
+                                          "business_location"
                                         ? "border-blue-500 text-blue-700 bg-blue-50"
                                         : "border-purple-500 text-purple-700 bg-purple-50"
                                   }`}
                                 >
-                                  {service.delivery_type === "customer_location" ? (
+                                  {service.delivery_type ===
+                                  "customer_location" ? (
                                     <>
                                       <Car className="w-3 h-3 mr-1" />
                                       Mobile
                                     </>
-                                  ) : service.delivery_type === "business_location" ? (
+                                  ) : service.delivery_type ===
+                                    "business_location" ? (
                                     <>
                                       <Building className="w-3 h-3 mr-1" />
                                       Business
@@ -1448,15 +1499,18 @@ export default function BusinessProfile() {
 
       {/* Provider Selection Modal */}
       {/* Delivery Type Selection Modal */}
-      <Dialog open={deliveryTypeModalOpen} onOpenChange={setDeliveryTypeModalOpen}>
+      <Dialog
+        open={deliveryTypeModalOpen}
+        onOpenChange={setDeliveryTypeModalOpen}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Choose Service Location</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-gray-600">
-              This service can be delivered at a business location or as a mobile service.
-              Please choose your preferred option:
+              This service can be delivered at a business location or as a
+              mobile service. Please choose your preferred option:
             </p>
 
             <div className="space-y-3">
@@ -1469,7 +1523,9 @@ export default function BusinessProfile() {
                   <Building className="w-5 h-5 text-blue-600" />
                   <div className="text-left">
                     <div className="font-medium">Business Location</div>
-                    <div className="text-sm text-gray-500">Service at the business location</div>
+                    <div className="text-sm text-gray-500">
+                      Service at the business location
+                    </div>
                   </div>
                 </div>
               </Button>
@@ -1483,7 +1539,9 @@ export default function BusinessProfile() {
                   <Car className="w-5 h-5 text-green-600" />
                   <div className="text-left">
                     <div className="font-medium">Mobile Service</div>
-                    <div className="text-sm text-gray-500">Service comes to your location</div>
+                    <div className="text-sm text-gray-500">
+                      Service comes to your location
+                    </div>
                   </div>
                 </div>
               </Button>

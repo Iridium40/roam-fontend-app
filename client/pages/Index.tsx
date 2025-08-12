@@ -412,7 +412,7 @@ export default function Index() {
             rating: 4.8, // Default rating
             reviews: Math.floor(Math.random() * 200) + 50, // Random review count
             deliveryTypes: ["mobile", "business_location", "virtual"],
-            price: "Starting at $50",
+            price: "Starting at $100",
             image:
               business.logo_url ||
               business.image_url ||

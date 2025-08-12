@@ -38,6 +38,7 @@ import {
   Building,
   UserCheck,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -102,8 +103,12 @@ const ProviderBooking = () => {
 
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isBooking, setIsBooking] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<BookingItem[]>([]);
+
+  // Derived state: selectedAddons from selectedItems
+  const selectedAddons = selectedItems.filter((item) => item.type === "addon");
   const [preferredProvider, setPreferredProvider] = useState<any>(null);
   const [promotionData, setPromotionData] = useState<any>(null);
   const [customerProfile, setCustomerProfile] = useState<any>(null);
@@ -269,7 +274,12 @@ const ProviderBooking = () => {
       }
 
       // Fetch business services
-      console.log("Fetching services for business:", businessId, "selected service:", selectedServiceId);
+      console.log(
+        "Fetching services for business:",
+        businessId,
+        "selected service:",
+        selectedServiceId,
+      );
 
       const { data: services, error: servicesError } = await supabase
         .from("business_services")
@@ -290,14 +300,14 @@ const ProviderBooking = () => {
         .eq("is_active", true);
 
       console.log("Business services query result:", {
-        services: services?.map(s => ({
+        services: services?.map((s) => ({
           id: s.id,
           service_id: s.service_id,
           name: s.services?.name,
           is_active: s.is_active,
-          service_is_active: s.services?.is_active
+          service_is_active: s.services?.is_active,
         })),
-        error: servicesError
+        error: servicesError,
       });
 
       if (servicesError) {
@@ -307,38 +317,91 @@ const ProviderBooking = () => {
         );
       }
 
-      // Fetch business addons filtered by selected service
-      let addonsQuery = supabase
-        .from("business_addons")
-        .select(
-          `
-          *,
-          addons:addon_id (
-            id,
-            name,
-            description,
-            image_url,
-            service_addon_eligibility (
-              service_id,
-              is_recommended
-            )
-          )
-        `,
-        )
-        .eq("business_id", businessId)
-        .eq("is_available", true);
+      // Fetch addons using the exact two-step filtering process
+      let addons = [];
+      let addonsError = null;
 
-      const { data: allAddons, error: addonsError } = await addonsQuery;
-
-      let addons = allAddons || [];
-
-      // Filter by selected service if one is specified
-      if (selectedServiceId && allAddons) {
-        addons = allAddons.filter((addon) =>
-          (addon as any).addons?.service_addon_eligibility?.some(
-            (eligibility: any) => eligibility.service_id === selectedServiceId,
-          ),
+      if (selectedServiceId) {
+        console.log(
+          "Fetching addons for service:",
+          selectedServiceId,
+          "and business:",
+          businessId,
         );
+
+        // Step 1: Get eligible addons for the selected service
+        const { data: eligibleAddons, error: eligibilityError } = await supabase
+          .from("service_addon_eligibility")
+          .select(
+            `
+            service_id,
+            addon_id,
+            is_recommended,
+            service_addons:addon_id (
+              id,
+              name,
+              description,
+              image_url,
+              is_active
+            )
+          `,
+          )
+          .eq("service_id", selectedServiceId);
+
+        if (eligibilityError) {
+          console.error(
+            "Error fetching service addon eligibility:",
+            eligibilityError,
+          );
+          addonsError = eligibilityError;
+        } else if (eligibleAddons && eligibleAddons.length > 0) {
+          console.log("Found eligible addons:", eligibleAddons);
+
+          // Step 2: Filter by business offerings and get custom pricing
+          const eligibleAddonIds = eligibleAddons.map((item) => item.addon_id);
+
+          const { data: businessAddons, error: businessAddonsError } =
+            await supabase
+              .from("business_addons")
+              .select("*")
+              .eq("business_id", businessId)
+              .eq("is_available", true)
+              .in("addon_id", eligibleAddonIds);
+
+          if (businessAddonsError) {
+            console.error(
+              "Error fetching business addons:",
+              businessAddonsError,
+            );
+            addonsError = businessAddonsError;
+          } else {
+            console.log("Found business addons:", businessAddons);
+
+            // Combine the data
+            addons = (businessAddons || [])
+              .map((businessAddon) => {
+                const eligibilityInfo = eligibleAddons.find(
+                  (e) => e.addon_id === businessAddon.addon_id,
+                );
+                const serviceAddon = eligibilityInfo?.service_addons;
+
+                return {
+                  id: businessAddon.addon_id,
+                  name: serviceAddon?.name || "Unknown Addon",
+                  description: serviceAddon?.description || "",
+                  image_url: serviceAddon?.image_url || null,
+                  is_recommended: eligibilityInfo?.is_recommended || false,
+                  price: businessAddon.custom_price || 0,
+                  business_addon_id: businessAddon.id,
+                };
+              })
+              .filter((addon) => addon.name !== "Unknown Addon"); // Filter out invalid addons
+          }
+        } else {
+          console.log("No eligible addons found for this service");
+        }
+      } else {
+        console.log("No service selected, skipping addon fetch");
       }
 
       if (addonsError) {
@@ -427,21 +490,28 @@ const ProviderBooking = () => {
           });
 
           // Debug: Check what services are available for this business
-          console.log("Available business services:", services.map(s => ({
-            business_service_id: s.id,
-            service_id: s.service_id,
-            service_name: s.services?.name,
-            is_active: s.is_active
-          })));
+          console.log(
+            "Available business services:",
+            services.map((s) => ({
+              business_service_id: s.id,
+              service_id: s.service_id,
+              service_name: s.services?.name,
+              is_active: s.is_active,
+            })),
+          );
 
           // Check if the service exists in the global services table
-          const { data: globalService, error: globalServiceError } = await supabase
-            .from("services")
-            .select("id, name, description, is_active")
-            .eq("id", selectedServiceId)
-            .single();
+          const { data: globalService, error: globalServiceError } =
+            await supabase
+              .from("services")
+              .select("id, name, description, is_active")
+              .eq("id", selectedServiceId)
+              .single();
 
-          console.log("Global service lookup:", { globalService, globalServiceError });
+          console.log("Global service lookup:", {
+            globalService,
+            globalServiceError,
+          });
 
           if (globalService) {
             // Check if this service is offered by the business but maybe inactive
@@ -479,7 +549,8 @@ const ProviderBooking = () => {
             console.log("Service does not exist in global services table");
             toast({
               title: "Service Not Found",
-              description: "The requested service could not be found in our system.",
+              description:
+                "The requested service could not be found in our system.",
               variant: "destructive",
             });
           }
@@ -785,10 +856,12 @@ const ProviderBooking = () => {
       type,
       id: item.id,
       name:
-        type === "service"
-          ? (item as any).services.name
-          : (item as any).addons.name,
-      price: (item as any).custom_price || (item as any).business_price || 0,
+        type === "service" ? (item as any).services.name : (item as any).name,
+      price:
+        (item as any).custom_price ||
+        (item as any).business_price ||
+        (item as any).price ||
+        0,
       duration:
         type === "service"
           ? (item as any).services.duration_minutes
@@ -909,7 +982,38 @@ const ProviderBooking = () => {
     setIsBookingModalOpen(true);
   };
 
+  const isFormValid = () => {
+    // Base required fields
+    const baseRequiredFields = [
+      !bookingForm.customerName,
+      !bookingForm.customerEmail,
+      !bookingForm.preferredDate,
+    ];
+
+    // Address fields only required for customer_location delivery type
+    const addressRequiredFields =
+      deliveryType === "customer_location"
+        ? [
+            !bookingForm.customerAddress,
+            !bookingForm.customerCity,
+            !bookingForm.customerState,
+            !bookingForm.customerZip,
+          ]
+        : [];
+
+    const allRequiredFields = [...baseRequiredFields, ...addressRequiredFields];
+
+    // Check if any required field is missing (true means field is empty)
+    const hasEmptyRequiredFields = allRequiredFields.some((isEmpty) => isEmpty);
+
+    // Must have at least one service selected
+    const hasSelectedItems = selectedItems.length > 0;
+
+    return !hasEmptyRequiredFields && hasSelectedItems;
+  };
+
   const submitBooking = async () => {
+    setIsBooking(true);
     try {
       // Base required fields
       const baseRequiredFields = [
@@ -1051,6 +1155,7 @@ const ProviderBooking = () => {
         admin_notes: bookingForm.notes,
         total_amount: getTotalAmount(),
         service_fee: getTotalAmount() * 0.15, // Platform fee - 15% of total amount
+        remaining_balance: getTotalAmount(), // Initially, the full amount is the remaining balance
         booking_status: "pending",
         payment_status: "pending",
       };
@@ -1065,6 +1170,30 @@ const ProviderBooking = () => {
 
       if (bookingError) {
         throw bookingError;
+      }
+
+      console.log("Booking created successfully:", booking);
+
+      // Create booking_addons records for selected add-ons
+      if (selectedAddons.length > 0 && booking.id) {
+        console.log("Creating booking addons:", selectedAddons);
+
+        const addonRecords = selectedAddons.map((addon) => ({
+          booking_id: booking.id,
+          addon_id: addon.id,
+        }));
+
+        const { data: bookingAddons, error: addonsError } = await supabase
+          .from("booking_addons")
+          .insert(addonRecords)
+          .select();
+
+        if (addonsError) {
+          console.error("Error creating booking addons:", addonsError);
+          // Don't throw error here - booking was successful, addons are secondary
+        } else {
+          console.log("Booking addons created successfully:", bookingAddons);
+        }
       }
 
       // Create promotion usage record if promotion was applied
@@ -1097,7 +1226,7 @@ const ProviderBooking = () => {
             message: promotionError.message,
             details: promotionError.details,
             hint: promotionError.hint,
-            code: promotionError.code
+            code: promotionError.code,
           });
           // Don't throw error here - booking was successful, promotion tracking is secondary
         }
@@ -1130,6 +1259,7 @@ const ProviderBooking = () => {
       navigate(`/payment?${paymentParams.toString()}`);
 
       setIsBookingModalOpen(false);
+      setIsBooking(false);
     } catch (error: any) {
       console.error("Error submitting booking:", error);
 
@@ -1155,6 +1285,7 @@ const ProviderBooking = () => {
         description: errorMessage,
         variant: "destructive",
       });
+      setIsBooking(false);
     }
   };
 
@@ -1264,42 +1395,9 @@ const ProviderBooking = () => {
                   <p className="text-gray-600">
                     {business.business_description}
                   </p>
-                  <div className="flex items-center space-x-4 mt-2">
-                    {business.verification_status === "approved" && (
-                      <Badge
-                        variant="default"
-                        className="bg-green-100 text-green-800"
-                      >
-                        <Check className="h-3 w-3 mr-1" />
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
+                  <div className="flex items-center space-x-4 mt-2"></div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white w-full sm:w-auto"
-                  >
-                    <Link to={`/business/${business.id}`}>
-                      <Building className="w-5 h-5 mr-2" />
-                      <span className="hidden sm:inline">
-                        View Business Profile
-                      </span>
-                      <span className="sm:hidden">View Profile</span>
-                    </Link>
-                  </Button>
-                  <FavoriteButton
-                    type="business"
-                    itemId={business.id}
-                    size="lg"
-                    variant="outline"
-                    showText={true}
-                    className="border-gray-300 hover:border-red-300 w-full sm:w-auto"
-                  />
-                </div>
+                <div className="flex flex-col sm:flex-row gap-3"></div>
               </div>
             </div>
           </div>
@@ -1343,9 +1441,302 @@ const ProviderBooking = () => {
           </div>
         )}
 
+        {/* Booking Summary - Primary Focus */}
+        <Card className="mb-8 border-2 border-roam-blue bg-roam-blue/5">
+          <CardHeader>
+            <CardTitle className="text-2xl text-roam-blue flex items-center gap-2">
+              <DollarSign className="w-6 h-6" />
+              Complete Your Booking
+            </CardTitle>
+            <p className="text-roam-blue/80">
+              Review your service details and total cost
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left: Service Summary */}
+              <div className="space-y-4">
+                <h3 className="font-semibold">Your Service</h3>
+                {(() => {
+                  const selectedService = services.find(
+                    (service) =>
+                      service.service_id === selectedServiceId ||
+                      service.id === selectedServiceId,
+                  );
+                  return selectedService ? (
+                    <div className="p-4 border rounded-lg bg-background">
+                      <div className="flex items-start gap-3">
+                        {(selectedService as any).services.image_url && (
+                          <img
+                            src={(selectedService as any).services.image_url}
+                            alt={(selectedService as any).services.name}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <h4 className="font-medium">
+                            {(selectedService as any).services.name}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {(selectedService as any).services.duration_minutes}{" "}
+                            minutes
+                          </p>
+                          {preSelectedDate && preSelectedTime && (
+                            <p className="text-sm text-roam-blue font-medium mt-1">
+                              {new Date(preSelectedDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  weekday: "long",
+                                  month: "long",
+                                  day: "numeric",
+                                },
+                              )}{" "}
+                              at {preSelectedTime}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
+
+                {/* Business & Provider Info */}
+                <div className="p-4 border rounded-lg bg-background">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage
+                        src={
+                          business.logo_url || business.image_url || undefined
+                        }
+                        alt={business.business_name}
+                      />
+                      <AvatarFallback>
+                        {business.business_name.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{business.business_name}</p>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3 text-roam-warning fill-current" />
+                        <span className="text-sm text-gray-600">
+                          {business.average_rating || 0} (
+                          {business.total_reviews || 0} reviews)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {preferredProvider && (
+                    <div className="p-4 bg-green-50 border-green-200 border rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <UserCheck className="w-4 h-4 text-green-700" />
+                        <h4 className="font-semibold text-green-700">
+                          Preferred Provider Selected
+                        </h4>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage
+                            src={preferredProvider.image_url || undefined}
+                          />
+                          <AvatarFallback>
+                            {preferredProvider.first_name[0]}
+                            {preferredProvider.last_name[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="font-semibold text-green-800">
+                            {preferredProvider.first_name}{" "}
+                            {preferredProvider.last_name}
+                          </div>
+                          {preferredProvider.bio && (
+                            <p className="text-sm text-green-600 line-clamp-1">
+                              {preferredProvider.bio}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-4 mt-2">
+                            {preferredProvider.experience_years && (
+                              <span className="text-xs text-green-600">
+                                {preferredProvider.experience_years} years
+                                experience
+                              </span>
+                            )}
+                            {preferredProvider.average_rating && (
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3 h-3 text-green-600 fill-current" />
+                                <span className="text-xs text-green-600">
+                                  {preferredProvider.average_rating} (
+                                  {preferredProvider.total_reviews || 0}{" "}
+                                  reviews)
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 p-3 bg-green-100 rounded-md">
+                        <p className="text-sm text-green-700">
+                          <strong>Note:</strong> This is your preferred provider
+                          for this booking. The business will try to assign this
+                          provider, but final assignment depends on availability
+                          and business approval.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right: Pricing & Book Button */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg">Booking Summary</h3>
+                <div className="p-6 border-2 border-roam-blue/20 rounded-xl bg-background">
+                  <div className="space-y-4">
+                    {/* Service Details */}
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-gray-700 text-sm uppercase tracking-wide">
+                        Selected Services
+                      </h4>
+                      {selectedItems
+                        .filter((item) => item.type === "service")
+                        .map((service) => (
+                          <div
+                            key={service.id}
+                            className="flex justify-between items-center"
+                          >
+                            <span className="text-gray-900">
+                              {service.name}
+                            </span>
+                            <span className="font-medium">
+                              ${service.price.toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
+
+                      {/* Add-ons */}
+                      {selectedAddons.length > 0 && (
+                        <div className="space-y-2 pt-2">
+                          <h5 className="font-medium text-gray-600 text-xs uppercase tracking-wide">
+                            Add-ons
+                          </h5>
+                          {selectedAddons.map((addon) => (
+                            <div
+                              key={addon.id}
+                              className="flex justify-between items-center text-sm"
+                            >
+                              <span className="text-gray-600">
+                                {addon.name}
+                              </span>
+                              <span className="text-gray-600">
+                                +${addon.price.toFixed(2)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="border-t border-gray-200"></div>
+
+                    {/* Pricing Breakdown */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium">
+                          ${getSubtotal().toFixed(2)}
+                        </span>
+                      </div>
+
+                      {/* Promo Code Discount */}
+                      {promotionData && promoCode && (
+                        <div className="flex justify-between items-center text-green-600">
+                          <span className="text-sm">
+                            Discount (
+                            {promotionData.savings_type === "percentage"
+                              ? `${promotionData.savings_amount}%`
+                              : `$${promotionData.savings_amount}`}{" "}
+                            off)
+                          </span>
+                          <span className="font-medium">
+                            -${getDiscountAmount().toFixed(2)}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Service Fee (15%)</span>
+                        <span className="font-medium">
+                          ${(getSubtotal() * 0.15).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Platform Fees</span>
+                        <span className="font-medium">
+                          ${getPlatformFees().toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="border-t-2 border-gray-300 pt-3">
+                      <div className="flex justify-between items-center text-xl font-bold">
+                        <span>Total Amount</span>
+                        <span className="text-roam-blue">
+                          ${getTotalAmount().toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Promo Code Input (if no promo applied) */}
+                    {!promotionData && (
+                      <div className="pt-2">
+                        <details className="group">
+                          <summary className="cursor-pointer text-sm text-roam-blue hover:text-roam-blue/80 font-medium">
+                            Have a promo code?
+                          </summary>
+                          <div className="mt-2 p-3 bg-gray-50 rounded-md">
+                            <p className="text-xs text-gray-600 mb-2">
+                              Promo codes can be applied during checkout
+                            </p>
+                          </div>
+                        </details>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Checkout Buttons */}
+                  <div className="mt-6 space-y-3">
+                    <Button
+                      size="lg"
+                      className="w-full bg-roam-blue hover:bg-roam-blue/90 text-white font-semibold py-3"
+                      onClick={submitBooking}
+                      disabled={!isFormValid() || isBooking}
+                    >
+                      {isBooking ? (
+                        <>
+                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          Processing Booking...
+                        </>
+                      ) : (
+                        <>
+                          <Calendar className="w-5 h-5 mr-2" />
+                          Confirm & Checkout
+                        </>
+                      )}
+                    </Button>
+
+                    <p className="text-xs text-center text-gray-500">
+                      You'll be redirected to secure payment after confirmation
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          {/* Secondary Content - Condensed */}
+          <div className="lg:col-span-3 space-y-6">
             {/* Business Info */}
             <Card>
               <CardHeader>
@@ -1385,12 +1776,23 @@ const ProviderBooking = () => {
                     </div>
                   )}
                   {location && (
-                    <div className="flex items-center space-x-2">
-                      <MapPin className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">
-                        {location.street_address}, {location.city},{" "}
-                        {location.state} {location.postal_code}
-                      </span>
+                    <div className="flex items-start space-x-2">
+                      <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
+                      <div className="text-sm">
+                        <div className="font-medium text-gray-700 mb-1">
+                          Service Location
+                        </div>
+                        <div className="text-gray-600">
+                          {location.address_line1 || location.street_address}
+                          {location.address_line2 && (
+                            <div>{location.address_line2}</div>
+                          )}
+                          <div>
+                            {location.city}, {location.state}{" "}
+                            {location.postal_code}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1404,264 +1806,6 @@ const ProviderBooking = () => {
                 )}
               </CardContent>
             </Card>
-
-            {/* Provider Preference */}
-            {preferredProvider && (
-              <Card className="bg-green-50 border-green-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-green-700">
-                    <UserCheck className="w-5 h-5" />
-                    Preferred Provider Selected
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center space-x-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage
-                        src={preferredProvider.image_url || undefined}
-                      />
-                      <AvatarFallback>
-                        {preferredProvider.first_name[0]}
-                        {preferredProvider.last_name[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="font-semibold text-green-800">
-                        {preferredProvider.first_name}{" "}
-                        {preferredProvider.last_name}
-                      </div>
-                      {preferredProvider.bio && (
-                        <p className="text-sm text-green-600 line-clamp-1">
-                          {preferredProvider.bio}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 mt-2">
-                        {preferredProvider.experience_years && (
-                          <span className="text-xs text-green-600">
-                            {preferredProvider.experience_years} years
-                            experience
-                          </span>
-                        )}
-                        {preferredProvider.average_rating && (
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-green-600 fill-current" />
-                            <span className="text-xs text-green-600">
-                              {preferredProvider.average_rating} (
-                              {preferredProvider.total_reviews || 0} reviews)
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-3 p-3 bg-green-100 rounded-md">
-                    <p className="text-sm text-green-700">
-                      <strong>Note:</strong> This is your preferred provider for
-                      this booking. The business will try to assign this
-                      provider, but final assignment depends on availability and
-                      business approval.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Services */}
-            {services.length > 0 ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    {selectedServiceId ? "Selected Service" : "Services"}
-                  </CardTitle>
-                  {selectedServiceId && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      Ready to book •{" "}
-                      {preSelectedDate &&
-                        new Date(preSelectedDate).toLocaleDateString("en-US", {
-                          weekday: "long",
-                          month: "long",
-                          day: "numeric",
-                        })}{" "}
-                      {preSelectedTime && `at ${preSelectedTime}`}
-                    </p>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 gap-4">
-                    {(() => {
-                      console.log("Selected Service ID:", selectedServiceId);
-                      console.log(
-                        "All services:",
-                        services.map((s) => ({
-                          id: s.id,
-                          service_id: s.service_id,
-                          name: s.services?.name,
-                        })),
-                      );
-                      const filteredServices = services.filter(
-                        (service) =>
-                          !selectedServiceId ||
-                          service.service_id === selectedServiceId ||
-                          service.id === selectedServiceId,
-                      );
-                      console.log("Filtered services:", filteredServices);
-                      return filteredServices;
-                    })().map((service) => (
-                      <div
-                        key={service.id}
-                        className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${
-                          selectedServiceId &&
-                          (service.service_id === selectedServiceId ||
-                            service.id === selectedServiceId)
-                            ? "border-roam-blue bg-roam-blue/5 border-2"
-                            : ""
-                        }`}
-                      >
-                        <div className="flex items-center gap-4 mb-4">
-                          {(service as any).services.image_url && (
-                            <img
-                              src={(service as any).services.image_url}
-                              alt={(service as any).services.name}
-                              className="w-12 h-12 object-cover rounded flex-shrink-0"
-                            />
-                          )}
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold">
-                                {(service as any).services.name}
-                              </h3>
-                              {selectedServiceId &&
-                                (service.service_id === selectedServiceId ||
-                                  service.id === selectedServiceId) && (
-                                  <Badge className="bg-roam-yellow text-gray-900 text-xs">
-                                    Selected
-                                  </Badge>
-                                )}
-                            </div>
-                            {(service as any).services.description && (
-                              <div className="mb-2">
-                                <p className="text-sm text-gray-600">
-                                  {truncateDescription(
-                                    (service as any).services.description,
-                                    expandedDescriptions[service.id] || false,
-                                  )}
-                                  {(service as any).services.description
-                                    .length > 100 && (
-                                    <button
-                                      onClick={() =>
-                                        toggleDescription(service.id)
-                                      }
-                                      className="ml-2 text-roam-blue hover:text-roam-blue/80 text-sm font-medium"
-                                    >
-                                      {expandedDescriptions[service.id]
-                                        ? "Read Less"
-                                        : "Read More"}
-                                    </button>
-                                  )}
-                                </p>
-                              </div>
-                            )}
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                              <div className="flex items-center">
-                                <DollarSign className="h-4 w-4 mr-1" />
-                                <span className="font-semibold">
-                                  $
-                                  {(service as any).custom_price ||
-                                    (service as any).business_price ||
-                                    0}
-                                </span>
-                              </div>
-                              {(service as any).services.estimated_duration && (
-                                <div className="flex items-center">
-                                  <Clock className="h-4 w-4 mr-1" />
-                                  <span>
-                                    {
-                                      (service as any).services
-                                        .estimated_duration
-                                    }{" "}
-                                    min
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <FavoriteButton
-                            type="service"
-                            itemId={service.service_id}
-                            size="sm"
-                            variant="ghost"
-                          />
-                        </div>
-
-                        <div className="flex justify-end">
-                          <div className="flex items-center space-x-2">
-                            {getItemQuantity(service.id, "service") > 0 ? (
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() =>
-                                  removeItemFromBooking(service.id, "service")
-                                }
-                              >
-                                Remove
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                onClick={() =>
-                                  addItemToBooking(service, "service")
-                                }
-                              >
-                                Add
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Services</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8">
-                    <div className="text-gray-500 mb-4">
-                      <svg
-                        className="w-16 h-16 mx-auto mb-4 text-gray-300"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      No Services Available
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {selectedServiceId
-                        ? "The selected service is no longer available from this business."
-                        : "This business currently has no active services available for booking."}
-                    </p>
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate("/providers")}
-                    >
-                      Browse Other Providers
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* Add-ons */}
             {addons.length > 0 && (
@@ -1688,31 +1832,21 @@ const ProviderBooking = () => {
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold">
-                                {(addon as any).addons.name}
-                              </h3>
-                              {selectedServiceId &&
-                                (
-                                  addon as any
-                                ).addons?.service_addon_eligibility?.some(
-                                  (eligibility: any) =>
-                                    eligibility.service_id ===
-                                      selectedServiceId &&
-                                    eligibility.is_recommended,
-                                ) && (
-                                  <Badge className="bg-green-100 text-green-800 text-xs">
-                                    Recommended
-                                  </Badge>
-                                )}
+                              <h3 className="font-semibold">{addon.name}</h3>
+                              {addon.is_recommended && (
+                                <Badge className="bg-green-100 text-green-800 text-xs">
+                                  Recommended
+                                </Badge>
+                              )}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">
-                              {(addon as any).addons.description}
+                              {addon.description}
                             </p>
                           </div>
-                          {(addon as any).addons.image_url && (
+                          {addon.image_url && (
                             <img
-                              src={(addon as any).addons.image_url}
-                              alt={(addon as any).addons.name}
+                              src={addon.image_url}
+                              alt={addon.name}
                               className="w-16 h-16 object-cover rounded ml-4"
                             />
                           )}
@@ -1722,7 +1856,7 @@ const ProviderBooking = () => {
                           <div className="flex items-center">
                             <DollarSign className="h-4 w-4 mr-1 text-gray-500" />
                             <span className="font-semibold">
-                              ${addon.custom_price}
+                              ${addon.price}
                             </span>
                           </div>
 
@@ -1756,120 +1890,7 @@ const ProviderBooking = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Service Location */}
-            {selectedLocation && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-roam-blue" />
-                    Service Location
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-sm">
-                    <div className="font-medium text-gray-900">
-                      {selectedLocation.address_line1 ||
-                        selectedLocation.street_address}
-                    </div>
-                    {selectedLocation.address_line2 && (
-                      <div className="text-gray-600">
-                        {selectedLocation.address_line2}
-                      </div>
-                    )}
-                    <div className="text-gray-600">
-                      {selectedLocation.city}, {selectedLocation.state}{" "}
-                      {selectedLocation.postal_code}
-                    </div>
-                    {selectedLocation.country &&
-                      selectedLocation.country !== "US" && (
-                        <div className="text-gray-600">
-                          {selectedLocation.country}
-                        </div>
-                      )}
-                  </div>
-                  <div className="mt-3 pt-3 border-t">
-                    <p className="text-xs text-gray-500">
-                      Service will be provided at this location
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Booking Summary */}
-            <Card className="sticky top-6">
-              <CardHeader>
-                <CardTitle>Booking Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {selectedItems.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4">
-                    No items selected
-                  </p>
-                ) : (
-                  <div className="space-y-3">
-                    {selectedItems.map((item, index) => (
-                      <div
-                        key={`${item.type}-${item.id}-${index}`}
-                        className="flex justify-between items-center"
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">{item.name}</p>
-                        </div>
-                        <div className="text-sm font-medium">
-                          ${item.price.toFixed(2)}
-                        </div>
-                      </div>
-                    ))}
-
-                    <Separator />
-
-                    <div className="flex justify-between items-center">
-                      <span>Subtotal</span>
-                      <span>${getSubtotal().toFixed(2)}</span>
-                    </div>
-
-                    {promotionData && (
-                      <div className="flex justify-between items-center text-green-600">
-                        <span className="flex items-center">
-                          <Badge
-                            variant="secondary"
-                            className="mr-2 text-xs bg-green-100 text-green-800"
-                          >
-                            {promotionData.promo_code}
-                          </Badge>
-                          Promotion Discount ({promotionData.savings_amount}%
-                          off)
-                        </span>
-                        <span className="font-semibold">
-                          -${getDiscountAmount().toFixed(2)}
-                        </span>
-                      </div>
-                    )}
-
-
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>Platform Fees (15%)</span>
-                      <span>${getPlatformFees().toFixed(2)}</span>
-                    </div>
-
-                    <Separator />
-
-                    <div className="flex justify-between items-center font-semibold">
-                      <span>Total</span>
-                      <span>${getTotalAmount().toFixed(2)}</span>
-                    </div>
-
-                    <Button className="w-full mt-4" onClick={openBookingModal}>
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Book Now
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+          <div className="space-y-6"></div>
         </div>
       </div>
 

@@ -25,7 +25,7 @@ You need to set these environment variables using the DevServerControl tool:
 4. **Get the Service SID**: Copy the Service SID (starts with `IS...`)
 5. **Set Environment Variable**: Use the DevServerControl tool to set:
    ```
-   VITE_TWILIO_CONVERSATIONS_SERVICE_SID=ISxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   VITE_TWILIO_CONVERSATIONS_SERVICE_SID=IS5069b5cf49b04c40a9174548f5b1470e
    ```
 
 ## How to Set Environment Variables
