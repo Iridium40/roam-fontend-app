@@ -1,5 +1,11 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import twilio from 'twilio';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabaseUrl = process.env.VITE_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers
@@ -24,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('Twilio Conversations API called with action:', req.body?.action);
     console.log('Request body:', JSON.stringify(req.body, null, 2));
     
-    const { action, conversationSid, participantIdentity, message, bookingId, userRole, userName, participants } = req.body;
+    const { action, conversationSid, participantIdentity, message, bookingId, userRole, userName, participants, userId, userType } = req.body;
 
     const accountSid = process.env.VITE_TWILIO_ACCOUNT_SID;
     const authToken = process.env.VITE_TWILIO_AUTH_TOKEN;
@@ -85,18 +91,60 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           });
         }
 
+        // Store conversation in Supabase
+        try {
+          const { error: dbError } = await supabase
+            .from('conversations')
+            .insert({
+              id: conversation.sid,
+              booking_id: bookingId,
+              friendly_name: conversationFriendlyName,
+              status: 'active',
+              created_at: new Date().toISOString()
+            });
+
+          if (dbError) {
+            console.error('Error storing conversation in database:', dbError);
+            // Don't fail the request, but log the error
+          }
+        } catch (dbError) {
+          console.error('Error storing conversation in database:', dbError);
+        }
+
         // Add participants to the conversation
         const participantPromises = participants.map(async (participant: any) => {
           try {
-            return await conversationsService.conversations(conversation.sid)
+            const twilioParticipant = await conversationsService.conversations(conversation.sid)
               .participants.create({
                 identity: participant.identity,
                 attributes: JSON.stringify({
                   role: participant.role,
                   name: participant.name,
-                  userId: participant.userId
+                  userId: participant.userId,
+                  userType: participant.userType
                 })
               });
+
+            // Store participant in Supabase
+            try {
+              const { error: participantDbError } = await supabase
+                .from('conversation_participants')
+                .insert({
+                  conversation_id: conversation.sid,
+                  user_id: participant.userId, // auth.users.id
+                  user_type: participant.userType, // 'provider' or 'customer'
+                  participant_sid: twilioParticipant.sid,
+                  created_at: new Date().toISOString()
+                });
+
+              if (participantDbError) {
+                console.error('Error storing participant in database:', participantDbError);
+              }
+            } catch (participantDbError) {
+              console.error('Error storing participant in database:', participantDbError);
+            }
+
+            return twilioParticipant;
           } catch (error: any) {
             // If participant already exists, that's okay
             if (error.code === 50433) {
@@ -122,8 +170,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       case 'send-message': {
-        if (!conversationSid || !message || !participantIdentity) {
-          return res.status(400).json({ error: 'Conversation SID, message, and participant identity are required' });
+        if (!conversationSid || !message || !participantIdentity || !userId) {
+          return res.status(400).json({ error: 'Conversation SID, message, participant identity, and user ID are required' });
         }
 
         const messageResponse = await conversationsService.conversations(conversationSid)
@@ -133,9 +181,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             attributes: JSON.stringify({
               userRole,
               userName,
+              userId,
               timestamp: new Date().toISOString()
             })
           });
+
+        // Store message notification in Supabase
+        try {
+          const { error: notificationError } = await supabase
+            .from('message_notifications')
+            .insert({
+              conversation_id: conversationSid,
+              user_id: userId, // auth.users.id
+              message_id: messageResponse.sid,
+              is_read: false,
+              created_at: new Date().toISOString()
+            });
+
+          if (notificationError) {
+            console.error('Error storing message notification:', notificationError);
+          }
+        } catch (notificationError) {
+          console.error('Error storing message notification:', notificationError);
+        }
 
         return res.status(200).json({
           success: true,
@@ -170,38 +238,72 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       case 'get-conversations': {
-        if (!participantIdentity) {
-          return res.status(400).json({ error: 'Participant identity is required' });
+        if (!userId) {
+          return res.status(400).json({ error: 'User ID is required' });
         }
 
-        // Get user's conversations
-        const userConversations = await conversationsService.users(participantIdentity)
-          .userConversations.list();
+        // Get user's conversations from Supabase
+        const { data: userConversations, error: dbError } = await supabase
+          .from('conversation_participants')
+          .select(`
+            conversation_id,
+            user_type,
+            conversations (
+              id,
+              booking_id,
+              friendly_name,
+              status,
+              created_at
+            )
+          `)
+          .eq('user_id', userId);
 
+        if (dbError) {
+          console.error('Error fetching user conversations from database:', dbError);
+          return res.status(500).json({ error: 'Failed to fetch conversations' });
+        }
+
+        // Get additional details from Twilio for each conversation
         const conversationsWithDetails = await Promise.all(
           userConversations.map(async (userConv) => {
-            const conversation = await conversationsService.conversations(userConv.conversationSid).fetch();
-            const lastMessage = await conversationsService.conversations(userConv.conversationSid)
-              .messages.list({ limit: 1, order: 'desc' });
+            try {
+              const conversation = await conversationsService.conversations(userConv.conversation_id).fetch();
+              const lastMessage = await conversationsService.conversations(userConv.conversation_id)
+                .messages.list({ limit: 1, order: 'desc' });
 
-            return {
-              sid: conversation.sid,
-              friendlyName: conversation.friendlyName,
-              attributes: conversation.attributes ? JSON.parse(conversation.attributes) : {},
-              lastMessage: lastMessage.length > 0 ? {
-                body: lastMessage[0].body,
-                author: lastMessage[0].author,
-                dateCreated: lastMessage[0].dateCreated
-              } : null,
-              unreadMessagesCount: userConv.unreadMessagesCount,
-              lastReadMessageIndex: userConv.lastReadMessageIndex
-            };
+              // Get unread count from Supabase
+              const { count: unreadCount } = await supabase
+                .from('message_notifications')
+                .select('*', { count: 'exact', head: true })
+                .eq('conversation_id', userConv.conversation_id)
+                .eq('user_id', userId)
+                .eq('is_read', false);
+
+              return {
+                sid: conversation.sid,
+                friendlyName: conversation.friendlyName,
+                attributes: conversation.attributes ? JSON.parse(conversation.attributes) : {},
+                lastMessage: lastMessage.length > 0 ? {
+                  body: lastMessage[0].body,
+                  author: lastMessage[0].author,
+                  dateCreated: lastMessage[0].dateCreated
+                } : null,
+                unreadMessagesCount: unreadCount || 0,
+                userType: userConv.user_type
+              };
+            } catch (error) {
+              console.error('Error fetching conversation details:', error);
+              return null;
+            }
           })
         );
 
+        // Filter out null results
+        const validConversations = conversationsWithDetails.filter(conv => conv !== null);
+
         return res.status(200).json({
           success: true,
-          conversations: conversationsWithDetails
+          conversations: validConversations
         });
       }
 
@@ -210,14 +312,54 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(400).json({ error: 'Conversation SID is required' });
         }
 
-        const participants = await conversationsService.conversations(conversationSid)
-          .participants.list();
+        // Get participants from Supabase with user details
+        const { data: participants, error: dbError } = await supabase
+          .from('conversation_participants')
+          .select(`
+            participant_sid,
+            user_id,
+            user_type,
+            created_at,
+            auth_users!inner (
+              id,
+              email
+            ),
+            providers!left (
+              first_name,
+              last_name,
+              image_url
+            ),
+            customer_profiles!left (
+              first_name,
+              last_name,
+              image_url
+            )
+          `)
+          .eq('conversation_id', conversationSid);
 
-        const formattedParticipants = participants.map(participant => ({
-          sid: participant.sid,
-          identity: participant.identity,
-          attributes: participant.attributes ? JSON.parse(participant.attributes) : {}
-        }));
+        if (dbError) {
+          console.error('Error fetching participants from database:', dbError);
+          return res.status(500).json({ error: 'Failed to fetch participants' });
+        }
+
+        const formattedParticipants = participants.map(participant => {
+          const userDetails = participant.user_type === 'provider' 
+            ? participant.providers 
+            : participant.customer_profiles;
+
+          return {
+            sid: participant.participant_sid,
+            identity: `${participant.user_type}-${participant.user_id}`,
+            userId: participant.user_id,
+            userType: participant.user_type,
+            attributes: {
+              role: participant.user_type,
+              name: userDetails ? `${userDetails.first_name} ${userDetails.last_name}` : 'Unknown',
+              imageUrl: userDetails?.image_url,
+              email: participant.auth_users.email
+            }
+          };
+        });
 
         return res.status(200).json({
           success: true,
@@ -226,18 +368,91 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       case 'mark-as-read': {
-        if (!conversationSid || !participantIdentity) {
-          return res.status(400).json({ error: 'Conversation SID and participant identity are required' });
+        if (!conversationSid || !userId) {
+          return res.status(400).json({ error: 'Conversation SID and user ID are required' });
         }
 
-        await conversationsService.conversations(conversationSid)
-          .participants(participantIdentity)
-          .update({
-            lastReadMessageIndex: -1 // Mark all messages as read
-          });
+        // Mark messages as read in Supabase
+        const { error: updateError } = await supabase
+          .from('message_notifications')
+          .update({ is_read: true })
+          .eq('conversation_id', conversationSid)
+          .eq('user_id', userId)
+          .eq('is_read', false);
+
+        if (updateError) {
+          console.error('Error marking messages as read:', updateError);
+          return res.status(500).json({ error: 'Failed to mark messages as read' });
+        }
 
         return res.status(200).json({
           success: true
+        });
+      }
+
+      case 'add-participant': {
+        if (!conversationSid || !userId || !userType) {
+          return res.status(400).json({ error: 'Conversation SID, user ID, and user type are required' });
+        }
+
+        // Get user details based on type
+        let userDetails;
+        if (userType === 'provider') {
+          const { data } = await supabase
+            .from('providers')
+            .select('first_name, last_name, image_url')
+            .eq('user_id', userId)
+            .single();
+          userDetails = data;
+        } else {
+          const { data } = await supabase
+            .from('customer_profiles')
+            .select('first_name, last_name, image_url')
+            .eq('user_id', userId)
+            .single();
+          userDetails = data;
+        }
+
+        if (!userDetails) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        const identity = `${userType}-${userId}`;
+        const participantName = `${userDetails.first_name} ${userDetails.last_name}`;
+
+        // Add participant to Twilio conversation
+        const participant = await conversationsService.conversations(conversationSid)
+          .participants.create({
+            identity,
+            attributes: JSON.stringify({
+              role: userType,
+              name: participantName,
+              userId,
+              userType
+            })
+          });
+
+        // Store participant in Supabase
+        const { error: dbError } = await supabase
+          .from('conversation_participants')
+          .insert({
+            conversation_id: conversationSid,
+            user_id: userId,
+            user_type: userType,
+            participant_sid: participant.sid,
+            created_at: new Date().toISOString()
+          });
+
+        if (dbError) {
+          console.error('Error storing participant in database:', dbError);
+          return res.status(500).json({ error: 'Failed to store participant' });
+        }
+
+        return res.status(200).json({
+          success: true,
+          participantSid: participant.sid,
+          identity,
+          name: participantName
         });
       }
 

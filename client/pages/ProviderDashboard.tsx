@@ -7342,10 +7342,10 @@ export default function ProviderDashboard() {
     }
   }, [provider, activeTab]);
 
-  // Fetch team providers when provider is available and providers tab is active
+  // Fetch team providers when user is available and providers tab is active
   useEffect(() => {
     if (
-      provider &&
+      user &&
       activeTab === "providers" &&
       teamProviders.length === 0 &&
       !providersLoading
@@ -7353,12 +7353,12 @@ export default function ProviderDashboard() {
       console.log("Auto-fetching team providers for active tab");
       fetchTeamProviders();
     }
-  }, [provider, activeTab]);
+  }, [user, activeTab]);
 
-  // Fetch provider add-ons when provider is available and add-ons tab is active
+  // Fetch provider add-ons when user is available and add-ons tab is active
   useEffect(() => {
     if (
-      provider &&
+      user &&
       activeTab === "addons" &&
       availableAddons.length === 0 &&
       !addonsLoading
@@ -7366,12 +7366,12 @@ export default function ProviderDashboard() {
       console.log("Auto-fetching provider add-ons for active tab");
       fetchProviderAddons();
     }
-  }, [provider, activeTab]);
+  }, [user, activeTab]);
 
-  // Fetch business services and add-ons when provider is available and services-addons tab is active
+  // Fetch business services and add-ons when user is available and services-addons tab is active
   useEffect(() => {
     if (
-      provider?.business_id &&
+      user?.business_id &&
       activeTab === "services-addons" &&
       allServices.length === 0 &&
       !businessServicesLoading &&
@@ -7380,7 +7380,7 @@ export default function ProviderDashboard() {
       console.log("Auto-fetching business services and add-ons for active tab");
       fetchBusinessServicesAndAddons();
     }
-  }, [provider, activeTab, businessServicesError]);
+  }, [user, activeTab, businessServicesError]);
 
   // Load tax info when financial tab is active
   useEffect(() => {
@@ -7421,19 +7421,19 @@ export default function ProviderDashboard() {
   // Load subscription data when subscription tab is active
   useEffect(() => {
     if (
-      provider?.business_id &&
+      user?.business_id &&
       isOwner &&
       (document.querySelector('[data-state="active"][value="subscription"]') ||
         window.location.hash === "#subscription")
     ) {
       loadCurrentSubscription();
     }
-  }, [provider?.business_id, isOwner]);
+  }, [user?.business_id, isOwner]);
 
   // Load provider services when provider-services tab is active
   useEffect(() => {
     if (
-      provider?.id &&
+      user?.id &&
       business?.id &&
       activeTab === "provider-services" &&
       !providerServicesLoading &&
@@ -7443,7 +7443,7 @@ export default function ProviderDashboard() {
     ) {
       loadProviderServices();
     }
-  }, [provider, business, activeTab]);
+  }, [user, business, activeTab]);
 
   const fetchDashboardData = async () => {
     if (!user) return;

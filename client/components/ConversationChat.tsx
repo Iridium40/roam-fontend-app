@@ -35,6 +35,7 @@ interface ConversationChatProps {
     service_name?: string;
     provider_name?: string;
     business_id?: string;
+    customer_id?: string; // Add customer_id for auth.users.id
   };
   conversationSid?: string;
 }
@@ -50,9 +51,11 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     sending,
     loadMessages,
     sendMessage,
-    findOrCreateBookingConversation,
+    createConversation,
     getUserIdentity,
-    loadParticipants
+    getUserType,
+    loadParticipants,
+    setActiveConversation
   } = useConversations();
 
   const [newMessage, setNewMessage] = useState('');
@@ -72,7 +75,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       conversationSid,
       activeConversationSid,
       user: user?.id,
-      provider: provider?.provider_role
+      userType: user?.provider_role ? 'provider' : 'customer'
     });
 
     if (isOpen && booking && !activeConversationSid) {
@@ -81,8 +84,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     } else if (isOpen && conversationSid) {
       console.log('Setting conversation SID from prop:', conversationSid);
       setActiveConversationSid(conversationSid);
-      loadMessages(conversationSid);
-      loadParticipants(conversationSid);
+      setActiveConversation(conversationSid);
     }
   }, [isOpen, booking, conversationSid]);
 
@@ -95,26 +97,23 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     
     if (activeConversationSid && activeConversationSid !== currentConversation) {
       console.log('Loading messages for conversation:', activeConversationSid);
-      loadMessages(activeConversationSid);
-      loadParticipants(activeConversationSid);
+      setActiveConversation(activeConversationSid);
     }
-  }, [activeConversationSid]);
+  }, [activeConversationSid, currentConversation, setActiveConversation]);
 
   const initializeBookingConversation = async () => {
     console.log('initializeBookingConversation called with:', {
       booking: booking?.id,
       user: user?.id,
-      providerRole: user?.provider_role
+      userType: user?.provider_role ? 'provider' : 'customer'
     });
 
-    if (!booking || !user || !user.provider_role) {
+    if (!booking || !user) {
       console.log('Missing required data:', { 
         booking: !!booking, 
-        user: !!user, 
-        hasProviderRole: !!user?.provider_role,
+        user: !!user,
         bookingId: booking?.id,
-        userId: user?.id,
-        providerRole: user?.provider_role
+        userId: user?.id
       });
       return;
     }
@@ -122,36 +121,45 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     console.log('Initializing booking conversation for:', booking.id);
 
     const userIdentity = getUserIdentity();
-    console.log('User identity:', userIdentity);
+    const userType = getUserType();
+    console.log('User identity:', userIdentity, 'User type:', userType);
+
+    if (!userIdentity || !userType) {
+      console.error('Failed to get user identity or type');
+      return;
+    }
 
     const bookingParticipants = [
       {
-        identity: userIdentity || '',
-        role: user.provider_role,
-        name: `${user.first_name} ${user.last_name}`,
-        userId: user.id
+        identity: userIdentity,
+        role: userType,
+        name: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
+        userId: user.id,
+        userType: userType
       }
     ];
 
     // Add customer if we have their info
-    if (booking.customer_email) {
+    if (booking.customer_id) {
       bookingParticipants.push({
-        identity: `customer-${booking.customer_email}`,
+        identity: `customer-${booking.customer_id}`,
         role: 'customer',
         name: booking.customer_name || 'Customer',
-        userId: booking.customer_email
+        userId: booking.customer_id,
+        userType: 'customer'
       });
     }
 
     console.log('Booking participants:', bookingParticipants);
 
     try {
-      console.log('Calling findOrCreateBookingConversation...');
-      const convSid = await findOrCreateBookingConversation(booking.id, bookingParticipants);
+      console.log('Calling createConversation...');
+      const convSid = await createConversation(booking.id, bookingParticipants);
       console.log('Conversation SID returned:', convSid);
       if (convSid) {
         console.log('Setting active conversation SID:', convSid);
         setActiveConversationSid(convSid);
+        setActiveConversation(convSid);
       } else {
         console.error('Failed to get conversation SID - returned null/undefined');
       }
@@ -163,9 +171,11 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !activeConversationSid || sending) return;
 
-    const success = await sendMessage(activeConversationSid, newMessage.trim());
-    if (success) {
+    try {
+      await sendMessage(activeConversationSid, newMessage.trim());
       setNewMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
     }
   };
 
@@ -185,7 +195,8 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
   };
 
   const getMessageAuthorInfo = (message: ConversationMessage) => {
-    const isCurrentUser = message.author === getUserIdentity();
+    const userIdentity = getUserIdentity();
+    const isCurrentUser = message.author === userIdentity;
     const attributes = message.attributes || {};
     
     return {
@@ -201,207 +212,172 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     };
   };
 
-  const getRoleBadgeColor = (role: string) => {
-    switch (role) {
-      case 'owner':
-        return 'bg-purple-100 text-purple-800';
-      case 'dispatcher':
-        return 'bg-blue-100 text-blue-800';
-      case 'provider':
-        return 'bg-green-100 text-green-800';
-      case 'customer':
-        return 'bg-orange-100 text-orange-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  const getParticipantInfo = (participant: any) => {
+    const userIdentity = getUserIdentity();
+    const isCurrentUser = participant.identity === userIdentity;
+    
+    return {
+      isCurrentUser,
+      name: participant.attributes?.name || participant.identity,
+      role: participant.attributes?.role || participant.userType || 'participant',
+      imageUrl: participant.attributes?.imageUrl,
+      initials: (participant.attributes?.name || participant.identity)
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2)
+    };
   };
 
-  if (!isOpen) return null;
+  // Debug info
+  const debugInfo = (
+    <div className="text-xs text-gray-500 mb-2">
+      Debug: activeConversationSid={activeConversationSid ? 'Set' : 'Not set'}, 
+      sending={sending ? 'Yes' : 'No'}, 
+      loading={loading ? 'Yes' : 'No'}
+      {booking && (
+        <div>
+          Booking ID: {booking.id}, 
+          User: {user?.id}, 
+          User Type: {user?.provider_role ? 'provider' : 'customer'}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[80vh] flex flex-col p-0">
-        <DialogHeader className="px-6 py-4 border-b">
-          <div className="flex items-center justify-between">
-            <div>
-              <DialogTitle className="flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-blue-600" />
-                {booking ? `Booking Chat - ${booking.service_name || 'Service'}` : 'Conversation'}
-              </DialogTitle>
-              {booking && (
-                <div className="text-sm text-gray-600 mt-1">
-                  Customer: {booking.customer_name || 'Unknown'} • 
-                  Booking ID: {booking.id}
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
-                <Users className="w-3 h-3 mr-1" />
-                {participants.length} participants
-              </Badge>
-              <Button variant="ghost" size="sm" onClick={onClose}>
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
+      <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5" />
+            {booking ? `Chat - ${booking.service_name || 'Booking'}` : 'Conversation'}
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 flex overflow-hidden">
-          {/* Messages Area */}
-          <div className="flex-1 flex flex-col">
-            {/* Messages */}
-            <ScrollArea className="flex-1 p-4">
-              {loading && messages.length === 0 ? (
-                <div className="flex items-center justify-center h-32 text-gray-500">
-                  <div className="text-center">
-                    <div className="animate-spin w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-2"></div>
-                    Loading messages...
-                  </div>
-                </div>
-              ) : messages.length === 0 ? (
-                <div className="flex items-center justify-center h-32 text-gray-500">
-                  <div className="text-center">
-                    <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p>No messages yet</p>
-                    <p className="text-xs">Start the conversation!</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {messages.map((message) => {
-                    const authorInfo = getMessageAuthorInfo(message);
-                    return (
-                      <div
-                        key={message.sid}
-                        className={`flex ${authorInfo.isCurrentUser ? 'justify-end' : 'justify-start'}`}
-                      >
+        {debugInfo}
+
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* Participants Info */}
+          <Card className="mb-4">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Participants ({participants.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="flex flex-wrap gap-2">
+                {participants.map((participant) => {
+                  const info = getParticipantInfo(participant);
+                  return (
+                    <Badge
+                      key={participant.sid}
+                      variant={info.isCurrentUser ? "default" : "secondary"}
+                      className="flex items-center gap-1"
+                    >
+                      <Avatar className="h-4 w-4">
+                        <AvatarImage src={info.imageUrl} />
+                        <AvatarFallback className="text-xs">
+                          {info.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      {info.name}
+                      {info.isCurrentUser && " (You)"}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Messages */}
+          <Card className="flex-1 flex flex-col min-h-0">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Messages</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col min-h-0 pt-0">
+              <ScrollArea className="flex-1">
+                <div className="space-y-4 p-4">
+                  {loading ? (
+                    <div className="text-center text-gray-500">Loading messages...</div>
+                  ) : messages.length === 0 ? (
+                    <div className="text-center text-gray-500">No messages yet. Start the conversation!</div>
+                  ) : (
+                    messages.map((message) => {
+                      const authorInfo = getMessageAuthorInfo(message);
+                      return (
                         <div
-                          className={`max-w-[70%] ${
-                            authorInfo.isCurrentUser
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-gray-100 text-gray-900'
-                          } rounded-lg px-4 py-2`}
+                          key={message.sid}
+                          className={`flex gap-3 ${
+                            authorInfo.isCurrentUser ? 'flex-row-reverse' : 'flex-row'
+                          }`}
                         >
-                          {!authorInfo.isCurrentUser && (
-                            <div className="flex items-center gap-2 mb-1">
-                              <Avatar className="w-5 h-5">
-                                <AvatarFallback className="text-xs">
-                                  {authorInfo.initials}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="text-xs font-medium">
-                                {authorInfo.name}
-                              </span>
-                              <Badge
-                                variant="secondary"
-                                className={`text-xs ${getRoleBadgeColor(authorInfo.role)}`}
-                              >
-                                {authorInfo.role}
-                              </Badge>
-                            </div>
-                          )}
-                          <p className="text-sm whitespace-pre-wrap">{message.body}</p>
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src="" />
+                            <AvatarFallback className="text-xs">
+                              {authorInfo.initials}
+                            </AvatarFallback>
+                          </Avatar>
                           <div
-                            className={`text-xs mt-1 ${
-                              authorInfo.isCurrentUser ? 'text-blue-100' : 'text-gray-500'
+                            className={`flex flex-col max-w-[70%] ${
+                              authorInfo.isCurrentUser ? 'items-end' : 'items-start'
                             }`}
                           >
-                            <Clock className="w-3 h-3 inline mr-1" />
-                            {formatMessageTime(message.dateCreated)}
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-sm font-medium">
+                                {authorInfo.name}
+                              </span>
+                              <Badge variant="outline" className="text-xs">
+                                {authorInfo.role}
+                              </Badge>
+                              <span className="text-xs text-gray-500">
+                                {formatMessageTime(message.dateCreated)}
+                              </span>
+                            </div>
+                            <div
+                              className={`rounded-lg px-3 py-2 text-sm ${
+                                authorInfo.isCurrentUser
+                                  ? 'bg-blue-500 text-white'
+                                  : 'bg-gray-100 text-gray-900'
+                              }`}
+                            >
+                              {message.body}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
-              )}
-            </ScrollArea>
+              </ScrollArea>
+            </CardContent>
+          </Card>
 
-            {/* Message Input */}
-            <div className="border-t p-4">
-              {/* Debug info */}
-              <div className="text-xs text-gray-500 mb-2">
-                Debug: activeConversationSid={activeConversationSid ? 'Set' : 'Not set'}, 
-                sending={sending ? 'Yes' : 'No'}, 
-                loading={loading ? 'Yes' : 'No'}
-                {booking && (
-                  <div>
-                    Booking ID: {booking.id}, 
-                    User: {user?.id}, 
-                    Provider: {user?.provider_role}
-                  </div>
-                )}
-              </div>
+          {/* Message Input */}
+          <Card className="mt-4">
+            <CardContent className="pt-4">
               <div className="flex gap-2">
                 <Input
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder={!activeConversationSid ? "Initializing conversation..." : "Type your message..."}
+                  placeholder="Type your message..."
                   disabled={sending || !activeConversationSid}
                   className="flex-1"
                 />
                 <Button
                   onClick={handleSendMessage}
                   disabled={!newMessage.trim() || sending || !activeConversationSid}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  size="icon"
                 >
-                  {sending ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4" />
-                  )}
+                  <Send className="h-4 w-4" />
                 </Button>
               </div>
-            </div>
-          </div>
-
-          {/* Participants Sidebar */}
-          <div className="w-64 border-l bg-gray-50 p-4">
-            <h3 className="font-medium mb-3 flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Participants ({participants.length})
-            </h3>
-            <div className="space-y-2">
-              {participants.map((participant) => {
-                const isCurrentUser = participant.identity === getUserIdentity();
-                const attrs = participant.attributes || {};
-                return (
-                  <div
-                    key={participant.sid}
-                    className={`flex items-center gap-2 p-2 rounded ${
-                      isCurrentUser ? 'bg-blue-50 border border-blue-200' : 'bg-white'
-                    }`}
-                  >
-                    <Avatar className="w-8 h-8">
-                      <AvatarFallback className="text-xs">
-                        {(attrs.name || participant.identity)
-                          .split(' ')
-                          .map(n => n[0])
-                          .join('')
-                          .toUpperCase()
-                          .substring(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {attrs.name || participant.identity}
-                        {isCurrentUser && ' (You)'}
-                      </p>
-                      <Badge
-                        variant="secondary"
-                        className={`text-xs ${getRoleBadgeColor(attrs.role || 'participant')}`}
-                      >
-                        {attrs.role || 'participant'}
-                      </Badge>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </DialogContent>
     </Dialog>
