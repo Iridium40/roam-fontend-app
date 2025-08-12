@@ -790,6 +790,8 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
+      {/* Announcement Popup */}
+      <AnnouncementPopup isCustomer={isCustomer} />
       {/* Google One Tap - only show when not authenticated */}
       {/* Google One Tap - temporarily disabled due to OAuth configuration issues */}
       {false && !isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
