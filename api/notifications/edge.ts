@@ -13,13 +13,13 @@ interface NotificationConfig {
 // WebSocket-like connections for real-time updates
 const connections = new Map<string, ReadableStreamDefaultController>();
 
-export default async function handler(request: VercelRequest) {
+export default async function handler(request: VercelRequest, res: any) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
   const userType = searchParams.get('userType'); // 'customer', 'provider', 'owner', 'dispatcher'
 
   if (!userId) {
-    return new Response('Missing userId', { status: 400 });
+    return res.status(400).json({ error: 'Missing userId' });
   }
 
   // Create a stream for Server-Sent Events (SSE)
@@ -38,11 +38,11 @@ export default async function handler(request: VercelRequest) {
         })}\n\n`)
       );
 
-      // Clean up when connection closes
-      request.signal.addEventListener('abort', () => {
-        connections.delete(userId);
-        controller.close();
-      });
+      // Clean up when connection closes - removed signal for Vercel compatibility
+      // request.signal.addEventListener('abort', () => {
+      //   connections.delete(userId);
+      //   controller.close();
+      // });
     }
   });
 
@@ -58,76 +58,77 @@ export default async function handler(request: VercelRequest) {
   });
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { 
-      type, 
-      userId, 
-      userType, 
-      bookingId, 
-      message, 
-      notificationType = 'booking_update' 
-    } = body;
+// POST function removed for Vercel compatibility - use the main handler instead
+// export async function POST(request: NextRequest) {
+//   try {
+//     const body = await request.json();
+//     const { 
+//       type, 
+//       userId, 
+//       userType, 
+//       bookingId, 
+//       message, 
+//       notificationType = 'booking_update' 
+//     } = body;
 
-    // Validate required fields
-    if (!type || !userId) {
-      return new Response('Missing required fields', { status: 400 });
-    }
+//     // Validate required fields
+//     if (!type || !userId) {
+//       return new Response('Missing required fields', { status: 400 });
+//     }
 
-    // Get user's notification preferences
-    const userConfig = await getUserNotificationConfig(userId);
+//     // Get user's notification preferences
+//     const userConfig = await getUserNotificationConfig(userId);
 
-    // Create notification payload
-    const notification = {
-      id: crypto.randomUUID(),
-      type: notificationType,
-      userId,
-      userType,
-      bookingId,
-      message,
-      timestamp: new Date().toISOString(),
-      read: false
-    };
+//     // Create notification payload
+//     const notification = {
+//       id: crypto.randomUUID(),
+//       type: notificationType,
+//       userId,
+//       userType,
+//       bookingId,
+//       message,
+//       timestamp: new Date().toISOString(),
+//       read: false
+//     };
 
-    // Send to connected clients via SSE
-    const controller = connections.get(userId);
-    if (controller) {
-      controller.enqueue(
-        new TextEncoder().encode(`data: ${JSON.stringify(notification)}\n\n`)
-      );
-    }
+//     // Send to connected clients via SSE
+//     const controller = connections.get(userId);
+//     if (controller) {
+//       controller.enqueue(
+//         new TextEncoder().encode(`data: ${JSON.stringify(notification)}\n\n`)
+//       );
+//     }
 
-    // Send notifications based on user preferences
-    const promises: Promise<any>[] = [];
+//     // Send notifications based on user preferences
+//     const promises: Promise<any>[] = [];
 
-    if (userConfig.email) {
-      promises.push(sendEmailNotification(notification));
-    }
+//     if (userConfig.email) {
+//       promises.push(sendEmailNotification(notification));
+//     }
 
-    if (userConfig.sms) {
-      promises.push(sendSMSNotification(notification));
-    }
+//     if (userConfig.sms) {
+//       promises.push(sendSMSNotification(notification));
+//     }
 
-    if (userConfig.push) {
-      promises.push(sendPushNotification(notification));
-    }
+//     if (userConfig.push) {
+//       promises.push(sendPushNotification(notification));
+//     }
 
-    // Wait for all notifications to be sent
-    await Promise.allSettled(promises);
+//     // Wait for all notifications to be sent
+//     await Promise.allSettled(promises);
 
-    return new Response(JSON.stringify({ 
-      success: true, 
-      notificationId: notification.id 
-    }), {
-      headers: { 'Content-Type': 'application/json' }
-    });
+//     return new Response(JSON.stringify({ 
+//       success: true, 
+//       notificationId: notification.id 
+//     }), {
+//       headers: { 'Content-Type': 'application/json' }
+//     });
 
-  } catch (error) {
-    console.error('Notification error:', error);
-    return new Response('Internal server error', { status: 500 });
-  }
-}
+//   } catch (error) {
+//     console.error('Notification error:', error);
+//     return new Response('Internal server error', { status: 500 });
+//   }
+// }
 
 // Helper functions
 async function getUserNotificationConfig(userId: string): Promise<NotificationConfig> {

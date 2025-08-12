@@ -8,9 +8,9 @@ const supabaseUrl = process.env.VITE_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-export default async function handler(request: VercelRequest) {
+export default async function handler(request: VercelRequest, res: any) {
   try {
-    const body = await request.json();
+    const body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body;
     const { 
       bookingId, 
       newStatus, 
@@ -22,10 +22,7 @@ export default async function handler(request: VercelRequest) {
 
     // Validate required fields
     if (!bookingId || !newStatus || !updatedBy) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), { 
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
     // Update booking status in Supabase
@@ -65,10 +62,7 @@ export default async function handler(request: VercelRequest) {
 
     if (updateError) {
       console.error('Error updating booking:', updateError);
-      return new Response(JSON.stringify({ error: 'Failed to update booking' }), { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return res.status(500).json({ error: 'Failed to update booking' });
     }
 
     // Create status update record
@@ -146,17 +140,15 @@ export default async function handler(request: VercelRequest) {
       }
     }
 
-    return new Response(JSON.stringify({ 
+    return res.status(200).json({ 
       success: true, 
       booking,
       notificationsSent: notifications.length 
-    }), {
-      headers: { 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
     console.error('Status update error:', error);
-    return new Response('Internal server error', { status: 500 });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -166,24 +158,24 @@ async function sendTwilioNotification(booking: any, status: string) {
   console.log('Sending Twilio notification for booking:', booking.id, 'status:', status);
 }
 
-// Webhook endpoint for external status updates
-export async function PUT(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { bookingId, status, source } = body;
+// Webhook endpoint for external status updates - removed for Vercel compatibility
+// export async function PUT(request: NextRequest) {
+//   try {
+//     const body = await request.json();
+//     const { bookingId, status, source } = body;
 
-    // Validate webhook signature if needed
-    // const signature = request.headers.get('x-webhook-signature');
-    // if (!verifyWebhookSignature(signature, body)) {
-    //   return new Response('Invalid signature', { status: 401 });
-    // }
+//     // Validate webhook signature if needed
+//     // const signature = request.headers.get('x-webhook-signature');
+//     // if (!verifyWebhookSignature(signature, body)) {
+//     //   return new Response('Invalid signature', { status: 401 });
+//     // }
 
-    // Process external status update
-    const response = await POST(request);
-    return response;
+//     // Process external status update
+//     const response = await POST(request);
+//     return response;
 
-  } catch (error) {
-    console.error('Webhook error:', error);
-    return new Response('Webhook processing failed', { status: 500 });
-  }
-}
+//   } catch (error) {
+//     console.error('Webhook error:', error);
+//     return new Response('Webhook processing failed', { status: 500 });
+//   }
+// }
