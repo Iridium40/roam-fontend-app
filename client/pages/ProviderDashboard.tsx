@@ -8914,26 +8914,26 @@ export default function ProviderDashboard() {
                                   </h3>
 
                                   {/* Provider Info */}
-                                  {booking.providers ? (
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <Users className="w-4 h-4 flex-shrink-0" />
-                                      <span className="text-sm text-foreground/60 truncate">
-                                        Provider: {booking.providers.first_name}{" "}
-                                        {booking.providers.last_name}
-                                      </span>
-                                    </div>
-                                  ) : (isOwner || isDispatcher) ? (
+                                  {(isOwner || isDispatcher) ? (
                                     <div className="flex items-center gap-2 mb-2">
                                       <Users className="w-4 h-4 flex-shrink-0" />
                                       <div className="flex-1">
                                         <Select
-                                          value=""
-                                          onValueChange={(providerId) => assignProvider(booking.id, providerId)}
+                                          value={booking.provider_id || ""}
+                                          onValueChange={(providerId) => {
+                                            if (providerId === "") {
+                                              // Unassign provider (set to null)
+                                              assignProvider(booking.id, null);
+                                            } else {
+                                              assignProvider(booking.id, providerId);
+                                            }
+                                          }}
                                         >
                                           <SelectTrigger className="h-8 text-sm">
                                             <SelectValue placeholder="Assign Provider..." />
                                           </SelectTrigger>
                                           <SelectContent>
+                                            <SelectItem value="">Unassigned</SelectItem>
                                             {allProviders.filter(p => p.is_active).map((provider) => (
                                               <SelectItem key={provider.id} value={provider.id}>
                                                 {provider.first_name} {provider.last_name}
@@ -8942,6 +8942,14 @@ export default function ProviderDashboard() {
                                           </SelectContent>
                                         </Select>
                                       </div>
+                                    </div>
+                                  ) : booking.providers ? (
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Users className="w-4 h-4 flex-shrink-0" />
+                                      <span className="text-sm text-foreground/60 truncate">
+                                        Provider: {booking.providers.first_name}{" "}
+                                        {booking.providers.last_name}
+                                      </span>
                                     </div>
                                   ) : (
                                     <div className="flex items-center gap-2 mb-2">
