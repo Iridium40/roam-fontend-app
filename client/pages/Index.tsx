@@ -1740,7 +1740,7 @@ export default function Index() {
 
                                   // If promotion has both business and service defaulted, start the booking flow
                                   if (promotion.business && promotion.service) {
-                                    return `/book-service/${promotion.service.id}?${baseParams}&business_id=${promotion.business.id}&auto_book=true`;
+                                    return `/book-service/${promotion.service.id}?${baseParams}&business_id=${promotion.business.id}`;
                                   }
                                   // If only business, go to business profile
                                   else if (promotion.business) {
