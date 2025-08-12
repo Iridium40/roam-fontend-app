@@ -2177,8 +2177,8 @@ export default function ProviderDashboard() {
   };
 
   const fetchLocations = async () => {
-    if (!provider) {
-      console.log("fetchLocations: No provider available");
+    if (!provider?.business_id) {
+      console.log("fetchLocations: No provider or business_id available");
       return;
     }
 
