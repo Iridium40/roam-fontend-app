@@ -1584,6 +1584,14 @@ export default function Index() {
             </p>
           </div>
 
+          <SpecialPromotions
+            isCustomer={isCustomer}
+            onAuthRequired={() => {
+              setAuthModalOpen(true);
+              setAuthModalTab('signup');
+            }}
+          />
+
           {specialPromotions.length > 0 ? (
             <div className="relative">
               {/* Navigation Arrows */}
