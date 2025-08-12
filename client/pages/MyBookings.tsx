@@ -1447,6 +1447,25 @@ export default function MyBookings() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Messaging Modal */}
+      <ConversationChat
+        isOpen={messagingModal}
+        onClose={handleCloseMessaging}
+        booking={
+          selectedBookingForMessaging
+            ? {
+                id: selectedBookingForMessaging.id,
+                customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
+                customer_email: currentUser?.email || "",
+                customer_phone: currentUser?.phone || "",
+                service_name: selectedBookingForMessaging.service || "Service",
+                provider_name: selectedBookingForMessaging.provider?.name || "Provider",
+                business_id: selectedBookingForMessaging.business_id || "",
+              }
+            : undefined
+        }
+      />
     </div>
   );
 }
@@ -1771,24 +1790,4 @@ function BookingCard({
   );
 }
 
-      {/* Messaging Modal */}
-      <ConversationChat
-        isOpen={messagingModal}
-        onClose={handleCloseMessaging}
-        booking={
-          selectedBookingForMessaging
-            ? {
-                id: selectedBookingForMessaging.id,
-                customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
-                customer_email: currentUser?.email || "",
-                customer_phone: currentUser?.phone || "",
-                service_name: selectedBookingForMessaging.service || "Service",
-                provider_name: selectedBookingForMessaging.provider?.name || "Provider",
-                business_id: selectedBookingForMessaging.business_id || "",
-              }
-            : undefined
-        }
-      />
-    </div>
-  );
-}
+
