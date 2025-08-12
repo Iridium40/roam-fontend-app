@@ -152,7 +152,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               const { error: participantDbError } = await supabase
                 .from('conversation_participants')
                 .insert({
-                  conversation_id: conversationMetadataId || conversation.sid, // Use metadata ID if available, fallback to Twilio SID
+                  conversation_id: conversationMetadataId, // Use the UUID from conversation_metadata
                   user_id: participant.userId, // auth.users.id
                   user_type: participant.userType, // 'provider' or 'customer'
                   twilio_participant_sid: twilioParticipant.sid,
@@ -258,15 +258,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(400).json({ error: 'User ID is required' });
         }
 
-        // Get user's conversations from Supabase with Twilio SIDs
+        // Get user's conversations from Supabase (simplified approach)
         const { data: userConversations, error: dbError } = await supabase
           .from('conversation_participants')
           .select(`
             conversation_id,
-            user_type,
-            conversation_metadata!inner (
-              twilio_conversation_sid
-            )
+            user_type
           `)
           .eq('user_id', userId);
 
@@ -281,12 +278,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const conversationsWithDetails = await Promise.all(
           userConversations.map(async (userConv) => {
             try {
-              const twilioConversationSid = userConv.conversation_metadata?.[0]?.twilio_conversation_sid;
-              if (!twilioConversationSid) {
+              // Get Twilio conversation SID from conversation_metadata
+              const { data: conversationMetadata } = await supabase
+                .from('conversation_metadata')
+                .select('twilio_conversation_sid')
+                .eq('id', userConv.conversation_id)
+                .single();
+
+              if (!conversationMetadata?.twilio_conversation_sid) {
                 console.error('No Twilio conversation SID found for conversation_id:', userConv.conversation_id);
                 return null;
               }
 
+              const twilioConversationSid = conversationMetadata.twilio_conversation_sid;
               const conversation = await conversationsService.conversations(twilioConversationSid).fetch();
               const lastMessage = await conversationsService.conversations(twilioConversationSid)
                 .messages.list({ limit: 1, order: 'desc' });
@@ -308,7 +312,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 userType: userConv.user_type
               };
             } catch (error) {
-              console.error('Error fetching conversation details for conversation_id:', userConv.conversation_id, 'twilio_sid:', userConv.conversation_metadata?.[0]?.twilio_conversation_sid, error);
+              console.error('Error fetching conversation details for conversation_id:', userConv.conversation_id, error);
               return null;
             }
           })
@@ -332,18 +336,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log('Getting participants for conversation:', conversationSid);
 
-        // Get participants from Supabase with user details using proper joins
+        // Get participants from Supabase (simplified query)
         const { data: participants, error: dbError } = await supabase
           .from('conversation_participants')
           .select(`
             twilio_participant_sid,
             user_id,
             user_type,
-            joined_at,
-            user:user_id (
-              id,
-              email
-            )
+            joined_at
           `)
           .eq('conversation_id', conversationSid);
 
@@ -358,12 +358,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(500).json({ error: 'Failed to fetch participants' });
         }
 
-        // Process participants with user details from join
+        // Process participants with user details fetched separately
         const formattedParticipants = await Promise.all(participants.map(async (participant) => {
           let userDetails: any = null;
-          const userEmail = participant.user?.[0]?.email || 'Unknown';
+          let userEmail = 'Unknown';
 
           try {
+            // Get user email from auth.users
+            const { data: authUser } = await supabase
+              .from('auth.users')
+              .select('email')
+              .eq('id', participant.user_id)
+              .single();
+
+            if (authUser) {
+              userEmail = authUser.email;
+            }
+
             // Get user details based on type
             if (participant.user_type === 'provider') {
               const { data: providerData } = await supabase
