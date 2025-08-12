@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 interface InstagramPost {
   id: string;
@@ -21,8 +21,8 @@ interface InstagramApiResponse {
 }
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: VercelRequest,
+  res: VercelResponse,
 ) {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");

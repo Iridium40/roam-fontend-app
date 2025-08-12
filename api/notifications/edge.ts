@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import type { VercelRequest } from "@vercel/node";
 
 export const runtime = 'edge';
 
@@ -13,7 +13,7 @@ interface NotificationConfig {
 // WebSocket-like connections for real-time updates
 const connections = new Map<string, ReadableStreamDefaultController>();
 
-export async function GET(request: NextRequest) {
+export default async function handler(request: VercelRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');
   const userType = searchParams.get('userType'); // 'customer', 'provider', 'owner', 'dispatcher'

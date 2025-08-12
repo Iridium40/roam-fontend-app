@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import type { VercelRequest } from "@vercel/node";
 import { createClient } from '@supabase/supabase-js';
 
 export const runtime = 'edge';
@@ -8,7 +8,7 @@ const supabaseUrl = process.env.VITE_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-export async function POST(request: NextRequest) {
+export default async function handler(request: VercelRequest) {
   try {
     const body = await request.json();
     const { 
@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!bookingId || !newStatus || !updatedBy) {
-      return new Response('Missing required fields', { status: 400 });
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), { 
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Update booking status in Supabase
@@ -62,7 +65,10 @@ export async function POST(request: NextRequest) {
 
     if (updateError) {
       console.error('Error updating booking:', updateError);
-      return new Response('Failed to update booking', { status: 500 });
+      return new Response(JSON.stringify({ error: 'Failed to update booking' }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Create status update record
