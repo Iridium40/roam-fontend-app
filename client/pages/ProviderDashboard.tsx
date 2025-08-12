@@ -7183,6 +7183,25 @@ export default function ProviderDashboard() {
             first_name,
             last_name,
             location_id
+          ),
+          customer_locations (
+            id,
+            location_name,
+            street_address,
+            unit_number,
+            city,
+            state,
+            zip_code,
+            access_instructions
+          ),
+          business_locations (
+            id,
+            location_name,
+            address_line1,
+            address_line2,
+            city,
+            state,
+            postal_code
           )
         `,
         )
@@ -7223,6 +7242,25 @@ export default function ProviderDashboard() {
               first_name,
               last_name,
               location_id
+            ),
+            customer_locations (
+              id,
+              location_name,
+              street_address,
+              unit_number,
+              city,
+              state,
+              zip_code,
+              access_instructions
+            ),
+            business_locations (
+              id,
+              location_name,
+              address_line1,
+              address_line2,
+              city,
+              state,
+              postal_code
             )
           `,
           )
