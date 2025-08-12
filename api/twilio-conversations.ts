@@ -258,12 +258,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(400).json({ error: 'User ID is required' });
         }
 
-        // Get user's conversations from Supabase
+        // Get user's conversations from Supabase with Twilio SIDs
         const { data: userConversations, error: dbError } = await supabase
           .from('conversation_participants')
           .select(`
             conversation_id,
-            user_type
+            user_type,
+            conversation_metadata!inner (
+              twilio_conversation_sid
+            )
           `)
           .eq('user_id', userId);
 
@@ -278,8 +281,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const conversationsWithDetails = await Promise.all(
           userConversations.map(async (userConv) => {
             try {
-              const conversation = await conversationsService.conversations(userConv.conversation_id).fetch();
-              const lastMessage = await conversationsService.conversations(userConv.conversation_id)
+              const twilioConversationSid = userConv.conversation_metadata?.[0]?.twilio_conversation_sid;
+              if (!twilioConversationSid) {
+                console.error('No Twilio conversation SID found for conversation_id:', userConv.conversation_id);
+                return null;
+              }
+
+              const conversation = await conversationsService.conversations(twilioConversationSid).fetch();
+              const lastMessage = await conversationsService.conversations(twilioConversationSid)
                 .messages.list({ limit: 1, order: 'desc' });
 
               // Note: message_notifications table might not exist yet, so we'll skip this for now
@@ -299,7 +308,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 userType: userConv.user_type
               };
             } catch (error) {
-              console.error('Error fetching conversation details for conversation_id:', userConv.conversation_id, error);
+              console.error('Error fetching conversation details for conversation_id:', userConv.conversation_id, 'twilio_sid:', userConv.conversation_metadata?.[0]?.twilio_conversation_sid, error);
               return null;
             }
           })
