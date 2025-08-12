@@ -239,8 +239,10 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       {booking && (
         <div>
           Booking ID: {booking.id}, 
-          User: {user?.id}, 
-          User Type: {user?.provider_role ? 'provider' : 'customer'}
+          User: {user?.id || 'No user ID'}, 
+          User Type: {user?.provider_role ? 'provider' : 'customer'},
+          User Data: {user ? JSON.stringify({id: user.id, first_name: user.first_name, last_name: user.last_name, provider_role: user.provider_role}) : 'No user data'},
+          Booking Data: {booking ? JSON.stringify({id: booking.id, customer_id: booking.customer_id, customer_name: booking.customer_name}) : 'No booking data'}
         </div>
       )}
     </div>
