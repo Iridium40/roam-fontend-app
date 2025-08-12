@@ -9409,6 +9409,22 @@ export default function ProviderDashboard() {
                               </div>
                             )}
 
+                            {/* Messaging Button - Show for confirmed and in-progress bookings */}
+                            {(booking.booking_status === "confirmed" ||
+                              booking.booking_status === "in_progress") && (
+                              <div className="mt-4">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
+                                  onClick={() => handleOpenMessaging(booking)}
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-2" />
+                                  Message Customer
+                                </Button>
+                              </div>
+                            )}
+
                             {booking.booking_status === "confirmed" &&
                               new Date(booking.booking_date) <=
                                 new Date(new Date().toDateString()) && (
