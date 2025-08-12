@@ -739,7 +739,7 @@ export default function Index() {
   }, [promotionalDeals]);
 
   const nextPromotionSlide = () => {
-    const maxSlide = Math.max(0, specialPromotions.length - 1);
+    const maxSlide = Math.max(0, promotionalDeals.length - 1);
     setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxSlide));
   };
 
@@ -1572,10 +1572,10 @@ export default function Index() {
             }}
           />
 
-          {specialPromotions.length > 0 ? (
+          {promotionalDeals.length > 0 ? (
             <div className="relative">
               {/* Navigation Arrows */}
-              {specialPromotions.length > 1 && (
+              {promotionalDeals.length > 1 && (
                 <>
                   <Button
                     variant="outline"
@@ -1591,7 +1591,7 @@ export default function Index() {
                     size="sm"
                     onClick={nextPromotionSlide}
                     disabled={
-                      currentPromotionSlide >= specialPromotions.length - 1
+                      currentPromotionSlide >= promotionalDeals.length - 1
                     }
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
@@ -1604,7 +1604,7 @@ export default function Index() {
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPromotionSlide * 100}%)`,
-                    width: `${specialPromotions.length * 100}%`,
+                    width: `${promotionalDeals.length * 100}%`,
                   }}
                 >
                   {promotionPages.map((page, pageIndex) => (

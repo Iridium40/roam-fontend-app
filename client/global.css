@@ -30,6 +30,7 @@
   .hover\:bg-roam-blue\/90:hover { background-color: hsl(220 43% 38% / 0.9) !important; }
   .group-hover\:text-roam-blue:hover { color: hsl(220 43% 38%) !important; }
   .data-\[state\=active\]\:bg-roam-blue[data-state="active"] { background-color: hsl(220 43% 38%) !important; }
+  .text-roam-warning { color: hsl(49 100% 65%) !important; }
 }
 
 /* Plaid Link Modal Fixes */
