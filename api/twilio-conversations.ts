@@ -353,8 +353,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const formattedParticipants = participants.map(participant => {
           const userDetails = participant.user_type === 'provider' 
-            ? participant.providers 
-            : participant.customer_profiles;
+            ? participant.providers?.[0] 
+            : participant.customer_profiles?.[0];
 
           return {
             sid: participant.participant_sid,
@@ -365,7 +365,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               role: participant.user_type,
               name: userDetails ? `${userDetails.first_name} ${userDetails.last_name}` : 'Unknown',
               imageUrl: userDetails?.image_url,
-              email: participant.auth_users.email
+              email: participant.auth_users?.email || 'Unknown'
             }
           };
         });

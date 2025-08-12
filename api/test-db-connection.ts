@@ -71,12 +71,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Test 4: Check if we can query with a specific user_id
     const testUserId = req.query.userId as string;
+    let userConversations: any[] | null = null;
+    let userError: any = null;
+    
     if (testUserId) {
       console.log('Testing query with user_id:', testUserId);
-      const { data: userConversations, error: userError } = await supabase
+      const result = await supabase
         .from('conversation_participants')
         .select('conversation_id, user_type')
         .eq('user_id', testUserId);
+      
+      userConversations = result.data;
+      userError = result.error;
 
       console.log('User conversations test result:', {
         hasData: !!userConversations,
