@@ -7580,8 +7580,8 @@ export default function ProviderDashboard() {
 
         bookingsData = result.data;
         bookingsError = result.error;
-      } else {
-        // Owner/Dispatcher can see all business bookings
+      } else if (providerData.business_id) {
+        // Owner/Dispatcher can see all business bookings (only if business_id exists)
         // First fetch all provider IDs for this business
         const { data: businessProviders, error: providersError } =
           await supabase
