@@ -786,6 +786,42 @@ export type Database = {
           created_at?: string;
         };
       };
+      // Announcements for customers, providers, and businesses
+      announcements: {
+        Row: {
+          id: string;
+          title: string;
+          content: string;
+          is_active: boolean;
+          created_at: string;
+          start_date: string | null;
+          end_date: string | null;
+          announcement_audience: Database["public"]["Enums"]["announcement_audience"] | null;
+          announcement_type: Database["public"]["Enums"]["announcement_type"] | null;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          content: string;
+          is_active?: boolean;
+          created_at?: string;
+          start_date?: string | null;
+          end_date?: string | null;
+          announcement_audience?: Database["public"]["Enums"]["announcement_audience"] | null;
+          announcement_type?: Database["public"]["Enums"]["announcement_type"] | null;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          content?: string;
+          is_active?: boolean;
+          created_at?: string;
+          start_date?: string | null;
+          end_date?: string | null;
+          announcement_audience?: Database["public"]["Enums"]["announcement_audience"] | null;
+          announcement_type?: Database["public"]["Enums"]["announcement_type"] | null;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
@@ -823,6 +859,8 @@ export type Database = {
       calendar_type: "google" | "outlook" | "apple";
       customer_communication_preference: "email" | "sms" | "push" | "all";
       customer_address_type: "home" | "work" | "other";
+      announcement_audience: "customer" | "provider" | "business" | "all";
+      announcement_type: "info" | "promotion" | "maintenance" | "warning" | "update";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -971,3 +1009,4 @@ export type ServiceAddon =
 export type Customer = Database["public"]["Tables"]["customers"]["Row"];
 export type CustomerAddress =
   Database["public"]["Tables"]["customer_addresses"]["Row"];
+export type Announcement = Database["public"]["Tables"]["announcements"]["Row"];

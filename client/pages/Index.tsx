@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import ShareModal from "@/components/ShareModal";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { AnnouncementPopup } from "@/components/AnnouncementPopup";
+import { SpecialPromotions } from "@/components/SpecialPromotions";
 import {
   Select,
   SelectContent,
@@ -256,8 +258,7 @@ export default function Index() {
           `,
           )
           .eq("is_active", true)
-          .eq("is_featured", true)
-          .limit(6);
+          .eq("is_featured", true);
 
         const { data: featuredServicesData, error: featuredError } =
           featuredServicesResponse;
@@ -728,7 +729,7 @@ export default function Index() {
     setCurrentPopularSlide((prev) => Math.max(prev - 1, 0));
   };
 
-  // Special Promotions: paginate into pages of 3
+  // Old promotions pagination logic (kept for existing database promotions if needed)
   const promotionPages = useMemo(() => {
     const pages: any[][] = [];
     for (let i = 0; i < promotionalDeals.length; i += 3) {
@@ -738,8 +739,8 @@ export default function Index() {
   }, [promotionalDeals]);
 
   const nextPromotionSlide = () => {
-    const maxPage = Math.max(0, promotionPages.length - 1);
-    setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxPage));
+    const maxSlide = Math.max(0, specialPromotions.length - 1);
+    setCurrentPromotionSlide((prev) => Math.min(prev + 1, maxSlide));
   };
 
   const prevPromotionSlide = () => {
@@ -789,6 +790,8 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
+      {/* Announcement Popup */}
+      <AnnouncementPopup isCustomer={isCustomer} />
       {/* Google One Tap - only show when not authenticated */}
       {/* Google One Tap - temporarily disabled due to OAuth configuration issues */}
       {false && !isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
@@ -1482,7 +1485,7 @@ export default function Index() {
                           <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
                               <span className="text-2xl font-bold text-roam-blue">
-                                {service.price}
+                                Starting at {service.price}
                               </span>
                             </div>
                             <Badge
@@ -1561,10 +1564,18 @@ export default function Index() {
             </p>
           </div>
 
-          {promotionalDeals.length > 0 ? (
+          <SpecialPromotions
+            isCustomer={isCustomer}
+            onAuthRequired={() => {
+              setAuthModalOpen(true);
+              setAuthModalTab("signup");
+            }}
+          />
+
+          {specialPromotions.length > 0 ? (
             <div className="relative">
               {/* Navigation Arrows */}
-              {promotionPages.length > 1 && (
+              {specialPromotions.length > 1 && (
                 <>
                   <Button
                     variant="outline"
@@ -1580,7 +1591,7 @@ export default function Index() {
                     size="sm"
                     onClick={nextPromotionSlide}
                     disabled={
-                      currentPromotionSlide >= promotionPages.length - 1
+                      currentPromotionSlide >= specialPromotions.length - 1
                     }
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
@@ -1593,7 +1604,7 @@ export default function Index() {
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPromotionSlide * 100}%)`,
-                    width: `${Math.max(1, promotionPages.length) * 100}%`,
+                    width: `${specialPromotions.length * 100}%`,
                   }}
                 >
                   {promotionPages.map((page, pageIndex) => (
