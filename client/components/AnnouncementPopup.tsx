@@ -3,18 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-
-interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  is_active: boolean;
-  created_at: string;
-  start_date: string | null;
-  end_date: string | null;
-  announcement_audience: string;
-  announcement_type: string;
-}
+import { Announcement } from "@/lib/database.types";
 
 interface AnnouncementPopupProps {
   isCustomer?: boolean;
