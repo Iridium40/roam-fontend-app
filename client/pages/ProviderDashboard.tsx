@@ -2787,7 +2787,9 @@ export default function ProviderDashboard() {
   // Calendar functionality
   const fetchCalendarBookings = async () => {
     if (!provider?.business_id) {
-      console.log("fetchCalendarBookings: No provider or business_id available");
+      console.log(
+        "fetchCalendarBookings: No provider or business_id available",
+      );
       return;
     }
 
@@ -6598,7 +6600,7 @@ export default function ProviderDashboard() {
     console.log("User type:", { isOwner, isDispatcher, isProvider });
 
     // Find the booking to check if it has a provider assigned
-    const booking = bookings.find(b => b.id === bookingId);
+    const booking = bookings.find((b) => b.id === bookingId);
     if (!booking) {
       toast({
         title: "Error",
@@ -6612,7 +6614,8 @@ export default function ProviderDashboard() {
     if (!booking.provider_id) {
       toast({
         title: "Provider Required",
-        description: "A provider must be assigned before confirming this booking.",
+        description:
+          "A provider must be assigned before confirming this booking.",
         variant: "destructive",
       });
       return;
@@ -6785,7 +6788,7 @@ export default function ProviderDashboard() {
     console.log("Complete booking called with ID:", bookingId);
 
     // Find the booking to check if it has a provider assigned
-    const booking = bookings.find(b => b.id === bookingId);
+    const booking = bookings.find((b) => b.id === bookingId);
     if (!booking) {
       toast({
         title: "Error",
@@ -6799,7 +6802,8 @@ export default function ProviderDashboard() {
     if (!booking.provider_id) {
       toast({
         title: "Provider Required",
-        description: "A provider must be assigned before completing this booking.",
+        description:
+          "A provider must be assigned before completing this booking.",
         variant: "destructive",
       });
       return;
@@ -6867,11 +6871,19 @@ export default function ProviderDashboard() {
   };
 
   // Assign provider to booking function
-  const assignProvider = async (bookingId: string, providerId: string | null) => {
-    console.log("Assign provider called with booking ID:", bookingId, "provider ID:", providerId);
+  const assignProvider = async (
+    bookingId: string,
+    providerId: string | null,
+  ) => {
+    console.log(
+      "Assign provider called with booking ID:",
+      bookingId,
+      "provider ID:",
+      providerId,
+    );
 
     // Find the booking to check its current status
-    const booking = bookings.find(b => b.id === bookingId);
+    const booking = bookings.find((b) => b.id === bookingId);
     if (!booking) {
       toast({
         title: "Error",
@@ -6882,7 +6894,10 @@ export default function ProviderDashboard() {
     }
 
     // Prevent provider changes for bookings that are not pending or confirmed
-    if (booking.booking_status !== "pending" && booking.booking_status !== "confirmed") {
+    if (
+      booking.booking_status !== "pending" &&
+      booking.booking_status !== "confirmed"
+    ) {
       toast({
         title: "Cannot Modify Provider",
         description: `Provider assignment cannot be changed for bookings with status: ${booking.booking_status}`,
@@ -6895,7 +6910,8 @@ export default function ProviderDashboard() {
     if (!providerId && booking.booking_status === "confirmed") {
       toast({
         title: "Cannot Unassign Provider",
-        description: "Cannot remove provider from a confirmed booking. Change status to pending first.",
+        description:
+          "Cannot remove provider from a confirmed booking. Change status to pending first.",
         variant: "destructive",
       });
       return;
@@ -6919,22 +6935,26 @@ export default function ProviderDashboard() {
           if (booking.id === bookingId) {
             if (providerId) {
               // Find the provider data from allProviders
-              const assignedProvider = allProviders.find(p => p.id === providerId);
+              const assignedProvider = allProviders.find(
+                (p) => p.id === providerId,
+              );
               return {
                 ...booking,
                 provider_id: providerId,
-                providers: assignedProvider ? {
-                  first_name: assignedProvider.first_name,
-                  last_name: assignedProvider.last_name,
-                  id: assignedProvider.id
-                } : null
+                providers: assignedProvider
+                  ? {
+                      first_name: assignedProvider.first_name,
+                      last_name: assignedProvider.last_name,
+                      id: assignedProvider.id,
+                    }
+                  : null,
               };
             } else {
               // Unassigning provider
               return {
                 ...booking,
                 provider_id: null,
-                providers: null
+                providers: null,
               };
             }
           }
@@ -6991,7 +7011,9 @@ export default function ProviderDashboard() {
     }
 
     if (!provider?.business_id) {
-      console.log("Not loading providers - no provider or business_id available");
+      console.log(
+        "Not loading providers - no provider or business_id available",
+      );
       return;
     }
 
@@ -7477,55 +7499,55 @@ export default function ProviderDashboard() {
         // Fetch recent business activity (only if business_id exists)
         if (providerData.business_id) {
           try {
-          const activityPromises = [
-            // Recent locations
-            supabase
-              .from("business_locations")
-              .select("location_name, created_at")
-              .eq("business_id", providerData.business_id)
-              .order("created_at", { ascending: false })
-              .limit(2),
+            const activityPromises = [
+              // Recent locations
+              supabase
+                .from("business_locations")
+                .select("location_name, created_at")
+                .eq("business_id", providerData.business_id)
+                .order("created_at", { ascending: false })
+                .limit(2),
 
-            // Recent team members
-            supabase
-              .from("providers")
-              .select("first_name, last_name, created_at")
-              .eq("business_id", providerData.business_id)
-              .order("created_at", { ascending: false })
-              .limit(2),
-          ];
+              // Recent team members
+              supabase
+                .from("providers")
+                .select("first_name, last_name, created_at")
+                .eq("business_id", providerData.business_id)
+                .order("created_at", { ascending: false })
+                .limit(2),
+            ];
 
-          const [locationsActivity, teamActivity] =
-            await Promise.all(activityPromises);
+            const [locationsActivity, teamActivity] =
+              await Promise.all(activityPromises);
 
-          const activities = [];
+            const activities = [];
 
-          // Add location activities
-          if (locationsActivity.data) {
-            locationsActivity.data.forEach((location) => {
-              activities.push({
-                action: "New location added",
-                details: location.location_name || "Business location",
-                time: formatTimeAgo(location.created_at),
-                icon: MapPin,
+            // Add location activities
+            if (locationsActivity.data) {
+              locationsActivity.data.forEach((location) => {
+                activities.push({
+                  action: "New location added",
+                  details: location.location_name || "Business location",
+                  time: formatTimeAgo(location.created_at),
+                  icon: MapPin,
+                });
               });
-            });
-          }
+            }
 
-          // Add team member activities
-          if (teamActivity.data) {
-            teamActivity.data.forEach((member) => {
-              activities.push({
-                action: "Team member added",
-                details: `${member.first_name} ${member.last_name} joined as Provider`,
-                time: formatTimeAgo(member.created_at),
-                icon: Users,
+            // Add team member activities
+            if (teamActivity.data) {
+              teamActivity.data.forEach((member) => {
+                activities.push({
+                  action: "Team member added",
+                  details: `${member.first_name} ${member.last_name} joined as Provider`,
+                  time: formatTimeAgo(member.created_at),
+                  icon: Users,
+                });
               });
-            });
-          }
+            }
 
-          // Sort by most recent and limit to 4
-          setRecentActivity(activities.slice(0, 4));
+            // Sort by most recent and limit to 4
+            setRecentActivity(activities.slice(0, 4));
           } catch (activityError) {
             console.error("Error fetching recent activity:", activityError);
           }
@@ -7642,39 +7664,38 @@ export default function ProviderDashboard() {
 
         // Fetch business metrics using correct business_id from provider (only if business_id exists)
         if (providerData.business_id) {
-          const [locationsResult, teamResult, servicesResult] = await Promise.all(
-          [
-            // Count active business locations
-            supabase
-              .from("business_locations")
-              .select("id", { count: "exact" })
-              .eq("business_id", providerData.business_id)
-              .eq("is_active", true),
+          const [locationsResult, teamResult, servicesResult] =
+            await Promise.all([
+              // Count active business locations
+              supabase
+                .from("business_locations")
+                .select("id", { count: "exact" })
+                .eq("business_id", providerData.business_id)
+                .eq("is_active", true),
 
-            // Count team members (providers) for this business
-            supabase
-              .from("providers")
-              .select("id", { count: "exact" })
-              .eq("business_id", providerData.business_id)
-              .eq("is_active", true),
+              // Count team members (providers) for this business
+              supabase
+                .from("providers")
+                .select("id", { count: "exact" })
+                .eq("business_id", providerData.business_id)
+                .eq("is_active", true),
 
-            // Count services offered by providers in this business
-            supabase
-              .from("provider_services")
-              .select("service_id", { count: "exact" })
-              .in(
-                "provider_id",
-                (
-                  await supabase
-                    .from("providers")
-                    .select("id")
-                    .eq("business_id", providerData.business_id)
-                    .eq("is_active", true)
-                ).data?.map((p) => p.id) || [],
-              )
-              .eq("is_active", true),
-          ],
-        );
+              // Count services offered by providers in this business
+              supabase
+                .from("provider_services")
+                .select("service_id", { count: "exact" })
+                .in(
+                  "provider_id",
+                  (
+                    await supabase
+                      .from("providers")
+                      .select("id")
+                      .eq("business_id", providerData.business_id)
+                      .eq("is_active", true)
+                  ).data?.map((p) => p.id) || [],
+                )
+                .eq("is_active", true),
+            ]);
 
           setBusinessMetrics({
             activeLocations: locationsResult.count || 0,
@@ -8712,18 +8733,32 @@ export default function ProviderDashboard() {
                                         <h3 className="font-semibold">
                                           {booking.services?.name || "Service"}
                                         </h3>
-                                        {(isOwner || isDispatcher) && (booking.booking_status === "pending" || booking.booking_status === "confirmed") ? (
+                                        {(isOwner || isDispatcher) &&
+                                        (booking.booking_status === "pending" ||
+                                          booking.booking_status ===
+                                            "confirmed") ? (
                                           <div className="flex items-center gap-2 mb-2">
                                             <Users className="w-4 h-4 flex-shrink-0" />
                                             <div className="flex-1">
                                               <Select
-                                                value={booking.provider_id || "unassigned"}
+                                                value={
+                                                  booking.provider_id ||
+                                                  "unassigned"
+                                                }
                                                 onValueChange={(providerId) => {
-                                                  if (providerId === "unassigned") {
+                                                  if (
+                                                    providerId === "unassigned"
+                                                  ) {
                                                     // Unassign provider (set to null)
-                                                    assignProvider(booking.id, null);
+                                                    assignProvider(
+                                                      booking.id,
+                                                      null,
+                                                    );
                                                   } else {
-                                                    assignProvider(booking.id, providerId);
+                                                    assignProvider(
+                                                      booking.id,
+                                                      providerId,
+                                                    );
                                                   }
                                                 }}
                                               >
@@ -8731,12 +8766,20 @@ export default function ProviderDashboard() {
                                                   <SelectValue placeholder="Assign Provider..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                  <SelectItem value="unassigned">Unassigned</SelectItem>
-                                                  {allProviders.filter(p => p.is_active).map((provider) => (
-                                                    <SelectItem key={provider.id} value={provider.id}>
-                                                      {provider.first_name} {provider.last_name}
-                                                    </SelectItem>
-                                                  ))}
+                                                  <SelectItem value="unassigned">
+                                                    Unassigned
+                                                  </SelectItem>
+                                                  {allProviders
+                                                    .filter((p) => p.is_active)
+                                                    .map((provider) => (
+                                                      <SelectItem
+                                                        key={provider.id}
+                                                        value={provider.id}
+                                                      >
+                                                        {provider.first_name}{" "}
+                                                        {provider.last_name}
+                                                      </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                               </Select>
                                             </div>
@@ -9006,18 +9049,25 @@ export default function ProviderDashboard() {
                                   </h3>
 
                                   {/* Provider Info */}
-                                  {(isOwner || isDispatcher) && (booking.booking_status === "pending" || booking.booking_status === "confirmed") ? (
+                                  {(isOwner || isDispatcher) &&
+                                  (booking.booking_status === "pending" ||
+                                    booking.booking_status === "confirmed") ? (
                                     <div className="flex items-center gap-2 mb-2">
                                       <Users className="w-4 h-4 flex-shrink-0" />
                                       <div className="flex-1">
                                         <Select
-                                          value={booking.provider_id || "unassigned"}
+                                          value={
+                                            booking.provider_id || "unassigned"
+                                          }
                                           onValueChange={(providerId) => {
                                             if (providerId === "unassigned") {
                                               // Unassign provider (set to null)
                                               assignProvider(booking.id, null);
                                             } else {
-                                              assignProvider(booking.id, providerId);
+                                              assignProvider(
+                                                booking.id,
+                                                providerId,
+                                              );
                                             }
                                           }}
                                         >
@@ -9025,12 +9075,20 @@ export default function ProviderDashboard() {
                                             <SelectValue placeholder="Assign Provider..." />
                                           </SelectTrigger>
                                           <SelectContent>
-                                            <SelectItem value="unassigned">Unassigned</SelectItem>
-                                            {allProviders.filter(p => p.is_active).map((provider) => (
-                                              <SelectItem key={provider.id} value={provider.id}>
-                                                {provider.first_name} {provider.last_name}
-                                              </SelectItem>
-                                            ))}
+                                            <SelectItem value="unassigned">
+                                              Unassigned
+                                            </SelectItem>
+                                            {allProviders
+                                              .filter((p) => p.is_active)
+                                              .map((provider) => (
+                                                <SelectItem
+                                                  key={provider.id}
+                                                  value={provider.id}
+                                                >
+                                                  {provider.first_name}{" "}
+                                                  {provider.last_name}
+                                                </SelectItem>
+                                              ))}
                                           </SelectContent>
                                         </Select>
                                       </div>
