@@ -6500,11 +6500,9 @@ export default function ProviderDashboard() {
     });
   };
 
-  const getFilteredBookings = () => {
-    let filtered = filterBookingsByDate(
-      bookings,
-      activeBookingTab as "present" | "future" | "past",
-    );
+  // Base filtering without date filtering (for use in tabs)
+  const getBaseFilteredBookings = () => {
+    let filtered = [...bookings];
 
     // For owners/dispatchers, filter by location and provider
     if ((isOwner || isDispatcher) && selectedProviderFilter !== "all") {
@@ -6520,15 +6518,9 @@ export default function ProviderDashboard() {
       );
     }
 
-    console.log("DEBUG - Total bookings before filters:", bookings.length);
-    console.log("DEBUG - After date filter:", filtered.length);
-    console.log("DEBUG - Search query:", `"${searchQuery}"`);
-
     // Filter by search query (booking reference and customer name)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
-      console.log("DEBUG - Applying search filter for:", query);
-      const beforeSearchCount = filtered.length;
       filtered = filtered.filter((booking) => {
         // Search in booking reference
         const bookingRef = booking.booking_reference?.toLowerCase() || "";
@@ -6550,14 +6542,22 @@ export default function ProviderDashboard() {
           customerEmail.includes(query)
         );
       });
-      console.log(
-        "DEBUG - After search filter:",
-        filtered.length,
-        "bookings found",
-      );
     }
 
-    console.log("DEBUG - Final filtered bookings:", filtered.length);
+    return filtered;
+  };
+
+  // Full filtering with date filtering (for non-tab views)
+  const getFilteredBookings = () => {
+    let filtered = filterBookingsByDate(
+      getBaseFilteredBookings(),
+      activeBookingTab as "present" | "future" | "past",
+    );
+
+    console.log("DEBUG - Total bookings:", bookings.length);
+    console.log("DEBUG - After all filters:", filtered.length);
+    console.log("DEBUG - Search query:", `"${searchQuery}"`);
+
     return filtered;
   };
 
@@ -8825,11 +8825,11 @@ export default function ProviderDashboard() {
                     >
                       <div className="space-y-4">
                         {filterBookingsByDate(
-                          getFilteredBookings(),
+                          getBaseFilteredBookings(),
                           tabValue as "present" | "future" | "past",
                         ).length > 0 ? (
                           filterBookingsByDate(
-                            getFilteredBookings(),
+                            getBaseFilteredBookings(),
                             tabValue as "present" | "future" | "past",
                           ).map((booking) => {
                             const statusConfig = getStatusBadge(
