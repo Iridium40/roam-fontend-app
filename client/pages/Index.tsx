@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import ShareModal from "@/components/ShareModal";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { AnnouncementPopup } from "@/components/AnnouncementPopup";
+import { SpecialPromotions } from "@/components/SpecialPromotions";
 import {
   Select,
   SelectContent,
