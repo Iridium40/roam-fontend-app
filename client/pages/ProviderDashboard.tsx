@@ -7161,17 +7161,22 @@ export default function ProviderDashboard() {
       const providerIds = businessProviders.map((p) => p.id);
 
       // First, get all business services to identify which services belong to this business
-      const { data: businessServices, error: businessServicesError } = await supabase
-        .from("business_services")
-        .select("service_id")
-        .eq("business_id", provider.business_id);
+      const { data: businessServices, error: businessServicesError } =
+        await supabase
+          .from("business_services")
+          .select("service_id")
+          .eq("business_id", provider.business_id);
 
       if (businessServicesError) {
-        console.error("Error loading business services:", businessServicesError);
+        console.error(
+          "Error loading business services:",
+          businessServicesError,
+        );
         return;
       }
 
-      const businessServiceIds = businessServices?.map(bs => bs.service_id) || [];
+      const businessServiceIds =
+        businessServices?.map((bs) => bs.service_id) || [];
 
       if (businessServiceIds.length === 0) {
         console.log("No services found for business");
@@ -7205,7 +7210,9 @@ export default function ProviderDashboard() {
           )
         `,
         )
-        .or(`provider_id.in.(${providerIds.join(",")}),and(provider_id.is.null,service_id.in.(${businessServiceIds.join(",")}))`)
+        .or(
+          `provider_id.in.(${providerIds.join(",")}),and(provider_id.is.null,service_id.in.(${businessServiceIds.join(",")}))`,
+        )
         .order("booking_date", { ascending: false })
         .limit(50);
 
@@ -7797,18 +7804,23 @@ export default function ProviderDashboard() {
           const providerIds = businessProviders.map((p) => p.id);
 
           // First, get all business services to identify which services belong to this business
-          const { data: businessServices, error: businessServicesError } = await supabase
-            .from("business_services")
-            .select("service_id")
-            .eq("business_id", providerData.business_id);
+          const { data: businessServices, error: businessServicesError } =
+            await supabase
+              .from("business_services")
+              .select("service_id")
+              .eq("business_id", providerData.business_id);
 
           if (businessServicesError) {
-            console.error("Error loading business services:", businessServicesError);
+            console.error(
+              "Error loading business services:",
+              businessServicesError,
+            );
             setError("Failed to fetch business services.");
             return;
           }
 
-          const businessServiceIds = businessServices?.map(bs => bs.service_id) || [];
+          const businessServiceIds =
+            businessServices?.map((bs) => bs.service_id) || [];
 
           if (businessServiceIds.length === 0) {
             console.log("No services found for business");
@@ -7852,7 +7864,9 @@ export default function ProviderDashboard() {
               )
             `,
               )
-              .or(`provider_id.in.(${providerIds.join(",")}),and(provider_id.is.null,service_id.in.(${businessServiceIds.join(",")}))`)
+              .or(
+                `provider_id.in.(${providerIds.join(",")}),and(provider_id.is.null,service_id.in.(${businessServiceIds.join(",")}))`,
+              )
               .order("created_at", { ascending: false })
               .limit(10);
 

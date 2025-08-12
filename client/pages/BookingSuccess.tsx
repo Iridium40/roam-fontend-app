@@ -1,9 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { CheckCircle, Calendar, MapPin, CreditCard, Home, FileText } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import {
+  CheckCircle,
+  Calendar,
+  MapPin,
+  CreditCard,
+  Home,
+  FileText,
+} from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 const BookingSuccess: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -11,8 +23,8 @@ const BookingSuccess: React.FC = () => {
   const { isCustomer } = useAuth();
   const [bookingDetails, setBookingDetails] = useState<any>(null);
 
-  const bookingId = searchParams.get('booking_id');
-  const paymentIntentId = searchParams.get('payment_intent');
+  const bookingId = searchParams.get("booking_id");
+  const paymentIntentId = searchParams.get("payment_intent");
 
   useEffect(() => {
     // In a real app, you might fetch booking details from the API
@@ -21,21 +33,21 @@ const BookingSuccess: React.FC = () => {
       setBookingDetails({
         id: bookingId,
         paymentIntentId: paymentIntentId,
-        status: 'confirmed'
+        status: "confirmed",
       });
     }
   }, [bookingId, paymentIntentId]);
 
   const handleViewBookings = () => {
     if (isCustomer) {
-      navigate('/customer/bookings');
+      navigate("/customer/bookings");
     } else {
-      navigate('/');
+      navigate("/");
     }
   };
 
   const handleGoHome = () => {
-    navigate('/home');
+    navigate("/home");
   };
 
   if (!bookingId) {
@@ -73,7 +85,8 @@ const BookingSuccess: React.FC = () => {
               Booking Confirmed!
             </h1>
             <p className="text-gray-600 mb-4">
-              Your payment has been processed successfully and your booking is confirmed.
+              Your payment has been processed successfully and your booking is
+              confirmed.
             </p>
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <p className="text-sm text-green-800">
@@ -104,11 +117,12 @@ const BookingSuccess: React.FC = () => {
               <div>
                 <h3 className="font-semibold">Confirmation Email</h3>
                 <p className="text-gray-600 text-sm">
-                  You'll receive a confirmation email with all booking details shortly.
+                  You'll receive a confirmation email with all booking details
+                  shortly.
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <div className="bg-blue-100 rounded-full p-2 mt-1">
                 <span className="text-blue-600 font-semibold text-sm">2</span>
@@ -116,11 +130,12 @@ const BookingSuccess: React.FC = () => {
               <div>
                 <h3 className="font-semibold">Provider Contact</h3>
                 <p className="text-gray-600 text-sm">
-                  The service provider will contact you within 24 hours to confirm details and schedule.
+                  The service provider will contact you within 24 hours to
+                  confirm details and schedule.
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <div className="bg-blue-100 rounded-full p-2 mt-1">
                 <span className="text-blue-600 font-semibold text-sm">3</span>
@@ -182,9 +197,14 @@ const BookingSuccess: React.FC = () => {
           <CardContent className="text-center p-6">
             <h3 className="font-semibold mb-2">Need Help?</h3>
             <p className="text-gray-600 text-sm mb-4">
-              If you have any questions about your booking, please don't hesitate to contact us.
+              If you have any questions about your booking, please don't
+              hesitate to contact us.
             </p>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/support')}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/support")}
+            >
               Contact Support
             </Button>
           </CardContent>

@@ -120,13 +120,18 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         .single();
 
       if (stripeIdError && stripeIdError.code !== "PGRST116") {
-        console.error("Error checking existing Stripe customer ID:", stripeIdError);
+        console.error(
+          "Error checking existing Stripe customer ID:",
+          stripeIdError,
+        );
         return;
       }
 
       // If the stripe_customer_id exists for a different user, log and return
       if (existingStripeId && existingStripeId.user_id !== customer.user_id) {
-        console.warn(`Stripe customer ID ${stripeCustomerId} is already associated with a different user`);
+        console.warn(
+          `Stripe customer ID ${stripeCustomerId} is already associated with a different user`,
+        );
         return;
       }
 
@@ -141,7 +146,10 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           .eq("user_id", customer.user_id);
 
         if (error) {
-          console.error("Error updating Stripe customer profile - Full error object:", error);
+          console.error(
+            "Error updating Stripe customer profile - Full error object:",
+            error,
+          );
           console.error("Error type:", typeof error);
           console.error("Error keys:", Object.keys(error || {}));
 
@@ -176,16 +184,22 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         // Create new profile with upsert to handle race conditions
         const { error } = await supabase
           .from("customer_stripe_profiles")
-          .upsert({
-            user_id: customer.user_id,
-            stripe_customer_id: stripeCustomerId,
-            stripe_email: customerEmail,
-          }, {
-            onConflict: 'user_id'
-          });
+          .upsert(
+            {
+              user_id: customer.user_id,
+              stripe_customer_id: stripeCustomerId,
+              stripe_email: customerEmail,
+            },
+            {
+              onConflict: "user_id",
+            },
+          );
 
         if (error) {
-          console.error("Error creating Stripe customer profile - Full error object:", error);
+          console.error(
+            "Error creating Stripe customer profile - Full error object:",
+            error,
+          );
           console.error("Error type:", typeof error);
           console.error("Error keys:", Object.keys(error || {}));
 
@@ -221,7 +235,10 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
         }
       }
     } catch (error: any) {
-      console.error("Error syncing Stripe customer ID - Full error object:", error);
+      console.error(
+        "Error syncing Stripe customer ID - Full error object:",
+        error,
+      );
       console.error("Error type:", typeof error);
       console.error("Error keys:", Object.keys(error || {}));
 
