@@ -6870,6 +6870,37 @@ export default function ProviderDashboard() {
   const assignProvider = async (bookingId: string, providerId: string | null) => {
     console.log("Assign provider called with booking ID:", bookingId, "provider ID:", providerId);
 
+    // Find the booking to check its current status
+    const booking = bookings.find(b => b.id === bookingId);
+    if (!booking) {
+      toast({
+        title: "Error",
+        description: "Booking not found.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Prevent provider changes for bookings that are not pending or confirmed
+    if (booking.booking_status !== "pending" && booking.booking_status !== "confirmed") {
+      toast({
+        title: "Cannot Modify Provider",
+        description: `Provider assignment cannot be changed for bookings with status: ${booking.booking_status}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Prevent unassigning provider from confirmed bookings
+    if (!providerId && booking.booking_status === "confirmed") {
+      toast({
+        title: "Cannot Unassign Provider",
+        description: "Cannot remove provider from a confirmed booking. Change status to pending first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from("bookings")
@@ -10228,7 +10259,7 @@ export default function ProviderDashboard() {
                               </span>
                               {businessDetailsForm.is_featured ? (
                                 <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 px-3 py-1 text-xs font-bold shadow-lg">
-                                  ⭐ FEATURED BUSINESS
+                                  �� FEATURED BUSINESS
                                 </Badge>
                               ) : (
                                 <Badge
