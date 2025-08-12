@@ -30,6 +30,10 @@
     {
       "source": "/api/bookings/status-update",
       "destination": "/api/bookings/status-update.ts"
+    },
+    {
+      "source": "/api/twilio-conversations",
+      "destination": "/api/twilio-conversations.ts"
     }
   ]
 }

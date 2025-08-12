@@ -68,27 +68,35 @@ export const useConversations = () => {
     name: string;
     userId: string;
   }>) => {
+    console.log('createConversation called with:', { bookingId, participants });
+    
     try {
       setLoading(true);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const requestBody = {
+        action: 'create-conversation',
+        bookingId,
+        participants
+      };
+      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'create-conversation',
-          bookingId,
-          participants
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to create conversation');
       }
 
+      console.log('Conversation created successfully, refreshing conversations list...');
       await loadConversations(); // Refresh conversations list
       
       return result.conversationSid;
@@ -103,7 +111,7 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, loadConversations]);
 
   // Load user's conversations
   const loadConversations = useCallback(async () => {
@@ -113,7 +121,7 @@ export const useConversations = () => {
     try {
       setLoading(true);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +156,7 @@ export const useConversations = () => {
     try {
       setLoading(true);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,7 +198,7 @@ export const useConversations = () => {
     try {
       setSending(true);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -288,7 +296,7 @@ export const useConversations = () => {
   // Load participants for a conversation
   const loadParticipants = useCallback(async (conversationSid: string) => {
     try {
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -322,7 +330,7 @@ export const useConversations = () => {
     if (!identity) return;
 
     try {
-      await fetch('/.netlify/functions/twilio-conversations', {
+      await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -348,17 +356,24 @@ export const useConversations = () => {
       userId: string;
     }>
   ) => {
+    console.log('findOrCreateBookingConversation called with:', { bookingId, bookingParticipants });
+    console.log('Current conversations:', conversations);
+    
     // First check if conversation already exists for this booking
     const existingConversation = conversations.find(conv => 
       conv.attributes.bookingId === bookingId
     );
 
     if (existingConversation) {
+      console.log('Found existing conversation:', existingConversation.sid);
       return existingConversation.sid;
     }
 
+    console.log('No existing conversation found, creating new one...');
     // Create new conversation
-    return await createConversation(bookingId, bookingParticipants);
+    const result = await createConversation(bookingId, bookingParticipants);
+    console.log('createConversation result:', result);
+    return result;
   }, [conversations, createConversation]);
 
   // Load conversations when user is available

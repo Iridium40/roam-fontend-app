@@ -66,9 +66,20 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
   // Initialize conversation when modal opens
   useEffect(() => {
+    console.log('ConversationChat useEffect triggered:', {
+      isOpen,
+      booking: booking?.id,
+      conversationSid,
+      activeConversationSid,
+      user: user?.id,
+      provider: provider?.provider_role
+    });
+
     if (isOpen && booking && !activeConversationSid) {
+      console.log('Initializing booking conversation...');
       initializeBookingConversation();
     } else if (isOpen && conversationSid) {
+      console.log('Setting conversation SID from prop:', conversationSid);
       setActiveConversationSid(conversationSid);
       loadMessages(conversationSid);
       loadParticipants(conversationSid);
@@ -77,23 +88,45 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
   // Load messages when active conversation changes
   useEffect(() => {
+    console.log('Active conversation changed:', {
+      activeConversationSid,
+      currentConversation
+    });
+    
     if (activeConversationSid && activeConversationSid !== currentConversation) {
+      console.log('Loading messages for conversation:', activeConversationSid);
       loadMessages(activeConversationSid);
       loadParticipants(activeConversationSid);
     }
   }, [activeConversationSid]);
 
   const initializeBookingConversation = async () => {
+    console.log('initializeBookingConversation called with:', {
+      booking: booking?.id,
+      user: user?.id,
+      provider: provider?.provider_role
+    });
+
     if (!booking || !user || !provider) {
-      console.log('Missing required data:', { booking, user, provider });
+      console.log('Missing required data:', { 
+        booking: !!booking, 
+        user: !!user, 
+        provider: !!provider,
+        bookingId: booking?.id,
+        userId: user?.id,
+        providerRole: provider?.provider_role
+      });
       return;
     }
 
     console.log('Initializing booking conversation for:', booking.id);
 
+    const userIdentity = getUserIdentity();
+    console.log('User identity:', userIdentity);
+
     const bookingParticipants = [
       {
-        identity: getUserIdentity() || '',
+        identity: userIdentity || '',
         role: provider.provider_role,
         name: `${user.first_name} ${user.last_name}`,
         userId: user.id
@@ -113,12 +146,14 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     console.log('Booking participants:', bookingParticipants);
 
     try {
+      console.log('Calling findOrCreateBookingConversation...');
       const convSid = await findOrCreateBookingConversation(booking.id, bookingParticipants);
-      console.log('Conversation SID:', convSid);
+      console.log('Conversation SID returned:', convSid);
       if (convSid) {
+        console.log('Setting active conversation SID:', convSid);
         setActiveConversationSid(convSid);
       } else {
-        console.error('Failed to get conversation SID');
+        console.error('Failed to get conversation SID - returned null/undefined');
       }
     } catch (error) {
       console.error('Error initializing conversation:', error);
