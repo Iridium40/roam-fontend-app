@@ -8639,7 +8639,7 @@ export default function ProviderDashboard() {
                                         <h3 className="font-semibold">
                                           {booking.services?.name || "Service"}
                                         </h3>
-                                        {(isOwner || isDispatcher) ? (
+                                        {(isOwner || isDispatcher) && (booking.booking_status === "pending" || booking.booking_status === "confirmed") ? (
                                           <div className="flex items-center gap-2 mb-2">
                                             <Users className="w-4 h-4 flex-shrink-0" />
                                             <div className="flex-1">
