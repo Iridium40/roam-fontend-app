@@ -1009,3 +1009,4 @@ export type ServiceAddon =
 export type Customer = Database["public"]["Tables"]["customers"]["Row"];
 export type CustomerAddress =
   Database["public"]["Tables"]["customer_addresses"]["Row"];
+export type Announcement = Database["public"]["Tables"]["announcements"]["Row"];
