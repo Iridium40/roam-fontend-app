@@ -6998,6 +6998,7 @@ export default function ProviderDashboard() {
           )
         `,
         )
+        .eq("business_id", provider.business_id)
         .or(`provider_id.in.(${providerIds.join(",")}),provider_id.is.null`)
         .order("booking_date", { ascending: false })
         .limit(50);
