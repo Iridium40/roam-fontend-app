@@ -7641,6 +7641,10 @@ export default function ProviderDashboard() {
           bookingsData = result.data;
           bookingsError = result.error;
         }
+      } else {
+        // Provider has no business_id - show empty bookings
+        bookingsData = [];
+        bookingsError = null;
       }
 
       if (bookingsData) {
