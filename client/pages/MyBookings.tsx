@@ -167,7 +167,7 @@ export default function MyBookings() {
                 email,
                 image_url
               ),
-              providers (
+              providers!provider_id (
                 id,
                 user_id,
                 first_name,
@@ -219,7 +219,7 @@ export default function MyBookings() {
                 email,
                 image_url
               ),
-              providers (
+              providers!provider_id (
                 id,
                 first_name,
                 last_name,
@@ -266,6 +266,25 @@ export default function MyBookings() {
             key === 'provider_user_id'
           );
           console.log("Potential provider-related fields:", providerFields);
+          
+          // Try to query providers directly to see if there are any
+          console.log("First booking provider_id value:", bookingsResponse.data[0].provider_id);
+          console.log("Provider_id type:", typeof bookingsResponse.data[0].provider_id);
+          
+          if (bookingsResponse.data[0].provider_id) {
+            const { data: providerData, error: providerError } = await supabase
+              .from('providers')
+              .select('*')
+              .eq('id', bookingsResponse.data[0].provider_id);
+            console.log("Direct provider query result:", { providerData, providerError });
+            
+            // Also try to get all providers to see if any exist
+            const { data: allProviders, error: allProvidersError } = await supabase
+              .from('providers')
+              .select('id, first_name, last_name')
+              .limit(5);
+            console.log("All providers sample:", { allProviders, allProvidersError });
+          }
         }
 
         // Check for authentication error
