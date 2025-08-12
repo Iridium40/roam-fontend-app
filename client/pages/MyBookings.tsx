@@ -249,6 +249,13 @@ export default function MyBookings() {
         }
 
         console.log("Bookings query response:", bookingsResponse);
+        
+        // Debug: Log the first booking to see what fields are returned
+        if (bookingsResponse.data && bookingsResponse.data.length > 0) {
+          console.log("First booking fields:", Object.keys(bookingsResponse.data[0]));
+          console.log("First booking provider_id:", bookingsResponse.data[0].provider_id);
+          console.log("First booking provider object:", bookingsResponse.data[0].providers);
+        }
 
         // Check for authentication error
         if (bookingsResponse.status === 401 && retryCount === 0) {
@@ -1735,12 +1742,15 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {/* Debug: Show booking status and provider_id */}
+            {/* Debug: Show booking status and provider relationship */}
             <div className="text-xs text-gray-500 mb-1">
-              Debug: Status = {booking.status}, Provider ID = {booking.provider_id || 'none'}
+              Debug: Status = {booking.status}, Provider ID = {booking.provider_id || 'none'}, 
+              Provider Object = {booking.providers ? 'exists' : 'none'}, 
+              Provider User ID = {booking.providers?.user_id || 'none'},
+              Button Should Show = {(booking.status === "confirmed" && booking.providers) ? 'yes' : 'no'}
             </div>
             
-            {booking.status === "confirmed" && booking.provider_id && (
+            {booking.status === "confirmed" && booking.providers && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
