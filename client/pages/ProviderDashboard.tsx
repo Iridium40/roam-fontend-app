@@ -6825,7 +6825,7 @@ export default function ProviderDashboard() {
   };
 
   // Assign provider to booking function
-  const assignProvider = async (bookingId: string, providerId: string) => {
+  const assignProvider = async (bookingId: string, providerId: string | null) => {
     console.log("Assign provider called with booking ID:", bookingId, "provider ID:", providerId);
 
     try {
@@ -6844,25 +6844,36 @@ export default function ProviderDashboard() {
       setBookings((prev) =>
         prev.map((booking) => {
           if (booking.id === bookingId) {
-            // Find the provider data from allProviders
-            const assignedProvider = allProviders.find(p => p.id === providerId);
-            return {
-              ...booking,
-              provider_id: providerId,
-              providers: assignedProvider ? {
-                first_name: assignedProvider.first_name,
-                last_name: assignedProvider.last_name,
-                id: assignedProvider.id
-              } : null
-            };
+            if (providerId) {
+              // Find the provider data from allProviders
+              const assignedProvider = allProviders.find(p => p.id === providerId);
+              return {
+                ...booking,
+                provider_id: providerId,
+                providers: assignedProvider ? {
+                  first_name: assignedProvider.first_name,
+                  last_name: assignedProvider.last_name,
+                  id: assignedProvider.id
+                } : null
+              };
+            } else {
+              // Unassigning provider
+              return {
+                ...booking,
+                provider_id: null,
+                providers: null
+              };
+            }
           }
           return booking;
         }),
       );
 
       toast({
-        title: "Provider Assigned",
-        description: "The provider has been assigned to this booking successfully.",
+        title: providerId ? "Provider Assigned" : "Provider Unassigned",
+        description: providerId
+          ? "The provider has been assigned to this booking successfully."
+          : "The provider has been unassigned from this booking.",
       });
     } catch (error: any) {
       console.error("Error assigning provider:", error);
@@ -6892,8 +6903,8 @@ export default function ProviderDashboard() {
       }
 
       toast({
-        title: "Error Assigning Provider",
-        description: `Failed to assign provider: ${errorMessage}`,
+        title: "Error Updating Provider Assignment",
+        description: `Failed to update provider assignment: ${errorMessage}`,
         variant: "destructive",
       });
     }
