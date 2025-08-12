@@ -40,7 +40,7 @@ interface ConversationChatProps {
 }
 
 const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: ConversationChatProps) => {
-  const { user, provider } = useAuth();
+  const { user } = useAuth();
   const {
     conversations,
     currentConversation,
@@ -104,17 +104,17 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     console.log('initializeBookingConversation called with:', {
       booking: booking?.id,
       user: user?.id,
-      provider: provider?.provider_role
+      providerRole: user?.provider_role
     });
 
-    if (!booking || !user || !provider) {
+    if (!booking || !user || !user.provider_role) {
       console.log('Missing required data:', { 
         booking: !!booking, 
         user: !!user, 
-        provider: !!provider,
+        hasProviderRole: !!user?.provider_role,
         bookingId: booking?.id,
         userId: user?.id,
-        providerRole: provider?.provider_role
+        providerRole: user?.provider_role
       });
       return;
     }
@@ -127,7 +127,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     const bookingParticipants = [
       {
         identity: userIdentity || '',
-        role: provider.provider_role,
+        role: user.provider_role,
         name: `${user.first_name} ${user.last_name}`,
         userId: user.id
       }
@@ -330,7 +330,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
                   <div>
                     Booking ID: {booking.id}, 
                     User: {user?.id}, 
-                    Provider: {provider?.provider_role}
+                    Provider: {user?.provider_role}
                   </div>
                 )}
               </div>

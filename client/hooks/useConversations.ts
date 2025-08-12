@@ -55,9 +55,9 @@ export const useConversations = () => {
 
   // Generate unique identity for current user
   const getUserIdentity = useCallback(() => {
-    if (!user || !provider) return null;
-    return `${provider.provider_role}-${user.id}`;
-  }, [user, provider]);
+    if (!user || !user.provider_role) return null;
+    return `${user.provider_role}-${user.id}`;
+  }, [user]);
 
   // Create a new conversation for a booking
   const createConversation = useCallback(async (bookingId: string, participants: Array<{
@@ -198,7 +198,7 @@ export const useConversations = () => {
   // Send a message
   const sendMessage = useCallback(async (conversationSid: string, message: string) => {
     const identity = getUserIdentity();
-    if (!identity || !user || !provider) return false;
+    if (!identity || !user || !user.provider_role) return false;
 
     try {
       setSending(true);
@@ -214,7 +214,7 @@ export const useConversations = () => {
           conversationSid,
           message,
           participantIdentity: identity,
-          userRole: provider.provider_role,
+          userRole: user.provider_role,
           userName: `${user.first_name} ${user.last_name}`
         }),
       });
@@ -233,7 +233,7 @@ export const useConversations = () => {
           body: message,
           dateCreated: result.dateCreated || new Date().toISOString(),
           attributes: {
-            userRole: provider.provider_role,
+            userRole: user.provider_role,
             userName: `${user.first_name} ${user.last_name}`,
             timestamp: new Date().toISOString()
           }
@@ -258,7 +258,7 @@ export const useConversations = () => {
     } finally {
       setSending(false);
     }
-  }, [getUserIdentity, user, provider, currentConversation, toast]);
+  }, [getUserIdentity, user, currentConversation, toast]);
 
   // Add participant to conversation
   const addParticipant = useCallback(async (conversationSid: string, participantIdentity: string, role: string, name: string) => {
@@ -381,7 +381,7 @@ export const useConversations = () => {
 
   // Load conversations when user is available
   useEffect(() => {
-    if (user && provider) {
+    if (user && user.provider_role) {
       // Delay loading conversations to prevent blocking initial render
       const timer = setTimeout(() => {
         loadConversations();
@@ -389,7 +389,7 @@ export const useConversations = () => {
       
       return () => clearTimeout(timer);
     }
-  }, [user, provider, loadConversations]);
+  }, [user, loadConversations]);
 
   return {
     conversations,
