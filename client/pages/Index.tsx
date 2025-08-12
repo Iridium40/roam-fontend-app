@@ -730,33 +730,14 @@ export default function Index() {
     setCurrentPopularSlide((prev) => Math.max(prev - 1, 0));
   };
 
-  // Special Promotions: Create two special static promotional cards
-  const specialPromotions = useMemo(() => [
-    {
-      id: 'special-1',
-      title: 'New Customer Special',
-      subtitle: '50% OFF First Service',
-      description: 'Welcome to ROAM! Get 50% off your first booking with any of our premium service providers.',
-      discount: '50% OFF',
-      code: 'WELCOME50',
-      imageUrl: 'https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=400',
-      backgroundColor: 'from-purple-500 to-blue-600',
-      validUntil: 'Limited Time Offer',
-      ctaText: 'Claim Offer'
-    },
-    {
-      id: 'special-2',
-      title: 'Weekend Wellness Deal',
-      subtitle: 'Book 2 Services, Get 1 Free',
-      description: 'Perfect for your weekend self-care routine. Book any two wellness services and get a third one completely free.',
-      discount: 'Buy 2 Get 1 FREE',
-      code: 'WEEKEND3',
-      imageUrl: 'https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=400',
-      backgroundColor: 'from-emerald-500 to-teal-600',
-      validUntil: 'Valid Weekends Only',
-      ctaText: 'Book Now'
+  // Old promotions pagination logic (kept for existing database promotions if needed)
+  const promotionPages = useMemo(() => {
+    const pages: any[][] = [];
+    for (let i = 0; i < promotionalDeals.length; i += 3) {
+      pages.push(promotionalDeals.slice(i, i + 3));
     }
-  ], []);
+    return pages;
+  }, [promotionalDeals]);
 
   const nextPromotionSlide = () => {
     const maxSlide = Math.max(0, specialPromotions.length - 1);
