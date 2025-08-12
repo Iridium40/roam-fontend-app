@@ -2213,8 +2213,8 @@ export default function ProviderDashboard() {
   };
 
   const fetchTeamProviders = async () => {
-    if (!provider) {
-      console.log("fetchTeamProviders: No provider available");
+    if (!provider?.business_id) {
+      console.log("fetchTeamProviders: No provider or business_id available");
       return;
     }
 
@@ -11004,7 +11004,7 @@ export default function ProviderDashboard() {
                         disabled={providersLoading}
                         size="sm"
                       >
-                        ���� Refresh
+                        ����� Refresh
                       </Button>
                     </CardTitle>
                   </CardHeader>
