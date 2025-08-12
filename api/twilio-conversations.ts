@@ -135,6 +135,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             // Store participant in Supabase
             try {
+              console.log('Storing participant in database:', {
+                conversation_id: conversation.sid,
+                user_id: participant.userId,
+                user_type: participant.userType,
+                participant_sid: twilioParticipant.sid
+              });
+
               const { error: participantDbError } = await supabase
                 .from('conversation_participants')
                 .insert({
@@ -147,6 +154,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
               if (participantDbError) {
                 console.error('Error storing participant in database:', participantDbError);
+              } else {
+                console.log('Successfully stored participant in database');
               }
             } catch (participantDbError) {
               console.error('Error storing participant in database:', participantDbError);
@@ -321,6 +330,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(400).json({ error: 'Conversation SID is required' });
         }
 
+        console.log('Getting participants for conversation:', conversationSid);
+
         // Get participants from Supabase with user details
         const { data: participants, error: dbError } = await supabase
           .from('conversation_participants')
@@ -346,6 +357,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           `)
           .eq('conversation_id', conversationSid);
 
+        console.log('Database query result:', {
+          participants: participants?.length || 0,
+          error: dbError,
+          conversationSid
+        });
+
         if (dbError) {
           console.error('Error fetching participants from database:', dbError);
           return res.status(500).json({ error: 'Failed to fetch participants' });
@@ -355,6 +372,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           const userDetails = participant.user_type === 'provider' 
             ? participant.providers?.[0] 
             : participant.customer_profiles?.[0];
+
+          console.log('Processing participant:', {
+            participant_sid: participant.participant_sid,
+            user_id: participant.user_id,
+            user_type: participant.user_type,
+            userDetails: userDetails,
+            auth_users: participant.auth_users
+          });
 
           return {
             sid: participant.participant_sid,
@@ -369,6 +394,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
           };
         });
+
+        console.log('Formatted participants:', formattedParticipants);
 
         return res.status(200).json({
           success: true,
