@@ -1602,7 +1602,7 @@ export default function Index() {
                     size="sm"
                     onClick={nextPromotionSlide}
                     disabled={
-                      currentPromotionSlide >= promotionPages.length - 1
+                      currentPromotionSlide >= specialPromotions.length - 1
                     }
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
