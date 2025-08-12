@@ -2786,8 +2786,8 @@ export default function ProviderDashboard() {
 
   // Calendar functionality
   const fetchCalendarBookings = async () => {
-    if (!provider) {
-      console.log("fetchCalendarBookings: No provider available");
+    if (!provider?.business_id) {
+      console.log("fetchCalendarBookings: No provider or business_id available");
       return;
     }
 
