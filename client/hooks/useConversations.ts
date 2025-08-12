@@ -96,7 +96,8 @@ export const useConversations = () => {
       }
 
       console.log('Conversation created successfully, refreshing conversations list...');
-      await loadConversations(); // Refresh conversations list
+      // Don't call loadConversations here to avoid circular dependency
+      // The caller should handle refreshing if needed
       
       return result.conversationSid;
     } catch (error: any) {
@@ -111,7 +112,7 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast, loadConversations]);
+  }, [toast]);
 
   // Load user's conversations
   const loadConversations = useCallback(async () => {
@@ -241,8 +242,8 @@ export const useConversations = () => {
         setMessages(prev => [...prev, newMessage]);
       }
 
-      // Refresh conversations to update last message
-      await loadConversations();
+      // Don't call loadConversations here to avoid circular dependency
+      // The caller should handle refreshing if needed
       
       return true;
     } catch (error: any) {
@@ -257,7 +258,7 @@ export const useConversations = () => {
     } finally {
       setSending(false);
     }
-  }, [getUserIdentity, user, provider, currentConversation, toast, loadConversations]);
+  }, [getUserIdentity, user, provider, currentConversation, toast]);
 
   // Add participant to conversation
   const addParticipant = useCallback(async (conversationSid: string, participantIdentity: string, role: string, name: string) => {
