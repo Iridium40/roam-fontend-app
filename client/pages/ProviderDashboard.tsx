@@ -7315,8 +7315,9 @@ export default function ProviderDashboard() {
           setBusinessHoursForm(initialHoursForm);
         }
 
-        // Fetch recent business activity
-        try {
+        // Fetch recent business activity (only if business_id exists)
+        if (providerData.business_id) {
+          try {
           const activityPromises = [
             // Recent locations
             supabase
@@ -7366,8 +7367,9 @@ export default function ProviderDashboard() {
 
           // Sort by most recent and limit to 4
           setRecentActivity(activities.slice(0, 4));
-        } catch (activityError) {
-          console.error("Error fetching recent activity:", activityError);
+          } catch (activityError) {
+            console.error("Error fetching recent activity:", activityError);
+          }
         }
 
         // Fetch business services using providerData directly (since setProvider is async)
