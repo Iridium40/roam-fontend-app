@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import ShareModal from "@/components/ShareModal";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { AnnouncementPopup } from "@/components/AnnouncementPopup";
-import { SpecialPromotions } from "@/components/SpecialPromotions";
 import {
   Select,
   SelectContent,
@@ -966,18 +965,16 @@ export default function Index() {
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <iframe
-            src="https://www.youtube.com/embed/Z0A84Ev5Waw?autoplay=1&mute=1&loop=1&playlist=Z0A84Ev5Waw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+            src="https://www.youtube.com/embed/Z0A84Ev5Waw?autoplay=1&mute=1&loop=1&playlist=Z0A84Ev5Waw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
             className="absolute inset-0 w-full h-full"
             style={{
               filter: "brightness(0.7)",
               pointerEvents: "none",
-              minWidth: "100%",
-              minHeight: "100%",
               width: "100vw",
-              height: "56.25vw", // 16:9 aspect ratio
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
+              height: "100vh",
+              objectFit: "cover",
+              objectPosition: "center",
+              transform: "scale(1.1)",
             }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
@@ -1552,7 +1549,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Promotional Deals */}
+      {/* Special Promotions */}
       <section className="py-12 bg-background/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
@@ -1564,18 +1561,10 @@ export default function Index() {
             </p>
           </div>
 
-          <SpecialPromotions
-            isCustomer={isCustomer}
-            onAuthRequired={() => {
-              setAuthModalOpen(true);
-              setAuthModalTab("signup");
-            }}
-          />
-
           {promotionalDeals.length > 0 ? (
             <div className="relative">
               {/* Navigation Arrows */}
-              {promotionalDeals.length > 1 && (
+              {promotionPages.length > 1 && (
                 <>
                   <Button
                     variant="outline"
@@ -1590,9 +1579,7 @@ export default function Index() {
                     variant="outline"
                     size="sm"
                     onClick={nextPromotionSlide}
-                    disabled={
-                      currentPromotionSlide >= promotionalDeals.length - 1
-                    }
+                    disabled={currentPromotionSlide >= promotionPages.length - 1}
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 border-roam-blue text-roam-blue hover:text-white shadow-lg disabled:opacity-50"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -1604,21 +1591,20 @@ export default function Index() {
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{
                     transform: `translateX(-${currentPromotionSlide * 100}%)`,
-                    width: `${promotionalDeals.length * 100}%`,
                   }}
                 >
                   {promotionPages.map((page, pageIndex) => (
                     <div
                       key={`promotion-page-${pageIndex}`}
-                      className="flex gap-3 sm:gap-4 lg:gap-6 w-full flex-none px-3"
+                      className="flex gap-6 w-full flex-none px-4"
                     >
-                      {page.map((promotion, index) => (
+                      {page.map((promotion) => (
                         <Card
                           key={promotion.id}
-                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
+                          className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-0 shadow-xl bg-white overflow-hidden rounded-3xl flex-shrink-0 w-full md:w-[calc(50%-12px)]"
                         >
-                          {/* Hero Section */}
-                          <div className="relative h-64 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/20 overflow-hidden">
+                          {/* Hero Image Section */}
+                          <div className="relative h-64 bg-gradient-to-br from-roam-yellow/20 via-roam-light-blue/10 to-roam-blue/5 overflow-hidden">
                             {promotion.imageUrl ? (
                               <img
                                 src={promotion.imageUrl}
@@ -1627,8 +1613,7 @@ export default function Index() {
                               />
                             ) : (
                               <div className="flex items-center justify-center h-full">
-                                {promotion.business &&
-                                promotion.business.logo ? (
+                                {promotion.business && promotion.business.logo ? (
                                   <div className="flex flex-col items-center space-y-3">
                                     <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white shadow-xl border-4 border-white">
                                       <img
@@ -1653,94 +1638,66 @@ export default function Index() {
                                 )}
                               </div>
                             )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
 
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                            {/* Floating Action Button */}
+                            <div className="absolute top-4 right-4">
+                              <FavoriteButton
+                                type="promotion"
+                                itemId={promotion.id}
+                                size="sm"
+                                variant="ghost"
+                                className="w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg border-0 text-gray-600 hover:text-red-500 hover:scale-110 transition-all backdrop-blur-sm"
+                              />
+                            </div>
 
-                            {/* Savings Badge - Top Right */}
+                            {/* Savings Badge - Bottom Right */}
                             {formatSavings(promotion) && (
-                              <div className="absolute top-4 right-4">
+                              <div className="absolute bottom-4 right-4">
                                 <div className="bg-red-500 text-white px-4 py-2 rounded-2xl shadow-lg font-bold text-lg">
                                   {formatSavings(promotion)}
                                 </div>
                               </div>
                             )}
 
-                            {/* Business Logo Overlay - Bottom Left (for image promotions) */}
-                            {promotion.imageUrl &&
-                              promotion.business &&
-                              promotion.business.logo && (
-                                <div className="absolute bottom-4 left-4">
-                                  <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-full shadow-lg">
-                                    <div className="w-8 h-8 rounded-full overflow-hidden">
-                                      <img
-                                        src={promotion.business.logo}
-                                        alt={promotion.business.name}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    </div>
-                                    <span className="text-sm font-bold text-gray-900">
-                                      {promotion.business.name}
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-
-                            {/* End Date Badge - Top Left */}
+                            {/* End Date Badge - Bottom Left */}
                             {promotion.endDate && (
-                              <div className="absolute top-4 left-4">
+                              <div className="absolute bottom-4 left-4">
                                 <div className="bg-white/95 text-roam-blue px-3 py-1.5 rounded-full shadow-lg font-medium text-sm backdrop-blur-sm">
                                   <Clock className="w-4 h-4 mr-1 inline" />
-                                  Ends{" "}
-                                  {new Date(
-                                    promotion.endDate,
-                                  ).toLocaleDateString()}
+                                  Ends {new Date(promotion.endDate).toLocaleDateString()}
                                 </div>
                               </div>
                             )}
                           </div>
 
-                          <CardContent className="p-6 pr-4 space-y-4">
-                            {/* Promotion Title */}
-                            <div>
-                              <h3 className="font-bold text-xl text-gray-900 group-hover:text-roam-blue transition-colors leading-tight">
+                          <CardContent className="p-6">
+                            {/* Promotion Title & Service Info */}
+                            <div className="mb-4">
+                              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-roam-blue transition-colors">
                                 {promotion.title}
                               </h3>
+                              {promotion.service && (
+                                <span className="inline-block px-3 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                                  {promotion.service.name}
+                                </span>
+                              )}
                             </div>
 
-                            {/* Service Info */}
-                            {promotion.service && (
-                              <div>
-                                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-medium">
-                                  <Tag className="w-4 h-4" />
-                                  {promotion.service.name}
-                                </div>
+                            {/* Description */}
+                            <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                              {promotion.description}
+                            </p>
+
+                            {/* Business Info */}
+                            {promotion.business && (
+                              <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                                <Building className="w-4 h-4 text-roam-blue" />
+                                <span>{promotion.business.name}</span>
                               </div>
                             )}
 
-                            {/* Description */}
-                            <div className="space-y-2">
-                              <p className="text-sm text-gray-600 leading-relaxed">
-                                {getDisplayDescription(
-                                  promotion.description,
-                                  promotion.id,
-                                )}
-                              </p>
-                              {promotion.description &&
-                                promotion.description.length > 200 && (
-                                  <button
-                                    onClick={() =>
-                                      toggleDescription(promotion.id)
-                                    }
-                                    className="text-roam-blue text-xs font-medium hover:underline"
-                                  >
-                                    {expandedDescriptions.has(promotion.id)
-                                      ? "Show less"
-                                      : "Read more"}
-                                  </button>
-                                )}
-                            </div>
-
-                            {/* Action Button */}
+                            {/* Claim Button */}
                             <Button
                               asChild
                               className="w-full bg-gradient-to-r from-roam-blue to-roam-light-blue hover:from-roam-blue/90 hover:to-roam-light-blue/90 text-white font-semibold py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
@@ -1749,7 +1706,7 @@ export default function Index() {
                                 to={(() => {
                                   const baseParams = `promotion=${promotion.id}&promo_code=${promotion.promoCode}`;
 
-                                  // If promotion has both business and service defaulted, start the booking flow
+                                  // If promotion has both business and service, start the booking flow
                                   if (promotion.business && promotion.service) {
                                     return `/book-service/${promotion.service.id}?${baseParams}&business_id=${promotion.business.id}`;
                                   }
@@ -1803,7 +1760,7 @@ export default function Index() {
               )}
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-8">
               <Tag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground/60 mb-2">
                 No Active Promotions
