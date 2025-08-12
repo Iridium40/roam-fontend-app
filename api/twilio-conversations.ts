@@ -336,7 +336,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log('Getting participants for conversation:', conversationSid);
 
-        // Get participants from Supabase (simplified query)
+        // First, get the UUID from conversation_metadata using the Twilio SID
+        const { data: conversationMetadata, error: metadataError } = await supabase
+          .from('conversation_metadata')
+          .select('id')
+          .eq('twilio_conversation_sid', conversationSid)
+          .single();
+
+        if (metadataError || !conversationMetadata) {
+          console.error('Error finding conversation metadata for Twilio SID:', conversationSid, metadataError);
+          return res.status(404).json({ error: 'Conversation not found' });
+        }
+
+        const conversationUuid = conversationMetadata.id;
+        console.log('Found conversation UUID:', conversationUuid, 'for Twilio SID:', conversationSid);
+
+        // Get participants from Supabase using the UUID
         const { data: participants, error: dbError } = await supabase
           .from('conversation_participants')
           .select(`
@@ -345,7 +360,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             user_type,
             joined_at
           `)
-          .eq('conversation_id', conversationSid);
+          .eq('conversation_id', conversationUuid);
 
         console.log('Database query result:', {
           participants: participants?.length || 0,
