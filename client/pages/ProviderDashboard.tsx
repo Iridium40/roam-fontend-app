@@ -6831,8 +6831,13 @@ export default function ProviderDashboard() {
       return;
     }
 
+    if (!provider?.business_id) {
+      console.log("Not loading providers - no provider or business_id available");
+      return;
+    }
+
     console.log("Loading providers for owner/dispatcher...");
-    console.log("Current provider business_id:", provider?.business_id);
+    console.log("Current provider business_id:", provider.business_id);
 
     try {
       // First, load providers without location join
