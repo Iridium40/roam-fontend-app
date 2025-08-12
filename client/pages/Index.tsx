@@ -258,8 +258,7 @@ export default function Index() {
           `,
           )
           .eq("is_active", true)
-          .eq("is_featured", true)
-          .limit(6);
+          .eq("is_featured", true);
 
         const { data: featuredServicesData, error: featuredError } =
           featuredServicesResponse;
@@ -1486,7 +1485,7 @@ export default function Index() {
                           <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2">
                               <span className="text-2xl font-bold text-roam-blue">
-                                {service.price}
+                                Starting at {service.price}
                               </span>
                             </div>
                             <Badge
