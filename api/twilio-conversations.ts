@@ -5,6 +5,14 @@ import { createClient } from '@supabase/supabase-js';
 // Initialize Supabase client
 const supabaseUrl = process.env.VITE_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+console.log('Supabase configuration:', {
+  hasUrl: !!supabaseUrl,
+  hasServiceKey: !!supabaseServiceKey,
+  urlLength: supabaseUrl?.length,
+  keyLength: supabaseServiceKey?.length
+});
+
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -247,21 +255,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           .from('conversation_participants')
           .select(`
             conversation_id,
-            user_type,
-            conversations (
-              id,
-              booking_id,
-              friendly_name,
-              status,
-              created_at
-            )
+            user_type
           `)
           .eq('user_id', userId);
 
         if (dbError) {
           console.error('Error fetching user conversations from database:', dbError);
-          return res.status(500).json({ error: 'Failed to fetch conversations' });
+          return res.status(500).json({ error: 'Failed to fetch conversations', details: dbError.message });
         }
+
+        console.log('Found user conversations:', userConversations?.length || 0, 'conversations for user:', userId);
 
         // Get additional details from Twilio for each conversation
         const conversationsWithDetails = await Promise.all(
@@ -292,7 +295,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 userType: userConv.user_type
               };
             } catch (error) {
-              console.error('Error fetching conversation details:', error);
+              console.error('Error fetching conversation details for conversation_id:', userConv.conversation_id, error);
               return null;
             }
           })
@@ -300,6 +303,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Filter out null results
         const validConversations = conversationsWithDetails.filter(conv => conv !== null);
+
+        console.log('Returning valid conversations:', validConversations.length);
 
         return res.status(200).json({
           success: true,
