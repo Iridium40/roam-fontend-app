@@ -7160,6 +7160,7 @@ export default function ProviderDashboard() {
 
       const providerIds = businessProviders.map((p) => p.id);
 
+      // Get bookings for this business - either assigned to business providers OR unassigned but for business services
       const { data: allBookings, error } = await supabase
         .from("bookings")
         .select(
@@ -7168,7 +7169,10 @@ export default function ProviderDashboard() {
           services (
             id,
             name,
-            min_price
+            min_price,
+            business_services!inner (
+              business_id
+            )
           ),
           customer_profiles (
             id,
@@ -7185,7 +7189,6 @@ export default function ProviderDashboard() {
           )
         `,
         )
-        .eq("business_id", provider.business_id)
         .or(`provider_id.in.(${providerIds.join(",")}),provider_id.is.null`)
         .order("booking_date", { ascending: false })
         .limit(50);
@@ -7777,13 +7780,20 @@ export default function ProviderDashboard() {
         if (businessProviders && businessProviders.length > 0) {
           const providerIds = businessProviders.map((p) => p.id);
 
+          // Get bookings for this business - either assigned to business providers OR unassigned but for business services
           const result = await supabase
             .from("bookings")
             .select(
               `
             *,
-            providers!inner(first_name, last_name),
-            services(name, description),
+            providers(first_name, last_name),
+            services(
+              name,
+              description,
+              business_services!inner (
+                business_id
+              )
+            ),
             customer_profiles!inner(
               id,
               first_name,
@@ -7813,7 +7823,6 @@ export default function ProviderDashboard() {
             )
           `,
             )
-            .eq("business_id", providerData.business_id)
             .or(`provider_id.in.(${providerIds.join(",")}),provider_id.is.null`)
             .order("created_at", { ascending: false })
             .limit(10);
