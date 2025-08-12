@@ -6597,6 +6597,27 @@ export default function ProviderDashboard() {
     console.log("Current user:", user);
     console.log("User type:", { isOwner, isDispatcher, isProvider });
 
+    // Find the booking to check if it has a provider assigned
+    const booking = bookings.find(b => b.id === bookingId);
+    if (!booking) {
+      toast({
+        title: "Error",
+        description: "Booking not found.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if booking has a provider assigned
+    if (!booking.provider_id) {
+      toast({
+        title: "Provider Required",
+        description: "A provider must be assigned before confirming this booking.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       console.log("Attempting to update booking status to confirmed...");
       const { error } = await supabase
