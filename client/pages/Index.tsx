@@ -965,18 +965,16 @@ export default function Index() {
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <iframe
-            src="https://www.youtube.com/embed/Z0A84Ev5Waw?autoplay=1&mute=1&loop=1&playlist=Z0A84Ev5Waw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+            src="https://www.youtube.com/embed/Z0A84Ev5Waw?autoplay=1&mute=1&loop=1&playlist=Z0A84Ev5Waw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
             className="absolute inset-0 w-full h-full"
             style={{
               filter: "brightness(0.7)",
               pointerEvents: "none",
-              minWidth: "100%",
-              minHeight: "100%",
               width: "100vw",
-              height: "56.25vw", // 16:9 aspect ratio
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
+              height: "100vh",
+              objectFit: "cover",
+              objectPosition: "center",
+              transform: "scale(1.1)",
             }}
             frameBorder="0"
             allow="autoplay; encrypted-media"
