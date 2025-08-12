@@ -8743,11 +8743,11 @@ export default function ProviderDashboard() {
                     >
                       <div className="space-y-4">
                         {filterBookingsByDate(
-                          bookings,
+                          getFilteredBookings(),
                           tabValue as "present" | "future" | "past",
                         ).length > 0 ? (
                           filterBookingsByDate(
-                            bookings,
+                            getFilteredBookings(),
                             tabValue as "present" | "future" | "past",
                           ).map((booking) => {
                             const statusConfig = getStatusBadge(
@@ -9061,8 +9061,8 @@ export default function ProviderDashboard() {
                 </Tabs>
               ) : (
                 <div className="space-y-4">
-                  {bookings.length > 0 ? (
-                    bookings.map((booking) => {
+                  {getFilteredBookings().length > 0 ? (
+                    getFilteredBookings().map((booking) => {
                       const statusConfig = getStatusBadge(
                         booking.booking_status,
                       );
