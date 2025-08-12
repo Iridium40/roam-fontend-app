@@ -173,13 +173,15 @@ const PaymentFormContent: React.FC<PaymentFormProps> = ({
           console.log("Stripe customer profile updated successfully");
         }
       } else {
-        // Create new profile
+        // Create new profile with upsert to handle race conditions
         const { error } = await supabase
           .from("customer_stripe_profiles")
-          .insert({
+          .upsert({
             user_id: customer.user_id,
             stripe_customer_id: stripeCustomerId,
             stripe_email: customerEmail,
+          }, {
+            onConflict: 'user_id'
           });
 
         if (error) {
