@@ -8628,13 +8628,41 @@ export default function ProviderDashboard() {
                                         <h3 className="font-semibold">
                                           {booking.services?.name || "Service"}
                                         </h3>
-                                        {booking.providers && (
+                                        {booking.providers ? (
                                           <div className="flex items-center gap-2 mb-2">
                                             <Users className="w-4 h-4" />
                                             <span className="text-sm text-foreground/60">
                                               Provider:{" "}
                                               {booking.providers.first_name}{" "}
                                               {booking.providers.last_name}
+                                            </span>
+                                          </div>
+                                        ) : (isOwner || isDispatcher) ? (
+                                          <div className="flex items-center gap-2 mb-2">
+                                            <Users className="w-4 h-4 flex-shrink-0" />
+                                            <div className="flex-1">
+                                              <Select
+                                                value=""
+                                                onValueChange={(providerId) => assignProvider(booking.id, providerId)}
+                                              >
+                                                <SelectTrigger className="h-8 text-sm">
+                                                  <SelectValue placeholder="Assign Provider..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                  {allProviders.filter(p => p.is_active).map((provider) => (
+                                                    <SelectItem key={provider.id} value={provider.id}>
+                                                      {provider.first_name} {provider.last_name}
+                                                    </SelectItem>
+                                                  ))}
+                                                </SelectContent>
+                                              </Select>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <div className="flex items-center gap-2 mb-2">
+                                            <Users className="w-4 h-4" />
+                                            <span className="text-sm text-foreground/60">
+                                              Provider: Unassigned
                                             </span>
                                           </div>
                                         )}
