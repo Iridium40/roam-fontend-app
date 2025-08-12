@@ -169,6 +169,7 @@ export default function MyBookings() {
               ),
               providers (
                 id,
+                user_id,
                 first_name,
                 last_name,
                 location_id,
@@ -255,6 +256,16 @@ export default function MyBookings() {
           console.log("First booking fields:", Object.keys(bookingsResponse.data[0]));
           console.log("First booking provider_id:", bookingsResponse.data[0].provider_id);
           console.log("First booking provider object:", bookingsResponse.data[0].providers);
+          console.log("First booking full data:", bookingsResponse.data[0]);
+          
+          // Check for any fields that might contain provider information
+          const providerFields = Object.keys(bookingsResponse.data[0]).filter(key => 
+            key.toLowerCase().includes('provider') || 
+            key.toLowerCase().includes('user') ||
+            key === 'assigned_provider_id' ||
+            key === 'provider_user_id'
+          );
+          console.log("Potential provider-related fields:", providerFields);
         }
 
         // Check for authentication error
@@ -999,6 +1010,8 @@ export default function MyBookings() {
                           booking={booking}
                           onCancel={openCancelModal}
                           onReschedule={openRescheduleModal}
+                          currentUser={currentUser}
+                          handleOpenMessaging={handleOpenMessaging}
                         />
                       ))}
                     </div>
@@ -1068,6 +1081,8 @@ export default function MyBookings() {
                           booking={booking}
                           onCancel={openCancelModal}
                           onReschedule={openRescheduleModal}
+                          currentUser={currentUser}
+                          handleOpenMessaging={handleOpenMessaging}
                         />
                       ))}
                     </div>
@@ -1137,6 +1152,8 @@ export default function MyBookings() {
                           booking={booking}
                           onCancel={openCancelModal}
                           onReschedule={openRescheduleModal}
+                          currentUser={currentUser}
+                          handleOpenMessaging={handleOpenMessaging}
                         />
                       ))}
                     </div>
@@ -1487,7 +1504,7 @@ export default function MyBookings() {
                 id: selectedBookingForMessaging.id,
                 customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
                 customer_email: currentUser?.email || "",
-                customer_phone: currentUser?.phone || "",
+                customer_phone: (currentUser as any)?.phone || "",
                 customer_id: currentUser?.id || "", // Add customer_id for auth.users.id
                 service_name: selectedBookingForMessaging.service || "Service",
                 provider_name: selectedBookingForMessaging.provider?.name || "Provider",
@@ -1504,10 +1521,14 @@ function BookingCard({
   booking,
   onCancel,
   onReschedule,
+  currentUser,
+  handleOpenMessaging,
 }: {
   booking: any;
   onCancel: (booking: any) => void;
   onReschedule: (booking: any) => void;
+  currentUser: any;
+  handleOpenMessaging: (booking: any) => void;
 }) {
   const statusConfig = {
     confirmed: {
@@ -1744,9 +1765,12 @@ function BookingCard({
           <div className="flex gap-2">
             {/* Debug: Show booking status and provider relationship */}
             <div className="text-xs text-gray-500 mb-1">
-              Debug: Status = {booking.status}, Provider ID = {booking.provider_id || 'none'}, 
+              Debug: Status = {booking.status}, 
+              Provider ID = {booking.provider_id || 'none'}, 
+              Assigned Provider ID = {booking.assigned_provider_id || 'none'},
+              Provider User ID = {booking.provider_user_id || 'none'},
               Provider Object = {booking.providers ? 'exists' : 'none'}, 
-              Provider User ID = {booking.providers?.user_id || 'none'},
+              Provider User ID (from object) = {booking.providers?.user_id || 'none'},
               Button Should Show = {(booking.status === "confirmed" && booking.providers) ? 'yes' : 'no'}
             </div>
             
