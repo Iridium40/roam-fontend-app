@@ -106,7 +106,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .insert({
               id: conversation.sid,
               booking_id: bookingId,
-              friendly_name: conversationFriendlyName,
               status: 'active',
               created_at: new Date().toISOString()
             });
@@ -316,7 +315,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log('Getting participants for conversation:', conversationSid);
 
-        // Get participants from Supabase with user details
+        // Get participants from Supabase with user details using proper joins
         const { data: participants, error: dbError } = await supabase
           .from('conversation_participants')
           .select(`
@@ -324,19 +323,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             user_id,
             user_type,
             joined_at,
-            auth_users!inner (
+            user:user_id (
               id,
               email
-            ),
-            providers!left (
-              first_name,
-              last_name,
-              image_url
-            ),
-            customer_profiles!left (
-              first_name,
-              last_name,
-              image_url
             )
           `)
           .eq('conversation_id', conversationSid);
@@ -352,17 +341,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(500).json({ error: 'Failed to fetch participants' });
         }
 
-        const formattedParticipants = participants.map(participant => {
-          const userDetails = participant.user_type === 'provider' 
-            ? participant.providers?.[0] 
-            : participant.customer_profiles?.[0];
+        // Process participants with user details from join
+        const formattedParticipants = await Promise.all(participants.map(async (participant) => {
+          let userDetails = null;
+          const userEmail = participant.user?.email || 'Unknown';
+
+          try {
+            // Get user details based on type
+            if (participant.user_type === 'provider') {
+              const { data: providerData } = await supabase
+                .from('providers')
+                .select('first_name, last_name, image_url')
+                .eq('user_id', participant.user_id)
+                .single();
+              userDetails = providerData;
+            } else {
+              const { data: customerData } = await supabase
+                .from('customer_profiles')
+                .select('first_name, last_name, image_url')
+                .eq('user_id', participant.user_id)
+                .single();
+              userDetails = customerData;
+            }
+          } catch (error) {
+            console.error('Error fetching user details for participant:', participant.user_id, error);
+          }
 
           console.log('Processing participant:', {
             twilio_participant_sid: participant.twilio_participant_sid,
             user_id: participant.user_id,
             user_type: participant.user_type,
             userDetails: userDetails,
-            auth_users: participant.auth_users
+            userEmail: userEmail
           });
 
           return {
@@ -374,10 +384,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               role: participant.user_type,
               name: userDetails ? `${userDetails.first_name} ${userDetails.last_name}` : 'Unknown',
               imageUrl: userDetails?.image_url,
-              email: participant.auth_users?.[0]?.email || 'Unknown'
+              email: userEmail
             }
           };
-        });
+        }));
 
         console.log('Formatted participants:', formattedParticipants);
 
