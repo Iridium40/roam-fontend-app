@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-// Edge Config for storing notification preferences
+// Notification preferences interface
 interface NotificationConfig {
   email: boolean;
   push: boolean;
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       return new Response('Missing required fields', { status: 400 });
     }
 
-    // Get user's notification preferences from Edge Config
+    // Get user's notification preferences
     const userConfig = await getUserNotificationConfig(userId);
 
     // Create notification payload
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
 
 // Helper functions
 async function getUserNotificationConfig(userId: string): Promise<NotificationConfig> {
-  // In a real implementation, you'd fetch this from Edge Config or database
+  // In a real implementation, you'd fetch this from database
   // For now, return default config
   return {
     email: true,

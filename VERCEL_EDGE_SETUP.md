@@ -60,7 +60,6 @@ The `vercel.json` file is configured for:
 - Edge Runtime functions
 - CORS headers for SSE
 - Function routing
-- Edge Config regions
 
 ### **3. Database Tables (Optional)**
 
@@ -153,6 +152,12 @@ Users can control notification delivery:
 ```bash
 SUPABASE_SERVICE_ROLE_KEY=your_production_key
 VERCEL_URL=https://your-app.vercel.app
+VITE_PUBLIC_SUPABASE_URL=your_supabase_url
+VITE_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_TWILIO_ACCOUNT_SID=your_twilio_account_sid
+VITE_TWILIO_AUTH_TOKEN=your_twilio_auth_token
+VITE_TWILIO_CONVERSATIONS_SERVICE_SID=your_twilio_conversations_service_sid
+VITE_TWILIO_PHONE_NUMBER=your_twilio_phone_number
 ```
 
 ## 🔧 **Development**
