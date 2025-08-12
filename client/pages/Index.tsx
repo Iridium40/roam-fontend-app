@@ -1568,7 +1568,7 @@ export default function Index() {
             isCustomer={isCustomer}
             onAuthRequired={() => {
               setAuthModalOpen(true);
-              setAuthModalTab('signup');
+              setAuthModalTab("signup");
             }}
           />
 
