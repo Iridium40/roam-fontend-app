@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import ShareModal from "@/components/ShareModal";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { AnnouncementPopup } from "@/components/AnnouncementPopup";
 import {
   Select,
   SelectContent,
