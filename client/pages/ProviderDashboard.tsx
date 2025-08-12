@@ -7252,12 +7252,19 @@ export default function ProviderDashboard() {
         notification_phone: providerData.notification_phone || "",
       });
 
-      // Fetch business details using providers.business_id -> businesses.id
-      const { data: businessData, error: businessError } = await supabase
-        .from("business_profiles")
-        .select("*")
-        .eq("id", providerData.business_id)
-        .single();
+      // Fetch business details using providers.business_id -> businesses.id (if business_id exists)
+      let businessData = null;
+      let businessError = null;
+
+      if (providerData.business_id) {
+        const result = await supabase
+          .from("business_profiles")
+          .select("*")
+          .eq("id", providerData.business_id)
+          .single();
+        businessData = result.data;
+        businessError = result.error;
+      }
 
       if (businessData) {
         setBusiness(businessData);
