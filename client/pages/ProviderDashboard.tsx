@@ -3436,6 +3436,12 @@ export default function ProviderDashboard() {
 
   // Conversations handlers (Twilio Conversations API)
   const handleOpenMessaging = async (booking: any) => {
+    console.log('handleOpenMessaging called with booking:', {
+      id: booking?.id,
+      customer_name: booking?.customer_profiles?.first_name || booking?.guest_name,
+      customer_email: booking?.customer_profiles?.email || booking?.guest_email,
+      service_name: booking?.services?.name
+    });
     setSelectedBookingForMessaging(booking);
     setMessagingModal(true);
   };

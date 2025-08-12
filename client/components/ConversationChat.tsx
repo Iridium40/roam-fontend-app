@@ -326,6 +326,13 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
                 Debug: activeConversationSid={activeConversationSid ? 'Set' : 'Not set'}, 
                 sending={sending ? 'Yes' : 'No'}, 
                 loading={loading ? 'Yes' : 'No'}
+                {booking && (
+                  <div>
+                    Booking ID: {booking.id}, 
+                    User: {user?.id}, 
+                    Provider: {provider?.provider_role}
+                  </div>
+                )}
               </div>
               <div className="flex gap-2">
                 <Input

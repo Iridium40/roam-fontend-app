@@ -21,13 +21,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    console.log('Twilio Conversations API called with action:', req.body?.action);
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    
     const { action, conversationSid, participantIdentity, message, bookingId, userRole, userName, participants } = req.body;
 
     const accountSid = process.env.VITE_TWILIO_ACCOUNT_SID;
     const authToken = process.env.VITE_TWILIO_AUTH_TOKEN;
     const conversationsServiceSid = process.env.VITE_TWILIO_CONVERSATIONS_SERVICE_SID;
 
+    console.log('Environment variables check:', {
+      hasAccountSid: !!accountSid,
+      hasAuthToken: !!authToken,
+      hasServiceSid: !!conversationsServiceSid,
+      accountSidLength: accountSid?.length,
+      authTokenLength: authToken?.length,
+      serviceSidLength: conversationsServiceSid?.length
+    });
+
     if (!accountSid || !authToken || !conversationsServiceSid) {
+      console.error('Missing Twilio credentials:', {
+        accountSid: !!accountSid,
+        authToken: !!authToken,
+        conversationsServiceSid: !!conversationsServiceSid
+      });
       return res.status(500).json({ error: 'Twilio credentials not configured' });
     }
 
@@ -37,21 +54,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     switch (action) {
       case 'create-conversation': {
+        console.log('Creating conversation for booking:', bookingId);
+        console.log('Participants:', participants);
+        
         if (!bookingId || !participants || !Array.isArray(participants)) {
+          console.error('Invalid request data:', { bookingId, participants, isArray: Array.isArray(participants) });
           return res.status(400).json({ error: 'Booking ID and participants array are required' });
         }
 
         // Create conversation with unique friendly name
         const conversationFriendlyName = `booking-${bookingId}-${Date.now()}`;
+        console.log('Creating conversation with friendly name:', conversationFriendlyName);
         
-        const conversation = await conversationsService.conversations.create({
-          friendlyName: conversationFriendlyName,
-          attributes: JSON.stringify({
-            bookingId,
-            createdAt: new Date().toISOString(),
-            type: 'booking-chat'
-          })
-        });
+        let conversation;
+        try {
+          conversation = await conversationsService.conversations.create({
+            friendlyName: conversationFriendlyName,
+            attributes: JSON.stringify({
+              bookingId,
+              createdAt: new Date().toISOString(),
+              type: 'booking-chat'
+            })
+          });
+          console.log('Twilio conversation created:', conversation.sid);
+        } catch (error: any) {
+          console.error('Error creating Twilio conversation:', error);
+          return res.status(500).json({ 
+            error: 'Failed to create conversation',
+            details: error.message || 'Unknown error'
+          });
+        }
 
         // Add participants to the conversation
         const participantPromises = participants.map(async (participant: any) => {
@@ -76,6 +108,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
 
         await Promise.all(participantPromises);
+
+        console.log('Conversation created successfully:', {
+          sid: conversation.sid,
+          friendlyName: conversation.friendlyName
+        });
 
         return res.status(200).json({
           success: true,
