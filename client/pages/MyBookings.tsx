@@ -1580,7 +1580,9 @@ export default function MyBookings() {
         Debug: messagingModal={messagingModal ? 'true' : 'false'}, 
         selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'},
         bookingId={selectedBookingForMessaging?.id || 'none'},
-        currentUserId={currentUser?.id || 'none'}
+        currentUserId={currentUser?.id || 'none'},
+        providerField={selectedBookingForMessaging?.provider ? JSON.stringify(selectedBookingForMessaging.provider) : 'none'},
+        providerUserId={selectedBookingForMessaging?.provider?.user_id || 'none'}
       </div>
 
       {/* Messaging Modal */}
@@ -1598,6 +1600,7 @@ export default function MyBookings() {
                 service_name: selectedBookingForMessaging.service || "Service",
                 provider_name: selectedBookingForMessaging.provider?.name || "Provider",
                 business_id: selectedBookingForMessaging.business_id || "",
+                provider: selectedBookingForMessaging.provider,
                 providers: selectedBookingForMessaging.providers,
                 status: selectedBookingForMessaging.status,
               }

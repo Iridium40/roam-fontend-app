@@ -121,7 +121,19 @@ const StandaloneCustomerChat: React.FC<StandaloneCustomerChatProps> = ({
           ];
 
           // Add provider if available
-          if (booking.providers) {
+          if (booking.provider) {
+            console.log('👥 Found provider in booking:', booking.provider);
+            // Use provider.user_id which maps to auth.users.id
+            const providerIdentity = `provider-${booking.provider.user_id}`;
+            participants.push({
+              identity: providerIdentity,
+              role: 'provider',
+              name: `${booking.provider.firstName || ''} ${booking.provider.lastName || ''}`.trim(),
+              userId: booking.provider.user_id,
+              userType: 'provider'
+            });
+          } else if (booking.providers) {
+            console.log('👥 Found providers in booking:', booking.providers);
             const providerIdentity = `provider-${booking.providers.user_id}`;
             participants.push({
               identity: providerIdentity,
@@ -130,6 +142,8 @@ const StandaloneCustomerChat: React.FC<StandaloneCustomerChatProps> = ({
               userId: booking.providers.user_id,
               userType: 'provider'
             });
+          } else {
+            console.log('❌ No provider found in booking');
           }
 
           console.log('👥 Participants for conversation:', participants);
@@ -383,6 +397,7 @@ const StandaloneCustomerChat: React.FC<StandaloneCustomerChatProps> = ({
           <div>Booking ID: {booking.id}, User: {currentUser?.id || 'No user ID'}, User Type: {userType}</div>
           <div>User Data: {currentUser ? JSON.stringify({id: currentUser.id, first_name: currentUser.first_name, last_name: currentUser.last_name}) : 'No user data'}</div>
           <div>Booking Data: {JSON.stringify({id: booking.id, customer_id: booking.customer_id, customer_name: booking.customer_name})}</div>
+          <div>Provider Data: {booking.provider ? JSON.stringify({user_id: booking.provider.user_id, name: `${booking.provider.firstName} ${booking.provider.lastName}`}) : 'No provider data'}</div>
         </div>
 
         {/* Messages */}
