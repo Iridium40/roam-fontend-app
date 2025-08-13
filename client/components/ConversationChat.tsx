@@ -37,6 +37,18 @@ interface ConversationChatProps {
     provider_name?: string;
     business_id?: string;
     customer_id?: string;
+    customer_profiles?: {
+      id: string;
+      first_name: string;
+      last_name: string;
+      email?: string;
+    };
+    providers?: {
+      id: string;
+      user_id: string;
+      first_name: string;
+      last_name: string;
+    };
   };
   conversationSid?: string;
 }
@@ -149,37 +161,53 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     // Create participants for both customer and provider
     const bookingParticipants = [];
     
-    // Add current user
+    // Add current user (enhanced logic for provider side)
+    let currentUserName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+    let currentUserId = currentUser.id;
+    
+    // For provider side: use the logged-in user's provider data
+    // This handles cases where owner/dispatcher chats instead of assigned provider
+    if (userType === 'provider' && user) {
+      currentUserName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+      currentUserId = user.id;
+    }
+    
     bookingParticipants.push({
       identity: userIdentity,
       role: userType,
-      name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
-      userId: currentUser.id,
+      name: currentUserName,
+      userId: currentUserId,
       userType: userType
     });
     
     // Add the other participant (customer or provider)
-    if (userType === 'provider' && booking.customer_name && booking.customer_id) {
+    if (userType === 'provider' && booking.customer_profiles) {
       // Current user is provider, add customer
+      const customerName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
       bookingParticipants.push({
-        identity: `customer_${booking.customer_id}`,
+        identity: `customer_${booking.customer_profiles.id}`,
         role: 'customer',
-        name: booking.customer_name,
-        userId: booking.customer_id,
+        name: customerName,
+        userId: booking.customer_profiles.id,
         userType: 'customer'
       });
-    } else if (userType === 'customer' && booking.provider_name) {
-      // Current user is customer, add provider
-      // Extract provider ID from booking if available, or use a fallback
-      const providerId = booking.business_id || 'provider_unknown';
+    } else if (userType === 'customer' && booking.providers) {
+      // Current user is customer, add assigned provider from booking
+      const providerName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
       bookingParticipants.push({
-        identity: `provider_${providerId}`,
+        identity: `provider_${booking.providers.user_id}`,
         role: 'provider', 
-        name: booking.provider_name,
-        userId: providerId,
+        name: providerName,
+        userId: booking.providers.user_id,
         userType: 'provider'
       });
     }
+
+    console.log('👥 Enhanced participants logic:');
+    console.log('  - Current user type:', userType);
+    console.log('  - Current user ID:', currentUser?.id);
+    console.log('  - Booking assigned provider ID:', booking.providers?.user_id);
+    console.log('  - Current user is assigned provider:', currentUser?.id === booking.providers?.user_id);
 
     console.log('👥 Booking participants:', bookingParticipants);
 
