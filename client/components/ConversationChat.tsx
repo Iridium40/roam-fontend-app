@@ -208,6 +208,9 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     console.log('  - Current user ID:', currentUser?.id);
     console.log('  - Booking assigned provider ID:', booking.providers?.user_id);
     console.log('  - Current user is assigned provider:', currentUser?.id === booking.providers?.user_id);
+    console.log('  - Booking object:', booking);
+    console.log('  - booking.customer_profiles:', booking.customer_profiles);
+    console.log('  - booking.providers:', booking.providers);
 
     console.log('👥 Booking participants:', bookingParticipants);
 
