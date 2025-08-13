@@ -59,6 +59,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     loading,
     sending,
     sendMessage,
+    loadMessages,
     createConversation,
     getUserIdentity,
     getUserType,
@@ -145,15 +146,40 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       return;
     }
 
-    const bookingParticipants = [
-      {
-        identity: userIdentity,
-        role: userType,
-        name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
-        userId: currentUser.id,
-        userType: userType
-      }
-    ];
+    // Create participants for both customer and provider
+    const bookingParticipants = [];
+    
+    // Add current user
+    bookingParticipants.push({
+      identity: userIdentity,
+      role: userType,
+      name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+      userId: currentUser.id,
+      userType: userType
+    });
+    
+    // Add the other participant (customer or provider)
+    if (userType === 'provider' && booking.customer_name && booking.customer_id) {
+      // Current user is provider, add customer
+      bookingParticipants.push({
+        identity: `customer_${booking.customer_id}`,
+        role: 'customer',
+        name: booking.customer_name,
+        userId: booking.customer_id,
+        userType: 'customer'
+      });
+    } else if (userType === 'customer' && booking.provider_name) {
+      // Current user is customer, add provider
+      // Extract provider ID from booking if available, or use a fallback
+      const providerId = booking.business_id || 'provider_unknown';
+      bookingParticipants.push({
+        identity: `provider_${providerId}`,
+        role: 'provider', 
+        name: booking.provider_name,
+        userId: providerId,
+        userType: 'provider'
+      });
+    }
 
     console.log('👥 Booking participants:', bookingParticipants);
 
@@ -179,6 +205,11 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     try {
       await sendMessage(activeConversationSid, newMessage.trim());
       setNewMessage('');
+      
+      // Reload messages to ensure real-time updates
+      setTimeout(() => {
+        loadMessages(activeConversationSid);
+      }, 500);
     } catch (error) {
       console.error('Error sending message:', error);
     }
