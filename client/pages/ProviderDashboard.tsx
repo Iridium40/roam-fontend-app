@@ -16157,6 +16157,10 @@ export default function ProviderDashboard() {
                   `${provider?.first_name || ""} ${provider?.last_name || ""}`.trim() ||
                   "Provider",
                 business_id: provider?.business_id || "",
+                customer_id: selectedBookingForMessaging.customer_id,
+                // Include the actual database profile objects
+                customer_profiles: selectedBookingForMessaging.customer_profiles,
+                providers: selectedBookingForMessaging.providers,
               }
             : undefined
         }
