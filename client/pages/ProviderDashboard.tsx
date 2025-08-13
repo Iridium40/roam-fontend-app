@@ -6534,14 +6534,12 @@ export default function ProviderDashboard() {
       );
     }
 
-    console.log("DEBUG - Total bookings before filters:", bookings.length);
-    console.log("DEBUG - After date filter:", filtered.length);
-    console.log("DEBUG - Search query:", `"${searchQuery}"`);
+    // Debug logs removed to prevent render loop spam
 
     // Filter by search query (booking reference and customer name)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
-      console.log("DEBUG - Applying search filter for:", query);
+      // Search filter applied
       const beforeSearchCount = filtered.length;
       filtered = filtered.filter((booking) => {
         // Search in booking reference
@@ -6564,14 +6562,10 @@ export default function ProviderDashboard() {
           customerEmail.includes(query)
         );
       });
-      console.log(
-        "DEBUG - After search filter:",
-        filtered.length,
-        "bookings found",
-      );
+      // Search filter completed
     }
 
-    console.log("DEBUG - Final filtered bookings:", filtered.length);
+    // Filtering completed
     return filtered;
   };
 
