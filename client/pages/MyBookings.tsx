@@ -1865,7 +1865,8 @@ function BookingCard({
                 variant="outline"
                 onClick={() => {
                   console.log("Manual refresh triggered");
-                  refreshBookings();
+                  // Trigger a re-fetch of bookings data
+                  window.location.reload();
                 }}
                 className="ml-2"
               >
