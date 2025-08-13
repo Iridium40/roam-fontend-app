@@ -52,7 +52,7 @@ import RealtimeBookingNotifications from "@/components/RealtimeBookingNotificati
 import BookingStatusIndicator, {
   RealtimeStatusUpdate,
 } from "@/components/BookingStatusIndicator";
-import CustomerConversationChat from "@/components/CustomerConversationChat";
+import StandaloneCustomerChat from "@/components/StandaloneCustomerChat";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -1584,22 +1584,28 @@ export default function MyBookings() {
       </div>
 
       {/* Messaging Modal */}
-      <CustomerConversationChat
+      <StandaloneCustomerChat
         isOpen={messagingModal}
         onClose={handleCloseMessaging}
         booking={
           selectedBookingForMessaging
             ? {
                 id: selectedBookingForMessaging.id,
+                customer_id: selectedBookingForMessaging.customer_id,
                 customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
                 customer_email: currentUser?.email || "",
                 customer_phone: (currentUser as any)?.phone || "",
                 service_name: selectedBookingForMessaging.service || "Service",
                 provider_name: selectedBookingForMessaging.provider?.name || "Provider",
                 business_id: selectedBookingForMessaging.business_id || "",
+                providers: selectedBookingForMessaging.providers,
+                status: selectedBookingForMessaging.status,
               }
             : undefined
         }
+        conversationSid={selectedBookingForMessaging?.conversation_sid}
+        currentUser={currentUser}
+        userType={userType || 'customer'}
       />
     </div>
   );
