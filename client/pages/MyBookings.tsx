@@ -52,7 +52,7 @@ import RealtimeBookingNotifications from "@/components/RealtimeBookingNotificati
 import BookingStatusIndicator, {
   RealtimeStatusUpdate,
 } from "@/components/BookingStatusIndicator";
-import CustomerConversationChat from "@/components/CustomerConversationChat";
+import StandaloneCustomerChat from "@/components/StandaloneCustomerChat";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -1380,22 +1380,31 @@ export default function MyBookings() {
         </DialogContent>
       </Dialog>
 
-      {/* Message Provider Modal */}
-      <ConversationChat
-        isOpen={showMessageModal}
-        onClose={() => {
-          setShowMessageModal(false);
-          setSelectedBookingForMessage(null);
-        }}
-        booking={selectedBookingForMessage ? {
-          id: selectedBookingForMessage.id,
-          customer_name: `${currentUser?.first_name || ''} ${currentUser?.last_name || ''}`.trim(),
-          customer_email: currentUser?.email || '',
-          customer_phone: (currentUser as any)?.phone || '',
-          service_name: selectedBookingForMessage.service,
-          provider_name: selectedBookingForMessage.provider?.name || '',
-          business_id: selectedBookingForMessage.business_id || ''
-        } : undefined}
+      {/* Debug: Modal state */}
+      <div className="text-xs text-gray-500 mb-2">
+        Debug: messagingModal={messagingModal ? 'true' : 'false'}, 
+        selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'},
+        bookingId={selectedBookingForMessaging?.id || 'none'},
+        currentUserId={currentUser?.id || 'none'}
+      </div>
+
+      {/* Messaging Modal */}
+      <CustomerConversationChat
+        isOpen={messagingModal}
+        onClose={handleCloseMessaging}
+        booking={
+          selectedBookingForMessaging
+            ? {
+                id: selectedBookingForMessaging.id,
+                customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
+                customer_email: currentUser?.email || "",
+                customer_phone: (currentUser as any)?.phone || "",
+                service_name: selectedBookingForMessaging.service || "Service",
+                provider_name: selectedBookingForMessaging.provider?.name || "Provider",
+                business_id: selectedBookingForMessaging.business_id || "",
+              }
+            : undefined
+        }
       />
     </div>
   );
