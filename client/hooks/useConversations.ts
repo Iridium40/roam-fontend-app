@@ -441,25 +441,153 @@ export const useConversations = () => {
 
   // Set current conversation
   const setActiveConversation = useCallback((conversationSid: string | null) => {
+    console.log('🎯 setActiveConversation called with:', conversationSid);
     setCurrentConversation(conversationSid);
     if (conversationSid) {
-      loadMessages(conversationSid);
-      loadParticipants(conversationSid);
-      // Don't call markAsRead immediately to avoid potential issues
-      // It can be called separately when needed
+      // Call these functions directly to avoid dependency issues
+      const loadMessagesDirectly = async () => {
+        console.log('📨 Loading messages for conversation:', conversationSid);
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const requestBody = {
+            action: 'get-messages',
+            conversationSid
+          };
+          console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
+          
+          const response = await fetch('/api/twilio-conversations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          console.log('📥 Response status:', response.status);
+          const result = await response.json();
+          console.log('📥 Response result:', result);
+          
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to load messages');
+          }
+
+          setMessages(result.messages || []);
+        } catch (error: any) {
+          console.error('Error loading messages:', error);
+          setError(error.message || 'Failed to load messages');
+          toast({
+            title: "Error",
+            description: error.message || 'Failed to load messages',
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const loadParticipantsDirectly = async () => {
+        console.log('👥 Loading participants for conversation:', conversationSid);
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const requestBody = {
+            action: 'get-conversation-participants',
+            conversationSid
+          };
+          console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
+          
+          const response = await fetch('/api/twilio-conversations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          console.log('📥 Response status:', response.status);
+          const result = await response.json();
+          console.log('📥 Response result:', result);
+          
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to load participants');
+          }
+
+          setParticipants(result.participants || []);
+        } catch (error: any) {
+          console.error('Error loading participants:', error);
+          setError(error.message || 'Failed to load participants');
+          toast({
+            title: "Error",
+            description: error.message || 'Failed to load participants',
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadMessagesDirectly();
+      loadParticipantsDirectly();
     } else {
       setMessages([]);
       setParticipants([]);
     }
-  }, [loadMessages, loadParticipants]);
+  }, [toast]);
 
   // Load conversations when user changes
   useEffect(() => {
     if (currentUser) {
       console.log('🔄 Loading conversations for user:', currentUser.id);
-      loadConversations();
+      // Call loadConversations directly instead of through dependency
+      const loadConversationsDirectly = async () => {
+        if (!currentUser) return;
+        
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const requestBody = {
+            action: 'get-conversations',
+            userId: currentUser.id
+          };
+          console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
+          
+          const response = await fetch('/api/twilio-conversations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          console.log('📥 Response status:', response.status);
+          const result = await response.json();
+          console.log('📥 Response result:', result);
+          
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to load conversations');
+          }
+
+          setConversations(result.conversations || []);
+        } catch (error: any) {
+          console.error('Error loading conversations:', error);
+          setError(error.message || 'Failed to load conversations');
+          toast({
+            title: "Error",
+            description: error.message || 'Failed to load conversations',
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      loadConversationsDirectly();
     }
-  }, [currentUser, loadConversations]);
+  }, [currentUser, toast]);
 
   return {
     conversations,
