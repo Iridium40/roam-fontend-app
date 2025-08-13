@@ -1863,22 +1863,9 @@ function BookingCard({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={async () => {
-                  console.log("Manual refresh triggered");
-                  // Re-trigger the fetchBookings function
-                  if (!currentUser) return;
-                  try {
-                    setLoading(true);
-                    const fetchBookings = async () => {
-                      // Copy the fetchBookings logic here
-                      window.location.reload(); // Simple solution for now
-                    };
-                    await fetchBookings();
-                  } catch (error) {
-                    console.error("Refresh error:", error);
-                  } finally {
-                    setLoading(false);
-                  }
+                onClick={() => {
+                  console.log("Manual refresh triggered - reloading page");
+                  window.location.reload();
                 }}
                 className="ml-2"
               >
