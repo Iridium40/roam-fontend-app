@@ -1382,9 +1382,9 @@ export default function MyBookings() {
 
       {/* Debug: Modal state */}
       <div className="text-xs text-gray-500 mb-2">
-        Debug: messagingModal={messagingModal ? 'true' : 'false'}, 
-        selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'},
-        bookingId={selectedBookingForMessaging?.id || 'none'},
+        Debug: showMessageModal={showMessageModal ? 'true' : 'false'}, 
+        selectedBookingForMessage={selectedBookingForMessage ? 'set' : 'null'},
+        bookingId={selectedBookingForMessage?.id || 'none'},
         currentUserId={currentUser?.id || 'none'}
       </div>
 
