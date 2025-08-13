@@ -442,6 +442,7 @@ export default function MyBookings() {
             id: booking.id,
             status: booking.booking_status || "pending",
             service: service?.name || "Unknown Service",
+            provider_id: booking.provider_id, // Preserve original provider_id
             provider: {
               name: provider
                 ? `${provider.first_name} ${provider.last_name}`
