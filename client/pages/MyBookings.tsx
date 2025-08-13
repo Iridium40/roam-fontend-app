@@ -1402,6 +1402,10 @@ export default function MyBookings() {
                 service_name: selectedBookingForMessage.service || "Service",
                 provider_name: selectedBookingForMessage.provider?.name || "Provider",
                 business_id: selectedBookingForMessage.business_id || "",
+                customer_id: selectedBookingForMessage.customer_id,
+                // Include the actual database profile objects
+                customer_profiles: selectedBookingForMessage.customer_profiles,
+                providers: selectedBookingForMessage.providers,
               }
             : undefined
         }
