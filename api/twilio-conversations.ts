@@ -277,16 +277,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
           // Helper function to normalize identity for comparison
           const normalizeIdentity = (identity: string) => {
+            // Extract the core user type and ID, ignoring format differences
+            const match = identity.match(/^(customer|provider)[_-](.+)$/i);
+            if (match) {
+              return `${match[1].toLowerCase()}-${match[2]}`;
+            }
             return identity.replace(/[_-]/g, '-').toLowerCase();
           };
 
+          // Also check for participants with same user type but different IDs (legacy issue)
+          const getUserTypeFromIdentity = (identity: string) => {
+            if (identity.startsWith('customer')) return 'customer';
+            if (identity.startsWith('provider')) return 'provider';
+            return 'unknown';
+          };
+
+          // Track user types to ensure only one of each type (customer/provider)
+          const seenUserTypes = new Set<string>();
+          
           for (const participant of participants) {
             const normalizedIdentity = normalizeIdentity(participant.identity);
+            const userType = getUserTypeFromIdentity(participant.identity);
+            
+            // Check for exact duplicate identities
             if (seenNormalizedIdentities.has(normalizedIdentity)) {
               duplicateParticipants.push(participant);
-              console.log(`Found duplicate participant: ${participant.identity} (normalized: ${normalizedIdentity})`);
-            } else {
+              console.log(`Found duplicate participant (exact): ${participant.identity} (normalized: ${normalizedIdentity})`);
+            }
+            // Check for duplicate user types (multiple customers or providers)
+            else if (seenUserTypes.has(userType) && userType !== 'unknown') {
+              duplicateParticipants.push(participant);
+              console.log(`Found duplicate participant (same type): ${participant.identity} (type: ${userType})`);
+            }
+            else {
               seenNormalizedIdentities.add(normalizedIdentity);
+              seenUserTypes.add(userType);
               uniqueParticipants.push(participant);
             }
           }

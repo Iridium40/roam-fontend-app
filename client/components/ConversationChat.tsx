@@ -264,8 +264,17 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
   const getMessageAuthorInfo = (message: ConversationMessage) => {
     const userIdentity = getUserIdentity();
-    const isCurrentUser = message.author === userIdentity;
     const attributes = message.attributes || {};
+    
+    // Enhanced identity matching - check if message author is same user type as current user
+    const isCurrentUserType = (
+      (userType === 'customer' && message.author.startsWith('customer-')) ||
+      (userType === 'provider' && message.author.startsWith('provider-'))
+    );
+    
+    // For now, assume same user type messages are from current user
+    // TODO: Implement more sophisticated user matching if needed
+    const isCurrentUser = isCurrentUserType;
     
     // Enhanced name resolution logic
     let displayName = attributes.userName || message.author;
