@@ -1853,13 +1853,24 @@ function BookingCard({
           <div className="flex gap-2">
             {/* Debug: Show booking status and provider relationship */}
             <div className="text-xs text-gray-500 mb-1">
-              Debug: Status = {booking.status}, 
-              Provider ID = {booking.provider_id || 'none'}, 
+              Debug: Status = {booking.status},
+              Provider ID = {booking.provider_id || 'none'},
               Provider Field = {booking.provider ? JSON.stringify(booking.provider) : 'none'},
               All Fields = {Object.keys(booking).join(', ')},
-              Provider Object = {booking.providers ? 'exists' : 'none'}, 
+              Provider Object = {booking.providers ? 'exists' : 'none'},
               Provider User ID (from object) = {booking.providers?.user_id || 'none'},
               Button Should Show = {(booking.status === "confirmed" && booking.provider) ? 'yes' : 'no'}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  console.log("Manual refresh triggered");
+                  refreshBookings();
+                }}
+                className="ml-2"
+              >
+                Refresh Status
+              </Button>
             </div>
 
             {booking.status === "confirmed" && booking.provider && (
