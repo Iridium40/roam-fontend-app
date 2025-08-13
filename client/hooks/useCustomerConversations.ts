@@ -45,15 +45,27 @@ export const useCustomerConversations = () => {
 
   // Generate unique identity for current user
   const getUserIdentity = useCallback(() => {
-    if (!currentUser) return null;
+    console.log('🔍 getUserIdentity called with:', { currentUser, userType });
+    if (!currentUser) {
+      console.log('❌ No currentUser available');
+      return null;
+    }
     const currentUserType = userType || (currentUser.provider_role ? 'provider' : 'customer');
-    return `${currentUserType}-${currentUser.id}`;
+    const identity = `${currentUserType}-${currentUser.id}`;
+    console.log('✅ Generated identity:', identity);
+    return identity;
   }, [currentUser, userType]);
 
   // Get user type for API calls
   const getUserType = useCallback(() => {
-    if (!currentUser) return null;
-    return userType || (currentUser.provider_role ? 'provider' : 'customer');
+    console.log('🔍 getUserType called with:', { currentUser, userType });
+    if (!currentUser) {
+      console.log('❌ No currentUser available');
+      return null;
+    }
+    const userTypeResult = userType || (currentUser.provider_role ? 'provider' : 'customer');
+    console.log('✅ Determined user type:', userTypeResult);
+    return userTypeResult;
   }, [currentUser, userType]);
 
   // Create a new conversation for a booking

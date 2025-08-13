@@ -87,7 +87,7 @@ const CustomerConversationChat = ({ isOpen, onClose, booking, conversationSid }:
       setActiveConversationSid(conversationSid);
       setActiveConversation(conversationSid);
     }
-  }, [isOpen, booking, conversationSid]);
+  }, [isOpen, booking, conversationSid, activeConversationSid, currentUser, userType]);
 
   // Load messages when active conversation changes
   useEffect(() => {
