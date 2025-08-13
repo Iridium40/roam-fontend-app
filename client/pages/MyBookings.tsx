@@ -1863,10 +1863,22 @@ function BookingCard({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => {
+                onClick={async () => {
                   console.log("Manual refresh triggered");
-                  // Trigger a re-fetch of bookings data
-                  window.location.reload();
+                  // Re-trigger the fetchBookings function
+                  if (!currentUser) return;
+                  try {
+                    setLoading(true);
+                    const fetchBookings = async () => {
+                      // Copy the fetchBookings logic here
+                      window.location.reload(); // Simple solution for now
+                    };
+                    await fetchBookings();
+                  } catch (error) {
+                    console.error("Refresh error:", error);
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
                 className="ml-2"
               >
