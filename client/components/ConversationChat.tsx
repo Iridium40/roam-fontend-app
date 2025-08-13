@@ -180,12 +180,12 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       userType: userType
     });
     
-    // Add the other participant (customer or provider)
+    // Add the other participant (customer or provider) with consistent identity format
     if (userType === 'provider' && booking.customer_profiles) {
       // Current user is provider, add customer
       const customerName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
       bookingParticipants.push({
-        identity: `customer_${booking.customer_profiles.id}`,
+        identity: `customer-${booking.customer_profiles.id}`, // Use consistent format: customer-id
         role: 'customer',
         name: customerName,
         userId: booking.customer_profiles.id,
@@ -195,7 +195,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       // Current user is customer, add assigned provider from booking
       const providerName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
       bookingParticipants.push({
-        identity: `provider_${booking.providers.user_id}`,
+        identity: `provider-${booking.providers.user_id}`, // Use consistent format: provider-id
         role: 'provider', 
         name: providerName,
         userId: booking.providers.user_id,
@@ -263,11 +263,38 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     const isCurrentUser = message.author === userIdentity;
     const attributes = message.attributes || {};
     
+    // Enhanced name resolution logic
+    let displayName = attributes.userName || message.author;
+    
+    // If no userName in attributes, try to get name from participants or booking data
+    if (!attributes.userName || attributes.userName === message.author) {
+      if (isCurrentUser) {
+        // Current user - use their actual name
+        if (userType === 'provider' && user) {
+          displayName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+        } else if (userType === 'customer' && currentUser) {
+          displayName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+        }
+      } else {
+        // Other participant - try to get from booking data
+        if (userType === 'provider' && booking?.customer_profiles) {
+          displayName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
+        } else if (userType === 'customer' && booking?.providers) {
+          displayName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
+        }
+      }
+    }
+    
+    // Fallback to a clean version of the identity if still no good name
+    if (!displayName || displayName === message.author) {
+      displayName = message.author.replace(/^(customer_|provider_)/, '').replace(/_/g, ' ') || 'User';
+    }
+    
     return {
       isCurrentUser,
-      name: attributes.userName || message.author,
+      name: displayName,
       role: attributes.userRole || 'participant',
-      initials: (attributes.userName || message.author)
+      initials: displayName
         .split(' ')
         .map(n => n[0])
         .join('')
