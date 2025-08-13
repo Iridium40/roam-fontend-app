@@ -357,19 +357,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(400).json({ error: 'User ID is required' });
         }
 
-        // Get user's conversations from Supabase (simplified approach)
-        const { data: userConversations, error: dbError } = await supabase
-          .from('conversation_participants')
-          .select(`
-            conversation_id,
-            user_type
-          `)
-          .eq('user_id', userId);
+        try {
+          // Get user's conversations from Supabase (simplified approach)
+          const { data: userConversations, error: dbError } = await supabase
+            .from('conversation_participants')
+            .select(`
+              conversation_id,
+              user_type
+            `)
+            .eq('user_id', userId);
 
-        if (dbError) {
-          console.error('Error fetching user conversations from database:', dbError);
-          return res.status(500).json({ error: 'Failed to fetch conversations', details: dbError.message });
-        }
+          if (dbError) {
+            console.error('Error fetching user conversations from database:', dbError);
+            // If table doesn't exist, return empty conversations instead of error
+            if (dbError.message?.includes('relation') && dbError.message?.includes('does not exist')) {
+              console.log('Conversation tables not yet created, returning empty conversations list');
+              return res.status(200).json({
+                success: true,
+                conversations: [],
+                message: 'Conversation system not yet initialized'
+              });
+            }
+            return res.status(500).json({ error: 'Failed to fetch conversations', details: dbError.message });
+          }
 
         console.log('Found user conversations:', userConversations?.length || 0, 'conversations for user:', userId);
 
@@ -422,10 +432,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log('Returning valid conversations:', validConversations.length);
 
-        return res.status(200).json({
-          success: true,
-          conversations: validConversations
-        });
+          return res.status(200).json({
+            success: true,
+            conversations: validConversations
+          });
+        } catch (error) {
+          console.error('Unexpected error in get-conversations:', error);
+          return res.status(500).json({ 
+            error: 'Internal server error', 
+            message: 'Failed to fetch conversations due to unexpected error'
+          });
+        }
       }
 
       case 'get-conversation-participants': {
