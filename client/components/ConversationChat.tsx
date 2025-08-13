@@ -279,6 +279,15 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     // Enhanced name resolution logic
     let displayName = attributes.userName || message.author;
     
+    // Debug logging for name resolution
+    console.log('🔍 Name resolution debug:', {
+      messageAuthor: message.author,
+      userType: userType,
+      currentUser: currentUser,
+      booking: booking,
+      attributes: attributes
+    });
+    
     // If no userName in attributes, try to get name from booking data
     if (!attributes.userName || attributes.userName === message.author) {
       // Try to get actual names from booking data based on message author identity
@@ -286,17 +295,21 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
         if (userType === 'customer' && currentUser) {
           // Current customer viewing their own message
           displayName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+          console.log('🔍 Customer name resolved from currentUser:', displayName);
         } else if (userType === 'provider' && booking?.customer_profiles) {
           // Provider viewing customer message
           displayName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
+          console.log('🔍 Customer name resolved from booking.customer_profiles:', displayName);
         }
       } else if (message.author.startsWith('provider-')) {
         if (userType === 'provider' && user) {
           // Current provider viewing their own message
           displayName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+          console.log('🔍 Provider name resolved from user:', displayName);
         } else if (userType === 'customer' && booking?.providers) {
           // Customer viewing provider message
           displayName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
+          console.log('🔍 Provider name resolved from booking.providers:', displayName);
         }
       }
     }
@@ -454,7 +467,10 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
                         author: message.author,
                         body: message.body,
                         authorInfo: authorInfo,
-                        currentUserIdentity: getUserIdentity()
+                        currentUserIdentity: getUserIdentity(),
+                        userType: userType,
+                        currentUser: currentUser,
+                        booking: booking
                       });
                       return (
                         <div
