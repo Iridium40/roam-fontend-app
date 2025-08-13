@@ -907,6 +907,20 @@ export default function Index() {
               <div className="px-2 pt-2 pb-3 space-y-2 bg-background">
                 {isCustomer ? (
                   <>
+                    <Button
+                      asChild
+                      variant="ghost"
+                      className="w-full justify-start text-foreground hover:bg-foreground/10"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Link
+                        to="/customer/bookings"
+                        className="flex items-center"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        My Bookings
+                      </Link>
+                    </Button>
                     <div className="px-3 py-2">
                       <CustomerAvatarDropdown />
                     </div>
