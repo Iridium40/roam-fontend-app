@@ -275,14 +275,21 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     // For now, assume same user type messages are from current user
     const isCurrentUser = isCurrentUserType;
     
-    // SMART APPROACH: Create a fake participant object and reuse the working participant logic
-    const fakeParticipant = {
-      identity: message.author,
-      attributes: attributes
-    };
+    // SMART APPROACH: Find the actual participant from the participants list
+    const actualParticipant = participants.find(p => p.identity === message.author);
     
-    // Reuse the exact same logic that works for participants
-    const participantInfo = getParticipantInfo(fakeParticipant);
+    let participantInfo;
+    if (actualParticipant) {
+      // Use the actual participant data
+      participantInfo = getParticipantInfo(actualParticipant);
+    } else {
+      // Fallback: create a fake participant object if not found
+      const fakeParticipant = {
+        identity: message.author,
+        attributes: attributes
+      };
+      participantInfo = getParticipantInfo(fakeParticipant);
+    }
     
     return {
       isCurrentUser,
