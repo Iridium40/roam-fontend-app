@@ -270,7 +270,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           const participants = await conversationsService.conversations(conversationSid)
             .participants.list();
 
-          const formattedParticipants = participants.map(participant => ({
+          // Clean up duplicate participants if found
+          const seenIdentities = new Set<string>();
+          const duplicateParticipants: any[] = [];
+          const uniqueParticipants: any[] = [];
+
+          for (const participant of participants) {
+            if (seenIdentities.has(participant.identity)) {
+              duplicateParticipants.push(participant);
+            } else {
+              seenIdentities.add(participant.identity);
+              uniqueParticipants.push(participant);
+            }
+          }
+
+          // Remove duplicate participants from Twilio
+          for (const duplicate of duplicateParticipants) {
+            try {
+              await conversationsService.conversations(conversationSid)
+                .participants(duplicate.sid).remove();
+              console.log(`Removed duplicate participant: ${duplicate.identity}`);
+            } catch (removeError) {
+              console.error(`Error removing duplicate participant ${duplicate.identity}:`, removeError);
+            }
+          }
+
+          const formattedParticipants = uniqueParticipants.map(participant => ({
             sid: participant.sid,
             identity: participant.identity,
             attributes: participant.attributes ? JSON.parse(participant.attributes) : {},
@@ -281,7 +306,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(200).json({
             success: true,
             participants: formattedParticipants,
-            message: 'Participants loaded successfully'
+            message: `Participants loaded successfully. Removed ${duplicateParticipants.length} duplicates.`
           });
         } catch (error: any) {
           console.error('Error getting conversation participants:', error);
