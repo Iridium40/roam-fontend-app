@@ -6563,20 +6563,6 @@ export default function ProviderDashboard() {
     return filtered;
   };
 
-  // Full filtering with date filtering (for non-tab views)
-  const getFilteredBookings = () => {
-    let filtered = filterBookingsByDate(
-      getBaseFilteredBookings(),
-      activeBookingTab as "present" | "future" | "past",
-    );
-
-    console.log("DEBUG - Total bookings:", bookings.length);
-    console.log("DEBUG - After all filters:", filtered.length);
-    console.log("DEBUG - Search query:", `"${searchQuery}"`);
-
-    return filtered;
-  };
-
   // Get bookings for selected date
   const getSelectedDateBookings = () => {
     if (!selectedDate) return [];
