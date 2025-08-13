@@ -76,27 +76,92 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(400).json({ error: 'Booking ID and participants array are required' });
         }
 
-        // Create conversation with unique friendly name
-        const conversationFriendlyName = `booking-${bookingId}-${Date.now()}`;
-        console.log('Creating conversation with friendly name:', conversationFriendlyName);
-        
-        let conversation;
+        // First, check if a conversation already exists for this booking
+        console.log('Checking for existing conversation for booking:', bookingId);
+        let existingConversation = null;
         try {
-          conversation = await conversationsService.conversations.create({
-            friendlyName: conversationFriendlyName,
-            attributes: JSON.stringify({
-              bookingId,
-              createdAt: new Date().toISOString(),
-              type: 'booking-chat'
-            })
-          });
-          console.log('Twilio conversation created:', conversation.sid);
-        } catch (error: any) {
-          console.error('Error creating Twilio conversation:', error);
-          return res.status(500).json({ 
-            error: 'Failed to create conversation',
-            details: error.message || 'Unknown error'
-          });
+          const { data: existingData, error: existingError } = await supabase
+            .from('conversation_metadata')
+            .select('id, twilio_conversation_sid')
+            .eq('booking_id', bookingId)
+            .eq('is_active', true)
+            .single();
+
+          if (existingData && !existingError) {
+            console.log('Found existing conversation - UUID:', existingData.id, 'Twilio SID:', existingData.twilio_conversation_sid);
+            existingConversation = existingData;
+          } else {
+            console.log('No existing conversation found for booking:', bookingId);
+          }
+        } catch (error) {
+          console.log('Error checking for existing conversation:', error);
+        }
+
+        let conversation;
+        let conversationMetadataId: string | null = null;
+
+        if (existingConversation) {
+          // Use existing conversation
+          console.log('Using existing conversation - UUID:', existingConversation.id, 'Twilio SID:', existingConversation.twilio_conversation_sid);
+          conversationMetadataId = existingConversation.id;
+          
+          try {
+            conversation = await conversationsService.conversations(existingConversation.twilio_conversation_sid).fetch();
+            console.log('Successfully fetched existing conversation from Twilio');
+          } catch (error: any) {
+            console.error('Error fetching existing conversation from Twilio:', error);
+            // If the conversation doesn't exist in Twilio anymore, create a new one
+            existingConversation = null;
+          }
+        }
+
+        if (!existingConversation) {
+          // Create new conversation with unique friendly name
+          const conversationFriendlyName = `booking-${bookingId}-${Date.now()}`;
+          console.log('Creating new conversation with friendly name:', conversationFriendlyName);
+          
+          try {
+            conversation = await conversationsService.conversations.create({
+              friendlyName: conversationFriendlyName,
+              attributes: JSON.stringify({
+                bookingId,
+                createdAt: new Date().toISOString(),
+                type: 'booking-chat'
+              })
+            });
+            console.log('Twilio conversation created:', conversation.sid);
+          } catch (error: any) {
+            console.error('Error creating Twilio conversation:', error);
+            return res.status(500).json({ 
+              error: 'Failed to create conversation',
+              details: error.message || 'Unknown error'
+            });
+          }
+
+          // Store new conversation in Supabase
+          try {
+            const { data: conversationData, error: dbError } = await supabase
+              .from('conversation_metadata')
+              .insert({
+                twilio_conversation_sid: conversation.sid,
+                booking_id: bookingId,
+                conversation_type: 'booking_chat',
+                is_active: true,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .select('id')
+              .single();
+
+            if (dbError) {
+              console.error('Error storing conversation in database:', dbError);
+            } else {
+              conversationMetadataId = conversationData?.id;
+              console.log('Stored new conversation - UUID:', conversationMetadataId, 'Twilio SID:', conversation.sid);
+            }
+          } catch (dbError) {
+            console.error('Error storing conversation in database:', dbError);
+          }
         }
 
         // Store conversation in Supabase
@@ -126,60 +191,94 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           console.error('Error storing conversation in database:', dbError);
         }
 
-        // Add participants to the conversation
-        const participantPromises = participants.map(async (participant: any) => {
-          try {
-            const twilioParticipant = await conversationsService.conversations(conversation.sid)
-              .participants.create({
-                identity: participant.identity,
-                attributes: JSON.stringify({
-                  role: participant.role,
-                  name: participant.name,
-                  userId: participant.userId,
-                  userType: participant.userType
-                })
-              });
-
-            // Store participant in Supabase
+        // Add participants to the conversation (only if this is a new conversation)
+        if (!existingConversation) {
+          console.log('Adding participants to new conversation');
+          const participantPromises = participants.map(async (participant: any) => {
             try {
-              console.log('Storing participant in database:', {
-                conversation_id: conversation.sid,
-                user_id: participant.userId,
-                user_type: participant.userType,
-                participant_sid: twilioParticipant.sid
-              });
+              // Check if participant already exists in this conversation
+              try {
+                const existingParticipant = await conversationsService.conversations(conversation.sid)
+                  .participants(participant.identity)
+                  .fetch();
+                console.log(`Participant ${participant.identity} already exists in conversation`);
+                return existingParticipant;
+              } catch (notFoundError: any) {
+                // Participant doesn't exist, create new one
+                console.log(`Creating new participant: ${participant.identity}`);
+              }
 
-              const { error: participantDbError } = await supabase
-                .from('conversation_participants')
-                .insert({
-                  conversation_id: conversationMetadataId, // Use the UUID from conversation_metadata
-                  user_id: participant.userId, // auth.users.id
-                  user_type: participant.userType, // 'provider' or 'customer'
-                  twilio_participant_sid: twilioParticipant.sid,
-                  joined_at: new Date().toISOString()
+              const twilioParticipant = await conversationsService.conversations(conversation.sid)
+                .participants.create({
+                  identity: participant.identity,
+                  attributes: JSON.stringify({
+                    role: participant.role,
+                    name: participant.name,
+                    userId: participant.userId,
+                    userType: participant.userType
+                  })
                 });
 
-              if (participantDbError) {
+              console.log(`Successfully created participant: ${participant.identity}`);
+
+              // Store participant in Supabase
+              try {
+                console.log('Storing participant in database:', {
+                  conversation_id: conversationMetadataId,
+                  user_id: participant.userId,
+                  user_type: participant.userType,
+                  participant_sid: twilioParticipant.sid
+                });
+
+                const { error: participantDbError } = await supabase
+                  .from('conversation_participants')
+                  .insert({
+                    conversation_id: conversationMetadataId, // Use the UUID from conversation_metadata
+                    user_id: participant.userId, // auth.users.id
+                    user_type: participant.userType, // 'provider' or 'customer'
+                    twilio_participant_sid: twilioParticipant.sid,
+                    joined_at: new Date().toISOString()
+                  });
+
+                if (participantDbError) {
+                  console.error('Error storing participant in database:', participantDbError);
+                } else {
+                  console.log('Successfully stored participant in database');
+                }
+              } catch (participantDbError) {
                 console.error('Error storing participant in database:', participantDbError);
-              } else {
-                console.log('Successfully stored participant in database');
               }
-            } catch (participantDbError) {
-              console.error('Error storing participant in database:', participantDbError);
-            }
 
-            return twilioParticipant;
-          } catch (error: any) {
-            // If participant already exists, that's okay
-            if (error.code === 50433) {
-              console.log(`Participant ${participant.identity} already exists in conversation`);
-              return null;
+              return twilioParticipant;
+            } catch (error: any) {
+              console.error(`Error adding participant ${participant.identity}:`, error);
+              
+              // Handle specific Twilio errors
+              if (error.code === 50433) {
+                console.log(`Participant ${participant.identity} already exists in conversation`);
+                return null;
+              } else if (error.message && error.message.includes('conversation limit exceeded')) {
+                console.error('User conversation limit exceeded for participant:', participant.identity);
+                // Don't throw error, just log it and continue
+                return null;
+              } else {
+                console.error('Unexpected error adding participant:', error);
+                // Don't throw error, just log it and continue
+                return null;
+              }
             }
-            throw error;
+          });
+
+          try {
+            await Promise.all(participantPromises);
+            console.log('All participants processed');
+          } catch (error) {
+            console.error('Error processing participants:', error);
+            // Don't fail the request, just log the error
           }
-        });
-
-        await Promise.all(participantPromises);
+        } else {
+          console.log('Using existing conversation - skipping participant addition');
+        }
 
         console.log('Conversation created successfully:', {
           sid: conversation.sid,
