@@ -373,8 +373,8 @@ export const useConversations = () => {
         throw new Error(result.error || 'Failed to add participant');
       }
 
-      // Refresh participants list
-      await loadParticipants(conversationSid);
+      // Don't call loadParticipants here to avoid circular dependency
+      // The caller should handle refreshing if needed
       
       return result.participantSid;
     } catch (error: any) {
@@ -389,7 +389,7 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [loadParticipants, toast]);
+  }, [toast]);
 
   // Mark messages as read
   const markAsRead = useCallback(async (conversationSid: string) => {
@@ -424,8 +424,8 @@ export const useConversations = () => {
         throw new Error(result.error || 'Failed to mark messages as read');
       }
 
-      // Refresh conversations to update unread count
-      await loadConversations();
+      // Don't call loadConversations here to avoid circular dependency
+      // The caller should handle refreshing if needed
     } catch (error: any) {
       console.error('Error marking messages as read:', error);
       setError(error.message || 'Failed to mark messages as read');
@@ -437,7 +437,7 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, loadConversations, toast]);
+  }, [currentUser, toast]);
 
   // Set current conversation
   const setActiveConversation = useCallback((conversationSid: string | null) => {
@@ -445,16 +445,18 @@ export const useConversations = () => {
     if (conversationSid) {
       loadMessages(conversationSid);
       loadParticipants(conversationSid);
-      markAsRead(conversationSid);
+      // Don't call markAsRead immediately to avoid potential issues
+      // It can be called separately when needed
     } else {
       setMessages([]);
       setParticipants([]);
     }
-  }, [loadMessages, loadParticipants, markAsRead]);
+  }, [loadMessages, loadParticipants]);
 
   // Load conversations when user changes
   useEffect(() => {
     if (currentUser) {
+      console.log('🔄 Loading conversations for user:', currentUser.id);
       loadConversations();
     }
   }, [currentUser, loadConversations]);
