@@ -185,7 +185,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       // Current user is provider, add customer
       const customerName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
       bookingParticipants.push({
-        identity: `customer-${booking.customer_profiles.id}`, // Use consistent format: customer-id
+        identity: `customer-${booking.customer_profiles.id}`,
         role: 'customer',
         name: customerName,
         userId: booking.customer_profiles.id,
@@ -195,10 +195,10 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       // Current user is customer, add assigned provider from booking
       const providerName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
       bookingParticipants.push({
-        identity: `provider-${booking.providers.user_id}`, // Use consistent format: provider-id
+        identity: `provider-${booking.providers.id}`,
         role: 'provider', 
         name: providerName,
-        userId: booking.providers.user_id,
+        userId: booking.providers.id,
         userType: 'provider'
       });
     }
