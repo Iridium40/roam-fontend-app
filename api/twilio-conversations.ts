@@ -143,22 +143,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             console.log('Using existing Twilio conversation:', conversation.sid);
           }
 
-          // Add participants to the conversation
+          // Get existing participants to avoid duplicates
+          const existingParticipants = await conversationsService.conversations(conversation.sid)
+            .participants.list();
+          
+          const existingIdentities = existingParticipants.map(p => p.identity);
+          console.log('Existing participants:', existingIdentities);
+
+          // Add participants to the conversation (skip if already exists)
           for (const participant of participants) {
             try {
-              const twilioParticipant = await conversationsService.conversations(conversation.sid)
-                .participants.create({
-                  identity: participant.identity,
-                  attributes: JSON.stringify({
-                    role: participant.role,
-                    name: participant.name,
-                    userId: participant.userId
-                  })
-                });
+              if (!existingIdentities.includes(participant.identity)) {
+                const twilioParticipant = await conversationsService.conversations(conversation.sid)
+                  .participants.create({
+                    identity: participant.identity,
+                    attributes: JSON.stringify({
+                      role: participant.role,
+                      name: participant.name,
+                      userId: participant.userId,
+                      userType: participant.userType || participant.role
+                    })
+                  });
 
-              console.log(`Added participant: ${participant.identity}`);
+                console.log(`Added new participant: ${participant.identity}`);
+              } else {
+                console.log(`Participant already exists: ${participant.identity}`);
+              }
             } catch (participantError) {
               console.error(`Error adding participant ${participant.identity}:`, participantError);
+              // Continue with other participants even if one fails
             }
           }
 
