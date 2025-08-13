@@ -21,6 +21,7 @@ import {
   X
 } from 'lucide-react';
 import { useConversations, ConversationMessage, Conversation } from '@/hooks/useConversations';
+import { useCustomerConversations } from '@/hooks/useCustomerConversations';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -44,6 +45,14 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
   
   // Get the current user data (either provider or customer)
   const currentUser = user || customer;
+  
+  // Use different hooks based on user type to avoid circular dependencies
+  const isCustomer = userType === 'customer' || (!user && customer);
+  
+  const providerHook = useConversations();
+  const customerHook = useCustomerConversations();
+  
+  // Use the appropriate hook based on user type
   const {
     conversations,
     currentConversation,
@@ -51,14 +60,12 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     participants,
     loading,
     sending,
-    loadMessages,
     sendMessage,
     createConversation,
     getUserIdentity,
     getUserType,
-    loadParticipants,
     setActiveConversation
-  } = useConversations();
+  } = isCustomer ? customerHook : providerHook;
 
   const [newMessage, setNewMessage] = useState('');
   const [activeConversationSid, setActiveConversationSid] = useState<string | null>(conversationSid || null);
