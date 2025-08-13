@@ -270,16 +270,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           const participants = await conversationsService.conversations(conversationSid)
             .participants.list();
 
-          // Clean up duplicate participants if found
-          const seenIdentities = new Set<string>();
+          // Clean up duplicate participants with normalized identity comparison
+          const seenNormalizedIdentities = new Set<string>();
           const duplicateParticipants: any[] = [];
           const uniqueParticipants: any[] = [];
 
+          // Helper function to normalize identity for comparison
+          const normalizeIdentity = (identity: string) => {
+            return identity.replace(/[_-]/g, '-').toLowerCase();
+          };
+
           for (const participant of participants) {
-            if (seenIdentities.has(participant.identity)) {
+            const normalizedIdentity = normalizeIdentity(participant.identity);
+            if (seenNormalizedIdentities.has(normalizedIdentity)) {
               duplicateParticipants.push(participant);
+              console.log(`Found duplicate participant: ${participant.identity} (normalized: ${normalizedIdentity})`);
             } else {
-              seenIdentities.add(participant.identity);
+              seenNormalizedIdentities.add(normalizedIdentity);
               uniqueParticipants.push(participant);
             }
           }

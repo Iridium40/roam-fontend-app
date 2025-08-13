@@ -404,6 +404,13 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
                   ) : (
                     messages.map((message) => {
                       const authorInfo = getMessageAuthorInfo(message);
+                      console.log('🔍 Message debug:', {
+                        messageSid: message.sid,
+                        author: message.author,
+                        body: message.body,
+                        authorInfo: authorInfo,
+                        currentUserIdentity: getUserIdentity()
+                      });
                       return (
                         <div
                           key={message.sid}
