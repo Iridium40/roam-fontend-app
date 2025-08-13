@@ -822,6 +822,19 @@ export default function Index() {
             <div className="hidden md:flex items-center space-x-4">
               {isCustomer ? (
                 <>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="text-foreground hover:bg-foreground/10"
+                  >
+                    <Link
+                      to="/customer/bookings"
+                      className="flex items-center"
+                    >
+                      <Calendar className="w-4 h-4 mr-2" />
+                      My Bookings
+                    </Link>
+                  </Button>
                   <CustomerAvatarDropdown />
                   <Button
                     asChild
