@@ -1859,10 +1859,10 @@ function BookingCard({
               All Fields = {Object.keys(booking).join(', ')},
               Provider Object = {booking.providers ? 'exists' : 'none'}, 
               Provider User ID (from object) = {booking.providers?.user_id || 'none'},
-              Button Should Show = {(booking.status === "confirmed" && (booking.providers || booking.provider)) ? 'yes' : 'no'}
+              Button Should Show = {(booking.status === "confirmed" && booking.provider) ? 'yes' : 'no'}
             </div>
-            
-            {booking.status === "confirmed" && (booking.providers || booking.provider) && (
+
+            {booking.status === "confirmed" && booking.provider && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
@@ -1943,5 +1943,3 @@ function BookingCard({
     </Card>
   );
 }
-
-
