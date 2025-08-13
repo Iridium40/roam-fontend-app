@@ -825,7 +825,7 @@ export default function Index() {
                   <Button
                     asChild
                     variant="ghost"
-                    className="text-foreground hover:bg-foreground/10"
+                    className="text-foreground hover:bg-foreground/10 border border-border"
                   >
                     <Link
                       to="/customer/bookings"
