@@ -170,6 +170,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(200).json({
             success: true,
             messageSid: sentMessage.sid,
+            author: participantIdentity,
+            body: message,
             dateCreated: sentMessage.dateCreated
           });
 
@@ -223,12 +225,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         try {
           console.log('Getting participants for conversation:', conversationSid);
           
-          // For now, return empty participants to prevent 400 errors
-          // This allows the messaging modal to function without crashing
+          // Fetch real participants from Twilio
+          const participants = await conversationsService.conversations(conversationSid)
+            .participants.list();
+
+          const formattedParticipants = participants.map(participant => ({
+            sid: participant.sid,
+            identity: participant.identity,
+            attributes: participant.attributes ? JSON.parse(participant.attributes) : {},
+            dateCreated: participant.dateCreated,
+            dateUpdated: participant.dateUpdated
+          }));
+
           return res.status(200).json({
             success: true,
-            participants: [],
-            message: 'Participants loading ready'
+            participants: formattedParticipants,
+            message: 'Participants loaded successfully'
           });
         } catch (error: any) {
           console.error('Error getting conversation participants:', error);
