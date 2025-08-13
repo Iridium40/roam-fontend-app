@@ -103,17 +103,45 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         try {
-          // Create conversation in Twilio
-          const conversation = await conversationsService.conversations.create({
-            friendlyName: `Booking ${bookingId}`,
-            attributes: JSON.stringify({
-              bookingId,
-              createdAt: new Date().toISOString(),
-              type: 'booking'
-            })
+          // First, check if a conversation already exists for this booking
+          console.log('Checking for existing conversation for booking:', bookingId);
+          
+          const existingConversations = await conversationsService.conversations.list({
+            limit: 50
           });
-
-          console.log('Created Twilio conversation:', conversation.sid);
+          
+          let conversation: any = null;
+          
+          // Look for existing conversation with this booking ID
+          for (const conv of existingConversations) {
+            try {
+              const attributes = conv.attributes ? JSON.parse(conv.attributes) : {};
+              if (attributes.bookingId === bookingId) {
+                console.log('Found existing conversation:', conv.sid);
+                conversation = conv;
+                break;
+              }
+            } catch (e) {
+              // Skip conversations with invalid attributes
+              continue;
+            }
+          }
+          
+          // If no existing conversation found, create a new one
+          if (!conversation) {
+            console.log('No existing conversation found, creating new one for booking:', bookingId);
+            conversation = await conversationsService.conversations.create({
+              friendlyName: `Booking ${bookingId}`,
+              attributes: JSON.stringify({
+                bookingId,
+                createdAt: new Date().toISOString(),
+                type: 'booking'
+              })
+            });
+            console.log('Created new Twilio conversation:', conversation.sid);
+          } else {
+            console.log('Using existing Twilio conversation:', conversation.sid);
+          }
 
           // Add participants to the conversation
           for (const participant of participants) {
