@@ -203,6 +203,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       });
     }
 
+    // TEST COMMENT - DEBUGGING PARTICIPANT ISSUES
     console.log('👥 Enhanced participants logic:');
     console.log('  - Current user type:', userType);
     console.log('  - Current user ID:', currentUser?.id);
