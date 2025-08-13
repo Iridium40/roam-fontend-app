@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { useConversations, Conversation } from '@/hooks/useConversations';
 import { formatDistanceToNow } from 'date-fns';
-import ConversationChat from './ConversationChat';
+// import ConversationChat from './ConversationChat';
 
 interface ConversationsListProps {
   isOpen: boolean;
@@ -37,8 +37,8 @@ const ConversationsList = ({ isOpen, onClose }: ConversationsListProps) => {
   } = useConversations();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  // const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Filter conversations based on search term
   const filteredConversations = conversations.filter(conv => {
@@ -51,16 +51,18 @@ const ConversationsList = ({ isOpen, onClose }: ConversationsListProps) => {
   });
 
   const handleConversationClick = (conversationSid: string) => {
-    setSelectedConversation(conversationSid);
-    setIsChatOpen(true);
+    // Temporarily disabled to prevent circular dependency
+    console.log('Conversation clicked:', conversationSid);
+    // setSelectedConversation(conversationSid);
+    // setIsChatOpen(true);
   };
 
-  const handleChatClose = () => {
-    setIsChatOpen(false);
-    setSelectedConversation(null);
-    // Refresh conversations when chat closes to update unread counts
-    loadConversations();
-  };
+  // const handleChatClose = () => {
+  //   setIsChatOpen(false);
+  //   setSelectedConversation(null);
+  //   // Refresh conversations when chat closes to update unread counts
+  //   loadConversations();
+  // };
 
   const handleRefresh = () => {
     loadConversations();
@@ -222,12 +224,12 @@ const ConversationsList = ({ isOpen, onClose }: ConversationsListProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Chat Modal */}
-      <ConversationChat
+      {/* Chat Modal - Removed to prevent circular dependency */}
+      {/* <ConversationChat
         isOpen={isChatOpen}
         onClose={handleChatClose}
         conversationSid={selectedConversation || undefined}
-      />
+      /> */}
     </>
   );
 };

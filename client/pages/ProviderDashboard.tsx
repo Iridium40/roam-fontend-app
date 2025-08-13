@@ -598,7 +598,7 @@ export default function ProviderDashboard() {
   >([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("bookings");
-  const [activeBookingTab, setActiveBookingTab] = useState("present");
+  const [activeBookingTab, setActiveBookingTab] = useState("all");
   const [calendarViewType, setCalendarViewType] = useState<
     "week" | "month" | "hidden"
   >("month");
@@ -3436,6 +3436,12 @@ export default function ProviderDashboard() {
 
   // Conversations handlers (Twilio Conversations API)
   const handleOpenMessaging = async (booking: any) => {
+    console.log('handleOpenMessaging called with booking:', {
+      id: booking?.id,
+      customer_name: booking?.customer_profiles?.first_name || booking?.guest_name,
+      customer_email: booking?.customer_profiles?.email || booking?.guest_email,
+      service_name: booking?.services?.name
+    });
     setSelectedBookingForMessaging(booking);
     setMessagingModal(true);
   };
@@ -6453,7 +6459,7 @@ export default function ProviderDashboard() {
   // Helper functions to filter bookings by date and status
   const filterBookingsByDate = (
     bookings: any[],
-    filterType: "present" | "future" | "past",
+    filterType: "all" | "present" | "future" | "past",
   ) => {
     const today = new Date();
     const startOfToday = new Date(
@@ -6475,6 +6481,9 @@ export default function ProviderDashboard() {
       const status = booking.booking_status?.toLowerCase();
 
       switch (filterType) {
+        case "all":
+          // All = show all bookings regardless of date or status
+          return true;
         case "present":
           // Present = all bookings with date of today OR in the past with status NOT cancelled or completed
           if (bookingDate >= startOfToday && bookingDate <= endOfToday) {
@@ -6500,9 +6509,22 @@ export default function ProviderDashboard() {
     });
   };
 
+<<<<<<< HEAD
   // Base filtering without date filtering (for use in tabs)
   const getBaseFilteredBookings = () => {
     let filtered = [...bookings];
+=======
+  const getFilteredBookings = (applyDateFilter = true) => {
+    let filtered = bookings;
+
+    // Apply date filtering only if requested (for tab view, we'll apply it separately)
+    if (applyDateFilter) {
+      filtered = filterBookingsByDate(
+        bookings,
+        activeBookingTab as "all" | "present" | "future" | "past",
+      );
+    }
+>>>>>>> c3da902a1597ba797f580a6020edf2133dfca42c
 
     // For owners/dispatchers, filter by location and provider
     if ((isOwner || isDispatcher) && selectedProviderFilter !== "all") {
@@ -7328,10 +7350,10 @@ export default function ProviderDashboard() {
     }
   }, [provider, activeTab]);
 
-  // Fetch team providers when provider is available and providers tab is active
+  // Fetch team providers when user is available and providers tab is active
   useEffect(() => {
     if (
-      provider &&
+      user &&
       activeTab === "providers" &&
       teamProviders.length === 0 &&
       !providersLoading
@@ -7339,12 +7361,12 @@ export default function ProviderDashboard() {
       console.log("Auto-fetching team providers for active tab");
       fetchTeamProviders();
     }
-  }, [provider, activeTab]);
+  }, [user, activeTab]);
 
-  // Fetch provider add-ons when provider is available and add-ons tab is active
+  // Fetch provider add-ons when user is available and add-ons tab is active
   useEffect(() => {
     if (
-      provider &&
+      user &&
       activeTab === "addons" &&
       availableAddons.length === 0 &&
       !addonsLoading
@@ -7352,12 +7374,12 @@ export default function ProviderDashboard() {
       console.log("Auto-fetching provider add-ons for active tab");
       fetchProviderAddons();
     }
-  }, [provider, activeTab]);
+  }, [user, activeTab]);
 
-  // Fetch business services and add-ons when provider is available and services-addons tab is active
+  // Fetch business services and add-ons when user is available and services-addons tab is active
   useEffect(() => {
     if (
-      provider?.business_id &&
+      user?.business_id &&
       activeTab === "services-addons" &&
       allServices.length === 0 &&
       !businessServicesLoading &&
@@ -7366,7 +7388,7 @@ export default function ProviderDashboard() {
       console.log("Auto-fetching business services and add-ons for active tab");
       fetchBusinessServicesAndAddons();
     }
-  }, [provider, activeTab, businessServicesError]);
+  }, [user, activeTab, businessServicesError]);
 
   // Load tax info when financial tab is active
   useEffect(() => {
@@ -7407,19 +7429,19 @@ export default function ProviderDashboard() {
   // Load subscription data when subscription tab is active
   useEffect(() => {
     if (
-      provider?.business_id &&
+      user?.business_id &&
       isOwner &&
       (document.querySelector('[data-state="active"][value="subscription"]') ||
         window.location.hash === "#subscription")
     ) {
       loadCurrentSubscription();
     }
-  }, [provider?.business_id, isOwner]);
+  }, [user?.business_id, isOwner]);
 
   // Load provider services when provider-services tab is active
   useEffect(() => {
     if (
-      provider?.id &&
+      user?.id &&
       business?.id &&
       activeTab === "provider-services" &&
       !providerServicesLoading &&
@@ -7429,7 +7451,7 @@ export default function ProviderDashboard() {
     ) {
       loadProviderServices();
     }
-  }, [provider, business, activeTab]);
+  }, [user, business, activeTab]);
 
   const fetchDashboardData = async () => {
     if (!user) return;
@@ -8754,7 +8776,8 @@ export default function ProviderDashboard() {
                                   <p className="text-lg font-semibold text-roam-blue mt-2">
                                     ${booking.total_amount || "0"}
                                   </p>
-                                  {booking.booking_status === "confirmed" && (
+                                                                        {(booking.booking_status === "confirmed" ||
+                                        booking.booking_status === "in_progress") && (
                                     <Button
                                       size="sm"
                                       variant="outline"
@@ -8811,13 +8834,14 @@ export default function ProviderDashboard() {
                   onValueChange={setActiveBookingTab}
                   className="space-y-4"
                 >
-                  <TabsList className="grid grid-cols-3 w-full max-w-md">
+                  <TabsList className="grid grid-cols-4 w-full max-w-md">
+                    <TabsTrigger value="all">All</TabsTrigger>
                     <TabsTrigger value="present">Present</TabsTrigger>
                     <TabsTrigger value="future">Future</TabsTrigger>
                     <TabsTrigger value="past">Past</TabsTrigger>
                   </TabsList>
 
-                  {["present", "future", "past"].map((tabValue) => (
+                  {["all", "present", "future", "past"].map((tabValue) => (
                     <TabsContent
                       key={tabValue}
                       value={tabValue}
@@ -8825,12 +8849,21 @@ export default function ProviderDashboard() {
                     >
                       <div className="space-y-4">
                         {filterBookingsByDate(
+<<<<<<< HEAD
                           getBaseFilteredBookings(),
                           tabValue as "present" | "future" | "past",
                         ).length > 0 ? (
                           filterBookingsByDate(
                             getBaseFilteredBookings(),
                             tabValue as "present" | "future" | "past",
+=======
+                          getFilteredBookings(false),
+                          tabValue as "all" | "present" | "future" | "past",
+                        ).length > 0 ? (
+                          filterBookingsByDate(
+                            getFilteredBookings(false),
+                            tabValue as "all" | "present" | "future" | "past",
+>>>>>>> c3da902a1597ba797f580a6020edf2133dfca42c
                           ).map((booking) => {
                             const statusConfig = getStatusBadge(
                               booking.booking_status,
@@ -9066,9 +9099,9 @@ export default function ProviderDashboard() {
                                         ${booking.total_amount || "0"}
                                       </p>
 
-                                      {/* Messaging Button - Only show for confirmed bookings */}
-                                      {booking.booking_status ===
-                                        "confirmed" && (
+                                      {/* Messaging Button - Show for confirmed and in-progress bookings */}
+                                      {(booking.booking_status === "confirmed" ||
+                                        booking.booking_status === "in_progress") && (
                                         <Button
                                           size="sm"
                                           variant="outline"
@@ -9395,6 +9428,22 @@ export default function ProviderDashboard() {
                                   onClick={() => openDeclineModal(booking)}
                                 >
                                   Decline
+                                </Button>
+                              </div>
+                            )}
+
+                            {/* Messaging Button - Show for confirmed and in-progress bookings */}
+                            {(booking.booking_status === "confirmed" ||
+                              booking.booking_status === "in_progress") && (
+                              <div className="mt-4">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
+                                  onClick={() => handleOpenMessaging(booking)}
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-2" />
+                                  Message Customer
                                 </Button>
                               </div>
                             )}

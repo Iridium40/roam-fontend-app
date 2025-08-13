@@ -20,12 +20,11 @@ import {
   User,
   X
 } from 'lucide-react';
-import { useConversations, ConversationMessage, Conversation } from '@/hooks/useConversations';
-import { useCustomerConversations } from '@/hooks/useCustomerConversations';
+import { useCustomerConversations, ConversationMessage } from '@/hooks/useCustomerConversations';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 
-interface ConversationChatProps {
+interface CustomerConversationChatProps {
   isOpen: boolean;
   onClose: () => void;
   booking?: {
@@ -40,19 +39,12 @@ interface ConversationChatProps {
   conversationSid?: string;
 }
 
-const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: ConversationChatProps) => {
+const CustomerConversationChat = ({ isOpen, onClose, booking, conversationSid }: CustomerConversationChatProps) => {
   const { user, customer, userType } = useAuth();
   
   // Get the current user data (either provider or customer)
   const currentUser = user || customer;
   
-  // Use different hooks based on user type to avoid circular dependencies
-  const isCustomer = userType === 'customer' || (!user && customer);
-  
-  const providerHook = useConversations();
-  const customerHook = useCustomerConversations();
-  
-  // Use the appropriate hook based on user type
   const {
     conversations,
     currentConversation,
@@ -65,7 +57,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     getUserIdentity,
     getUserType,
     setActiveConversation
-  } = isCustomer ? customerHook : providerHook;
+  } = useCustomerConversations();
 
   const [newMessage, setNewMessage] = useState('');
   const [activeConversationSid, setActiveConversationSid] = useState<string | null>(conversationSid || null);
@@ -78,7 +70,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
   // Initialize conversation when modal opens
   useEffect(() => {
-    console.log('ConversationChat useEffect triggered:', {
+    console.log('CustomerConversationChat useEffect triggered:', {
       isOpen,
       booking: booking?.id,
       conversationSid,
@@ -95,7 +87,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       setActiveConversationSid(conversationSid);
       setActiveConversation(conversationSid);
     }
-  }, [isOpen, booking, conversationSid]);
+  }, [isOpen, booking, conversationSid, activeConversationSid, currentUser, userType]);
 
   // Load messages when active conversation changes
   useEffect(() => {
@@ -186,13 +178,6 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
   const formatMessageTime = (dateString: string) => {
     try {
       return formatDistanceToNow(new Date(dateString), { addSuffix: true });
@@ -249,7 +234,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
           User: {currentUser?.id || 'No user ID'}, 
           User Type: {userType || (currentUser?.provider_role ? 'provider' : 'customer')},
           User Data: {currentUser ? JSON.stringify({id: currentUser.id, first_name: currentUser.first_name, last_name: currentUser.last_name, provider_role: currentUser.provider_role}) : 'No user data'},
-          Booking Data: {booking ? JSON.stringify({id: booking.id, customer_id: booking.customer_id, customer_name: booking.customer_name}) : 'No booking data'}
+          Booking Data: {booking ? JSON.stringify({id: booking.id, customer_name: booking.customer_name}) : 'No booking data'}
         </div>
       )}
     </div>
@@ -367,20 +352,20 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
           {/* Message Input */}
           <Card className="mt-4">
-            <CardContent className="pt-4">
+            <CardContent className="p-4">
               <div className="flex gap-2">
                 <Input
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   placeholder="Type your message..."
-                  disabled={sending || !activeConversationSid}
+                  disabled={!activeConversationSid || sending}
                   className="flex-1"
                 />
                 <Button
                   onClick={handleSendMessage}
-                  disabled={!newMessage.trim() || sending || !activeConversationSid}
-                  size="icon"
+                  disabled={!newMessage.trim() || !activeConversationSid || sending}
+                  className="bg-roam-blue hover:bg-roam-blue/90"
                 >
                   <Send className="h-4 w-4" />
                 </Button>
@@ -393,4 +378,4 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
   );
 };
 
-export default ConversationChat;
+export default CustomerConversationChat;

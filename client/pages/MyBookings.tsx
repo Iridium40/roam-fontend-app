@@ -52,6 +52,7 @@ import RealtimeBookingNotifications from "@/components/RealtimeBookingNotificati
 import BookingStatusIndicator, {
   RealtimeStatusUpdate,
 } from "@/components/BookingStatusIndicator";
+import CustomerConversationChat from "@/components/CustomerConversationChat";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -88,8 +89,17 @@ export default function MyBookings() {
   const [newBookingDate, setNewBookingDate] = useState("");
   const [newBookingTime, setNewBookingTime] = useState("");
   const [rescheduleReason, setRescheduleReason] = useState("");
+  
+  // Messaging state
+  const [messagingModal, setMessagingModal] = useState(false);
+  const [selectedBookingForMessaging, setSelectedBookingForMessaging] = useState<any>(null);
 
   const currentUser = user || customer;
+  
+  // Debug current user data
+  console.log('MyBookings - currentUser:', currentUser);
+  console.log('MyBookings - user:', user);
+  console.log('MyBookings - customer:', customer);
 
   // Real-time booking updates
   const { isConnected, refreshBookings } = useRealtimeBookings({
@@ -144,7 +154,42 @@ export default function MyBookings() {
             .from("bookings")
             .select(
               `
-              *,
+              id,
+              customer_id,
+              provider_id,
+              service_id,
+              booking_date,
+              start_time,
+              total_amount,
+              created_at,
+              service_fee,
+              service_fee_charged,
+              service_fee_charged_at,
+              remaining_balance,
+              remaining_balance_charged,
+              remaining_balance_charged_at,
+              cancellation_fee,
+              refund_amount,
+              cancelled_at,
+              cancelled_by,
+              cancellation_reason,
+              guest_name,
+              guest_email,
+              guest_phone,
+              customer_location_id,
+              business_location_id,
+              delivery_type,
+              payment_status,
+              booking_status,
+              admin_notes,
+              tip_eligible,
+              tip_amount,
+              tip_status,
+              tip_requested_at,
+              tip_deadline,
+              booking_reference,
+              business_id,
+              decline_reason,
               services (
                 id,
                 name,
@@ -157,8 +202,9 @@ export default function MyBookings() {
                 email,
                 image_url
               ),
-              providers (
+              providers!provider_id (
                 id,
+                user_id,
                 first_name,
                 last_name,
                 location_id,
@@ -195,7 +241,42 @@ export default function MyBookings() {
             .from("bookings")
             .select(
               `
-              *,
+              id,
+              customer_id,
+              provider_id,
+              service_id,
+              booking_date,
+              start_time,
+              total_amount,
+              created_at,
+              service_fee,
+              service_fee_charged,
+              service_fee_charged_at,
+              remaining_balance,
+              remaining_balance_charged,
+              remaining_balance_charged_at,
+              cancellation_fee,
+              refund_amount,
+              cancelled_at,
+              cancelled_by,
+              cancellation_reason,
+              guest_name,
+              guest_email,
+              guest_phone,
+              customer_location_id,
+              business_location_id,
+              delivery_type,
+              payment_status,
+              booking_status,
+              admin_notes,
+              tip_eligible,
+              tip_amount,
+              tip_status,
+              tip_requested_at,
+              tip_deadline,
+              booking_reference,
+              business_id,
+              decline_reason,
               services (
                 id,
                 name,
@@ -208,7 +289,7 @@ export default function MyBookings() {
                 email,
                 image_url
               ),
-              providers (
+              providers!provider_id (
                 id,
                 first_name,
                 last_name,
@@ -239,6 +320,42 @@ export default function MyBookings() {
         }
 
         console.log("Bookings query response:", bookingsResponse);
+        
+        // Debug: Log the first booking to see what fields are returned
+        if (bookingsResponse.data && bookingsResponse.data.length > 0) {
+          console.log("First booking fields:", Object.keys(bookingsResponse.data[0]));
+          console.log("First booking provider_id:", bookingsResponse.data[0].provider_id);
+          console.log("First booking provider object:", bookingsResponse.data[0].providers);
+          console.log("First booking full data:", bookingsResponse.data[0]);
+          
+          // Check for any fields that might contain provider information
+          const providerFields = Object.keys(bookingsResponse.data[0]).filter(key => 
+            key.toLowerCase().includes('provider') || 
+            key.toLowerCase().includes('user') ||
+            key === 'assigned_provider_id' ||
+            key === 'provider_user_id'
+          );
+          console.log("Potential provider-related fields:", providerFields);
+          
+          // Try to query providers directly to see if there are any
+          console.log("First booking provider_id value:", bookingsResponse.data[0].provider_id);
+          console.log("Provider_id type:", typeof bookingsResponse.data[0].provider_id);
+          
+          if (bookingsResponse.data[0].provider_id) {
+            const { data: providerData, error: providerError } = await supabase
+              .from('providers')
+              .select('*')
+              .eq('id', bookingsResponse.data[0].provider_id);
+            console.log("Direct provider query result:", { providerData, providerError });
+            
+            // Also try to get all providers to see if any exist
+            const { data: allProviders, error: allProvidersError } = await supabase
+              .from('providers')
+              .select('id, first_name, last_name')
+              .limit(5);
+            console.log("All providers sample:", { allProviders, allProvidersError });
+          }
+        }
 
         // Check for authentication error
         if (bookingsResponse.status === 401 && retryCount === 0) {
@@ -785,6 +902,26 @@ export default function MyBookings() {
     }
   };
 
+  // Messaging handlers
+  const handleOpenMessaging = async (booking: any) => {
+    console.log('handleOpenMessaging called with booking:', booking);
+    console.log('Current user:', currentUser);
+    console.log('Setting messaging modal to true');
+    setSelectedBookingForMessaging(booking);
+    setMessagingModal(true);
+    console.log('Modal state should now be true');
+    
+    // Add a small delay to check if the modal state actually changes
+    setTimeout(() => {
+      console.log('Modal state after timeout:', messagingModal);
+    }, 100);
+  };
+
+  const handleCloseMessaging = () => {
+    setMessagingModal(false);
+    setSelectedBookingForMessaging(null);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -962,6 +1099,8 @@ export default function MyBookings() {
                           booking={booking}
                           onCancel={openCancelModal}
                           onReschedule={openRescheduleModal}
+                          currentUser={currentUser}
+                          handleOpenMessaging={handleOpenMessaging}
                         />
                       ))}
                     </div>
@@ -1031,6 +1170,8 @@ export default function MyBookings() {
                           booking={booking}
                           onCancel={openCancelModal}
                           onReschedule={openRescheduleModal}
+                          currentUser={currentUser}
+                          handleOpenMessaging={handleOpenMessaging}
                         />
                       ))}
                     </div>
@@ -1100,6 +1241,8 @@ export default function MyBookings() {
                           booking={booking}
                           onCancel={openCancelModal}
                           onReschedule={openRescheduleModal}
+                          currentUser={currentUser}
+                          handleOpenMessaging={handleOpenMessaging}
                         />
                       ))}
                     </div>
@@ -1431,6 +1574,33 @@ export default function MyBookings() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Debug: Modal state */}
+      <div className="text-xs text-gray-500 mb-2">
+        Debug: messagingModal={messagingModal ? 'true' : 'false'}, 
+        selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'},
+        bookingId={selectedBookingForMessaging?.id || 'none'},
+        currentUserId={currentUser?.id || 'none'}
+      </div>
+
+      {/* Messaging Modal */}
+      <CustomerConversationChat
+        isOpen={messagingModal}
+        onClose={handleCloseMessaging}
+        booking={
+          selectedBookingForMessaging
+            ? {
+                id: selectedBookingForMessaging.id,
+                customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
+                customer_email: currentUser?.email || "",
+                customer_phone: (currentUser as any)?.phone || "",
+                service_name: selectedBookingForMessaging.service || "Service",
+                provider_name: selectedBookingForMessaging.provider?.name || "Provider",
+                business_id: selectedBookingForMessaging.business_id || "",
+              }
+            : undefined
+        }
+      />
     </div>
   );
 }
@@ -1439,10 +1609,14 @@ function BookingCard({
   booking,
   onCancel,
   onReschedule,
+  currentUser,
+  handleOpenMessaging,
 }: {
   booking: any;
   onCancel: (booking: any) => void;
   onReschedule: (booking: any) => void;
+  currentUser: any;
+  handleOpenMessaging: (booking: any) => void;
 }) {
   const statusConfig = {
     confirmed: {
@@ -1677,21 +1851,27 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {booking.status === "confirmed" && (
+            {/* Debug: Show booking status and provider relationship */}
+            <div className="text-xs text-gray-500 mb-1">
+              Debug: Status = {booking.status}, 
+              Provider ID = {booking.provider_id || 'none'}, 
+              Provider Field = {booking.provider ? JSON.stringify(booking.provider) : 'none'},
+              All Fields = {Object.keys(booking).join(', ')},
+              Provider Object = {booking.providers ? 'exists' : 'none'}, 
+              Provider User ID (from object) = {booking.providers?.user_id || 'none'},
+              Button Should Show = {(booking.status === "confirmed" && (booking.providers || booking.provider)) ? 'yes' : 'no'}
+            </div>
+            
+            {booking.status === "confirmed" && (booking.providers || booking.provider) && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
                 onClick={() => {
-                  // TODO: Implement messaging functionality with provider
-                  console.log(
-                    "Open messaging with provider for booking:",
-                    booking.id,
-                  );
-                  console.log("Provider:", booking.provider.name);
-                  // Could navigate to a chat interface or open a modal
-                  // navigate(`/bookings/${booking.id}/messages`);
+                  console.log('Button clicked! Booking:', booking);
+                  console.log('Current user:', currentUser);
+                  handleOpenMessaging(booking);
                 }}
-                title={`Message ${booking.provider.name} about this booking`}
+                title={`Message ${booking.provider?.name || 'Provider'} about this booking`}
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Message Provider
@@ -1763,3 +1943,5 @@ function BookingCard({
     </Card>
   );
 }
+
+

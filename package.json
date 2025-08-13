@@ -23,7 +23,7 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^3.9.0",
     "@stripe/stripe-js": "^7.8.0",
-    "@supabase/supabase-js": "^2.54.0",
+    "@supabase/supabase-js": "^2.55.0",
     "@types/multer": "^2.0.0",
     "@vercel/node": "^5.3.11",
     "dotenv": "^17.2.0",
@@ -33,6 +33,7 @@
     "multer": "^2.0.2",
     "react-qr-code": "^2.0.18",
     "stripe": "^18.4.0",
+    "twilio": "^5.8.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
