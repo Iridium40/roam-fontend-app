@@ -1597,6 +1597,7 @@ export default function MyBookings() {
                 customer_id: currentUser?.id || "", // Add customer_id for auth.users.id
                 service_name: selectedBookingForMessaging.service || "Service",
                 provider_name: selectedBookingForMessaging.provider?.name || "Provider",
+                provider_id: selectedBookingForMessaging.provider_id || selectedBookingForMessaging.provider?.id || "", // Add provider_id
                 business_id: selectedBookingForMessaging.business_id || "",
               }
             : undefined

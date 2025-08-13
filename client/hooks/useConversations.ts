@@ -63,8 +63,8 @@ export const useConversations = () => {
   // Generate unique identity for current user
   const getUserIdentity = useCallback(() => {
     if (!currentUser) return null;
-    const userType = userType || (currentUser.provider_role ? 'provider' : 'customer');
-    return `${userType}-${currentUser.id}`;
+    const currentUserType = userType || (currentUser.provider_role ? 'provider' : 'customer');
+    return `${currentUserType}-${currentUser.id}`;
   }, [currentUser, userType]);
 
   // Get user type for API calls

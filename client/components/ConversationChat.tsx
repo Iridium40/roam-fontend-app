@@ -34,6 +34,7 @@ interface ConversationChatProps {
     customer_phone?: string;
     service_name?: string;
     provider_name?: string;
+    provider_id?: string; // Add provider_id for provider lookup
     business_id?: string;
     customer_id?: string; // Add customer_id for auth.users.id
   };
@@ -129,6 +130,13 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
     if (!userIdentity || !userType) {
       console.error('Failed to get user identity or type');
+      console.log('Debug info:', {
+        currentUser: currentUser,
+        userIdentity: userIdentity,
+        userType: userType,
+        getUserIdentity: getUserIdentity,
+        getUserType: getUserType
+      });
       return;
     }
 
@@ -142,14 +150,16 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       }
     ];
 
-    // Add customer if we have their info
-    if (booking.customer_id) {
+    // Only add the provider if this is a customer initiating the conversation
+    if (userType === 'customer' && booking.provider_id) {
+      // We'll need to fetch provider details or use a placeholder
+      // For now, we'll add a placeholder that the API can resolve
       bookingParticipants.push({
-        identity: `customer-${booking.customer_id}`,
-        role: 'customer',
-        name: booking.customer_name || 'Customer',
-        userId: booking.customer_id,
-        userType: 'customer'
+        identity: `provider-${booking.provider_id}`,
+        role: 'provider',
+        name: booking.provider_name || 'Provider',
+        userId: booking.provider_id,
+        userType: 'provider'
       });
     }
 
