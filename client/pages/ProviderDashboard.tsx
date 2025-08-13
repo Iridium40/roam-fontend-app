@@ -6509,11 +6509,6 @@ export default function ProviderDashboard() {
     });
   };
 
-<<<<<<< HEAD
-  // Base filtering without date filtering (for use in tabs)
-  const getBaseFilteredBookings = () => {
-    let filtered = [...bookings];
-=======
   const getFilteredBookings = (applyDateFilter = true) => {
     let filtered = bookings;
 
@@ -6524,7 +6519,6 @@ export default function ProviderDashboard() {
         activeBookingTab as "all" | "present" | "future" | "past",
       );
     }
->>>>>>> c3da902a1597ba797f580a6020edf2133dfca42c
 
     // For owners/dispatchers, filter by location and provider
     if ((isOwner || isDispatcher) && selectedProviderFilter !== "all") {
@@ -8849,21 +8843,12 @@ export default function ProviderDashboard() {
                     >
                       <div className="space-y-4">
                         {filterBookingsByDate(
-<<<<<<< HEAD
-                          getBaseFilteredBookings(),
-                          tabValue as "present" | "future" | "past",
-                        ).length > 0 ? (
-                          filterBookingsByDate(
-                            getBaseFilteredBookings(),
-                            tabValue as "present" | "future" | "past",
-=======
                           getFilteredBookings(false),
                           tabValue as "all" | "present" | "future" | "past",
                         ).length > 0 ? (
                           filterBookingsByDate(
                             getFilteredBookings(false),
                             tabValue as "all" | "present" | "future" | "past",
->>>>>>> c3da902a1597ba797f580a6020edf2133dfca42c
                           ).map((booking) => {
                             const statusConfig = getStatusBadge(
                               booking.booking_status,
