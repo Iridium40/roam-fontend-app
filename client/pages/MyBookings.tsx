@@ -52,7 +52,7 @@ import RealtimeBookingNotifications from "@/components/RealtimeBookingNotificati
 import BookingStatusIndicator, {
   RealtimeStatusUpdate,
 } from "@/components/BookingStatusIndicator";
-import ConversationChat from "@/components/ConversationChat";
+import CustomerConversationChat from "@/components/CustomerConversationChat";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -93,6 +93,11 @@ export default function MyBookings() {
   const [selectedBookingForMessage, setSelectedBookingForMessage] = useState<any>(null);
 
   const currentUser = user || customer;
+  
+  // Debug current user data
+  console.log('MyBookings - currentUser:', currentUser);
+  console.log('MyBookings - user:', user);
+  console.log('MyBookings - customer:', customer);
 
   // Real-time booking updates
   const { isConnected, refreshBookings } = useRealtimeBookings({
@@ -147,7 +152,42 @@ export default function MyBookings() {
             .from("bookings")
             .select(
               `
-              *,
+              id,
+              customer_id,
+              provider_id,
+              service_id,
+              booking_date,
+              start_time,
+              total_amount,
+              created_at,
+              service_fee,
+              service_fee_charged,
+              service_fee_charged_at,
+              remaining_balance,
+              remaining_balance_charged,
+              remaining_balance_charged_at,
+              cancellation_fee,
+              refund_amount,
+              cancelled_at,
+              cancelled_by,
+              cancellation_reason,
+              guest_name,
+              guest_email,
+              guest_phone,
+              customer_location_id,
+              business_location_id,
+              delivery_type,
+              payment_status,
+              booking_status,
+              admin_notes,
+              tip_eligible,
+              tip_amount,
+              tip_status,
+              tip_requested_at,
+              tip_deadline,
+              booking_reference,
+              business_id,
+              decline_reason,
               services (
                 id,
                 name,
@@ -160,8 +200,9 @@ export default function MyBookings() {
                 email,
                 image_url
               ),
-              providers (
+              providers!provider_id (
                 id,
+                user_id,
                 first_name,
                 last_name,
                 location_id,
@@ -198,7 +239,42 @@ export default function MyBookings() {
             .from("bookings")
             .select(
               `
-              *,
+              id,
+              customer_id,
+              provider_id,
+              service_id,
+              booking_date,
+              start_time,
+              total_amount,
+              created_at,
+              service_fee,
+              service_fee_charged,
+              service_fee_charged_at,
+              remaining_balance,
+              remaining_balance_charged,
+              remaining_balance_charged_at,
+              cancellation_fee,
+              refund_amount,
+              cancelled_at,
+              cancelled_by,
+              cancellation_reason,
+              guest_name,
+              guest_email,
+              guest_phone,
+              customer_location_id,
+              business_location_id,
+              delivery_type,
+              payment_status,
+              booking_status,
+              admin_notes,
+              tip_eligible,
+              tip_amount,
+              tip_status,
+              tip_requested_at,
+              tip_deadline,
+              booking_reference,
+              business_id,
+              decline_reason,
               services (
                 id,
                 name,
@@ -211,7 +287,7 @@ export default function MyBookings() {
                 email,
                 image_url
               ),
-              providers (
+              providers!provider_id (
                 id,
                 first_name,
                 last_name,
@@ -242,6 +318,42 @@ export default function MyBookings() {
         }
 
         console.log("Bookings query response:", bookingsResponse);
+        
+        // Debug: Log the first booking to see what fields are returned
+        if (bookingsResponse.data && bookingsResponse.data.length > 0) {
+          console.log("First booking fields:", Object.keys(bookingsResponse.data[0]));
+          console.log("First booking provider_id:", bookingsResponse.data[0].provider_id);
+          console.log("First booking provider object:", bookingsResponse.data[0].providers);
+          console.log("First booking full data:", bookingsResponse.data[0]);
+          
+          // Check for any fields that might contain provider information
+          const providerFields = Object.keys(bookingsResponse.data[0]).filter(key => 
+            key.toLowerCase().includes('provider') || 
+            key.toLowerCase().includes('user') ||
+            key === 'assigned_provider_id' ||
+            key === 'provider_user_id'
+          );
+          console.log("Potential provider-related fields:", providerFields);
+          
+          // Try to query providers directly to see if there are any
+          console.log("First booking provider_id value:", bookingsResponse.data[0].provider_id);
+          console.log("Provider_id type:", typeof bookingsResponse.data[0].provider_id);
+          
+          if (bookingsResponse.data[0].provider_id) {
+            const { data: providerData, error: providerError } = await supabase
+              .from('providers')
+              .select('*')
+              .eq('id', bookingsResponse.data[0].provider_id);
+            console.log("Direct provider query result:", { providerData, providerError });
+            
+            // Also try to get all providers to see if any exist
+            const { data: allProviders, error: allProvidersError } = await supabase
+              .from('providers')
+              .select('id, first_name, last_name')
+              .limit(5);
+            console.log("All providers sample:", { allProviders, allProvidersError });
+          }
+        }
 
         // Check for authentication error
         if (bookingsResponse.status === 401 && retryCount === 0) {
@@ -1533,7 +1645,18 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {booking.status === "confirmed" && (
+            {/* Debug: Show booking status and provider relationship */}
+            <div className="text-xs text-gray-500 mb-1">
+              Debug: Status = {booking.status}, 
+              Provider ID = {booking.provider_id || 'none'}, 
+              Provider Field = {booking.provider ? JSON.stringify(booking.provider) : 'none'},
+              All Fields = {Object.keys(booking).join(', ')},
+              Provider Object = {booking.providers ? 'exists' : 'none'}, 
+              Provider User ID (from object) = {booking.providers?.user_id || 'none'},
+              Button Should Show = {(booking.status === "confirmed" && (booking.providers || booking.provider)) ? 'yes' : 'no'}
+            </div>
+            
+            {booking.status === "confirmed" && (booking.providers || booking.provider) && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
@@ -1610,3 +1733,5 @@ function BookingCard({
     </Card>
   );
 }
+
+

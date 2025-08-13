@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
@@ -7,9 +7,10 @@ export interface ConversationMessage {
   author: string;
   body: string;
   dateCreated: string;
-  attributes: {
+  attributes?: {
     userRole?: string;
     userName?: string;
+    userId?: string;
     timestamp?: string;
   };
 }
@@ -17,14 +18,14 @@ export interface ConversationMessage {
 export interface ConversationParticipant {
   sid: string;
   identity: string;
-  attributes: {
+  userId: string;
+  userType: string;
+  attributes?: {
     role?: string;
     name?: string;
-    userId?: string;
-    addedAt?: string;
+    imageUrl?: string;
+    email?: string;
   };
-  dateCreated: string;
-  dateUpdated: string;
 }
 
 export interface Conversation {
@@ -35,18 +36,21 @@ export interface Conversation {
     createdAt?: string;
     type?: string;
   };
-  lastMessage: {
+  lastMessage?: {
     body: string;
     author: string;
     dateCreated: string;
-  } | null;
+  };
   unreadMessagesCount: number;
-  lastReadMessageIndex: number;
+  userType: string;
 }
 
 export const useConversations = () => {
-  const { user, provider } = useAuth();
+  const { user, customer, userType } = useAuth();
   const { toast } = useToast();
+  
+  // Get the current user data (either provider or customer)
+  const currentUser = user || customer;
   
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<string | null>(null);
@@ -54,12 +58,20 @@ export const useConversations = () => {
   const [participants, setParticipants] = useState<ConversationParticipant[]>([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Generate unique identity for current user
   const getUserIdentity = useCallback(() => {
-    if (!user || !provider) return null;
-    return `${provider.provider_role}-${user.id}`;
-  }, [user, provider]);
+    if (!currentUser) return null;
+    const currentUserType = userType || (currentUser.provider_role ? 'provider' : 'customer');
+    return `${currentUserType}-${currentUser.id}`;
+  }, [currentUser, userType]);
+
+  // Get user type for API calls
+  const getUserType = useCallback(() => {
+    if (!currentUser) return null;
+    return userType || (currentUser.provider_role ? 'provider' : 'customer');
+  }, [currentUser, userType]);
 
   // Create a new conversation for a booking
   const createConversation = useCallback(async (bookingId: string, participants: Array<{
@@ -67,114 +79,139 @@ export const useConversations = () => {
     role: string;
     name: string;
     userId: string;
+    userType: string;
   }>) => {
+    console.log('🚀 createConversation called with:', { bookingId, participants });
+    
     try {
       setLoading(true);
+      setError(null);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const requestBody = {
+        action: 'create-conversation',
+        bookingId,
+        participants
+      };
+      console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'create-conversation',
-          bookingId,
-          participants
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('📥 Response status:', response.status);
       const result = await response.json();
+      console.log('📥 Response result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to create conversation');
       }
 
-      await loadConversations(); // Refresh conversations list
+      console.log('✅ Conversation created successfully, refreshing conversations list...');
+      // Don't call loadConversations here to avoid circular dependency
+      // The caller should handle refreshing if needed
       
       return result.conversationSid;
     } catch (error: any) {
       console.error('Error creating conversation:', error);
+      setError(error.message || 'Failed to create conversation');
       toast({
         title: "Error",
-        description: error.message || "Failed to create conversation",
+        description: error.message || 'Failed to create conversation',
         variant: "destructive",
       });
-      return null;
+      throw error;
     } finally {
       setLoading(false);
     }
   }, [toast]);
 
-  // Load user's conversations
+  // Load conversations for the current user
   const loadConversations = useCallback(async () => {
-    const identity = getUserIdentity();
-    if (!identity) return;
-
+    if (!currentUser) return;
+    
+    console.log('loadConversations called for user:', currentUser.id);
+    
     try {
       setLoading(true);
+      setError(null);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const requestBody = {
+        action: 'get-conversations',
+        userId: currentUser.id
+      };
+      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'get-conversations',
-          participantIdentity: identity
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to load conversations');
       }
 
-      setConversations(result.conversations);
+      setConversations(result.conversations || []);
     } catch (error: any) {
       console.error('Error loading conversations:', error);
+      setError(error.message || 'Failed to load conversations');
       toast({
         title: "Error",
-        description: error.message || "Failed to load conversations",
+        description: error.message || 'Failed to load conversations',
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
-  }, [getUserIdentity, toast]);
+  }, [currentUser, toast]);
 
   // Load messages for a specific conversation
   const loadMessages = useCallback(async (conversationSid: string) => {
+    console.log('loadMessages called for conversation:', conversationSid);
+    
     try {
       setLoading(true);
+      setError(null);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const requestBody = {
+        action: 'get-messages',
+        conversationSid
+      };
+      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'get-messages',
-          conversationSid
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to load messages');
       }
 
-      setMessages(result.messages);
-      setCurrentConversation(conversationSid);
-      
-      // Mark conversation as read
-      await markAsRead(conversationSid);
+      setMessages(result.messages || []);
     } catch (error: any) {
       console.error('Error loading messages:', error);
+      setError(error.message || 'Failed to load messages');
       toast({
         title: "Error",
-        description: error.message || "Failed to load messages",
+        description: error.message || 'Failed to load messages',
         variant: "destructive",
       });
     } finally {
@@ -184,189 +221,373 @@ export const useConversations = () => {
 
   // Send a message
   const sendMessage = useCallback(async (conversationSid: string, message: string) => {
-    const identity = getUserIdentity();
-    if (!identity || !user || !provider) return false;
-
+    if (!user) return;
+    
+    console.log('sendMessage called:', { conversationSid, message });
+    
     try {
       setSending(true);
+      setError(null);
       
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      const userType = getUserType();
+      const userIdentity = getUserIdentity();
+      
+      if (!userType || !userIdentity) {
+        throw new Error('User not properly authenticated');
+      }
+      
+      const requestBody = {
+        action: 'send-message',
+        conversationSid,
+        message,
+        participantIdentity: userIdentity,
+        userRole: userType,
+        userName: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+        userId: currentUser.id
+      };
+      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'send-message',
-          conversationSid,
-          message,
-          participantIdentity: identity,
-          userRole: provider.provider_role,
-          userName: `${user.first_name} ${user.last_name}`
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to send message');
       }
 
-      // Add the message to current messages if we're viewing this conversation
-      if (currentConversation === conversationSid) {
-        const newMessage: ConversationMessage = {
-          sid: result.messageSid,
-          author: identity,
-          body: message,
-          dateCreated: result.dateCreated || new Date().toISOString(),
-          attributes: {
-            userRole: provider.provider_role,
-            userName: `${user.first_name} ${user.last_name}`,
-            timestamp: new Date().toISOString()
-          }
-        };
-        
-        setMessages(prev => [...prev, newMessage]);
-      }
-
-      // Refresh conversations to update last message
-      await loadConversations();
+      // Add the new message to the current messages list
+      const newMessage: ConversationMessage = {
+        sid: result.messageSid,
+        author: result.author,
+        body: result.body,
+        dateCreated: result.dateCreated,
+        attributes: {
+          userRole: userType,
+          userName: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+          userId: currentUser.id,
+          timestamp: new Date().toISOString()
+        }
+      };
       
-      return true;
+      setMessages(prev => [...prev, newMessage]);
+      
+      // Don't call loadConversations here to avoid circular dependency
+      // The caller should handle refreshing if needed
+      
+      return result.messageSid;
     } catch (error: any) {
       console.error('Error sending message:', error);
+      setError(error.message || 'Failed to send message');
       toast({
         title: "Error",
-        description: error.message || "Failed to send message",
+        description: error.message || 'Failed to send message',
         variant: "destructive",
       });
-      return false;
+      throw error;
     } finally {
       setSending(false);
     }
-  }, [getUserIdentity, user, provider, currentConversation, toast, loadConversations]);
-
-  // Add participant to conversation
-  const addParticipant = useCallback(async (conversationSid: string, participantIdentity: string, role: string, name: string) => {
-    try {
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'add-participant',
-          conversationSid,
-          participantIdentity,
-          userRole: role,
-          userName: name
-        }),
-      });
-
-      const result = await response.json();
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to add participant');
-      }
-
-      // Refresh participants if we're viewing this conversation
-      if (currentConversation === conversationSid) {
-        await loadParticipants(conversationSid);
-      }
-      
-      return true;
-    } catch (error: any) {
-      console.error('Error adding participant:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to add participant",
-        variant: "destructive",
-      });
-      return false;
-    }
-  }, [currentConversation, toast]);
+  }, [currentUser, getUserType, getUserIdentity, toast]);
 
   // Load participants for a conversation
   const loadParticipants = useCallback(async (conversationSid: string) => {
+    console.log('loadParticipants called for conversation:', conversationSid);
+    
     try {
-      const response = await fetch('/.netlify/functions/twilio-conversations', {
+      setLoading(true);
+      setError(null);
+      
+      const requestBody = {
+        action: 'get-conversation-participants',
+        conversationSid
+      };
+      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'get-conversation-participants',
-          conversationSid
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to load participants');
       }
 
-      setParticipants(result.participants);
+      setParticipants(result.participants || []);
     } catch (error: any) {
       console.error('Error loading participants:', error);
+      setError(error.message || 'Failed to load participants');
       toast({
         title: "Error",
-        description: error.message || "Failed to load participants",
+        description: error.message || 'Failed to load participants',
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   }, [toast]);
 
-  // Mark conversation as read
-  const markAsRead = useCallback(async (conversationSid: string) => {
-    const identity = getUserIdentity();
-    if (!identity) return;
-
+  // Add a participant to a conversation
+  const addParticipant = useCallback(async (conversationSid: string, participantUserId: string, participantUserType: string) => {
+    console.log('addParticipant called:', { conversationSid, participantUserId, participantUserType });
+    
     try {
-      await fetch('/.netlify/functions/twilio-conversations', {
+      setLoading(true);
+      setError(null);
+      
+      const requestBody = {
+        action: 'add-participant',
+        conversationSid,
+        userId: participantUserId,
+        userType: participantUserType
+      };
+      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          action: 'mark-as-read',
-          conversationSid,
-          participantIdentity: identity
-        }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log('Response status:', response.status);
+      const result = await response.json();
+      console.log('Response result:', result);
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to add participant');
+      }
+
+      // Don't call loadParticipants here to avoid circular dependency
+      // The caller should handle refreshing if needed
+      
+      return result.participantSid;
     } catch (error: any) {
-      console.error('Error marking as read:', error);
+      console.error('Error adding participant:', error);
+      setError(error.message || 'Failed to add participant');
+      toast({
+        title: "Error",
+        description: error.message || 'Failed to add participant',
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setLoading(false);
     }
-  }, [getUserIdentity]);
+  }, [toast]);
 
-  // Find or create conversation for a booking
-  const findOrCreateBookingConversation = useCallback(async (
-    bookingId: string, 
-    bookingParticipants: Array<{
-      identity: string;
-      role: string;
-      name: string;
-      userId: string;
-    }>
-  ) => {
-    // First check if conversation already exists for this booking
-    const existingConversation = conversations.find(conv => 
-      conv.attributes.bookingId === bookingId
-    );
+  // Mark messages as read
+  const markAsRead = useCallback(async (conversationSid: string) => {
+    if (!currentUser) return;
+    
+    console.log('markAsRead called for conversation:', conversationSid);
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const requestBody = {
+        action: 'mark-as-read',
+        conversationSid,
+        userId: currentUser.id
+      };
+      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      
+      const response = await fetch('/api/twilio-conversations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-    if (existingConversation) {
-      return existingConversation.sid;
+      console.log('Response status:', response.status);
+      const result = await response.json();
+      console.log('Response result:', result);
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to mark messages as read');
+      }
+
+      // Don't call loadConversations here to avoid circular dependency
+      // The caller should handle refreshing if needed
+    } catch (error: any) {
+      console.error('Error marking messages as read:', error);
+      setError(error.message || 'Failed to mark messages as read');
+      toast({
+        title: "Error",
+        description: error.message || 'Failed to mark messages as read',
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
+  }, [currentUser, toast]);
 
-    // Create new conversation
-    return await createConversation(bookingId, bookingParticipants);
-  }, [conversations, createConversation]);
+  // Set current conversation
+  const setActiveConversation = useCallback((conversationSid: string | null) => {
+    console.log('🎯 setActiveConversation called with:', conversationSid);
+    setCurrentConversation(conversationSid);
+    if (conversationSid) {
+      // Call these functions directly to avoid dependency issues
+      const loadMessagesDirectly = async () => {
+        console.log('📨 Loading messages for conversation:', conversationSid);
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const requestBody = {
+            action: 'get-messages',
+            conversationSid
+          };
+          console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
+          
+          const response = await fetch('/api/twilio-conversations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
 
-  // Load conversations when user is available
+          console.log('📥 Response status:', response.status);
+          const result = await response.json();
+          console.log('📥 Response result:', result);
+          
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to load messages');
+          }
+
+          setMessages(result.messages || []);
+        } catch (error: any) {
+          console.error('Error loading messages:', error);
+          setError(error.message || 'Failed to load messages');
+          toast({
+            title: "Error",
+            description: error.message || 'Failed to load messages',
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const loadParticipantsDirectly = async () => {
+        console.log('👥 Loading participants for conversation:', conversationSid);
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const requestBody = {
+            action: 'get-conversation-participants',
+            conversationSid
+          };
+          console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
+          
+          const response = await fetch('/api/twilio-conversations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          console.log('📥 Response status:', response.status);
+          const result = await response.json();
+          console.log('📥 Response result:', result);
+          
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to load participants');
+          }
+
+          setParticipants(result.participants || []);
+        } catch (error: any) {
+          console.error('Error loading participants:', error);
+          setError(error.message || 'Failed to load participants');
+          toast({
+            title: "Error",
+            description: error.message || 'Failed to load participants',
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadMessagesDirectly();
+      loadParticipantsDirectly();
+    } else {
+      setMessages([]);
+      setParticipants([]);
+    }
+  }, [toast]);
+
+  // Load conversations when user changes
   useEffect(() => {
-    if (user && provider) {
-      loadConversations();
+    if (currentUser) {
+      console.log('🔄 Loading conversations for user:', currentUser.id);
+      // Call loadConversations directly instead of through dependency
+      const loadConversationsDirectly = async () => {
+        if (!currentUser) return;
+        
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const requestBody = {
+            action: 'get-conversations',
+            userId: currentUser.id
+          };
+          console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
+          
+          const response = await fetch('/api/twilio-conversations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          console.log('📥 Response status:', response.status);
+          const result = await response.json();
+          console.log('📥 Response result:', result);
+          
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to load conversations');
+          }
+
+          setConversations(result.conversations || []);
+        } catch (error: any) {
+          console.error('Error loading conversations:', error);
+          setError(error.message || 'Failed to load conversations');
+          toast({
+            title: "Error",
+            description: error.message || 'Failed to load conversations',
+            variant: "destructive",
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      loadConversationsDirectly();
     }
-  }, [user, provider, loadConversations]);
+  }, [currentUser, toast]);
 
   return {
     conversations,
@@ -375,14 +596,16 @@ export const useConversations = () => {
     participants,
     loading,
     sending,
+    error,
     createConversation,
     loadConversations,
     loadMessages,
     sendMessage,
-    addParticipant,
     loadParticipants,
+    addParticipant,
     markAsRead,
-    findOrCreateBookingConversation,
-    getUserIdentity
+    setActiveConversation,
+    getUserIdentity,
+    getUserType
   };
 };
