@@ -83,7 +83,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     });
 
     if (isOpen && booking && !activeConversationSid) {
-      console.log('Initializing booking conversation...');
+      console.log('🎯 Triggering initializeBookingConversation...');
       initializeBookingConversation();
     } else if (isOpen && conversationSid) {
       console.log('Setting conversation SID from prop:', conversationSid);
@@ -106,14 +106,16 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
   }, [activeConversationSid, currentConversation, setActiveConversation]);
 
   const initializeBookingConversation = async () => {
-    console.log('initializeBookingConversation called with:', {
+    console.log('🚀 initializeBookingConversation called with:', {
       booking: booking?.id,
       user: currentUser?.id,
-      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer')
+      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer'),
+      bookingData: booking,
+      currentUserData: currentUser
     });
 
     if (!booking || !currentUser) {
-      console.log('Missing required data:', { 
+      console.log('❌ Missing required data:', { 
         booking: !!booking, 
         user: !!currentUser,
         bookingId: booking?.id,
@@ -122,15 +124,15 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       return;
     }
 
-    console.log('Initializing booking conversation for:', booking.id);
+    console.log('📋 Initializing booking conversation for:', booking.id);
 
     const userIdentity = getUserIdentity();
     const userType = getUserType();
-    console.log('User identity:', userIdentity, 'User type:', userType);
+    console.log('👤 User identity:', userIdentity, 'User type:', userType);
 
     if (!userIdentity || !userType) {
-      console.error('Failed to get user identity or type');
-      console.log('Debug info:', {
+      console.error('❌ Failed to get user identity or type');
+      console.log('🔍 Debug info:', {
         currentUser: currentUser,
         userIdentity: userIdentity,
         userType: userType,
@@ -163,21 +165,21 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       });
     }
 
-    console.log('Booking participants:', bookingParticipants);
+    console.log('👥 Booking participants:', bookingParticipants);
 
     try {
-      console.log('Calling createConversation...');
+      console.log('📞 Calling createConversation...');
       const convSid = await createConversation(booking.id, bookingParticipants);
-      console.log('Conversation SID returned:', convSid);
+      console.log('✅ Conversation SID returned:', convSid);
       if (convSid) {
-        console.log('Setting active conversation SID:', convSid);
+        console.log('🎯 Setting active conversation SID:', convSid);
         setActiveConversationSid(convSid);
         setActiveConversation(convSid);
       } else {
-        console.error('Failed to get conversation SID - returned null/undefined');
+        console.error('❌ Failed to get conversation SID - returned null/undefined');
       }
     } catch (error) {
-      console.error('Error initializing conversation:', error);
+      console.error('💥 Error initializing conversation:', error);
     }
   };
 

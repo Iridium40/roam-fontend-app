@@ -81,7 +81,7 @@ export const useConversations = () => {
     userId: string;
     userType: string;
   }>) => {
-    console.log('createConversation called with:', { bookingId, participants });
+    console.log('🚀 createConversation called with:', { bookingId, participants });
     
     try {
       setLoading(true);
@@ -92,7 +92,7 @@ export const useConversations = () => {
         bookingId,
         participants
       };
-      console.log('Sending request to /api/twilio-conversations:', requestBody);
+      console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
       
       const response = await fetch('/api/twilio-conversations', {
         method: 'POST',
@@ -102,15 +102,15 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('Response status:', response.status);
+      console.log('📥 Response status:', response.status);
       const result = await response.json();
-      console.log('Response result:', result);
+      console.log('📥 Response result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to create conversation');
       }
 
-      console.log('Conversation created successfully, refreshing conversations list...');
+      console.log('✅ Conversation created successfully, refreshing conversations list...');
       // Don't call loadConversations here to avoid circular dependency
       // The caller should handle refreshing if needed
       
