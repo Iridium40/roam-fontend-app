@@ -273,62 +273,22 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     );
     
     // For now, assume same user type messages are from current user
-    // TODO: Implement more sophisticated user matching if needed
     const isCurrentUser = isCurrentUserType;
     
-    // Enhanced name resolution logic
-    let displayName = attributes.userName || message.author;
-    
-    // Debug logging for name resolution
-    console.log('🔍 Name resolution debug:', {
-      messageAuthor: message.author,
-      userType: userType,
-      currentUser: currentUser,
-      booking: booking,
+    // SMART APPROACH: Create a fake participant object and reuse the working participant logic
+    const fakeParticipant = {
+      identity: message.author,
       attributes: attributes
-    });
+    };
     
-    // If no userName in attributes, try to get name from booking data
-    if (!attributes.userName || attributes.userName === message.author) {
-      // Try to get actual names from booking data based on message author identity
-      if (message.author.startsWith('customer-')) {
-        if (userType === 'customer' && currentUser) {
-          // Current customer viewing their own message
-          displayName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
-          console.log('🔍 Customer name resolved from currentUser:', displayName);
-        } else if (userType === 'provider' && booking?.customer_profiles) {
-          // Provider viewing customer message
-          displayName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
-          console.log('🔍 Customer name resolved from booking.customer_profiles:', displayName);
-        }
-      } else if (message.author.startsWith('provider-')) {
-        if (userType === 'provider' && user) {
-          // Current provider viewing their own message
-          displayName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-          console.log('🔍 Provider name resolved from user:', displayName);
-        } else if (userType === 'customer' && booking?.providers) {
-          // Customer viewing provider message
-          displayName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
-          console.log('🔍 Provider name resolved from booking.providers:', displayName);
-        }
-      }
-    }
-    
-    // Fallback to a clean version of the identity if still no good name
-    if (!displayName || displayName === message.author) {
-      displayName = message.author.replace(/^(customer-|provider-)/, '').replace(/[_-]/g, ' ') || 'User';
-    }
+    // Reuse the exact same logic that works for participants
+    const participantInfo = getParticipantInfo(fakeParticipant);
     
     return {
       isCurrentUser,
-      name: displayName,
+      name: participantInfo.name,
       role: attributes.userRole || 'participant',
-      initials: displayName
-        .split(' ')
-        .map(n => n[0])
-        .join('')
-        .toUpperCase()
-        .substring(0, 2)
+      initials: participantInfo.initials
     };
   };
 
