@@ -36,6 +36,7 @@ interface ConversationChatProps {
     service_name?: string;
     provider_name?: string;
     business_id?: string;
+    customer_id?: string;
   };
   conversationSid?: string;
 }
@@ -43,16 +44,13 @@ interface ConversationChatProps {
 const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: ConversationChatProps) => {
   const { user, customer, userType } = useAuth();
   
+  // Determine user type safely
+  const currentUserType = userType || (user ? 'provider' : 'customer');
+  
   // Get the current user data (either provider or customer)
   const currentUser = user || customer;
   
-  // Use different hooks based on user type to avoid circular dependencies
-  const isCustomer = userType === 'customer' || (!user && customer);
-  
-  const providerHook = useConversations();
-  const customerHook = useCustomerConversations();
-  
-  // Use the appropriate hook based on user type
+  // Use the main conversations hook for all users to avoid conditional hook issues
   const {
     conversations,
     currentConversation,
@@ -65,7 +63,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     getUserIdentity,
     getUserType,
     setActiveConversation
-  } = isCustomer ? customerHook : providerHook;
+  } = useConversations();
 
   const [newMessage, setNewMessage] = useState('');
   const [activeConversationSid, setActiveConversationSid] = useState<string | null>(conversationSid || null);
@@ -84,7 +82,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       conversationSid,
       activeConversationSid,
       user: currentUser?.id,
-      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer')
+      userType: currentUserType
     });
 
     if (isOpen && booking && !activeConversationSid) {
@@ -114,7 +112,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     console.log('🚀 initializeBookingConversation called with:', {
       booking: booking?.id,
       user: currentUser?.id,
-      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer'),
+      userType: currentUserType,
       bookingData: booking,
       currentUserData: currentUser
     });
@@ -247,8 +245,8 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
         <div>
           Booking ID: {booking.id}, 
           User: {currentUser?.id || 'No user ID'}, 
-          User Type: {userType || (currentUser?.provider_role ? 'provider' : 'customer')},
-          User Data: {currentUser ? JSON.stringify({id: currentUser.id, first_name: currentUser.first_name, last_name: currentUser.last_name, provider_role: currentUser.provider_role}) : 'No user data'},
+          User Type: {currentUserType},
+          User Data: {currentUser ? JSON.stringify({id: currentUser.id, first_name: currentUser.first_name, last_name: currentUser.last_name, userType: currentUserType}) : 'No user data'},
           Booking Data: {booking ? JSON.stringify({id: booking.id, customer_id: booking.customer_id, customer_name: booking.customer_name}) : 'No booking data'}
         </div>
       )}
