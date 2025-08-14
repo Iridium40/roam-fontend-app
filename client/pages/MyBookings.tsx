@@ -1380,14 +1380,6 @@ export default function MyBookings() {
         </DialogContent>
       </Dialog>
 
-      {/* Debug: Modal state */}
-      <div className="text-xs text-gray-500 mb-2">
-        Debug: showMessageModal={showMessageModal ? 'true' : 'false'}, 
-        selectedBookingForMessage={selectedBookingForMessage ? 'set' : 'null'},
-        bookingId={selectedBookingForMessage?.id || 'none'},
-        currentUserId={currentUser?.id || 'none'}
-      </div>
-
       {/* Messaging Modal */}
       <ConversationChat
         isOpen={showMessageModal}
@@ -1658,17 +1650,6 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {/* Debug: Show booking status and provider relationship */}
-            <div className="text-xs text-gray-500 mb-1">
-              Debug: Status = {booking.status}, 
-              Provider ID = {booking.provider_id || 'none'}, 
-              Provider Field = {booking.provider ? JSON.stringify(booking.provider) : 'none'},
-              All Fields = {Object.keys(booking).join(', ')},
-              Provider Object = {booking.providers ? 'exists' : 'none'}, 
-              Provider User ID (from object) = {booking.providers?.user_id || 'none'},
-              Button Should Show = {(booking.status === "confirmed" && (booking.providers || booking.provider)) ? 'yes' : 'no'}
-            </div>
-            
             {booking.status === "confirmed" && (booking.providers || booking.provider) && (
               <Button
                 size="sm"

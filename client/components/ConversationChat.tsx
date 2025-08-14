@@ -412,23 +412,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     };
   };
 
-  // Debug info
-  const debugInfo = (
-    <div className="text-xs text-gray-500 mb-2">
-      Debug: activeConversationSid={activeConversationSid ? 'Set' : 'Not set'}, 
-      sending={sending ? 'Yes' : 'No'}, 
-      loading={loading ? 'Yes' : 'No'}
-      {booking && (
-        <div>
-          Booking ID: {booking.id}, 
-          User: {currentUser?.id || 'No user ID'}, 
-          User Type: {currentUserType},
-          User Data: {currentUser ? JSON.stringify({id: currentUser.id, first_name: currentUser.first_name, last_name: currentUser.last_name, userType: currentUserType}) : 'No user data'},
-          Booking Data: {booking ? JSON.stringify({id: booking.id, customer_id: booking.customer_id, customer_name: booking.customer_name}) : 'No booking data'}
-        </div>
-      )}
-    </div>
-  );
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -439,8 +423,6 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
             {booking ? `Chat - ${booking.service_name || 'Booking'}` : 'Conversation'}
           </DialogTitle>
         </DialogHeader>
-
-        {debugInfo}
 
         <div className="flex-1 flex flex-col min-h-0">
           {/* Participants Info */}
