@@ -267,7 +267,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   };
 
   // Disable OAuth providers temporarily due to configuration issues
-  const showOAuthProviders = false;
+  const showOAuthProviders = true;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
