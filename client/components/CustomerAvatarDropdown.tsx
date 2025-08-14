@@ -87,15 +87,6 @@ export const CustomerAvatarDropdown: React.FC = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link
-            to="/customer/bookings"
-            className="w-full flex items-center cursor-pointer"
-          >
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>My Bookings</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link
             to="/customer/favorites"
             className="w-full flex items-center cursor-pointer"
           >

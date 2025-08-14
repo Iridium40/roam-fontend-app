@@ -350,11 +350,14 @@ export default function LandingPage() {
       <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
-              alt="ROAM - Your Best Life. Everywhere."
-              className="h-10 w-auto"
-            />
+            <div className="flex items-center space-x-8">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                alt="ROAM - Your Best Life. Everywhere."
+                className="h-10 w-auto"
+              />
+              <span className="text-2xl font-semibold text-roam-blue">Services</span>
+            </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"

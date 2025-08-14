@@ -440,6 +440,7 @@ export default function MyBookings() {
             id: booking.id,
             status: booking.booking_status || "pending",
             service: service?.name || "Unknown Service",
+            provider_id: booking.provider_id, // Preserve original provider_id
             provider: {
               name: provider
                 ? `${provider.first_name} ${provider.last_name}`
@@ -1650,7 +1651,7 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
-            {booking.status === "confirmed" && (booking.providers || booking.provider) && (
+            {booking.status === "confirmed" && booking.provider && (
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
@@ -1727,5 +1728,3 @@ function BookingCard({
     </Card>
   );
 }
-
-
