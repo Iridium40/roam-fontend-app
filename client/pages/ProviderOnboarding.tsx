@@ -34,10 +34,13 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import StripeIdentityVerification from "@/components/StripeIdentityVerification";
 
 export default function ProviderOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [identityVerified, setIdentityVerified] = useState(false);
+  const [verificationPending, setVerificationPending] = useState(false);
 
   const [formData, setFormData] = useState({
     // Personal Information
@@ -165,6 +168,17 @@ export default function ProviderOnboarding() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleVerificationComplete = (verificationData: any) => {
+    setIdentityVerified(true);
+    setVerificationPending(false);
+    console.log('Identity verification completed:', verificationData);
+  };
+
+  const handleVerificationPending = () => {
+    setVerificationPending(true);
+    setIdentityVerified(false);
   };
 
   const handleSubmit = async () => {
@@ -548,85 +562,75 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 3: Document Verification */}
+              {/* Step 3: Identity Verification with Stripe */}
               {currentStep === 3 && (
                 <div className="space-y-6">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <div className="flex items-start gap-3">
-                      <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h4 className="font-medium text-blue-900">
-                          Document Verification Required
-                        </h4>
-                        <p className="text-sm text-blue-800 mt-1">
-                          Please upload clear photos or scans of the required
-                          documents. All files must be in JPG, PNG, or PDF
-                          format.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <StripeIdentityVerification
+                    onVerificationComplete={handleVerificationComplete}
+                    onVerificationPending={handleVerificationPending}
+                    className="mb-6"
+                  />
 
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <Label>Government-Issued ID *</Label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
-                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600 mb-2">
-                          Click to upload or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Driver's License, Passport, or State ID
-                        </p>
-                        <Input
-                          type="file"
-                          accept=".jpg,.jpeg,.png,.pdf"
-                          className="mt-2"
-                          onChange={(e) =>
-                            e.target.files?.[0] &&
-                            handleFileUpload("idDocument", e.target.files[0])
-                          }
-                        />
+                  {/* Professional Documents Upload - Only show after identity verification */}
+                  {(identityVerified || verificationPending) && (
+                    <div className="space-y-6">
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <h4 className="font-medium text-green-900">
+                              Identity Verification {identityVerified ? 'Complete' : 'In Progress'}
+                            </h4>
+                            <p className="text-sm text-green-800 mt-1">
+                              {identityVerified 
+                                ? 'Your identity has been verified. Please upload your professional documents below.'
+                                : 'Your identity verification is being processed. You can upload professional documents while we verify your identity.'
+                              }
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="space-y-3">
-                      <Label>Professional License/Certification *</Label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
-                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600 mb-2">
-                          Upload your professional certifications
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Massage License, Training Certificates, etc.
-                        </p>
-                        <Input
-                          type="file"
-                          accept=".jpg,.jpeg,.png,.pdf"
-                          multiple
-                          className="mt-2"
-                        />
-                      </div>
-                    </div>
+                      <div className="space-y-6">
+                        <div className="space-y-3">
+                          <Label>Professional License/Certification *</Label>
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
+                            <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                            <p className="text-sm text-gray-600 mb-2">
+                              Upload your professional certifications
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Massage License, Training Certificates, etc.
+                            </p>
+                            <Input
+                              type="file"
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              multiple
+                              className="mt-2"
+                            />
+                          </div>
+                        </div>
 
-                    <div className="space-y-3">
-                      <Label>Liability Insurance (Optional)</Label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
-                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600 mb-2">
-                          Professional liability insurance certificate
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          We can help you get coverage if needed
-                        </p>
-                        <Input
-                          type="file"
-                          accept=".jpg,.jpeg,.png,.pdf"
-                          className="mt-2"
-                        />
+                        <div className="space-y-3">
+                          <Label>Liability Insurance (Optional)</Label>
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-roam-blue transition-colors">
+                            <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                            <p className="text-sm text-gray-600 mb-2">
+                              Professional liability insurance certificate
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              We can help you get coverage if needed
+                            </p>
+                            <Input
+                              type="file"
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              className="mt-2"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="flex items-start space-x-3">
                     <Checkbox
