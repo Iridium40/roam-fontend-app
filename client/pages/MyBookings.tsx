@@ -954,6 +954,19 @@ export default function MyBookings() {
       <section className="py-8 lg:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
+            {/* Back to Home Button */}
+            <div className="mb-6">
+              <Link to="/home">
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 text-foreground/70 hover:text-foreground hover:bg-accent/50 px-3 py-2 rounded-lg transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Home
+                </Button>
+              </Link>
+            </div>
+            
             <h1 className="text-3xl sm:text-4xl font-bold mb-4">
               My <span className="text-roam-blue">Bookings</span>
             </h1>
