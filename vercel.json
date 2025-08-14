@@ -55,6 +55,10 @@
     {
       "source": "/api/twilio-conversations",
       "destination": "/api/twilio-conversations.ts"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }
