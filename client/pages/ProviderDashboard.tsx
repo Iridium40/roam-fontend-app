@@ -3436,11 +3436,12 @@ export default function ProviderDashboard() {
 
   // Conversations handlers (Twilio Conversations API)
   const handleOpenMessaging = async (booking: any) => {
-    console.log('handleOpenMessaging called with booking:', {
+    console.log("handleOpenMessaging called with booking:", {
       id: booking?.id,
-      customer_name: booking?.customer_profiles?.first_name || booking?.guest_name,
+      customer_name:
+        booking?.customer_profiles?.first_name || booking?.guest_name,
       customer_email: booking?.customer_profiles?.email || booking?.guest_email,
-      service_name: booking?.services?.name
+      service_name: booking?.services?.name,
     });
     setSelectedBookingForMessaging(booking);
     setMessagingModal(true);
@@ -8762,8 +8763,9 @@ export default function ProviderDashboard() {
                                   <p className="text-lg font-semibold text-roam-blue mt-2">
                                     ${booking.total_amount || "0"}
                                   </p>
-                                                                        {(booking.booking_status === "confirmed" ||
-                                        booking.booking_status === "in_progress") && (
+                                  {(booking.booking_status === "confirmed" ||
+                                    booking.booking_status ===
+                                      "in_progress") && (
                                     <Button
                                       size="sm"
                                       variant="outline"
@@ -9077,8 +9079,10 @@ export default function ProviderDashboard() {
                                       </p>
 
                                       {/* Messaging Button - Show for confirmed and in-progress bookings */}
-                                      {(booking.booking_status === "confirmed" ||
-                                        booking.booking_status === "in_progress") && (
+                                      {(booking.booking_status ===
+                                        "confirmed" ||
+                                        booking.booking_status ===
+                                          "in_progress") && (
                                         <Button
                                           size="sm"
                                           variant="outline"
@@ -16159,7 +16163,8 @@ export default function ProviderDashboard() {
                 business_id: provider?.business_id || "",
                 customer_id: selectedBookingForMessaging.customer_id,
                 // Include the actual database profile objects
-                customer_profiles: selectedBookingForMessaging.customer_profiles,
+                customer_profiles:
+                  selectedBookingForMessaging.customer_profiles,
                 providers: selectedBookingForMessaging.providers,
               }
             : undefined

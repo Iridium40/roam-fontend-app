@@ -90,14 +90,15 @@ export default function MyBookings() {
   const [newBookingTime, setNewBookingTime] = useState("");
   const [rescheduleReason, setRescheduleReason] = useState("");
   const [showMessageModal, setShowMessageModal] = useState(false);
-  const [selectedBookingForMessage, setSelectedBookingForMessage] = useState<any>(null);
+  const [selectedBookingForMessage, setSelectedBookingForMessage] =
+    useState<any>(null);
 
   const currentUser = user || customer;
-  
+
   // Debug current user data
-  console.log('MyBookings - currentUser:', currentUser);
-  console.log('MyBookings - user:', user);
-  console.log('MyBookings - customer:', customer);
+  console.log("MyBookings - currentUser:", currentUser);
+  console.log("MyBookings - user:", user);
+  console.log("MyBookings - customer:", customer);
 
   // Real-time booking updates
   const { isConnected, refreshBookings } = useRealtimeBookings({
@@ -318,40 +319,63 @@ export default function MyBookings() {
         }
 
         console.log("Bookings query response:", bookingsResponse);
-        
+
         // Debug: Log the first booking to see what fields are returned
         if (bookingsResponse.data && bookingsResponse.data.length > 0) {
-          console.log("First booking fields:", Object.keys(bookingsResponse.data[0]));
-          console.log("First booking provider_id:", bookingsResponse.data[0].provider_id);
-          console.log("First booking provider object:", bookingsResponse.data[0].providers);
+          console.log(
+            "First booking fields:",
+            Object.keys(bookingsResponse.data[0]),
+          );
+          console.log(
+            "First booking provider_id:",
+            bookingsResponse.data[0].provider_id,
+          );
+          console.log(
+            "First booking provider object:",
+            bookingsResponse.data[0].providers,
+          );
           console.log("First booking full data:", bookingsResponse.data[0]);
-          
+
           // Check for any fields that might contain provider information
-          const providerFields = Object.keys(bookingsResponse.data[0]).filter(key => 
-            key.toLowerCase().includes('provider') || 
-            key.toLowerCase().includes('user') ||
-            key === 'assigned_provider_id' ||
-            key === 'provider_user_id'
+          const providerFields = Object.keys(bookingsResponse.data[0]).filter(
+            (key) =>
+              key.toLowerCase().includes("provider") ||
+              key.toLowerCase().includes("user") ||
+              key === "assigned_provider_id" ||
+              key === "provider_user_id",
           );
           console.log("Potential provider-related fields:", providerFields);
-          
+
           // Try to query providers directly to see if there are any
-          console.log("First booking provider_id value:", bookingsResponse.data[0].provider_id);
-          console.log("Provider_id type:", typeof bookingsResponse.data[0].provider_id);
-          
+          console.log(
+            "First booking provider_id value:",
+            bookingsResponse.data[0].provider_id,
+          );
+          console.log(
+            "Provider_id type:",
+            typeof bookingsResponse.data[0].provider_id,
+          );
+
           if (bookingsResponse.data[0].provider_id) {
             const { data: providerData, error: providerError } = await supabase
-              .from('providers')
-              .select('*')
-              .eq('id', bookingsResponse.data[0].provider_id);
-            console.log("Direct provider query result:", { providerData, providerError });
-            
+              .from("providers")
+              .select("*")
+              .eq("id", bookingsResponse.data[0].provider_id);
+            console.log("Direct provider query result:", {
+              providerData,
+              providerError,
+            });
+
             // Also try to get all providers to see if any exist
-            const { data: allProviders, error: allProvidersError } = await supabase
-              .from('providers')
-              .select('id, first_name, last_name')
-              .limit(5);
-            console.log("All providers sample:", { allProviders, allProvidersError });
+            const { data: allProviders, error: allProvidersError } =
+              await supabase
+                .from("providers")
+                .select("id, first_name, last_name")
+                .limit(5);
+            console.log("All providers sample:", {
+              allProviders,
+              allProvidersError,
+            });
           }
         }
 
@@ -966,7 +990,7 @@ export default function MyBookings() {
                 </Button>
               </Link>
             </div>
-            
+
             <h1 className="text-3xl sm:text-4xl font-bold mb-4">
               My <span className="text-roam-blue">Bookings</span>
             </h1>
@@ -991,9 +1015,7 @@ export default function MyBookings() {
 
               <TabsContent value="upcoming" className="space-y-4">
                 {allUpcomingBookings.length === 0 ? (
-                  <Card className="p-12 text-center">
-                    {/* ... */}
-                  </Card>
+                  <Card className="p-12 text-center">{/* ... */}</Card>
                 ) : (
                   <>
                     <div className="space-y-4">
@@ -1020,9 +1042,7 @@ export default function MyBookings() {
 
               <TabsContent value="active" className="space-y-4">
                 {allActiveBookings.length === 0 ? (
-                  <Card className="p-12 text-center">
-                    {/* ... */}
-                  </Card>
+                  <Card className="p-12 text-center">{/* ... */}</Card>
                 ) : (
                   <>
                     <div className="space-y-4">
@@ -1049,9 +1069,7 @@ export default function MyBookings() {
 
               <TabsContent value="past" className="space-y-4">
                 {allPastBookings.length === 0 ? (
-                  <Card className="p-12 text-center">
-                    {/* ... */}
-                  </Card>
+                  <Card className="p-12 text-center">{/* ... */}</Card>
                 ) : (
                   <>
                     <div className="space-y-4">
@@ -1402,11 +1420,14 @@ export default function MyBookings() {
           selectedBookingForMessage
             ? {
                 id: selectedBookingForMessage.id,
-                customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
+                customer_name:
+                  `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() ||
+                  "Customer",
                 customer_email: currentUser?.email || "",
                 customer_phone: (currentUser as any)?.phone || "",
                 service_name: selectedBookingForMessage.service || "Service",
-                provider_name: selectedBookingForMessage.provider?.name || "Provider",
+                provider_name:
+                  selectedBookingForMessage.provider?.name || "Provider",
                 business_id: selectedBookingForMessage.business_id || "",
                 customer_id: selectedBookingForMessage.customer_id,
                 // Include the actual database profile objects
