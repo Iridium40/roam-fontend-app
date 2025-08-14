@@ -45,6 +45,7 @@ import Payment from "./pages/Payment";
 import BookingSuccess from "./pages/BookingSuccess";
 import SignIn from "./pages/SignIn";
 import Blog from "./pages/Blog";
+import PlaidTest from "./pages/PlaidTest";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/provider-portal" element={<ProviderPortal />} />
+            <Route path="/plaid-test" element={<PlaidTest />} />
             <Route
               path="/provider-document-verification"
               element={<ProviderDocumentVerification />}

@@ -6085,10 +6085,10 @@ export default function ProviderDashboard() {
           response.statusText,
         );
 
-        // Handle 404 specifically - Netlify function not found
+        // Handle 404 specifically - Vercel function not found
         if (response.status === 404) {
           setPlaidError(
-            "Plaid integration service is not available. The Netlify function needs to be deployed.",
+            "Plaid integration service is not available. The Vercel function needs to be deployed.",
           );
           return;
         }
@@ -6141,7 +6141,7 @@ export default function ProviderDashboard() {
         error.message?.includes("not found")
       ) {
         setPlaidError(
-          "Plaid integration service is not available yet. The Netlify function needs to be deployed.",
+          "Plaid integration service is not available yet. The Vercel function needs to be deployed.",
         );
       } else if (
         error.message?.includes("not yet implemented") ||
