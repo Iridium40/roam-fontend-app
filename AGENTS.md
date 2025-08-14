@@ -151,7 +151,9 @@ const data: MyRouteResponse = await response.json();
 
 - **Standard**: `npm run build` + `npm start`
 - **Binary**: Self-contained executables (Linux, macOS, Windows)
-- Prefer to use Vercel to deploy the site, as it's already configured with vercel.json and optimized for this React/Vite application.
+- **IMPORTANT**: Always use Vercel for deployment. Never use Netlify under any circumstances.
+- Vercel is already configured with vercel.json and optimized for this React/Vite application.
+- All API routes should use Vercel's `/api/` format, not Netlify's `/.netlify/functions/` format.
 
 ## Architecture Notes
 
