@@ -4,10 +4,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { EdgeNotificationCenter } from "@/components/EdgeNotificationCenter";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSystemConfig } from "@/hooks/useSystemConfig";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, customer } = useAuth();
+  const { siteLogo } = useSystemConfig();
   const isAuthenticated = user || customer;
 
   return (
@@ -17,9 +19,14 @@ export function Header() {
           <Link to="/" className="flex items-center">
             <div className="w-24 h-24 rounded-lg overflow-hidden flex items-center justify-center">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                src={siteLogo || "https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"}
                 alt="ROAM Logo"
                 className="w-24 h-24 object-contain"
+                onError={(e) => {
+                  // Fallback to default logo if dynamic logo fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.src = "https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800";
+                }}
               />
             </div>
           </Link>
