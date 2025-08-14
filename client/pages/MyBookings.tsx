@@ -835,34 +835,55 @@ export default function MyBookings() {
     }
 
     try {
+      // Prepare reschedule data with new schema fields
+      const rescheduleData = {
+        booking_date: newBookingDate,
+        start_time: newBookingTime,
+        booking_status: "pending",
+        // New reschedule tracking fields
+        rescheduled_at: new Date().toISOString(),
+        rescheduled_by: currentUser.id,
+        reschedule_reason: rescheduleReason || null,
+        // Store original booking details if this is the first reschedule
+        original_booking_date: selectedBookingForReschedule.original_booking_date || selectedBookingForReschedule.booking_date,
+        original_start_time: selectedBookingForReschedule.original_start_time || selectedBookingForReschedule.start_time,
+        // Increment reschedule count
+        reschedule_count: (selectedBookingForReschedule.reschedule_count || 0) + 1,
+      };
+
       const { error } = await supabase
         .from("bookings")
-        .update({
-          booking_date: newBookingDate,
-          start_time: newBookingTime,
-          booking_status: "pending",
-        })
+        .update(rescheduleData)
         .eq("id", selectedBookingForReschedule.id);
 
       if (error) {
         throw error;
       }
 
-      // Update local state
+      // Update local state with reschedule tracking
       setBookings((prev) =>
         prev.map((booking) =>
           booking.id === selectedBookingForReschedule.id
             ? {
                 ...booking,
                 date: newBookingDate,
+                booking_date: newBookingDate,
                 time: new Date(
                   `1970-01-01T${newBookingTime}`,
                 ).toLocaleTimeString([], {
                   hour: "numeric",
                   minute: "2-digit",
                 }),
+                start_time: newBookingTime,
                 status: "pending",
                 booking_status: "pending",
+                // Update reschedule tracking fields in local state
+                rescheduled_at: new Date().toISOString(),
+                rescheduled_by: currentUser.id,
+                reschedule_reason: rescheduleReason || null,
+                original_booking_date: booking.original_booking_date || booking.booking_date,
+                original_start_time: booking.original_start_time || booking.start_time,
+                reschedule_count: (booking.reschedule_count || 0) + 1,
               }
             : booking,
         ),
@@ -1554,6 +1575,32 @@ function BookingCard({
                     <p className="text-sm font-mono font-semibold text-gray-900">
                       {booking.bookingReference}
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Reschedule History Indicator */}
+              {booking.reschedule_count > 0 && (
+                <div className="flex items-center gap-2 mb-2 p-2 bg-amber-50 rounded-lg border-l-4 border-amber-400">
+                  <RefreshCw className="w-4 h-4 text-amber-600" />
+                  <div className="flex-1">
+                    <span className="text-xs font-medium text-amber-700 uppercase tracking-wide">
+                      Rescheduled {booking.reschedule_count} time{booking.reschedule_count > 1 ? 's' : ''}
+                    </span>
+                    {booking.original_booking_date && booking.original_start_time && (
+                      <p className="text-xs text-amber-600">
+                        Originally: {new Date(booking.original_booking_date).toLocaleDateString()} at{' '}
+                        {new Date(`1970-01-01T${booking.original_start_time}`).toLocaleTimeString([], {
+                          hour: 'numeric',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    )}
+                    {booking.reschedule_reason && (
+                      <p className="text-xs text-amber-600 mt-1">
+                        Reason: {booking.reschedule_reason}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
