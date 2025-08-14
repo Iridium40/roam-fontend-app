@@ -1,10 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const supabase = createClient(
   process.env.VITE_PUBLIC_SUPABASE_URL!,
@@ -13,16 +10,22 @@ const supabase = createClient(
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
-export default async function handler(req: NextRequest) {
+export default async function handler(req: Request) {
   if (req.method !== 'POST') {
-    return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   const body = await req.text();
   const signature = req.headers.get('stripe-signature');
 
   if (!signature) {
-    return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 });
+    return new Response(JSON.stringify({ error: 'Missing stripe-signature header' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   let event: Stripe.Event;
@@ -31,7 +34,10 @@ export default async function handler(req: NextRequest) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
-    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+    return new Response(JSON.stringify({ error: 'Invalid signature' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   try {
@@ -48,11 +54,17 @@ export default async function handler(req: NextRequest) {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    return NextResponse.json({ received: true });
+    return new Response(JSON.stringify({ received: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
 
   } catch (error) {
     console.error('Error processing webhook:', error);
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
+    return new Response(JSON.stringify({ error: 'Webhook processing failed' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
 
