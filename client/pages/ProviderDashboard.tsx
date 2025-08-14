@@ -3320,7 +3320,7 @@ export default function ProviderDashboard() {
 
     try {
       // Create Stripe checkout session for the selected plan
-      const response = await fetch("/.netlify/functions/create-subscription", {
+      const response = await fetch("/api/stripe/create-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

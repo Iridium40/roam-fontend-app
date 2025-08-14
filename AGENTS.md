@@ -151,7 +151,7 @@ const data: MyRouteResponse = await response.json();
 
 - **Standard**: `npm run build` + `npm start`
 - **Binary**: Self-contained executables (Linux, macOS, Windows)
-- Prefer to use netlify (recomend the MCP) to deploy the site, do not use other providers as netlify is already preconfigured.
+- Prefer to use Vercel to deploy the site, as it's already configured with vercel.json and optimized for this React/Vite application.
 
 ## Architecture Notes
 

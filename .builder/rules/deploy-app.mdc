@@ -1,14 +1,15 @@
 ---
-description: Deploy the app to production using Netlify to make the site live
+description: Deploy the app to production using Vercel to make the site live
 globs:
 alwaysApply: true
 ---
 
-Deploying the app to production is powered by Netlify, however, it's only possible as long as there are several tools from netlify available:
+Deploying the app to production is powered by Vercel, which automatically builds and deploys from your Git repository:
 
-- If the tools are not available, tell the user to [connect the netlify MCP](#open-mcp-popover).
-  If the user asks to deploy the app, use the appropriate netlify MCP tools to deploy the app.
+- Vercel automatically detects the framework and builds the app
+- Deployments are triggered by Git pushes to the main branch
+- Preview deployments are created for pull requests
 
-Notice that, netlify builds the source code in their own servers, so while it's a good idea to check if `npm run build` works locally, it's not a requirement.
+Notice that Vercel builds the source code in their own servers, so while it's a good idea to check if `npm run build` works locally, it's not a requirement.
 
 You can also suggest share the [Preview link](#open-preview), but explain that won't be a production-ready link.

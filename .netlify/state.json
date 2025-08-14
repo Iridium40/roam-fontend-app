@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Covington",
+			"country": {
+				"code": "US",
+				"name": "United States"
+			},
+			"subdivision": {
+				"code": "LA",
+				"name": "Louisiana"
+			},
+			"timezone": "America/Chicago",
+			"latitude": 30.4856,
+			"longitude": -90.0977,
+			"postalCode": "70433"
+		},
+		"timestamp": 1754674905522
+	}
+}
