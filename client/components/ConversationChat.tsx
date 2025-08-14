@@ -116,22 +116,69 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     }
   }, [activeConversationSid, loadMessages]);
 
-  // Polling for real-time updates when chat is open
+  // Smart polling for real-time updates with scroll preservation
   useEffect(() => {
     if (!isOpen || !activeConversationSid) return;
 
-    console.log('🔄 Starting message polling for conversation:', activeConversationSid);
+    console.log('🔄 Starting smart message polling for conversation:', activeConversationSid);
     
-    const pollInterval = setInterval(() => {
-      console.log('🔄 Polling for new messages...');
-      loadMessages(activeConversationSid);
+    const pollInterval = setInterval(async () => {
+      console.log('🔄 Smart polling for new messages...');
+      
+      // Store current scroll position
+      const messagesContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+      const wasAtBottom = messagesContainer ? 
+        messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 10 : true;
+      
+      // Get current message count before loading
+      const currentMessageCount = messages.length;
+      
+      try {
+        // Load new messages
+        const response = await fetch('/api/twilio-conversations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'get-messages',
+            conversationSid: activeConversationSid
+          })
+        });
+        
+        const result = await response.json();
+        if (result.success && result.messages) {
+          // Only update if there are new messages
+          if (result.messages.length > currentMessageCount) {
+            console.log('🔄 New messages found, updating chat');
+            
+            // Use the existing loadMessages function but preserve scroll
+            await loadMessages(activeConversationSid);
+            
+            // Restore scroll position after a brief delay
+            setTimeout(() => {
+              if (messagesContainer) {
+                if (wasAtBottom) {
+                  // If user was at bottom, scroll to new bottom
+                  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                } else {
+                  // If user was scrolled up, maintain their position
+                  // (messages will appear above their current view)
+                }
+              }
+            }, 100);
+          } else {
+            console.log('🔄 No new messages, skipping update');
+          }
+        }
+      } catch (error) {
+        console.error('Smart polling error:', error);
+      }
     }, 3000); // Poll every 3 seconds
 
     return () => {
-      console.log('🔄 Stopping message polling');
+      console.log('🔄 Stopping smart message polling');
       clearInterval(pollInterval);
     };
-  }, [isOpen, activeConversationSid, loadMessages]);
+  }, [isOpen, activeConversationSid, messages.length]);
 
   const initializeBookingConversation = async () => {
     console.log('🚀 initializeBookingConversation called with:', {
