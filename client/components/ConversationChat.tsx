@@ -108,18 +108,30 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     }
   }, [isOpen, booking, conversationSid]);
 
-  // Load messages when active conversation changes
+  // Load messages when conversation changes
   useEffect(() => {
-    console.log('Active conversation changed:', {
-      activeConversationSid,
-      currentConversation
-    });
-    
-    if (activeConversationSid && activeConversationSid !== currentConversation) {
-      console.log('Loading messages for conversation:', activeConversationSid);
-      setActiveConversation(activeConversationSid);
+    if (activeConversationSid) {
+      loadMessages(activeConversationSid);
+      // Participants are loaded separately via the useConversations hook
     }
-  }, [activeConversationSid, currentConversation, setActiveConversation]);
+  }, [activeConversationSid, loadMessages]);
+
+  // Polling for real-time updates when chat is open
+  useEffect(() => {
+    if (!isOpen || !activeConversationSid) return;
+
+    console.log('🔄 Starting message polling for conversation:', activeConversationSid);
+    
+    const pollInterval = setInterval(() => {
+      console.log('🔄 Polling for new messages...');
+      loadMessages(activeConversationSid);
+    }, 3000); // Poll every 3 seconds
+
+    return () => {
+      console.log('🔄 Stopping message polling');
+      clearInterval(pollInterval);
+    };
+  }, [isOpen, activeConversationSid, loadMessages]);
 
   const initializeBookingConversation = async () => {
     console.log('🚀 initializeBookingConversation called with:', {
@@ -238,10 +250,13 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       await sendMessage(activeConversationSid, newMessage.trim());
       setNewMessage('');
       
-      // Reload messages to ensure real-time updates
+      // Immediately reload messages after sending
+      await loadMessages(activeConversationSid);
+      
+      // Also reload after a short delay to catch any delayed messages
       setTimeout(() => {
         loadMessages(activeConversationSid);
-      }, 500);
+      }, 1000);
     } catch (error) {
       console.error('Error sending message:', error);
     }
