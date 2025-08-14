@@ -1,26 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const supabase = createClient(
   process.env.VITE_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export default async function handler(req: NextRequest) {
+export default async function handler(req: Request) {
   if (req.method !== 'GET') {
-    return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   try {
     // Get the authorization header
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     const token = authHeader.substring(7);
@@ -29,7 +32,10 @@ export default async function handler(req: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     
     if (authError || !user) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+      return new Response(JSON.stringify({ error: 'Invalid token' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Extract sessionId from the URL path
@@ -37,7 +43,10 @@ export default async function handler(req: NextRequest) {
     const sessionId = url.pathname.split('/').pop();
 
     if (!sessionId) {
-      return NextResponse.json({ error: 'Session ID is required' }, { status: 400 });
+      return new Response(JSON.stringify({ error: 'Session ID is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Verify that this session belongs to the authenticated user
@@ -48,11 +57,17 @@ export default async function handler(req: NextRequest) {
       .single();
 
     if (verificationError || !verification) {
-      return NextResponse.json({ error: 'Verification session not found' }, { status: 404 });
+      return new Response(JSON.stringify({ error: 'Verification session not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     if (verification.user_id !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Retrieve the verification session from Stripe
@@ -73,29 +88,36 @@ export default async function handler(req: NextRequest) {
     }
 
     // Return the verification session data
-    return NextResponse.json({
+    return new Response(JSON.stringify({
       id: verificationSession.id,
       status: verificationSession.status,
       url: verificationSession.url,
       verified_outputs: verificationSession.verified_outputs,
       last_error: verificationSession.last_error,
       client_secret: verificationSession.client_secret
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
     console.error('Error checking verification status:', error);
     
     if (error instanceof Stripe.errors.StripeError) {
-      return NextResponse.json(
-        { error: `Stripe error: ${error.message}` },
-        { status: 400 }
-      );
+      return new Response(JSON.stringify(
+        { error: `Stripe error: ${error.message}` }
+      ), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return new Response(JSON.stringify(
+      { error: 'Internal server error' }
+    ), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
 
