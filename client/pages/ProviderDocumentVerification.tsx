@@ -203,7 +203,7 @@ export default function ProviderDocumentVerification() {
     currentBusinessId: string,
   ): Promise<string> => {
     try {
-      console.log("Uploading file directly to Supabase:", {
+      console.log("Uploading file via Vercel endpoint:", {
         fileName: file.name,
         folderPath,
         fileSize: file.size,
@@ -218,38 +218,45 @@ export default function ProviderDocumentVerification() {
         );
       }
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${folderPath}/${fileName}`;
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folderPath', folderPath);
+      formData.append('providerId', currentProviderId);
+      formData.append('businessId', currentBusinessId);
 
-      // Try upload to roam-file-storage bucket (which has policies)
-      const { data, error } = await supabase.storage
-        .from("roam-file-storage")
-        .upload(filePath, file);
-
-      if (error) {
-        console.error("Storage upload error:", JSON.stringify(error));
-        // If it's an RLS error, provide a helpful message
-        if (
-          error.message?.includes("policy") ||
-          error.message?.includes("RLS")
-        ) {
-          throw new Error(
-            `Upload blocked by security policy. This usually happens during account setup. Please contact support if this persists.`,
-          );
-        }
-        throw new Error(`Upload failed: ${error.message}`);
+      // Get auth token for the request
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('Authentication required for file upload');
       }
 
-      console.log("Upload successful:", data);
+      // Upload via Vercel Edge Function (bypasses RLS)
+      const response = await fetch('/api/upload-document', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: formData,
+      });
 
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("roam-file-storage").getPublicUrl(filePath);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Upload API error:", response.status, errorData);
+        throw new Error(
+          errorData.error || `Upload failed with status ${response.status}`
+        );
+      }
 
-      console.log("Generated public URL:", publicUrl);
-      return publicUrl;
+      const result = await response.json();
+      console.log("Upload successful:", result);
+
+      if (!result.success || !result.publicUrl) {
+        throw new Error('Upload completed but no URL returned');
+      }
+
+      console.log("Generated public URL:", result.publicUrl);
+      return result.publicUrl;
     } catch (error) {
       console.error("uploadToStorage error:", error);
       throw error;
