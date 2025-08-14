@@ -569,6 +569,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           queryParams: {
             access_type: "offline",
             prompt: "consent",
+            // Force password authentication instead of passkey
+            authuser: "0",
+            login_hint: "",
+            // Disable passkey prompts
+            disable_hi_res: "1",
+            // Force traditional sign-in flow
+            flowName: "GlifWebSignIn",
           },
         },
       });
