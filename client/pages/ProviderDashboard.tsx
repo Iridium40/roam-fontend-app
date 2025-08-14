@@ -6534,19 +6534,9 @@ export default function ProviderDashboard() {
       );
     }
 
-<<<<<<< HEAD
     // Filter by search query (booking reference and customer name)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
-=======
-    // Debug logs removed to prevent render loop spam
-
-    // Filter by search query (booking reference and customer name)
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      // Search filter applied
-      const beforeSearchCount = filtered.length;
->>>>>>> origin/main
       filtered = filtered.filter((booking) => {
         // Search in booking reference
         const bookingRef = booking.booking_reference?.toLowerCase() || "";
@@ -6568,14 +6558,7 @@ export default function ProviderDashboard() {
           customerEmail.includes(query)
         );
       });
-<<<<<<< HEAD
     }
-=======
-      // Search filter completed
-    }
-
-    // Filtering completed
->>>>>>> origin/main
     return filtered;
   };
 
