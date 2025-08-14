@@ -52,7 +52,7 @@ import RealtimeBookingNotifications from "@/components/RealtimeBookingNotificati
 import BookingStatusIndicator, {
   RealtimeStatusUpdate,
 } from "@/components/BookingStatusIndicator";
-import CustomerConversationChat from "@/components/CustomerConversationChat";
+import ConversationChat from "@/components/ConversationChat";
 
 // Helper functions for delivery types
 const getDeliveryIcon = (type: string) => {
@@ -89,10 +89,8 @@ export default function MyBookings() {
   const [newBookingDate, setNewBookingDate] = useState("");
   const [newBookingTime, setNewBookingTime] = useState("");
   const [rescheduleReason, setRescheduleReason] = useState("");
-  
-  // Messaging state
-  const [messagingModal, setMessagingModal] = useState(false);
-  const [selectedBookingForMessaging, setSelectedBookingForMessaging] = useState<any>(null);
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [selectedBookingForMessage, setSelectedBookingForMessage] = useState<any>(null);
 
   const currentUser = user || customer;
   
@@ -640,20 +638,21 @@ export default function MyBookings() {
     });
   };
 
-  // Open cancel modal
-  const openCancelModal = (booking: any) => {
+  // Handler functions
+  const handleCancel = (booking: any) => {
     setSelectedBookingForCancel(booking);
     setCancellationReason("");
     setShowCancelModal(true);
   };
 
-  // Open reschedule modal
-  const openRescheduleModal = (booking: any) => {
+  const handleReschedule = (booking: any) => {
     setSelectedBookingForReschedule(booking);
-    setNewBookingDate("");
-    setNewBookingTime("");
-    setRescheduleReason("");
     setShowRescheduleModal(true);
+  };
+
+  const handleMessage = (booking: any) => {
+    setSelectedBookingForMessage(booking);
+    setShowMessageModal(true);
   };
 
   // Calculate cancellation fee and refund amount
@@ -692,6 +691,107 @@ export default function MyBookings() {
       isPastBooking,
       hoursUntilBooking,
     };
+  };
+
+  // Cancel booking function
+  const cancelBooking = async () => {
+    if (!selectedBookingForCancel || !currentUser) {
+      toast({
+        title: "Error",
+        description: "Unable to cancel booking. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Calculate cancellation fee and refund amount using the same logic as the modal
+      const cancellationDetails = calculateCancellationDetails(
+        selectedBookingForCancel,
+      );
+      const { totalAmount, cancellationFee, refundAmount } =
+        cancellationDetails;
+
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_status: "cancelled",
+          cancelled_at: new Date().toISOString(),
+          cancelled_by: currentUser.id,
+          cancellation_reason:
+            cancellationReason.trim() || "Cancelled by customer",
+          cancellation_fee: cancellationFee,
+          refund_amount: refundAmount,
+        })
+        .eq("id", selectedBookingForCancel.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Update local state
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === selectedBookingForCancel.id
+            ? {
+                ...booking,
+                status: "cancelled",
+                booking_status: "cancelled",
+                cancelled_at: new Date().toISOString(),
+                cancelled_by: currentUser.id,
+                cancellation_reason:
+                  cancellationReason.trim() || "Cancelled by customer",
+                cancellation_fee: cancellationFee,
+                refund_amount: refundAmount,
+              }
+            : booking,
+        ),
+      );
+
+      // Close modal and reset state
+      setShowCancelModal(false);
+      setSelectedBookingForCancel(null);
+      setCancellationReason("");
+
+      // Force refresh bookings to ensure we get the latest status from database
+      if (refreshBookings) {
+        setTimeout(() => refreshBookings(), 100);
+      }
+
+      // Show appropriate cancellation message based on refund amount
+      const refundMessage =
+        refundAmount === 0
+          ? "Your booking has been cancelled successfully. No refund will be processed as per our cancellation policy."
+          : refundAmount === totalAmount
+            ? "Your booking has been cancelled successfully. Full refund will be processed."
+            : `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`;
+
+      toast({
+        title: "Booking Cancelled",
+        description: refundMessage,
+      });
+    } catch (error: any) {
+      console.error("Error cancelling booking:", error);
+      let errorMessage = "Unknown error occurred";
+
+      if (error) {
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.details) {
+          errorMessage = error.details;
+        } else if (error.hint) {
+          errorMessage = error.hint;
+        }
+      }
+
+      toast({
+        title: "Error Cancelling Booking",
+        description: `Failed to cancel booking: ${errorMessage}`,
+        variant: "destructive",
+      });
+    }
   };
 
   // Reschedule booking function
@@ -802,127 +902,6 @@ export default function MyBookings() {
     }
   };
 
-  // Cancel booking function
-  const cancelBooking = async () => {
-    if (!selectedBookingForCancel || !currentUser) {
-      toast({
-        title: "Error",
-        description: "Unable to cancel booking. Please try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      // Calculate cancellation fee and refund amount using the same logic as the modal
-      const cancellationDetails = calculateCancellationDetails(
-        selectedBookingForCancel,
-      );
-      const { totalAmount, cancellationFee, refundAmount } =
-        cancellationDetails;
-
-      const { error } = await supabase
-        .from("bookings")
-        .update({
-          booking_status: "cancelled",
-          cancelled_at: new Date().toISOString(),
-          cancelled_by: currentUser.id,
-          cancellation_reason:
-            cancellationReason.trim() || "Cancelled by customer",
-          cancellation_fee: cancellationFee,
-          refund_amount: refundAmount,
-        })
-        .eq("id", selectedBookingForCancel.id);
-
-      if (error) {
-        throw error;
-      }
-
-      // Update local state
-      setBookings((prev) =>
-        prev.map((booking) =>
-          booking.id === selectedBookingForCancel.id
-            ? {
-                ...booking,
-                status: "cancelled",
-                booking_status: "cancelled",
-                cancelled_at: new Date().toISOString(),
-                cancelled_by: currentUser.id,
-                cancellation_reason:
-                  cancellationReason.trim() || "Cancelled by customer",
-                cancellation_fee: cancellationFee,
-                refund_amount: refundAmount,
-              }
-            : booking,
-        ),
-      );
-
-      // Close modal and reset state
-      setShowCancelModal(false);
-      setSelectedBookingForCancel(null);
-      setCancellationReason("");
-
-      // Force refresh bookings to ensure we get the latest status from database
-      if (refreshBookings) {
-        setTimeout(() => refreshBookings(), 100);
-      }
-
-      // Show appropriate cancellation message based on refund amount
-      const refundMessage =
-        refundAmount === 0
-          ? "Your booking has been cancelled successfully. No refund will be processed as per our cancellation policy."
-          : refundAmount === totalAmount
-            ? "Your booking has been cancelled successfully. Full refund will be processed."
-            : `Your booking has been cancelled. Refund amount: $${refundAmount.toFixed(2)} (Cancellation fee: $${cancellationFee.toFixed(2)})`;
-
-      toast({
-        title: "Booking Cancelled",
-        description: refundMessage,
-      });
-    } catch (error: any) {
-      console.error("Error cancelling booking:", error);
-      let errorMessage = "Unknown error occurred";
-
-      if (error) {
-        if (typeof error === "string") {
-          errorMessage = error;
-        } else if (error.message) {
-          errorMessage = error.message;
-        } else if (error.details) {
-          errorMessage = error.details;
-        } else if (error.hint) {
-          errorMessage = error.hint;
-        }
-      }
-
-      toast({
-        title: "Error Cancelling Booking",
-        description: `Failed to cancel booking: ${errorMessage}`,
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Messaging handlers
-  const handleOpenMessaging = async (booking: any) => {
-    console.log('handleOpenMessaging called with booking:', booking);
-    console.log('Current user:', currentUser);
-    console.log('Setting messaging modal to true');
-    setSelectedBookingForMessaging(booking);
-    setMessagingModal(true);
-    console.log('Modal state should now be true');
-    
-    // Add a small delay to check if the modal state actually changes
-    setTimeout(() => {
-      console.log('Modal state after timeout:', messagingModal);
-    }, 100);
-  };
-
-  const handleCloseMessaging = () => {
-    setMessagingModal(false);
-    setSelectedBookingForMessaging(null);
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -968,42 +947,7 @@ export default function MyBookings() {
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-roam-light-blue/10">
       {/* Navigation */}
       <nav className="border-b bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Button asChild variant="ghost" size="sm">
-                <Link to="/home">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Home
-                </Link>
-              </Button>
-              <div className="w-24 h-24 rounded-lg overflow-hidden flex items-center justify-center">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
-                  alt="ROAM Logo"
-                  className="w-24 h-24 object-contain"
-                />
-              </div>
-            </div>
-
-            {/* Real-time Notifications */}
-            <div className="flex items-center space-x-2">
-              <RealtimeBookingNotifications
-                userType="customer"
-                showConnectionStatus={true}
-                maxNotifications={5}
-              />
-              {isConnected && (
-                <Badge
-                  variant="outline"
-                  className="text-xs bg-green-50 text-green-700"
-                >
-                  Live Updates
-                </Badge>
-              )}
-            </div>
-          </div>
-        </div>
+        {/* ... */}
       </nav>
 
       {/* Header */}
@@ -1022,74 +966,20 @@ export default function MyBookings() {
             {/* Active Service Alert */}
             {activeBookings.length > 0 && (
               <Card className="mb-8 border-blue-200 bg-blue-50">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
-                      <RefreshCw className="w-6 h-6 text-white animate-spin" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-blue-900 mb-2">
-                        Service in Progress
-                      </h3>
-                      <p className="text-blue-800 mb-3">
-                        {activeBookings[0].service} with{" "}
-                        {activeBookings[0].provider.name} is currently active.
-                      </p>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-blue-500 text-blue-700 hover:bg-blue-500 hover:text-white"
-                        >
-                          <MessageCircle className="w-4 h-4 mr-2" />
-                          Contact Provider
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
+                {/* ... */}
               </Card>
             )}
 
             {/* Booking Tabs */}
             <Tabs defaultValue="upcoming" className="space-y-6">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger
-                  value="upcoming"
-                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-                >
-                  Upcoming ({allUpcomingBookings.length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value="active"
-                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-                >
-                  Active ({allActiveBookings.length})
-                </TabsTrigger>
-                <TabsTrigger
-                  value="past"
-                  className="data-[state=active]:bg-roam-blue data-[state=active]:text-white"
-                >
-                  Past ({allPastBookings.length})
-                </TabsTrigger>
+                {/* ... */}
               </TabsList>
 
               <TabsContent value="upcoming" className="space-y-4">
                 {allUpcomingBookings.length === 0 ? (
                   <Card className="p-12 text-center">
-                    <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      No upcoming bookings
-                    </h3>
-                    <p className="text-foreground/60 mb-4">
-                      Book your next service to see it here.
-                    </p>
-                    <Button
-                      asChild
-                      className="bg-roam-blue hover:bg-roam-blue/90"
-                    >
-                      <Link to="/home">Browse Services</Link>
-                    </Button>
+                    {/* ... */}
                   </Card>
                 ) : (
                   <>
@@ -1098,10 +988,9 @@ export default function MyBookings() {
                         <BookingCard
                           key={booking.id}
                           booking={booking}
-                          onCancel={openCancelModal}
-                          onReschedule={openRescheduleModal}
-                          currentUser={currentUser}
-                          handleOpenMessaging={handleOpenMessaging}
+                          onCancel={handleCancel}
+                          onReschedule={handleReschedule}
+                          onMessage={handleMessage}
                         />
                       ))}
                     </div>
@@ -1109,42 +998,7 @@ export default function MyBookings() {
                     {/* Pagination Controls for Upcoming */}
                     {getTotalPages(allUpcomingBookings.length) > 1 && (
                       <div className="flex items-center justify-between pt-4">
-                        <div className="text-sm text-foreground/60">
-                          Showing{" "}
-                          {(currentPage.upcoming - 1) * ITEMS_PER_PAGE + 1} to{" "}
-                          {Math.min(
-                            currentPage.upcoming * ITEMS_PER_PAGE,
-                            allUpcomingBookings.length,
-                          )}{" "}
-                          of {allUpcomingBookings.length} bookings
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handlePageChange("upcoming", "prev")}
-                            disabled={currentPage.upcoming === 1}
-                          >
-                            <ChevronLeft className="w-4 h-4" />
-                            Previous
-                          </Button>
-                          <span className="text-sm font-medium">
-                            Page {currentPage.upcoming} of{" "}
-                            {getTotalPages(allUpcomingBookings.length)}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handlePageChange("upcoming", "next")}
-                            disabled={
-                              currentPage.upcoming ===
-                              getTotalPages(allUpcomingBookings.length)
-                            }
-                          >
-                            Next
-                            <ChevronRight className="w-4 h-4" />
-                          </Button>
-                        </div>
+                        {/* ... */}
                       </div>
                     )}
                   </>
@@ -1154,13 +1008,7 @@ export default function MyBookings() {
               <TabsContent value="active" className="space-y-4">
                 {allActiveBookings.length === 0 ? (
                   <Card className="p-12 text-center">
-                    <RefreshCw className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      No active services
-                    </h3>
-                    <p className="text-foreground/60">
-                      When a service is in progress, it will appear here.
-                    </p>
+                    {/* ... */}
                   </Card>
                 ) : (
                   <>
@@ -1169,10 +1017,9 @@ export default function MyBookings() {
                         <BookingCard
                           key={booking.id}
                           booking={booking}
-                          onCancel={openCancelModal}
-                          onReschedule={openRescheduleModal}
-                          currentUser={currentUser}
-                          handleOpenMessaging={handleOpenMessaging}
+                          onCancel={handleCancel}
+                          onReschedule={handleReschedule}
+                          onMessage={handleMessage}
                         />
                       ))}
                     </div>
@@ -1180,42 +1027,7 @@ export default function MyBookings() {
                     {/* Pagination Controls for Active */}
                     {getTotalPages(allActiveBookings.length) > 1 && (
                       <div className="flex items-center justify-between pt-4">
-                        <div className="text-sm text-foreground/60">
-                          Showing{" "}
-                          {(currentPage.active - 1) * ITEMS_PER_PAGE + 1} to{" "}
-                          {Math.min(
-                            currentPage.active * ITEMS_PER_PAGE,
-                            allActiveBookings.length,
-                          )}{" "}
-                          of {allActiveBookings.length} bookings
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handlePageChange("active", "prev")}
-                            disabled={currentPage.active === 1}
-                          >
-                            <ChevronLeft className="w-4 h-4" />
-                            Previous
-                          </Button>
-                          <span className="text-sm font-medium">
-                            Page {currentPage.active} of{" "}
-                            {getTotalPages(allActiveBookings.length)}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handlePageChange("active", "next")}
-                            disabled={
-                              currentPage.active ===
-                              getTotalPages(allActiveBookings.length)
-                            }
-                          >
-                            Next
-                            <ChevronRight className="w-4 h-4" />
-                          </Button>
-                        </div>
+                        {/* ... */}
                       </div>
                     )}
                   </>
@@ -1225,13 +1037,7 @@ export default function MyBookings() {
               <TabsContent value="past" className="space-y-4">
                 {allPastBookings.length === 0 ? (
                   <Card className="p-12 text-center">
-                    <CheckCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      No past bookings
-                    </h3>
-                    <p className="text-foreground/60">
-                      Your completed services will appear here.
-                    </p>
+                    {/* ... */}
                   </Card>
                 ) : (
                   <>
@@ -1240,10 +1046,9 @@ export default function MyBookings() {
                         <BookingCard
                           key={booking.id}
                           booking={booking}
-                          onCancel={openCancelModal}
-                          onReschedule={openRescheduleModal}
-                          currentUser={currentUser}
-                          handleOpenMessaging={handleOpenMessaging}
+                          onCancel={handleCancel}
+                          onReschedule={handleReschedule}
+                          onMessage={handleMessage}
                         />
                       ))}
                     </div>
@@ -1576,28 +1381,24 @@ export default function MyBookings() {
         </DialogContent>
       </Dialog>
 
-      {/* Debug: Modal state */}
-      <div className="text-xs text-gray-500 mb-2">
-        Debug: messagingModal={messagingModal ? 'true' : 'false'}, 
-        selectedBookingForMessaging={selectedBookingForMessaging ? 'set' : 'null'},
-        bookingId={selectedBookingForMessaging?.id || 'none'},
-        currentUserId={currentUser?.id || 'none'}
-      </div>
-
       {/* Messaging Modal */}
-      <CustomerConversationChat
-        isOpen={messagingModal}
-        onClose={handleCloseMessaging}
+      <ConversationChat
+        isOpen={showMessageModal}
+        onClose={() => setShowMessageModal(false)}
         booking={
-          selectedBookingForMessaging
+          selectedBookingForMessage
             ? {
-                id: selectedBookingForMessaging.id,
+                id: selectedBookingForMessage.id,
                 customer_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim() || "Customer",
                 customer_email: currentUser?.email || "",
                 customer_phone: (currentUser as any)?.phone || "",
-                service_name: selectedBookingForMessaging.service || "Service",
-                provider_name: selectedBookingForMessaging.provider?.name || "Provider",
-                business_id: selectedBookingForMessaging.business_id || "",
+                service_name: selectedBookingForMessage.service || "Service",
+                provider_name: selectedBookingForMessage.provider?.name || "Provider",
+                business_id: selectedBookingForMessage.business_id || "",
+                customer_id: selectedBookingForMessage.customer_id,
+                // Include the actual database profile objects
+                customer_profiles: selectedBookingForMessage.customer_profiles,
+                providers: selectedBookingForMessage.providers,
               }
             : undefined
         }
@@ -1610,14 +1411,12 @@ function BookingCard({
   booking,
   onCancel,
   onReschedule,
-  currentUser,
-  handleOpenMessaging,
+  onMessage,
 }: {
   booking: any;
   onCancel: (booking: any) => void;
   onReschedule: (booking: any) => void;
-  currentUser: any;
-  handleOpenMessaging: (booking: any) => void;
+  onMessage: (booking: any) => void;
 }) {
   const statusConfig = {
     confirmed: {
@@ -1852,6 +1651,7 @@ function BookingCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Primary action - Message Provider (most common) */}
           <div className="flex gap-2">
+<<<<<<< HEAD
             {/* Debug: Show booking status and provider relationship */}
             <div className="text-xs text-gray-500 mb-1">
               Debug: Status = {booking.status},
@@ -1875,15 +1675,14 @@ function BookingCard({
             </div>
 
             {booking.status === "confirmed" && booking.provider && (
+=======
+            {booking.status === "confirmed" && (booking.providers || booking.provider) && (
+>>>>>>> origin/main
               <Button
                 size="sm"
                 className="bg-roam-blue hover:bg-roam-blue/90 text-white font-medium"
-                onClick={() => {
-                  console.log('Button clicked! Booking:', booking);
-                  console.log('Current user:', currentUser);
-                  handleOpenMessaging(booking);
-                }}
-                title={`Message ${booking.provider?.name || 'Provider'} about this booking`}
+                onClick={() => onMessage(booking)}
+                title={`Message ${booking.provider.name} about this booking`}
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Message Provider

@@ -36,6 +36,19 @@ interface ConversationChatProps {
     service_name?: string;
     provider_name?: string;
     business_id?: string;
+    customer_id?: string;
+    customer_profiles?: {
+      id: string;
+      first_name: string;
+      last_name: string;
+      email?: string;
+    };
+    providers?: {
+      id: string;
+      user_id: string;
+      first_name: string;
+      last_name: string;
+    };
   };
   conversationSid?: string;
 }
@@ -43,16 +56,13 @@ interface ConversationChatProps {
 const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: ConversationChatProps) => {
   const { user, customer, userType } = useAuth();
   
+  // Determine user type safely
+  const currentUserType = userType || (user ? 'provider' : 'customer');
+  
   // Get the current user data (either provider or customer)
   const currentUser = user || customer;
   
-  // Use different hooks based on user type to avoid circular dependencies
-  const isCustomer = userType === 'customer' || (!user && customer);
-  
-  const providerHook = useConversations();
-  const customerHook = useCustomerConversations();
-  
-  // Use the appropriate hook based on user type
+  // Use the main conversations hook for all users to avoid conditional hook issues
   const {
     conversations,
     currentConversation,
@@ -61,11 +71,12 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     loading,
     sending,
     sendMessage,
+    loadMessages,
     createConversation,
     getUserIdentity,
     getUserType,
     setActiveConversation
-  } = isCustomer ? customerHook : providerHook;
+  } = useConversations();
 
   const [newMessage, setNewMessage] = useState('');
   const [activeConversationSid, setActiveConversationSid] = useState<string | null>(conversationSid || null);
@@ -84,7 +95,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       conversationSid,
       activeConversationSid,
       user: currentUser?.id,
-      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer')
+      userType: currentUserType
     });
 
     if (isOpen && booking && !activeConversationSid) {
@@ -97,24 +108,83 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     }
   }, [isOpen, booking, conversationSid]);
 
-  // Load messages when active conversation changes
+  // Load messages when conversation changes
   useEffect(() => {
-    console.log('Active conversation changed:', {
-      activeConversationSid,
-      currentConversation
-    });
-    
-    if (activeConversationSid && activeConversationSid !== currentConversation) {
-      console.log('Loading messages for conversation:', activeConversationSid);
-      setActiveConversation(activeConversationSid);
+    if (activeConversationSid) {
+      loadMessages(activeConversationSid);
+      // Participants are loaded separately via the useConversations hook
     }
-  }, [activeConversationSid, currentConversation, setActiveConversation]);
+  }, [activeConversationSid, loadMessages]);
+
+  // Smart polling for real-time updates with scroll preservation
+  useEffect(() => {
+    if (!isOpen || !activeConversationSid) return;
+
+    console.log('🔄 Starting smart message polling for conversation:', activeConversationSid);
+    
+    const pollInterval = setInterval(async () => {
+      console.log('🔄 Smart polling for new messages...');
+      
+      // Store current scroll position
+      const messagesContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+      const wasAtBottom = messagesContainer ? 
+        messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 10 : true;
+      
+      // Get current message count before loading
+      const currentMessageCount = messages.length;
+      
+      try {
+        // Load new messages
+        const response = await fetch('/api/twilio-conversations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'get-messages',
+            conversationSid: activeConversationSid
+          })
+        });
+        
+        const result = await response.json();
+        if (result.success && result.messages) {
+          // Only update if there are new messages
+          if (result.messages.length > currentMessageCount) {
+            console.log('🔄 New messages found, updating chat');
+            
+            // Use the existing loadMessages function but preserve scroll
+            await loadMessages(activeConversationSid);
+            
+            // Restore scroll position after a brief delay
+            setTimeout(() => {
+              if (messagesContainer) {
+                if (wasAtBottom) {
+                  // If user was at bottom, scroll to new bottom
+                  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                } else {
+                  // If user was scrolled up, maintain their position
+                  // (messages will appear above their current view)
+                }
+              }
+            }, 100);
+          } else {
+            console.log('🔄 No new messages, skipping update');
+          }
+        }
+      } catch (error) {
+        console.error('Smart polling error:', error);
+      }
+    }, 3000); // Poll every 3 seconds
+
+    return () => {
+      console.log('🔄 Stopping smart message polling');
+      clearInterval(pollInterval);
+    };
+  }, [isOpen, activeConversationSid, messages.length]);
 
   const initializeBookingConversation = async () => {
     console.log('🚀 initializeBookingConversation called with:', {
       booking: booking?.id,
       user: currentUser?.id,
-      userType: userType || (currentUser?.provider_role ? 'provider' : 'customer'),
+      userType: currentUserType,
       bookingData: booking,
       currentUserData: currentUser
     });
@@ -147,15 +217,60 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
       return;
     }
 
-    const bookingParticipants = [
-      {
-        identity: userIdentity,
-        role: userType,
-        name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
-        userId: currentUser.id,
-        userType: userType
-      }
-    ];
+    // Create participants for both customer and provider
+    const bookingParticipants = [];
+    
+    // Add current user (enhanced logic for provider side)
+    let currentUserName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+    let currentUserId = currentUser.id;
+    
+    // For provider side: use the logged-in user's provider data
+    // This handles cases where owner/dispatcher chats instead of assigned provider
+    if (userType === 'provider' && user) {
+      currentUserName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+      currentUserId = user.id;
+    }
+    
+    bookingParticipants.push({
+      identity: userIdentity,
+      role: userType,
+      name: currentUserName,
+      userId: currentUserId,
+      userType: userType
+    });
+    
+    // Add the other participant (customer or provider) with consistent identity format
+    if (userType === 'provider' && booking.customer_profiles) {
+      // Current user is provider, add customer
+      const customerName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
+      bookingParticipants.push({
+        identity: `customer-${booking.customer_profiles.id}`,
+        role: 'customer',
+        name: customerName,
+        userId: booking.customer_profiles.id,
+        userType: 'customer'
+      });
+    } else if (userType === 'customer' && booking.providers) {
+      // Current user is customer, add assigned provider from booking
+      const providerName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
+      bookingParticipants.push({
+        identity: `provider-${booking.providers.id}`,
+        role: 'provider', 
+        name: providerName,
+        userId: booking.providers.id,
+        userType: 'provider'
+      });
+    }
+
+    // TEST COMMENT - DEBUGGING PARTICIPANT ISSUES
+    console.log('👥 Enhanced participants logic:');
+    console.log('  - Current user type:', userType);
+    console.log('  - Current user ID:', currentUser?.id);
+    console.log('  - Booking assigned provider ID:', booking.providers?.user_id);
+    console.log('  - Current user is assigned provider:', currentUser?.id === booking.providers?.user_id);
+    console.log('  - Booking object:', booking);
+    console.log('  - booking.customer_profiles:', booking.customer_profiles);
+    console.log('  - booking.providers:', booking.providers);
 
     console.log('👥 Booking participants:', bookingParticipants);
 
@@ -181,6 +296,14 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     try {
       await sendMessage(activeConversationSid, newMessage.trim());
       setNewMessage('');
+      
+      // Immediately reload messages after sending
+      await loadMessages(activeConversationSid);
+      
+      // Also reload after a short delay to catch any delayed messages
+      setTimeout(() => {
+        loadMessages(activeConversationSid);
+      }, 1000);
     } catch (error) {
       console.error('Error sending message:', error);
     }
@@ -203,32 +326,84 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
 
   const getMessageAuthorInfo = (message: ConversationMessage) => {
     const userIdentity = getUserIdentity();
-    const isCurrentUser = message.author === userIdentity;
     const attributes = message.attributes || {};
+    
+    // Enhanced identity matching - check if message author is same user type as current user
+    const isCurrentUserType = (
+      (userType === 'customer' && message.author.startsWith('customer-')) ||
+      (userType === 'provider' && message.author.startsWith('provider-'))
+    );
+    
+    // For now, assume same user type messages are from current user
+    const isCurrentUser = isCurrentUserType;
+    
+    // SMART APPROACH: Find the actual participant from the participants list
+    const actualParticipant = participants.find(p => p.identity === message.author);
+    
+    let participantInfo;
+    if (actualParticipant) {
+      // Use the actual participant data
+      participantInfo = getParticipantInfo(actualParticipant);
+    } else {
+      // Fallback: create a fake participant object if not found
+      const fakeParticipant = {
+        identity: message.author,
+        attributes: attributes
+      };
+      participantInfo = getParticipantInfo(fakeParticipant);
+    }
     
     return {
       isCurrentUser,
-      name: attributes.userName || message.author,
+      name: participantInfo.name,
       role: attributes.userRole || 'participant',
-      initials: (attributes.userName || message.author)
-        .split(' ')
-        .map(n => n[0])
-        .join('')
-        .toUpperCase()
-        .substring(0, 2)
+      initials: participantInfo.initials
     };
   };
 
   const getParticipantInfo = (participant: any) => {
     const userIdentity = getUserIdentity();
-    const isCurrentUser = participant.identity === userIdentity;
+    
+    // Enhanced identity matching - check if participant is same user type as current user
+    const isCurrentUserType = (
+      (userType === 'customer' && participant.identity.startsWith('customer-')) ||
+      (userType === 'provider' && participant.identity.startsWith('provider-'))
+    );
+    const isCurrentUser = isCurrentUserType;
+    
+    // Enhanced name resolution logic
+    let displayName = participant.attributes?.name || participant.identity;
+    
+    // Try to get actual names from booking data
+    if (participant.identity.startsWith('customer-')) {
+      if (userType === 'customer' && currentUser) {
+        // Current customer viewing - use their name
+        displayName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+      } else if (userType === 'provider' && booking?.customer_profiles) {
+        // Provider viewing customer - use customer profile name
+        displayName = `${booking.customer_profiles.first_name} ${booking.customer_profiles.last_name}`.trim();
+      }
+    } else if (participant.identity.startsWith('provider-')) {
+      if (userType === 'provider' && user) {
+        // Current provider viewing - use their name
+        displayName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+      } else if (userType === 'customer' && booking?.providers) {
+        // Customer viewing provider - use provider profile name
+        displayName = `${booking.providers.first_name} ${booking.providers.last_name}`.trim();
+      }
+    }
+    
+    // Fallback to clean version of identity if no good name found
+    if (!displayName || displayName === participant.identity) {
+      displayName = participant.identity.replace(/^(customer-|provider-)/, '').replace(/[_-]/g, ' ') || 'User';
+    }
     
     return {
       isCurrentUser,
-      name: participant.attributes?.name || participant.identity,
+      name: displayName,
       role: participant.attributes?.role || participant.userType || 'participant',
       imageUrl: participant.attributes?.imageUrl,
-      initials: (participant.attributes?.name || participant.identity)
+      initials: displayName
         .split(' ')
         .map(n => n[0])
         .join('')
@@ -237,23 +412,7 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
     };
   };
 
-  // Debug info
-  const debugInfo = (
-    <div className="text-xs text-gray-500 mb-2">
-      Debug: activeConversationSid={activeConversationSid ? 'Set' : 'Not set'}, 
-      sending={sending ? 'Yes' : 'No'}, 
-      loading={loading ? 'Yes' : 'No'}
-      {booking && (
-        <div>
-          Booking ID: {booking.id}, 
-          User: {currentUser?.id || 'No user ID'}, 
-          User Type: {userType || (currentUser?.provider_role ? 'provider' : 'customer')},
-          User Data: {currentUser ? JSON.stringify({id: currentUser.id, first_name: currentUser.first_name, last_name: currentUser.last_name, provider_role: currentUser.provider_role}) : 'No user data'},
-          Booking Data: {booking ? JSON.stringify({id: booking.id, customer_id: booking.customer_id, customer_name: booking.customer_name}) : 'No booking data'}
-        </div>
-      )}
-    </div>
-  );
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -264,8 +423,6 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
             {booking ? `Chat - ${booking.service_name || 'Booking'}` : 'Conversation'}
           </DialogTitle>
         </DialogHeader>
-
-        {debugInfo}
 
         <div className="flex-1 flex flex-col min-h-0">
           {/* Participants Info */}
@@ -316,6 +473,16 @@ const ConversationChat = ({ isOpen, onClose, booking, conversationSid }: Convers
                   ) : (
                     messages.map((message) => {
                       const authorInfo = getMessageAuthorInfo(message);
+                      console.log('🔍 Message debug:', {
+                        messageSid: message.sid,
+                        author: message.author,
+                        body: message.body,
+                        authorInfo: authorInfo,
+                        currentUserIdentity: getUserIdentity(),
+                        userType: userType,
+                        currentUser: currentUser,
+                        booking: booking
+                      });
                       return (
                         <div
                           key={message.sid}

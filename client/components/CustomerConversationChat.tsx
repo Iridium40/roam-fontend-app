@@ -20,7 +20,7 @@ import {
   User,
   X
 } from 'lucide-react';
-import { useCustomerConversations, ConversationMessage } from '@/hooks/useCustomerConversations';
+import { useSimpleCustomerConversations, ConversationMessage } from '@/hooks/useSimpleCustomerConversations';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -57,7 +57,7 @@ const CustomerConversationChat = ({ isOpen, onClose, booking, conversationSid }:
     getUserIdentity,
     getUserType,
     setActiveConversation
-  } = useCustomerConversations();
+  } = useSimpleCustomerConversations(currentUser, userType || (currentUser?.provider_role ? 'provider' : 'customer'));
 
   const [newMessage, setNewMessage] = useState('');
   const [activeConversationSid, setActiveConversationSid] = useState<string | null>(conversationSid || null);

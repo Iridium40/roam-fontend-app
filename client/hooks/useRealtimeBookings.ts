@@ -73,7 +73,7 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
   useEffect(() => {
     if (!userId) return;
 
-    console.log("Setting up real-time booking subscription for user:", userId);
+    // Setting up real-time booking subscription
 
     // Create subscription for bookings table
     const subscription = supabase
@@ -94,7 +94,7 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
                   : `or(customer_id.eq.${userId},provider_id.eq.${userId},business_id.eq.${userId})`,
         },
         (payload) => {
-          console.log("Booking update received:", payload);
+          // Booking update received
 
           const newBooking = payload.new as any;
           const oldBooking = payload.old as any;
@@ -180,17 +180,17 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
         },
       )
       .subscribe((status) => {
-        console.log("Subscription status:", status);
+        // Subscription status updated
         setIsConnected(status === "SUBSCRIBED");
       });
 
     // Cleanup subscription
     return () => {
-      console.log("Cleaning up booking subscription");
+      // Cleaning up booking subscription
       subscription.unsubscribe();
       setIsConnected(false);
     };
-  }, [userId, userType, onStatusChange, showStatusNotification]);
+  }, [userId, userType]); // Removed unstable dependencies to prevent subscription recreation
 
   // Method to manually check for updates
   const refreshBookings = useCallback(async () => {
@@ -237,8 +237,8 @@ export function useRealtimeBookings(options: UseRealtimeBookingsOptions = {}) {
             errorMessage = error;
           } else if (error.message) {
             errorMessage = error.message;
-          } else if (error.error_description) {
-            errorMessage = error.error_description;
+          } else if ('error_description' in error) {
+            errorMessage = (error as any).error_description;
           } else if (error.details) {
             errorMessage = error.details;
           } else if (error.hint) {
