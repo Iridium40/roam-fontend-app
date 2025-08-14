@@ -63,10 +63,28 @@ const CustomerConversationChat = ({ isOpen, onClose, booking, conversationSid }:
   const [activeConversationSid, setActiveConversationSid] = useState<string | null>(conversationSid || null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom only when user sends a message or when initially loading
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const [lastMessageCount, setLastMessageCount] = useState(0);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Only auto-scroll if:
+    // 1. It's the initial load (messages.length was 0)
+    // 2. User just sent a message (shouldAutoScroll is true)
+    // 3. User is already at the bottom of the chat
+    if (messages.length > lastMessageCount) {
+      const messagesContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+      const isAtBottom = messagesContainer ? 
+        messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 50 : true;
+      
+      if (shouldAutoScroll || isAtBottom || lastMessageCount === 0) {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      setLastMessageCount(messages.length);
+      setShouldAutoScroll(false); // Reset auto-scroll flag
+    }
+  }, [messages, shouldAutoScroll, lastMessageCount]);
 
   // Initialize conversation when modal opens
   useEffect(() => {
@@ -171,6 +189,7 @@ const CustomerConversationChat = ({ isOpen, onClose, booking, conversationSid }:
     if (!newMessage.trim() || !activeConversationSid || sending) return;
 
     try {
+      setShouldAutoScroll(true); // Trigger auto-scroll when user sends a message
       await sendMessage(activeConversationSid, newMessage.trim());
       setNewMessage('');
     } catch (error) {
